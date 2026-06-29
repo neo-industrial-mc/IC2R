@@ -12,7 +12,7 @@ public class SplitterFoamCableBlock extends AbstractSplitterCableBlock
 	public static SplitterFoamCableBlock create(Properties settings)
 	{
 		prepareCreate(CableType.splitter, 0);
-		return new SplitterFoamCableBlock(settings);
+		return new SplitterFoamCableBlock(settings.randomTicks());
 	}
 
 	@Override

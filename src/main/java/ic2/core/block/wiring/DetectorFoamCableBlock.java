@@ -13,7 +13,7 @@ public class DetectorFoamCableBlock extends AbstractDetectorCableBlock
 	public static DetectorFoamCableBlock create(Properties settings)
 	{
 		prepareCreate(CableType.detector, 0);
-		return new DetectorFoamCableBlock(settings);
+		return new DetectorFoamCableBlock(settings.randomTicks());
 	}
 
 	@Override

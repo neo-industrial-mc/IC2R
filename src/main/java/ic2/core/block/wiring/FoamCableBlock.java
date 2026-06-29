@@ -14,7 +14,7 @@ public class FoamCableBlock extends AbstractCableBlock
 	public static FoamCableBlock create(Properties settings, CableType type, int insulation)
 	{
 		prepareCreate(type, insulation);
-		return new FoamCableBlock(settings, type, insulation);
+		return new FoamCableBlock(settings.randomTicks(), type, insulation);
 	}
 
 	@Override

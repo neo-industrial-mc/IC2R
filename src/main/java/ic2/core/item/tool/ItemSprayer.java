@@ -3,10 +3,7 @@ package ic2.core.item.tool;
 import ic2.api.item.IBoxable;
 import ic2.core.IC2;
 import ic2.core.block.misc.FoamBlock;
-import ic2.core.block.wiring.AbstractCableBlock;
 import ic2.core.block.wiring.CableBlock;
-import ic2.core.block.wiring.CableFoam;
-import ic2.core.block.wiring.FoamCableBlock;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.fluid.StandardFluidItem;
 import ic2.core.ref.Ic2Blocks;
@@ -227,8 +224,7 @@ public class ItemSprayer extends Item implements StandardFluidItem, IBoxable
 				world.setBlockAndUpdate(targetPos, Ic2Blocks.FOAM.defaultBlockState().setValue(FoamBlock.typeProperty, FoamBlock.FoamType.normal));
 			} else if (state.getBlock() instanceof CableBlock cable)
 			{
-				FoamCableBlock foamBlock = cable.getFoamCableBlock();
-				BlockState foamState = foamBlock.defaultBlockState().setValue(AbstractCableBlock.foamProperty, CableFoam.SOFT);
+				BlockState foamState = cable.toFoamState(state, cable.getFoamCableBlock());
 				world.setBlockAndUpdate(targetPos, foamState);
 			} else if (!world.setBlockAndUpdate(targetPos, Ic2Blocks.FOAM.defaultBlockState().setValue(FoamBlock.typeProperty, FoamBlock.FoamType.normal)))
 			{

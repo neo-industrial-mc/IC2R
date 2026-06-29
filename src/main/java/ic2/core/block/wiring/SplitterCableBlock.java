@@ -10,6 +10,7 @@ public class SplitterCableBlock extends AbstractSplitterCableBlock
 	{
 		super(settings);
 		this.foamCableBlock = foamCableBlock;
+		registerFoamCounterpart(foamCableBlock, this);
 	}
 
 	public static SplitterCableBlock create(Properties settings, SplitterFoamCableBlock foamCableBlock)

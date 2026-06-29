@@ -8,6 +8,7 @@ import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.info.ILocatable;
 import ic2.core.block.ChunkLoadAwareBlock;
+import ic2.core.block.misc.FoamBlock;
 import ic2.core.item.tool.ItemToolCutter;
 import ic2.core.ref.Ic2BlockTags;
 import ic2.core.ref.Ic2Fluids;
@@ -15,6 +16,8 @@ import it.unimi.dsi.fastutil.ints.Int2ReferenceMap;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 
 import java.util.EnumMap;
+import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -26,9 +29,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -58,6 +64,7 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
 	public static final BooleanProperty WEST = BlockStateProperties.WEST;
 	private static final Map<CableType, Int2ReferenceMap<AbstractCableBlock>> types = new EnumMap<>(CableType.class);
+	private static final Map<AbstractCableBlock, AbstractCableBlock> foamToCable = new IdentityHashMap<>();
 	private static boolean pendingHasColor;
 	public final CableType type;
 	final int insulation;
@@ -90,6 +97,21 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	protected static void prepareCreate(CableType type, int insulation)
 	{
 		pendingHasColor = insulation >= type.minColoredInsulation;
+	}
+
+	protected static void registerFoamCounterpart(AbstractCableBlock foamBlock, AbstractCableBlock cableBlock)
+	{
+		foamToCable.put(foamBlock, cableBlock);
+	}
+
+	public AbstractCableBlock getCableCounterpart()
+	{
+		return foamToCable.get(this);
+	}
+
+	public BlockState toFoamState(BlockState cableState, AbstractCableBlock foamBlock)
+	{
+		return this.copyState(cableState, foamBlock).setValue(foamProperty, CableFoam.SOFT);
 	}
 
 	public static DyeColor getColor(BlockState state, CableType type, int insulation)
@@ -125,12 +147,36 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 			ret = ret.setValue(colorProperty, ((AbstractCableBlock) from.getBlock()).getColor(from));
 		}
 
-		if (this.isFoam())
+		if (to.isFoam())
 		{
-			ret = ret.setValue(foamProperty, from.getValue(foamProperty));
-		} else
+			if (this.isFoam())
+			{
+				ret = ret.setValue(foamProperty, from.getValue(foamProperty));
+			}
+		} else if (!this.isFoam())
 		{
 			ret = ret.setValue(UP, from.getValue(UP)).setValue(DOWN, from.getValue(DOWN)).setValue(NORTH, from.getValue(NORTH)).setValue(EAST, from.getValue(EAST)).setValue(SOUTH, from.getValue(SOUTH)).setValue(WEST, from.getValue(WEST));
+		}
+
+		return ret;
+	}
+
+	protected BlockState toCableState(BlockState foamState, AbstractCableBlock cableBlock)
+	{
+		BlockState ret = cableBlock.defaultBlockState();
+		if (cableBlock.hasColor() && this.hasColor())
+		{
+			ret = ret.setValue(colorProperty, getColor(foamState));
+		}
+
+		if (cableBlock instanceof AbstractDetectorCableBlock && this instanceof AbstractDetectorCableBlock)
+		{
+			ret = ret.setValue(AbstractDetectorCableBlock.active, foamState.getValue(AbstractDetectorCableBlock.active));
+		}
+
+		if (cableBlock instanceof AbstractSplitterCableBlock && this instanceof AbstractSplitterCableBlock)
+		{
+			ret = ret.setValue(AbstractSplitterCableBlock.active, foamState.getValue(AbstractSplitterCableBlock.active));
 		}
 
 		return ret;
@@ -281,6 +327,83 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 		}
 	}
 
+	private void scheduleFoamHardeningTick(Level world, BlockPos pos)
+	{
+		if (!world.isClientSide && !world.getBlockTicks().hasScheduledTick(pos, this))
+		{
+			world.scheduleTick(pos, this, 1);
+		}
+	}
+
+	protected void tickFoamHardening(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource random)
+	{
+		if (!this.isFoam() || !state.getValue(foamProperty).isSoft())
+		{
+			return;
+		}
+
+		if (random.nextFloat() < FoamBlock.getHardenChance(world, pos, state, FoamBlock.FoamType.normal))
+		{
+			world.setBlockAndUpdate(pos, state.setValue(foamProperty, CableFoam.DEFAULT_HARD));
+		} else
+		{
+			world.scheduleTick(pos, this, 1);
+		}
+	}
+
+	@Override
+	public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource random)
+	{
+		this.tickFoamHardening(state, world, pos, random);
+	}
+
+	@Override
+	public boolean onDestroyedByPlayer(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, boolean willHarvest, @NotNull FluidState fluid)
+	{
+		if (this.isFoam() && !world.isClientSide)
+		{
+			AbstractCableBlock cableBlock = this.getCableCounterpart();
+			if (cableBlock != null)
+			{
+				BlockState cableState = cableBlock.withConnectionStates(this.toCableState(state, cableBlock), world, pos);
+				world.setBlockAndUpdate(pos, cableState);
+				return false;
+			}
+		}
+
+		return super.onDestroyedByPlayer(state, world, pos, player, willHarvest, fluid);
+	}
+
+	@Override
+	public @NotNull ItemStack getCloneItemStack(@NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull BlockState state)
+	{
+		if (this.isFoam())
+		{
+			AbstractCableBlock cableBlock = this.getCableCounterpart();
+			if (cableBlock != null)
+			{
+				return cableBlock.getCloneItemStack(level, pos, this.toCableState(state, cableBlock));
+			}
+		}
+
+		return super.getCloneItemStack(level, pos, state);
+	}
+
+	@Override
+	public @NotNull List<ItemStack> getDrops(@NotNull BlockState state, @NotNull LootParams.Builder builder)
+	{
+		if (this.isFoam())
+		{
+			AbstractCableBlock cableBlock = this.getCableCounterpart();
+			if (cableBlock != null)
+			{
+				return cableBlock.getDrops(this.toCableState(state, cableBlock), builder);
+			}
+		}
+
+		return super.getDrops(state, builder);
+	}
+
 	public void attack(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player)
 	{
 		if (!this.isHardFoam(state))
@@ -389,12 +512,20 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean notify)
 	{
 		this.addToEnet(state, world, pos, true);
+		if (this.isFoam() && state.getValue(foamProperty).isSoft())
+		{
+			this.scheduleFoamHardeningTick(world, pos);
+		}
 	}
 
 	@Override
 	public void onLoad(BlockState state, Level world, BlockPos pos)
 	{
 		this.addToEnet(state, world, pos, false);
+		if (this.isFoam() && state.getValue(foamProperty).isSoft())
+		{
+			this.scheduleFoamHardeningTick(world, pos);
+		}
 	}
 
 	@Override

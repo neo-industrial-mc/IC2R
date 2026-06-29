@@ -1,11 +1,13 @@
 .claude/
 .idea/
 .vscode/
-
+bin/
 .gradle/
 build/
 run/
 out/
+terminals/
+agent-tools/
 
 gradle-wrapper.jar
 

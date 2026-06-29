@@ -10,6 +10,7 @@ public class CableBlock extends AbstractCableBlock
 	{
 		super(settings, type, insulation);
 		this.foamCableBlock = foamCableBlock;
+		registerFoamCounterpart(foamCableBlock, this);
 	}
 
 	public static CableBlock create(Properties settings, CableType type, int insulation, FoamCableBlock foamCableBlock)

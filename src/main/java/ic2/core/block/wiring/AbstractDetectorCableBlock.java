@@ -44,6 +44,8 @@ public abstract class AbstractDetectorCableBlock extends AbstractCableBlock
 
 	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random)
 	{
+		this.tickFoamHardening(state, world, pos, random);
+		state = world.getBlockState(pos);
 		world.scheduleTick(pos, this, 32);
 		IEnergyTile tile = EnergyNet.instance.getTile(world, pos);
 		if (tile != null)

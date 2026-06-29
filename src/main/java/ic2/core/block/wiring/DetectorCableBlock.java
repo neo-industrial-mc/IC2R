@@ -11,6 +11,7 @@ public class DetectorCableBlock extends AbstractDetectorCableBlock
 	{
 		super(settings);
 		this.foamCableBlock = foamCableBlock;
+		registerFoamCounterpart(foamCableBlock, this);
 	}
 
 	public static DetectorCableBlock create(Properties settings, DetectorFoamCableBlock foamCableBlock)
