@@ -153,6 +153,10 @@ public final class EventHandlerForge
 	{
 		if (event.phase == TickEvent.Phase.START)
 		{
+			EventHandler.onPlayerTickStart(event.player);
+		}
+		else
+		{
 			EventHandler.onPlayerTick(event.player);
 		}
 	}

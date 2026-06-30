@@ -18,6 +18,7 @@ import ic2.core.block.machine.tileentity.TileEntityElectrolyzer;
 import ic2.core.block.machine.tileentity.TileEntityFermenter;
 import ic2.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
 import ic2.core.block.machine.tileentity.TileEntityMatter;
+import ic2.core.block.inherit.Ic2FenceBlock;
 import ic2.core.block.machine.tileentity.TileEntityRecycler;
 import ic2.core.crop.Ic2Crops;
 import ic2.core.energy.grid.EnergyNetGlobal;
@@ -224,6 +225,11 @@ public final class EventHandler
 		{
 			((BlockBreakableItem) item).afterBlockBreak(world, player, pos, state, blockEntity);
 		}
+	}
+
+	public static void onPlayerTickStart(Player player)
+	{
+		Ic2FenceBlock.onPlayerTick(player);
 	}
 
 	public static void onPlayerTick(Player player)
