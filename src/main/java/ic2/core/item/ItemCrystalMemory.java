@@ -2,6 +2,7 @@ package ic2.core.item;
 
 import ic2.core.profile.NotClassic;
 import ic2.core.util.StackUtil;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.Util;
 import ic2.core.uu.UuIndex;
 
@@ -29,11 +30,11 @@ public class ItemCrystalMemory extends Item
 		ItemStack recorded = this.readItemStack(stack);
 		if (!StackUtil.isEmpty(recorded))
 		{
-			tooltip.add(Component.translatable("item.ic2.crystal_memory.tooltip.item", Component.translatable(recorded.getDescriptionId())).withStyle(ChatFormatting.GRAY));
-			tooltip.add(Component.literal(Component.translatable("item.ic2.crystal_memory.tooltip.uu_matter") + " " + Util.toSiString(UuIndex.instance.getInBuckets(recorded), 4) + "B").withStyle(ChatFormatting.GRAY));
+			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.crystal_memory.tooltip.item", Component.translatable(recorded.getDescriptionId())));
+			Ic2Tooltip.add(tooltip, Component.literal(Component.translatable("item.ic2.crystal_memory.tooltip.uu_matter") + " " + Util.toSiString(UuIndex.instance.getInBuckets(recorded), 4) + "B"));
 		} else
 		{
-			tooltip.add(Component.translatable("item.ic2.crystal_memory.tooltip.empty").withStyle(ChatFormatting.GRAY));
+			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.crystal_memory.tooltip.empty"));
 		}
 	}
 

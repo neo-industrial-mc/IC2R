@@ -2,6 +2,7 @@ package ic2.core.item.tool;
 
 import ic2.core.IHasGui;
 import ic2.core.item.IHandHeldInventory;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -55,10 +56,8 @@ public class ItemMiningFilterCard extends Item implements IHandHeldInventory
 			boolean isBlacklist = !nbt.contains("blacklist") || nbt.getBoolean("blacklist");
 			ListTag items = nbt.getList("Items", 10);
 			int count = items.size();
-			tooltip.add(Component.translatable(isBlacklist ? "ic2.MiningFilter.gui.mode.blacklist" : "ic2.MiningFilter.gui.mode.whitelist")
-				.withStyle(ChatFormatting.GRAY));
-			tooltip.add(Component.translatable("ic2.MiningFilter.tooltip.entries", count)
-				.withStyle(ChatFormatting.GRAY));
+			Ic2Tooltip.add(tooltip, Component.translatable(isBlacklist ? "ic2.MiningFilter.gui.mode.blacklist" : "ic2.MiningFilter.gui.mode.whitelist"));
+			Ic2Tooltip.add(tooltip, Component.translatable("ic2.MiningFilter.tooltip.entries", count));
 		}
 	}
 }

@@ -2,6 +2,7 @@ package ic2.core.item.tool;
 
 import ic2.api.item.IBoxable;
 import ic2.api.item.IItemHudInfo;
+import ic2.core.util.Ic2Tooltip;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ItemToolCrafting extends Item implements IBoxable, IItemHudInfo
 
 	public void appendHoverText(@NotNull ItemStack stack, Level world, List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
-		tooltip.add(Component.translatable("ic2.tooltip.tool.uses_left", getRemainingUses(stack)));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.tooltip.tool.uses_left", getRemainingUses(stack)));
 	}
 
 	@Override

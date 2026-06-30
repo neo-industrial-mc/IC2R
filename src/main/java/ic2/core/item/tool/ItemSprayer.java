@@ -9,6 +9,7 @@ import ic2.core.fluid.StandardFluidItem;
 import ic2.core.ref.Ic2Blocks;
 import ic2.core.ref.Ic2Fluids;
 import ic2.core.ref.Ic2Items;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
 
@@ -64,7 +65,7 @@ public class ItemSprayer extends Item implements StandardFluidItem, IBoxable
 			all = fluid.getAmountMb();
 		}
 
-		components.add(Component.translatable("item.ic2.foam_sprayer.tooltip.content", String.valueOf(all)));
+		Ic2Tooltip.add(components, Component.translatable("item.ic2.foam_sprayer.tooltip.content", String.valueOf(all)));
 	}
 
 	@Override

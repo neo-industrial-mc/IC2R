@@ -832,9 +832,9 @@
   "item.ic2.bronze_shovel": "青铜铲",
   "item.ic2.bronze_sword": "青铜剑",
   "item.ic2.brown_painter": "棕色刷子",
-  "item.ic2.carbon_boat": "碳纤维轻艇",
   "item.ic2.cable.tooltip0": "最大：%s EU/t",
   "item.ic2.cable.tooltip1": "流失量：%s EU/t",
+  "item.ic2.carbon_boat": "碳纤维轻艇",
   "item.ic2.carbon_fibre": "粗制碳网",
   "item.ic2.carbon_mesh": "粗制碳板",
   "item.ic2.carbon_plate": "碳板",
@@ -1173,5 +1173,8 @@
   "itemGroup.ic2.machines": "工业2机器",
   "itemGroup.ic2.materials": "工业2原材料",
   "itemGroup.ic2.reactor": "工业2反应堆",
-  "itemGroup.ic2.tools_and_utilities": "工业2工具与实用物品"
+  "itemGroup.ic2.tools_and_utilities": "工业2工具与实用物品",
+  "item.ic2.storage_box.tooltip0": "破坏时也能保留物品",
+  "item.ic2.storage_box.tooltip1": "存储容量：%s",
+  "item.ic2.transformer.tooltip": "低压：%s EU/t 高压：%s EU/t"
 }

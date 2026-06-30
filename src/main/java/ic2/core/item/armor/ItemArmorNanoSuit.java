@@ -4,6 +4,7 @@ import ic2.api.item.ElectricItem;
 import ic2.api.item.HudMode;
 import ic2.api.item.IItemHudProvider;
 import ic2.core.IC2;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.KeyboardClient;
 import ic2.core.util.StackUtil;
 import net.minecraft.core.BlockPos;
@@ -149,7 +150,7 @@ public class ItemArmorNanoSuit extends ItemArmorElectric implements IItemHudProv
 		super.appendHoverText(stack, world, tooltip, context);
 		if (this.getEquipmentSlot() == EquipmentSlot.HEAD)
 		{
-			tooltip.add(Component.translatable("item.ic2.tooltip.night_vision.toggle", KeyboardClient.altKey.getKey().getDisplayName(), KeyboardClient.modeSwitchKey.getKey().getDisplayName()));
+			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.tooltip.night_vision.toggle", KeyboardClient.altKey.getKey().getDisplayName(), KeyboardClient.modeSwitchKey.getKey().getDisplayName()));
 		}
 	}
 

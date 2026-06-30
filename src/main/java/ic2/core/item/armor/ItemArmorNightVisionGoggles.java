@@ -5,6 +5,7 @@ import ic2.api.item.IElectricItem;
 import ic2.api.item.IItemHudInfo;
 import ic2.core.IC2;
 import ic2.core.item.ElectricItemTooltipHandler;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.ref.Ic2ArmorMaterials;
 import ic2.core.util.KeyboardClient;
 import ic2.core.util.StackUtil;
@@ -100,7 +101,7 @@ public class ItemArmorNightVisionGoggles extends ItemArmorUtility implements IEl
 	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag context)
 	{
 		ElectricItemTooltipHandler.addTooltip(stack, tooltip);
-		tooltip.add(Component.translatable("item.ic2.tooltip.night_vision.toggle", KeyboardClient.altKey.getKey().getDisplayName(), KeyboardClient.modeSwitchKey.getKey().getDisplayName()));
+		Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.tooltip.night_vision.toggle", KeyboardClient.altKey.getKey().getDisplayName(), KeyboardClient.modeSwitchKey.getKey().getDisplayName()));
 	}
 
 	public boolean isValidRepairItem(@NotNull ItemStack par1ItemStack, @NotNull ItemStack par2ItemStack)

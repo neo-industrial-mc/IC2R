@@ -5,6 +5,7 @@ import ic2.api.crops.Crops;
 import ic2.api.crops.ICropSeed;
 import ic2.core.crop.TileEntityCrop;
 import ic2.core.ref.Ic2Items;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 
 import java.util.List;
@@ -76,9 +77,9 @@ public class ItemCropSeed extends Item implements ICropSeed
 	{
 		if (this.getScannedFromStack(stack) >= 4)
 		{
-			info.add(Component.literal("§2Gr§7 " + this.getGrowthFromStack(stack)));
-			info.add(Component.literal("§6Ga§7 " + this.getGainFromStack(stack)));
-			info.add(Component.literal("§3Re§7 " + this.getResistanceFromStack(stack)));
+			Ic2Tooltip.add(info, Component.literal("§2Gr§7 " + this.getGrowthFromStack(stack)));
+			Ic2Tooltip.add(info, Component.literal("§6Ga§7 " + this.getGainFromStack(stack)));
+			Ic2Tooltip.add(info, Component.literal("§3Re§7 " + this.getResistanceFromStack(stack)));
 		}
 	}
 

@@ -18,6 +18,7 @@ import ic2.core.gui.dynamic.DynamicContainer;
 import ic2.core.network.GrowingBuffer;
 import ic2.core.network.GuiSynced;
 import ic2.core.proxy.SideProxyClient;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.LiquidUtil;
 import ic2.core.util.StackUtil;
 
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -184,25 +186,25 @@ public abstract class TileEntityTank extends TileEntityInventory implements IHas
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, List<String> info, TooltipFlag advanced)
+	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		info.add("Capacity: " + this.contents.getCapacity() + " mB");
+		Ic2Tooltip.add(tooltip, Component.literal("Capacity: " + this.contents.getCapacity() + " mB"));
 		CompoundTag nbt = stack.getTag();
 		if (nbt != null && !nbt.contains("Empty"))
 		{
 			Ic2FluidStack fluidStack = Ic2FluidStack.read(nbt);
 			if (fluidStack != null && !fluidStack.isEmpty())
 			{
-				info.add(SideProxyClient.envProxy.getFluidName(fluidStack));
-				info.add("Amount: " + fluidStack.getAmountMb() + " mB");
-				info.add("Type: " + (FluidHandler.isGaseous(fluidStack.getFluid()) ? "Gas" : "Liquid"));
+				Ic2Tooltip.add(tooltip, Component.literal(SideProxyClient.envProxy.getFluidName(fluidStack)));
+				Ic2Tooltip.add(tooltip, Component.literal("Amount: " + fluidStack.getAmountMb() + " mB"));
+				Ic2Tooltip.add(tooltip, Component.literal("Type: " + (FluidHandler.isGaseous(fluidStack.getFluid()) ? "Gas" : "Liquid")));
 			} else
 			{
-				info.add("Empty");
+				Ic2Tooltip.add(tooltip, Component.literal("Empty"));
 			}
 		} else
 		{
-			info.add("Empty");
+			Ic2Tooltip.add(tooltip, Component.literal("Empty"));
 		}
 	}
 

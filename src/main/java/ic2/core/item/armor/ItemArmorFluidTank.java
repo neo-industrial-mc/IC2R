@@ -3,6 +3,7 @@ package ic2.core.item.armor;
 import ic2.api.item.IItemHudInfo;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.fluid.StandardFluidItem;
+import ic2.core.util.Ic2Tooltip;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,7 @@ public abstract class ItemArmorFluidTank extends ItemArmorUtility implements Sta
 	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, world, tooltip, advanced);
-		tooltip.add(getTooltipComponent(stack));
+		Ic2Tooltip.add(tooltip, getTooltipComponent(stack));
 	}
 
 	public boolean isBarVisible(@NotNull ItemStack stack)

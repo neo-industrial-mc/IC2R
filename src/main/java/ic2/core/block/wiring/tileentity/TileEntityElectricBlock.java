@@ -17,6 +17,7 @@ import ic2.core.block.tileentity.TileEntityInventory;
 import ic2.core.block.wiring.ContainerElectricBlock;
 import ic2.core.init.IC2Config;
 import ic2.core.network.GrowingBuffer;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 
 import java.util.EnumSet;
@@ -221,12 +222,14 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 		return true;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, List<String> tooltip, TooltipFlag advanced)
+	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		super.addInformation(stack, tooltip, advanced);
-		tooltip.add(String.format("%s %.0f %s %s %d %s", Component.translatable("ic2.item.tooltip.Output").getString(), EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier()), Component.translatable("ic2.generic.text.EUt").getString(), Component.translatable("ic2.item.tooltip.Capacity").getString(), this.getCapacity(), Component.translatable("ic2.generic.text.EU").getString()));
-		tooltip.add(Component.translatable("ic2.item.tooltip.Store") + " " + (long) StackUtil.getOrCreateNbtData(stack).getDouble("energy") + " " + Component.translatable("ic2.generic.text.EU"));
+		super.appendItemTooltip(stack, tooltip, advanced);
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Output",
+				Math.round(EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier()))));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Capacity", this.getCapacity()));
+		double stored = StackUtil.getOrCreateNbtData(stack).getDouble("energy");
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Store", (long) stored));
 	}
 }

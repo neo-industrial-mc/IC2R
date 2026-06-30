@@ -4,7 +4,7 @@ import ic2.api.item.ElectricItem;
 
 import java.util.List;
 
-import net.minecraft.ChatFormatting;
+import ic2.core.util.Ic2Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -18,10 +18,10 @@ public class ElectricItemTooltipHandler
 			String tooltip = ElectricItem.manager.getToolTip(stack);
 			if (tooltip != null && !tooltip.trim().isEmpty())
 			{
-				out.add(Component.literal(tooltip));
+				Ic2Tooltip.add(out, Component.literal(tooltip));
 				if (Screen.hasShiftDown())
 				{
-					out.add(Component.translatable("ic2.item.tooltip.power_tier", new Object[] { ElectricItem.manager.getTier(stack) }).withStyle(ChatFormatting.GRAY));
+					Ic2Tooltip.add(out, Component.translatable("ic2.item.tooltip.power_tier", ElectricItem.manager.getTier(stack)));
 				}
 			}
 		}

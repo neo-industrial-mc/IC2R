@@ -6,12 +6,14 @@ import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.tileentity.TileEntityInventory;
 import ic2.core.gui.dynamic.DynamicContainer;
 import ic2.core.network.GrowingBuffer;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 
 import java.util.Collections;
 import java.util.List;
 
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -64,12 +66,11 @@ public abstract class TileEntityStorageBox extends TileEntityInventory implement
 		return drop;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, List<String> info, TooltipFlag advanced)
+	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		info.add("Stores items even when broken");
-		info.add("Inventory size: " + this.inventory.size());
+		Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.storage_box.tooltip0"));
+		Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.storage_box.tooltip1", this.inventory.size()));
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import ic2.core.block.transport.cover.ICoverHolder;
 import ic2.core.item.PriorityUsableItem;
 import ic2.core.ref.Ic2ItemTags;
 import ic2.core.ref.Ic2SoundEvents;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.RotationUtil;
 import ic2.core.util.Util;
 
@@ -103,7 +104,7 @@ public class ItemToolCrowbar extends TieredItem implements IEnhancedOverlayProvi
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack stack, Level worldIn, List<Component> info, @NotNull TooltipFlag flagIn)
 	{
-		info.add(Component.translatable("item.ic2.crowbar.tooltip.remove", Minecraft.getInstance().options.keyRight.getKey().getDisplayName()));
+		Ic2Tooltip.add(info, Component.translatable("item.ic2.crowbar.tooltip.remove", Minecraft.getInstance().options.keyRight.getKey().getDisplayName()));
 	}
 
 	@Override

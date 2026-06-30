@@ -1,6 +1,7 @@
 package ic2.core.item.reactor;
 
 import ic2.api.reactor.IReactor;
+import ic2.core.util.Ic2Tooltip;
 
 import java.util.List;
 
@@ -69,8 +70,8 @@ public class ItemReactorHeatStorage extends AbstractDamageableReactorComponent
 		super.appendHoverText(stack, world, tooltip, advanced);
 		if (this.getUse(stack) > 0)
 		{
-			tooltip.add(Component.translatable("ic2.reactoritem.heatwarning.line1").withStyle(ChatFormatting.GRAY));
-			tooltip.add(Component.translatable("ic2.reactoritem.heatwarning.line2").withStyle(ChatFormatting.GRAY));
+			Ic2Tooltip.add(tooltip, Component.translatable("ic2.reactoritem.heatwarning.line1"));
+			Ic2Tooltip.add(tooltip, Component.translatable("ic2.reactoritem.heatwarning.line2"));
 		}
 	}
 }

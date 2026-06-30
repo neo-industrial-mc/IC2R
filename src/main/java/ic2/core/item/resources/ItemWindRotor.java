@@ -4,6 +4,7 @@ import ic2.api.item.IKineticRotor;
 import ic2.core.block.kineticgenerator.gui.GuiWaterKineticGenerator;
 import ic2.core.block.kineticgenerator.gui.GuiWindKineticGenerator;
 import ic2.core.profile.NotClassic;
+import ic2.core.util.Ic2Tooltip;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class ItemWindRotor extends Item implements IKineticRotor
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag advanced)
 	{
-		tooltip.add(Component.translatable("ic2.itemrotor.wind.info", this.minWindStrength, this.maxWindStrength).withStyle(ChatFormatting.GRAY));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.itemrotor.wind.info", this.minWindStrength, this.maxWindStrength));
 		IKineticRotor.GearboxType type = null;
 		if (Minecraft.getInstance().screen instanceof GuiWaterKineticGenerator)
 		{
@@ -58,7 +59,7 @@ public class ItemWindRotor extends Item implements IKineticRotor
 
 		if (type != null)
 		{
-			tooltip.add(Component.translatable("ic2.itemrotor.fitsin." + this.isAcceptedType(stack, type)).withStyle(ChatFormatting.GRAY));
+			Ic2Tooltip.add(tooltip, Component.translatable("ic2.itemrotor.fitsin." + this.isAcceptedType(stack, type)));
 		}
 	}
 

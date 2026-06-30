@@ -7,6 +7,7 @@ import ic2.core.block.kineticgenerator.tileentity.TileEntityWindKineticGenerator
 import ic2.core.event.WorldData;
 import ic2.core.item.PriorityUsableItem;
 import ic2.core.profile.NotClassic;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 
 import java.util.List;
@@ -44,8 +45,8 @@ public class ItemWindMeter extends ItemElectricTool implements PriorityUsableIte
 	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, world, tooltip, advanced);
-		tooltip.add(Component.translatable("ic2.wind_meter.tooltipA"));
-		tooltip.add(Component.translatable("ic2.wind_meter.tooltipB"));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.wind_meter.tooltipA"));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.wind_meter.tooltipB"));
 	}
 
 	@Override

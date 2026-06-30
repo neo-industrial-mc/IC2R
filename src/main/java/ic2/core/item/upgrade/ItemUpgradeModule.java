@@ -15,6 +15,7 @@ import ic2.core.item.EnvItemHandler;
 import ic2.core.item.IHandHeldSubInventory;
 import ic2.core.item.tool.HandHeldInventory;
 import ic2.core.util.LiquidUtil;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
 
@@ -237,21 +238,21 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 		switch (this.type)
 		{
 			case overclocker:
-				tooltip.add(Component.translatable("ic2.tooltip.upgrade.overclocker.time", decimalformat.format(100.0 * Math.pow(this.getProcessTimeMultiplier(stack, null), StackUtil.getSize(stack)))).withStyle(ChatFormatting.GRAY));
-				tooltip.add(Component.translatable("ic2.tooltip.upgrade.overclocker.power", decimalformat.format(100.0 * Math.pow(this.getEnergyDemandMultiplier(stack, null), StackUtil.getSize(stack)))).withStyle(ChatFormatting.GRAY));
+				Ic2Tooltip.add(tooltip, Component.translatable("ic2.tooltip.upgrade.overclocker.time", decimalformat.format(100.0 * Math.pow(this.getProcessTimeMultiplier(stack, null), StackUtil.getSize(stack)))));
+				Ic2Tooltip.add(tooltip, Component.translatable("ic2.tooltip.upgrade.overclocker.power", decimalformat.format(100.0 * Math.pow(this.getEnergyDemandMultiplier(stack, null), StackUtil.getSize(stack)))));
 				break;
 			case transformer:
-				tooltip.add(Component.translatable("ic2.tooltip.upgrade.transformer", this.getExtraTier(stack, null) * StackUtil.getSize(stack)).withStyle(ChatFormatting.GRAY));
+				Ic2Tooltip.add(tooltip, Component.translatable("ic2.tooltip.upgrade.transformer", this.getExtraTier(stack, null) * StackUtil.getSize(stack)));
 				break;
 			case energy_storage:
-				tooltip.add(Component.translatable("ic2.tooltip.upgrade.storage", this.getExtraEnergyStorage(stack, null) * StackUtil.getSize(stack)).withStyle(ChatFormatting.GRAY));
+				Ic2Tooltip.add(tooltip, Component.translatable("ic2.tooltip.upgrade.storage", this.getExtraEnergyStorage(stack, null) * StackUtil.getSize(stack)));
 				break;
 			case ejector:
 			case advanced_ejector:
 			case fluid_ejector:
 			{
 				String side = getSideName(stack);
-				tooltip.add(Component.translatable("ic2.tooltip.upgrade.ejector", Component.translatable(side)).withStyle(ChatFormatting.GRAY));
+				Ic2Tooltip.add(tooltip, Component.translatable("ic2.tooltip.upgrade.ejector", Component.translatable(side)));
 				break;
 			}
 			case pulling:
@@ -259,14 +260,14 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 			case fluid_pulling:
 			{
 				String side = getSideName(stack);
-				tooltip.add(Component.translatable("ic2.tooltip.upgrade.pulling", Component.translatable(side)).withStyle(ChatFormatting.GRAY));
+				Ic2Tooltip.add(tooltip, Component.translatable("ic2.tooltip.upgrade.pulling", Component.translatable(side)));
 				break;
 			}
 			case redstone_inverter:
-				tooltip.add(Component.translatable("ic2.tooltip.upgrade.redstone").withStyle(ChatFormatting.GRAY));
+				Ic2Tooltip.add(tooltip, Component.translatable("ic2.tooltip.upgrade.redstone"));
 				break;
 			case remote_interface:
-				tooltip.add(Component.translatable("ic2.tooltip.upgrade.remote_interface", StackUtil.getSize(stack)).withStyle(ChatFormatting.GRAY));
+				Ic2Tooltip.add(tooltip, Component.translatable("ic2.tooltip.upgrade.remote_interface", StackUtil.getSize(stack)));
 		}
 	}
 

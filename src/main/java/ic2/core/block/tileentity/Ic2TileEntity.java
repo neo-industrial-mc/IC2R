@@ -10,6 +10,7 @@ import ic2.core.block.comp.TileEntityComponent;
 import ic2.core.event.TickHandler;
 import ic2.core.gui.dynamic.IGuiConditionProvider;
 import ic2.core.ref.Ic2Items;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.LogCategory;
 import ic2.core.util.Util;
 
@@ -593,17 +594,17 @@ public abstract class Ic2TileEntity extends BlockEntity implements INetworkDataP
 		}
 	}
 
-	public void addInformation(ItemStack stack, List<String> tooltip, TooltipFlag advanced)
+	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
 		if (this.hasComponent(Energy.class))
 		{
 			Energy energy = this.getComponent(Energy.class);
 			if (!energy.getSourceDirs().isEmpty())
 			{
-				tooltip.add(Component.translatable("ic2.item.tooltip.power_tier", energy.getSourceTier()).getString());
+				Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.power_tier", energy.getSourceTier()));
 			} else if (!energy.getSinkDirs().isEmpty())
 			{
-				tooltip.add(Component.translatable("ic2.item.tooltip.power_tier", energy.getSinkTier()).getString());
+				Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.power_tier", energy.getSinkTier()));
 			}
 		}
 	}

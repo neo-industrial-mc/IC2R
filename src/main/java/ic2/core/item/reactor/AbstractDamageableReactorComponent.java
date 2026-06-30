@@ -2,6 +2,7 @@ package ic2.core.item.reactor;
 
 import ic2.api.reactor.IReactor;
 import ic2.api.reactor.IReactorComponent;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.Util;
 
 import java.util.List;
@@ -70,7 +71,7 @@ public abstract class AbstractDamageableReactorComponent extends Item implements
 	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, world, tooltip, advanced);
-		tooltip.add(Component.translatable("ic2.reactoritem.durability", this.getMaxUse() - this.getUse(stack), this.getMaxUse()).withStyle(ChatFormatting.GRAY));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.reactoritem.durability", this.getMaxUse() - this.getUse(stack), this.getMaxUse()));
 	}
 
 	@Override

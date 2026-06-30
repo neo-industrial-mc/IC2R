@@ -7,6 +7,7 @@ import ic2.core.entity.boat.CarbonBoatEntity;
 import ic2.core.entity.boat.ElectricBoatEntity;
 import ic2.core.entity.boat.RubberBoatEntity;
 import ic2.core.item.*;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.item.armor.ItemArmorCFPack;
 import ic2.core.item.armor.ItemArmorAdvBatpack;
 import ic2.core.item.armor.ItemArmorBatpack;
@@ -419,9 +420,9 @@ public final class Ic2Items
 		@Override
 		public void appendHoverText(@NotNull ItemStack item, @Nullable Level level, @NotNull List<Component> components, @NotNull TooltipFlag flag)
 		{
-			components.add(Component.translatable("ic2.tooltip.jetpack_attachment.craft"));
-			components.add(Component.translatable("ic2.tooltip.jetpack_attachment.attach"));
-			components.add(Component.translatable("ic2.tooltip.jetpack_attachment.warning"));
+			Ic2Tooltip.add(components, Component.translatable("ic2.tooltip.jetpack_attachment.craft"));
+			Ic2Tooltip.add(components, Component.translatable("ic2.tooltip.jetpack_attachment.attach"));
+			Ic2Tooltip.add(components, Component.translatable("ic2.tooltip.jetpack_attachment.warning"));
 		}
 	});
 	public static final Item COIN = register("coin", new Item(new Properties()));

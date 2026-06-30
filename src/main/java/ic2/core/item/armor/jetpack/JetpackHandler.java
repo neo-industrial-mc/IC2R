@@ -5,6 +5,7 @@ import ic2.api.item.IBackupElectricItemManager;
 import ic2.api.item.IElectricItem;
 import ic2.core.ref.Ic2Items;
 import ic2.core.util.ReflectionUtil;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 
 import java.lang.reflect.Field;
@@ -260,11 +261,11 @@ public class JetpackHandler implements IBackupElectricItemManager
 	{
 		if (hasJetpackAttached(event.getItemStack()))
 		{
-			event.getToolTip().add(Component.translatable("ic2.jetpackAttached", ChatFormatting.YELLOW));
+			Ic2Tooltip.add(event.getToolTip(), Component.translatable("ic2.jetpackAttached").withStyle(ChatFormatting.YELLOW));
 			String energyTooltip = ElectricItem.manager.getToolTip(event.getItemStack());
 			if (energyTooltip != null && !energyTooltip.trim().isEmpty())
 			{
-				event.getToolTip().add(net.minecraft.network.chat.Component.literal(energyTooltip));
+				Ic2Tooltip.add(event.getToolTip(), Component.literal(energyTooltip));
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import ic2.api.item.IBoxable;
 import ic2.core.IC2;
 import ic2.core.profile.NotClassic;
 import ic2.core.item.tool.GuiToolbox;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class ItemBatteryChargeHotbar extends ItemBattery implements IBoxable
 	{
 		super.appendHoverText(stack, world, tooltip, context);
 		Mode mode = getMode(stack);
-		tooltip.add(Component.translatable("ic2.tooltip.mode",
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.tooltip.mode",
 			Component.translatable("ic2.tooltip.mode." + mode.name().toLowerCase(Locale.ENGLISH))));
 		if (world != null && world.isClientSide)
 		{
@@ -52,7 +53,7 @@ public class ItemBatteryChargeHotbar extends ItemBattery implements IBoxable
 	{
 		if (Minecraft.getInstance().screen instanceof GuiToolbox)
 		{
-			tooltip.add(Component.translatable("ic2.tooltip.mode.boxable")
+			Ic2Tooltip.add(tooltip, Component.translatable("ic2.tooltip.mode.boxable")
 				.withStyle(mode.enabled ? ChatFormatting.RED : ChatFormatting.GREEN));
 		}
 	}

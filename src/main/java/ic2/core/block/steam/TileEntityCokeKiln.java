@@ -14,11 +14,13 @@ import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.ref.Ic2Blocks;
 import ic2.core.ref.Ic2Fluids;
 import ic2.core.ref.Ic2Items;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.ParticleUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -462,19 +464,18 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 		return SoundEvents.FURNACE_FIRE_CRACKLE;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, java.util.List<String> info, TooltipFlag advanced)
+	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		info.add("");
-		info.add("MultiBlock Structure:");
-		info.add("");
-		info.add(" Bottom Layer - 3x3 of Refractory Blocks with a Coke Kiln Grate in the centre");
-		info.add("");
-		info.add(" Middle Layer - 3x3 of Refractory Blocks with a hollow centre and this block in the middle of one of the sides");
-		info.add("");
-		info.add(" Top Layer - 3x3 of Refractory Blocks with a Coke Kiln Hatch in the centre");
-		info.add("");
+		Ic2Tooltip.add(tooltip, Component.literal(""));
+		Ic2Tooltip.add(tooltip, Component.literal("MultiBlock Structure:"));
+		Ic2Tooltip.add(tooltip, Component.literal(""));
+		Ic2Tooltip.add(tooltip, Component.literal(" Bottom Layer - 3x3 of Refractory Blocks with a Coke Kiln Grate in the centre"));
+		Ic2Tooltip.add(tooltip, Component.literal(""));
+		Ic2Tooltip.add(tooltip, Component.literal(" Middle Layer - 3x3 of Refractory Blocks with a hollow centre and this block in the middle of one of the sides"));
+		Ic2Tooltip.add(tooltip, Component.literal(""));
+		Ic2Tooltip.add(tooltip, Component.literal(" Top Layer - 3x3 of Refractory Blocks with a Coke Kiln Hatch in the centre"));
+		Ic2Tooltip.add(tooltip, Component.literal(""));
 	}
 
 	/**

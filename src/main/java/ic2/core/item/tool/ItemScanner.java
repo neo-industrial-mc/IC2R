@@ -7,6 +7,7 @@ import ic2.core.item.BaseElectricItem;
 import ic2.core.item.IHandHeldInventory;
 import ic2.core.ref.Ic2SoundEvents;
 import ic2.core.util.ItemComparableItemStack;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Tuple;
 
@@ -44,7 +45,7 @@ public class ItemScanner extends BaseElectricItem implements IBoxable, IHandHeld
 	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, world, tooltip, advanced);
-		tooltip.add(Component.translatable("ic2.scanner.range", this.getScanRange()).withStyle(ChatFormatting.GRAY));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.scanner.range", this.getScanRange()));
 	}
 
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand)

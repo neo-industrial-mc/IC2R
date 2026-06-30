@@ -2,6 +2,7 @@ package ic2.core.item.tool;
 
 import ic2.core.IC2;
 import ic2.core.block.machine.tileentity.TileEntityTeleporter;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 
 import java.util.List;
@@ -111,10 +112,10 @@ public class ItemFrequencyTransmitter extends Item
 		CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);
 		if (nbtData.getBoolean("targetSet"))
 		{
-			tooltip.add(Component.translatable("ic2.frequency_transmitter.tooltip.target", nbtData.getInt("targetX"), nbtData.getInt("targetY"), nbtData.getInt("targetZ")));
+			Ic2Tooltip.add(tooltip, Component.translatable("ic2.frequency_transmitter.tooltip.target", nbtData.getInt("targetX"), nbtData.getInt("targetY"), nbtData.getInt("targetZ")));
 		} else
 		{
-			tooltip.add(Component.translatable("ic2.frequency_transmitter.tooltip.blank"));
+			Ic2Tooltip.add(tooltip, Component.translatable("ic2.frequency_transmitter.tooltip.blank"));
 		}
 	}
 }

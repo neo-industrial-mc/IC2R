@@ -4,6 +4,7 @@ import ic2.core.crop.TileEntityCrop;
 import ic2.core.fluid.Ic2FluidItem;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.ref.Ic2Items;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 
 import java.util.IdentityHashMap;
@@ -175,7 +176,7 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 	{
 		if (this.charges > 1 && stack.getCount() == 1 && advanced.isAdvanced())
 		{
-			tooltip.add(Component.translatable("item.durability", this.charges - this.getUsage(stack), this.charges).withStyle(ChatFormatting.GRAY));
+			Ic2Tooltip.add(tooltip, Component.translatable("item.durability", this.charges - this.getUsage(stack), this.charges));
 		}
 	}
 

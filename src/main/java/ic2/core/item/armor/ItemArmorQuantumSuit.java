@@ -11,6 +11,7 @@ import ic2.core.item.ItemTinCan;
 import ic2.core.item.armor.jetpack.IJetpack;
 import ic2.core.ref.Ic2Items;
 
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.KeyboardClient;
 import ic2.core.util.StackUtil;
 import net.minecraft.client.Minecraft;
@@ -173,19 +174,19 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 		super.appendHoverText(stack, world, tooltip, context);
 		if (this.getEquipmentSlot() == EquipmentSlot.HEAD)
 		{
-			tooltip.add(Component.translatable("item.ic2.tooltip.night_vision.toggle", KeyboardClient.altKey.getKey().getDisplayName(), KeyboardClient.modeSwitchKey.getKey().getDisplayName()));
+			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.tooltip.night_vision.toggle", KeyboardClient.altKey.getKey().getDisplayName(), KeyboardClient.modeSwitchKey.getKey().getDisplayName()));
 		}
 		if (this.getEquipmentSlot() == EquipmentSlot.CHEST)
 		{
-			tooltip.add(Component.translatable("item.ic2.tooltip.jetpack.toggle", Minecraft.getInstance().options.keyJump.getKey().getDisplayName(), KeyboardClient.modeSwitchKey.getKey().getDisplayName()));
+			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.tooltip.jetpack.toggle", Minecraft.getInstance().options.keyJump.getKey().getDisplayName(), KeyboardClient.modeSwitchKey.getKey().getDisplayName()));
 		}
 		if (this.getEquipmentSlot() == EquipmentSlot.LEGS)
 		{
-			tooltip.add(Component.translatable("item.ic2.tooltip.speed.toggle", KeyboardClient.altKey.getKey().getDisplayName(), Minecraft.getInstance().options.keyShift.getKey().getDisplayName()));
+			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.tooltip.speed.toggle", KeyboardClient.altKey.getKey().getDisplayName(), Minecraft.getInstance().options.keyShift.getKey().getDisplayName()));
 		}
 		if (this.getEquipmentSlot() == EquipmentSlot.FEET)
 		{
-			tooltip.add(Component.translatable("item.ic2.tooltip.jump.toggle", KeyboardClient.altKey.getKey().getDisplayName(), Minecraft.getInstance().options.keyJump.getKey().getDisplayName()));
+			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.tooltip.jump.toggle", KeyboardClient.altKey.getKey().getDisplayName(), Minecraft.getInstance().options.keyJump.getKey().getDisplayName()));
 		}
 	}
 

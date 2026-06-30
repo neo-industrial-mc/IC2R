@@ -8,6 +8,7 @@ import ic2.core.block.comp.Energy;
 import ic2.core.block.tileentity.TileEntityInventory;
 import ic2.core.block.wiring.ContainerTransformer;
 import ic2.core.network.GrowingBuffer;
+import ic2.core.util.Ic2Tooltip;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -141,10 +142,10 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, List<String> tooltip, TooltipFlag advanced)
+	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		super.addInformation(stack, tooltip, advanced);
-		tooltip.add(String.format("%s %.0f %s %s %.0f %s", Component.translatable("ic2.item.tooltip.Low").getString(), EnergyNet.instance.getPowerFromTier(this.energy.getSinkTier()), Component.translatable("ic2.generic.text.EUt").getString(), Component.translatable("ic2.item.tooltip.High").getString(), EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier() + 1), Component.translatable("ic2.generic.text.EUt").getString()));
+		super.appendItemTooltip(stack, tooltip, advanced);
+		Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.transformer.tooltip", EnergyNet.instance.getPowerFromTier(this.energy.getSinkTier()), EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier() + 1)));
 	}
 
 	@Override

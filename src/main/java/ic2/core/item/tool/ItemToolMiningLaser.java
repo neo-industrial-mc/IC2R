@@ -5,6 +5,7 @@ import ic2.core.IC2;
 import ic2.core.entity.LaserBulletEntity;
 import ic2.core.item.PriorityUsableItem;
 import ic2.core.ref.Ic2SoundEvents;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.KeyboardClient;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
@@ -109,8 +110,8 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 				return;
 		}
 
-		list.add(Component.translatable("item.ic2.mining_laser.tooltip.mode", mode));
-		list.add(Component.translatable("item.ic2.tooltip.mode.switch", KeyboardClient.modeSwitchKey.getKey().getDisplayName(), Minecraft.getInstance().options.keyUse.getKey().getDisplayName()));
+		Ic2Tooltip.add(list, Component.translatable("item.ic2.mining_laser.tooltip.mode", mode));
+		Ic2Tooltip.add(list, Component.translatable("item.ic2.tooltip.mode.switch", KeyboardClient.modeSwitchKey.getKey().getDisplayName(), Minecraft.getInstance().options.keyUse.getKey().getDisplayName()));
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import ic2.core.IC2;
 import ic2.core.IHitSoundOverride;
 import ic2.core.ref.Ic2SoundEvents;
 import ic2.core.ref.Ic2ToolMaterials;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.KeyboardClient;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
@@ -60,7 +61,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	public void appendHoverText(ItemStack stack, Level world, List<Component> list, TooltipFlag par4)
 	{
 		super.appendHoverText(stack, world, list, par4);
-		list.add(Component.translatable("item.ic2.tooltip.mode.switch", KeyboardClient.modeSwitchKey.getKey().getDisplayName(), Minecraft.getInstance().options.keyUse.getKey().getDisplayName()));
+		Ic2Tooltip.add(list, Component.translatable("item.ic2.tooltip.mode.switch", KeyboardClient.modeSwitchKey.getKey().getDisplayName(), Minecraft.getInstance().options.keyUse.getKey().getDisplayName()));
 	}
 
 	@Override

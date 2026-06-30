@@ -2,6 +2,7 @@ package ic2.core.item.crafting;
 
 import ic2.api.item.IBlockCuttingBlade;
 import ic2.core.item.type.BlockCuttingBladeType;
+import ic2.core.util.Ic2Tooltip;
 
 import java.util.List;
 
@@ -35,12 +36,12 @@ public class BlockCuttingBlade extends Item implements IBlockCuttingBlade
 
 	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
-		tooltip.add(Component.translatable(switch (type)
+		Ic2Tooltip.add(tooltip, Component.translatable(switch (type)
 		{
 			case iron -> "ic2.iron_cutting_blade.info";
 			case steel -> "ic2.steel_cutting_blade.info";
 			case diamond -> "ic2.diamond_cutting_blade.info";
 		}));
-		tooltip.add(Component.translatable("ic2.cutting_blade.hardness", this.getHardness(stack)));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.cutting_blade.hardness", this.getHardness(stack)));
 	}
 }

@@ -3,6 +3,7 @@ package ic2.core.item.armor;
 import ic2.api.item.ElectricItem;
 import ic2.core.item.armor.jetpack.IJetpack;
 import ic2.core.ref.Ic2ArmorMaterials;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.KeyboardClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -81,7 +82,7 @@ public class ItemArmorJetpackElectric extends ItemArmorElectric implements IJetp
 		super.appendHoverText(stack, world, tooltip, context);
 		if (this.getEquipmentSlot() == EquipmentSlot.CHEST)
 		{
-			tooltip.add(Component.translatable("item.ic2.tooltip.jetpack.toggle", Minecraft.getInstance().options.keyJump.getKey().getDisplayName(), KeyboardClient.modeSwitchKey.getKey().getDisplayName()));
+			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.tooltip.jetpack.toggle", Minecraft.getInstance().options.keyJump.getKey().getDisplayName(), KeyboardClient.modeSwitchKey.getKey().getDisplayName()));
 		}
 	}
 }
