@@ -32,6 +32,7 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -43,16 +44,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 
 public class EventHandlerClient
 {
 	public static void onClientSetup()
 	{
 		List<Block> fluidBlocks = new ArrayList<>();
-		for (Block block : ForgeRegistries.BLOCKS.getValues())
+		for (Block block : BuiltInRegistries.BLOCK.stream().toList())
 		{
-			ResourceLocation id = ForgeRegistries.BLOCKS.getKey(block);
+			ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
 			if (id != null && "ic2".equals(id.getNamespace()) && id.getPath().startsWith("fluid_block_"))
 			{
 				fluidBlocks.add(block);
@@ -104,7 +106,7 @@ public class EventHandlerClient
 	public static float onSetupFogDensity(BlockState state)
 	{
 		Fluid fluid = FluidHandler.getWorldFluid(state);
-		if (fluid != null && "ic2".equals(Objects.requireNonNull(ForgeRegistries.FLUIDS.getKey(fluid)).getNamespace()))
+		if (fluid != null && "ic2".equals(Objects.requireNonNull(BuiltInRegistries.FLUID.getKey(fluid)).getNamespace()))
 		{
 			int density = FluidHandler.getDensity(fluid);
 			return (float) Util.map(Math.abs(density), 20000.0, 2.0);
@@ -117,7 +119,7 @@ public class EventHandlerClient
 	public static int onRenderFogColor(BlockState state)
 	{
 		Fluid fluid = FluidHandler.getWorldFluid(state);
-		return fluid != null && "ic2".equals(ForgeRegistries.FLUIDS.getKey(fluid).getNamespace()) ? FluidHandler.getColor(fluid) : -1;
+		return fluid != null && "ic2".equals(BuiltInRegistries.FLUID.getKey(fluid).getNamespace()) ? FluidHandler.getColor(fluid) : -1;
 	}
 
 	// TODO

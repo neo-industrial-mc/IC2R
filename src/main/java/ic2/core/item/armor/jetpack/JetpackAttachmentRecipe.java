@@ -13,7 +13,7 @@ import java.util.IdentityHashMap;
 import java.util.Set;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -28,6 +28,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import net.minecraft.core.RegistryAccess;
 
 public class JetpackAttachmentRecipe implements CraftingRecipe
 {
@@ -63,7 +64,7 @@ public class JetpackAttachmentRecipe implements CraftingRecipe
 		return !this.assemble(inv, null).isEmpty();
 	}
 
-	public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, RegistryAccess registryAccess)
+	public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, HolderLookup.Provider registryAccess)
 	{
 		ItemStack jetpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;

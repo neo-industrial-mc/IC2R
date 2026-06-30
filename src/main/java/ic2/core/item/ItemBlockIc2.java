@@ -21,7 +21,7 @@ public class ItemBlockIc2 extends BlockItem
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag)
 	{
 		if (this.getBlock() instanceof Ic2TileEntityBlock block)
 		{

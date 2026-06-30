@@ -23,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -75,7 +76,7 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Level world, List<Component> list, TooltipFlag par4)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext world, List<Component> list, TooltipFlag par4)
 	{
 		super.appendHoverText(stack, world, list, par4);
 		CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);

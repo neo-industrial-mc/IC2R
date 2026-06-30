@@ -135,7 +135,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.PressurePlateBlock.Sensitivity;
-import net.minecraft.world.level.block.grower.AbstractTreeGrower;
+import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -146,8 +146,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public final class Ic2Blocks
 {
@@ -176,7 +177,7 @@ public final class Ic2Blocks
 	public static final RotatedPillarBlock STRIPPED_RUBBER_LOG = register("stripped_rubber_log", new RotatedPillarBlock(Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
 	public static final RubberWoodBlock RUBBER_WOOD = register("rubber_wood", new RubberWoodBlock(Properties.of().mapColor(MapColor.COLOR_BROWN).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
 	public static final Block STRIPPED_RUBBER_WOOD = register("stripped_rubber_wood", new Block(Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
-	public static final Block RUBBER_SAPLING = register("rubber_sapling", new SaplingBlock(new AbstractTreeGrower()
+	public static final Block RUBBER_SAPLING = register("rubber_sapling", new SaplingBlock(new TreeGrower()
 	{
 		protected ResourceKey<ConfiguredFeature<?, ?>> getConfiguredFeature(@NotNull RandomSource random, boolean bees)
 		{
@@ -198,7 +199,7 @@ public final class Ic2Blocks
 	{
 	});
 	public static final Block RUBBER_SIGN = register("rubber_sign", new Ic2SignBlock(Properties.of().mapColor(RUBBER_LOG.defaultMapColor()).noCollission().strength(1.0F).sound(SoundType.WOOD), Ic2SignType.RUBBER));
-	public static final Block RUBBER_WALL_SIGN = register("rubber_wall_sign", new Ic2WallSignBlock(Properties.of().mapColor(RUBBER_LOG.defaultMapColor()).noCollission().strength(1.0F).sound(SoundType.WOOD).lootFrom(ForgeRegistries.BLOCKS.getDelegateOrThrow(RUBBER_SIGN)), Ic2SignType.RUBBER));
+	public static final Block RUBBER_WALL_SIGN = register("rubber_wall_sign", new Ic2WallSignBlock(Properties.of().mapColor(RUBBER_LOG.defaultMapColor()).noCollission().strength(1.0F).sound(SoundType.WOOD).lootFrom(BuiltInRegistries.BLOCK.getDelegateOrThrow(RUBBER_SIGN)), Ic2SignType.RUBBER));
 	public static final Block RUBBER_SLAB = register("rubber_slab", new SlabBlock(Properties.of().mapColor(MapColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
 	public static final Block RUBBER_STAIRS = register("rubber_stairs", new StairBlock(RUBBER_PLANKS::defaultBlockState, Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD))
 	{

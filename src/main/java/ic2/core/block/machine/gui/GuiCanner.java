@@ -15,6 +15,7 @@ import ic2.core.gui.TankGauge;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import java.util.function.Supplier;
 
 public class GuiCanner extends Ic2Gui<ContainerCanner>
 {

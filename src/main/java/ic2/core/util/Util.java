@@ -20,6 +20,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -34,7 +35,8 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 
 public final class Util
 {
@@ -296,7 +298,7 @@ public final class Util
 
 	public static Block getBlock(ResourceLocation loc)
 	{
-		Block ret = ForgeRegistries.BLOCKS.getValue(loc);
+		Block ret = BuiltInRegistries.BLOCK.get(loc);
 		if (ret != Blocks.AIR)
 		{
 			return ret;
@@ -310,7 +312,7 @@ public final class Util
 	{
 		return state.is(BlockTags.LEAVES) || state.getBlock() instanceof LeavesBlock ||
 			state.is(Blocks.COBWEB) ||
-			state.is(Blocks.GRASS) ||
+			state.is(Blocks.SHORT_GRASS) ||
 			state.is(Blocks.FERN) ||
 			state.is(Blocks.DEAD_BUSH) ||
 			state.is(Blocks.HANGING_ROOTS) ||
@@ -326,7 +328,7 @@ public final class Util
 
 	public static ResourceLocation getName(Block block)
 	{
-		return ForgeRegistries.BLOCKS.getKey(block);
+		return BuiltInRegistries.BLOCK.getKey(block);
 	}
 
 	public static Item getItem(String name)
@@ -343,7 +345,7 @@ public final class Util
 
 	public static Item getItem(ResourceLocation loc)
 	{
-		return ForgeRegistries.ITEMS.getValue(loc);
+		return BuiltInRegistries.ITEM.get(loc);
 	}
 
 	public static Vector3 getLook(Entity entity)
@@ -353,17 +355,17 @@ public final class Util
 
 	public static ResourceLocation getName(Item item)
 	{
-		return ForgeRegistries.ITEMS.getKey(item);
+		return BuiltInRegistries.ITEM.getKey(item);
 	}
 
 	public static Fluid getFluid(ResourceLocation loc)
 	{
-		return ForgeRegistries.FLUIDS.getValue(loc);
+		return BuiltInRegistries.FLUID.get(loc);
 	}
 
 	public static ResourceLocation getName(Fluid fluid)
 	{
-		return ForgeRegistries.FLUIDS.getKey(fluid);
+		return BuiltInRegistries.FLUID.getKey(fluid);
 	}
 
 	public static ResourceLocation getDimId(Level world)
@@ -631,7 +633,7 @@ public final class Util
 	{
 		if (!(match instanceof ItemStack))
 		{
-			if (!(match instanceof TagKey<?> tagKey && tagKey.isFor(ForgeRegistries.ITEMS.getRegistryKey())))
+			if (!(match instanceof TagKey<?> tagKey && tagKey.isFor(BuiltInRegistries.ITEM.getRegistryKey())))
 			{
 				return stack == match;
 			} else
@@ -641,7 +643,7 @@ public final class Util
 					return false;
 				}
 
-				Optional<TagKey<Item>> itemTagKeyOpt = tagKey.cast(ForgeRegistries.ITEMS.getRegistryKey());
+				Optional<TagKey<Item>> itemTagKeyOpt = tagKey.cast(BuiltInRegistries.ITEM.getRegistryKey());
 				if (itemTagKeyOpt.isEmpty())
 				{
 					return false;

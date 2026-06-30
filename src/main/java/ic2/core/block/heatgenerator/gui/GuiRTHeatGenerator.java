@@ -8,6 +8,7 @@ import ic2.core.gui.dynamic.TextProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import java.util.function.Supplier;
 
 public class GuiRTHeatGenerator extends Ic2Gui<ContainerRTHeatGenerator>
 {

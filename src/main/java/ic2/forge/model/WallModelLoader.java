@@ -2,7 +2,7 @@ package ic2.forge.model;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 
 public final class WallModelLoader implements IGeometryLoader<Ic2Model>
 {

@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,8 +31,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.core.component.DataComponents;
 
 public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 {
@@ -144,10 +146,10 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 	{
 		if (uses <= 0)
 		{
-			stack.setTag(null);
+			stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
 		} else
 		{
-			stack.getOrCreateTag().putInt("uses", uses);
+			stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag().putInt("uses", uses);
 		}
 	}
 
@@ -172,7 +174,7 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		if (this.charges > 1 && stack.getCount() == 1 && advanced.isAdvanced())
 		{

@@ -23,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -38,7 +39,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEvent.Context;
-import net.minecraftforge.common.IForgeShearable;
+import net.neoforged.neoforge.common.IShearable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,7 +59,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Level world, List<Component> list, TooltipFlag par4)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext world, List<Component> list, TooltipFlag par4)
 	{
 		super.appendHoverText(stack, world, list, par4);
 		Ic2Tooltip.add(list, Component.translatable("item.ic2.tooltip.mode.switch", KeyboardClient.modeSwitchKey.getKey().getDisplayName(), Minecraft.getInstance().options.keyUse.getKey().getDisplayName()));
@@ -90,7 +91,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	}
 
 	@Override
-	public boolean isCorrectToolForDrops(BlockState state)
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
 		return super.isCorrectToolForDrops(state) || state.is(Blocks.COBWEB) || Util.canShear(state);
 	}
@@ -128,7 +129,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	public InteractionResult onBlockStartBreak(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction)
 	{
 		BlockState state = world.getBlockState(pos);
-		ItemStack stack = player.getItemInHand(hand);
+		ItemStack stack = player.getMainHandItem();
 		if (!this.isShearMode(stack) || !Util.canShear(state))
 		{
 			return InteractionResult.PASS;
@@ -149,7 +150,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	{
 		if (!StackUtil.getOrCreateNbtData(stack).getBoolean("disableShear"))
 		{
-			if (entity instanceof IForgeShearable shearable)
+			if (entity instanceof IShearable shearable)
 			{
 				Level level = entity.level();
 				BlockPos pos = entity.blockPosition();

@@ -21,6 +21,7 @@ import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -32,7 +33,8 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -164,7 +166,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 
 	private static String getTeName(BlockEntity te)
 	{
-		return te != null ? ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(te.getType()).toString() : "none";
+		return te != null ? BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(te.getType()).toString() : "none";
 	}
 
 	private static WrenchResult removeBlockWithWrench(Level world, BlockPos pos, BlockState state, Player player, IWrenchAble wrenchAble)
@@ -242,7 +244,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		if (state.getBlock() instanceof IWrenchAble wrenchAble && wrenchAble.wrenchCanRemove(world, pos, player))
 		{
 			removeBlockWithWrench(world, pos, state, player, wrenchAble);
-			player.getMainHandItem().hurtAndBreak(10, player, p -> p.broadcastBreakEvent(p.getUsedItemHand()));
+			player.getMainHandItem().hurtAndBreak(10, player, p -> p.onEquippedItemBroken(p.getUsedItemHand()));
 			return false;
 		}
 
@@ -301,7 +303,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 
 	public void damage(ItemStack is, int damage, Player player, InteractionHand hand)
 	{
-		is.hurtAndBreak(damage, player, p -> p.broadcastBreakEvent(hand));
+		is.hurtAndBreak(damage, player, p -> p.onEquippedItemBroken(hand));
 	}
 
 	@Override

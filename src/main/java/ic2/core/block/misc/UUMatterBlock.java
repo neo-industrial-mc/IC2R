@@ -5,6 +5,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -44,7 +45,7 @@ public class UUMatterBlock extends LiquidBlock
 	@Override
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
 	{
-		ItemStack heldItem = player.getItemInHand(hand);
+		ItemStack heldItem = player.getMainHandItem();
 		if (heldItem.is(Items.GLASS_BOTTLE) && state.getValue(LiquidBlock.LEVEL) == 0)
 		{
 			if (!world.isClientSide)

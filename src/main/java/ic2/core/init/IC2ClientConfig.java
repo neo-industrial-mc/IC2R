@@ -1,17 +1,17 @@
 package ic2.core.init;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class IC2ClientConfig
 {
-	public static final ForgeConfigSpec SPEC;
+	public static final ModConfigSpec SPEC;
 
 	public static final Audio audio;
 	public static final Misc misc;
 
 	static
 	{
-		ForgeConfigSpec.Builder b = new ForgeConfigSpec.Builder();
+		ModConfigSpec.Builder b = new ModConfigSpec.Builder();
 
 		audio = new Audio(b);
 		misc = new Misc(b);
@@ -21,12 +21,12 @@ public class IC2ClientConfig
 
 	public static class Audio
 	{
-		public final ForgeConfigSpec.BooleanValue enabled;
-		public final ForgeConfigSpec.DoubleValue volume;
-		public final ForgeConfigSpec.IntValue fadeDistance;
-		public final ForgeConfigSpec.IntValue maxSourceCount;
+		public final ModConfigSpec.BooleanValue enabled;
+		public final ModConfigSpec.DoubleValue volume;
+		public final ModConfigSpec.IntValue fadeDistance;
+		public final ModConfigSpec.IntValue maxSourceCount;
 
-		Audio(ForgeConfigSpec.Builder b)
+		Audio(ModConfigSpec.Builder b)
 		{
 			b.push("audio");
 			b.comment("Enable IC2's custom sound system.");
@@ -43,10 +43,10 @@ public class IC2ClientConfig
 
 	public static class Misc
 	{
-		public final ForgeConfigSpec.BooleanValue hideSecretRecipes;
-		public final ForgeConfigSpec.BooleanValue quantumSpeedOnSprint;
+		public final ModConfigSpec.BooleanValue hideSecretRecipes;
+		public final ModConfigSpec.BooleanValue quantumSpeedOnSprint;
 
-		Misc(ForgeConfigSpec.Builder b)
+		Misc(ModConfigSpec.Builder b)
 		{
 			b.push("misc");
 			b.comment("Enable hiding of secret recipes in CraftGuide/NEI.");

@@ -28,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import java.util.function.Supplier;
 
 public class Fluids extends TileEntityComponent implements Ic2FluidBlock
 {

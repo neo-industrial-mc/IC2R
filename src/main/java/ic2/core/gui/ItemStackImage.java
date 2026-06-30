@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import ic2.core.Ic2Gui;
 import ic2.core.util.StackUtil;
 import net.minecraft.world.item.ItemStack;
+import java.util.function.Supplier;
 
 public class ItemStackImage extends GuiElement<ItemStackImage>
 {

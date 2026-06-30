@@ -25,10 +25,10 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DiggerItem;
@@ -137,7 +137,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		return this.isEffective(state) && ElectricItem.manager.canUse(stack, this.operationEnergyCost) ? this.speed : 1.0F;
 	}
 
-	public boolean isCorrectToolForDrops(BlockState state)
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
 		int level = this.getTier().getLevel();
 		return (level >= 3 || !state.is(BlockTags.NEEDS_DIAMOND_TOOL)) && (level >= 2 || !state.is(BlockTags.NEEDS_IRON_TOOL)) && (level >= 1 || !state.is(BlockTags.NEEDS_STONE_TOOL)) && this.isEffective(state);
@@ -205,7 +205,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		return false;
 	}
 
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext world, List<Component> tooltip, TooltipFlag context)
 	{
 		ElectricItemTooltipHandler.addTooltip(stack, tooltip);
 	}

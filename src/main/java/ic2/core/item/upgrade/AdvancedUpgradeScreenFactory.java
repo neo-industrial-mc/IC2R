@@ -13,6 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import java.util.function.Supplier;
 
 public final class AdvancedUpgradeScreenFactory implements ClientEnvProxy.ScreenFactory<DynamicContainer<HandHeldAdvancedUpgrade>>
 {

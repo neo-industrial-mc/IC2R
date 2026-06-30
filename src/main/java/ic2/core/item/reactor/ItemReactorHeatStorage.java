@@ -65,7 +65,7 @@ public class ItemReactorHeatStorage extends AbstractDamageableReactorComponent
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, world, tooltip, advanced);
 		if (this.getUse(stack) > 0)

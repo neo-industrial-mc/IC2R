@@ -34,7 +34,7 @@ public class BlockCuttingBlade extends Item implements IBlockCuttingBlade
 		};
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		Ic2Tooltip.add(tooltip, Component.translatable(switch (type)
 		{

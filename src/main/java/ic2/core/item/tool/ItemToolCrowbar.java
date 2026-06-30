@@ -12,8 +12,8 @@ import ic2.core.util.Util;
 
 import java.util.List;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -21,6 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -76,7 +77,7 @@ public class ItemToolCrowbar extends TieredItem implements IEnhancedOverlayProvi
 					target.removeCover(world, pos, selectedFacing);
 					if (player != null)
 					{
-						stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
+						stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
 					}
 				} else
 				{
@@ -102,7 +103,7 @@ public class ItemToolCrowbar extends TieredItem implements IEnhancedOverlayProvi
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(@NotNull ItemStack stack, Level worldIn, List<Component> info, @NotNull TooltipFlag flagIn)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext worldIn, List<Component> info, @NotNull TooltipFlag flagIn)
 	{
 		Ic2Tooltip.add(info, Component.translatable("item.ic2.crowbar.tooltip.remove", Minecraft.getInstance().options.keyRight.getKey().getDisplayName()));
 	}

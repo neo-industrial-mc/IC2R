@@ -8,8 +8,8 @@ import ic2.core.util.Ic2Tooltip;
 
 import java.util.List;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -45,7 +45,7 @@ public class ItemWindRotor extends Item implements IKineticRotor
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag advanced)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext world, List<Component> tooltip, TooltipFlag advanced)
 	{
 		Ic2Tooltip.add(tooltip, Component.translatable("ic2.itemrotor.wind.info", this.minWindStrength, this.maxWindStrength));
 		IKineticRotor.GearboxType type = null;

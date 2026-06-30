@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import java.util.function.Supplier;
 
 public class GuiAdvMiner extends Ic2Gui<ContainerAdvMiner>
 {

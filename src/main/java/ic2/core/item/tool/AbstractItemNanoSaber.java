@@ -16,10 +16,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -71,7 +71,7 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
 		for (int i = 0; i < player.getInventory().getContainerSize(); i++)
 		{
 			ItemStack invStack = player.getInventory().getItem(i);
-			if (invStack == stack || ItemStack.isSameItemSameTags(invStack, stack))
+			if (invStack == stack || ItemStack.isSameItemSameComponents(invStack, stack))
 			{
 				return i;
 			}
@@ -293,7 +293,7 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
 	@Override
 	public SoundEvent getSwingSound(LivingEntity entity, InteractionHand hand)
 	{
-		return isActive(entity.getItemInHand(hand)) ? this.getRandomSwingSound() : null;
+		return isActive(entity.getMainHandItem()) ? this.getRandomSwingSound() : null;
 	}
 
 	@Override

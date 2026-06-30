@@ -39,7 +39,7 @@ import java.util.function.BiConsumer;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
@@ -56,6 +56,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -63,8 +64,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
@@ -87,7 +89,7 @@ public class Ic2JeiPlugin implements IModPlugin
 
 	private static void generateCannerFluidContainerRecipes(List<CannerEmptyLiquidRecipeWrapper> emptyLiquidRecipes, List<CannerBottleLiquidRecipeWrapper> bottleLiquidRecipes, Map<String, CannerBottleLiquidRecipeWrapper> bottleLiquidDedup)
 	{
-		for (Item item : ForgeRegistries.ITEMS)
+		for (Item item : BuiltInRegistries.ITEM)
 		{
 			ItemStack stack = new ItemStack(item);
 			if (!LiquidUtil.isDrainableFluidContainer(stack))
@@ -122,7 +124,7 @@ public class Ic2JeiPlugin implements IModPlugin
 
 			for (ItemStack drainedContainer : drainedContainers)
 			{
-				String dedupKey = ForgeRegistries.ITEMS.getKey(drainedContainer.getItem()) + "|" + ForgeRegistries.FLUIDS.getKey(fluid.getFluid());
+				String dedupKey = BuiltInRegistries.ITEM.getKey(drainedContainer.getItem()) + "|" + BuiltInRegistries.FLUID.getKey(fluid.getFluid());
 				if (!bottleLiquidDedup.containsKey(dedupKey))
 				{
 					List<ItemStack> emptyInputs = List.of(drainedContainer.copy());
@@ -398,7 +400,7 @@ public class Ic2JeiPlugin implements IModPlugin
 				ItemStack invStack = container.getSlot(invIdx).getItem();
 				for (ItemStack needed : possibleStacks)
 				{
-					if (ItemStack.isSameItemSameTags(invStack, needed))
+					if (ItemStack.isSameItemSameComponents(invStack, needed))
 					{
 						if (doTransfer)
 						{
@@ -434,7 +436,7 @@ public class Ic2JeiPlugin implements IModPlugin
 
 			// Slot 0: fluid input — validate tank has matching fluid
 			IRecipeSlotView fluidInView = slotViews.get(0);
-			FluidStack neededFluid = fluidInView.getDisplayedIngredient(ForgeTypes.FLUID_STACK).orElse(null);
+			FluidStack neededFluid = fluidInView.getDisplayedIngredient(NeoForgeTypes.FLUID_STACK).orElse(null);
 			if (neededFluid != null && !canner.inputTank.isEmpty())
 			{
 				Ic2FluidStack tankFluid = canner.inputTank.getFluidStack();
