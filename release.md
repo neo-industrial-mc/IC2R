@@ -12,10 +12,8 @@ We'd apologize for our documentations are in Chinese. Please use translation.
 - 末影珍珠粉材质更改
 - 拟态板物品模型不显示
 - 电表什么都不显示
-- 高级采矿机挖掘深度验证
 - 声音系统隐藏式字幕
 - 高炉等等接电网
-- 单元不正确识别为桶
 - 待添加：太阳能头盔（3/2 韧性）、静电靴（3/2 韧性）
 
 ### 不急

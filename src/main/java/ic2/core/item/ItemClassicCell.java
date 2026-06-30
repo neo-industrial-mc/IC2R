@@ -18,7 +18,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
@@ -28,14 +27,15 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.mutable.Mutable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 {
-	private static final int WEED_EX_DRAIN = 50;
-	private static Map<Fluid, ItemClassicCell> instances = new IdentityHashMap<>();
+	private static final int CELL_CAPACITY_MB = 1000;
+	private static final Map<Fluid, ItemClassicCell> instances = new IdentityHashMap<>();
 	private final Fluid fluid;
 	private final int charges;
 
@@ -82,7 +82,6 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 			&& this.useOnCrop(context.getItemInHand(), (TileEntityCrop) be, true);
 	}
 
-	@Nullable
 	@Override
 	public boolean emptyContents(@Nullable Player player, Level world, BlockPos pos, @Nullable BlockHitResult hitResult)
 	{
@@ -100,10 +99,7 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 			}
 		} else if (this == Ic2Items.WEED_EX_CELL)
 		{
-			if (crop.applyWeedEx(50, true, manual, false) > 0)
-			{
-				return true;
-			}
+			return crop.applyWeedEx(50, true, manual, false) > 0;
 		} else if (this == Ic2Items.HYDRATION_CELL)
 		{
 			int consumed = this.getUsage(stack) + 1;
@@ -159,27 +155,27 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 		return (double) (this.charges - this.getUsage(stack)) / this.charges;
 	}
 
-	public boolean isBarVisible(ItemStack stack)
+	public boolean isBarVisible(@NotNull ItemStack stack)
 	{
 		return this.getUsage(stack) > 0;
 	}
 
-	public int getBarWidth(ItemStack stack)
+	public int getBarWidth(@NotNull ItemStack stack)
 	{
 		return (int) Math.round(this.getChargeLevel(stack) * 13.0);
 	}
 
-	public int getBarColor(ItemStack stack)
+	public int getBarColor(@NotNull ItemStack stack)
 	{
 		return Mth.hsvToRgb((float) (this.getChargeLevel(stack) / 3.0), 1.0F, 1.0F);
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		if (this.charges > 1 && stack.getCount() == 1 && advanced.isAdvanced())
 		{
-			tooltip.add(Component.translatable("item.durability", new Object[] { this.charges - this.getUsage(stack), this.charges }).withStyle(ChatFormatting.GRAY));
+			tooltip.add(Component.translatable("item.durability", this.charges - this.getUsage(stack), this.charges).withStyle(ChatFormatting.GRAY));
 		}
 	}
 
@@ -191,14 +187,14 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 			return Ic2FluidStack.EMPTY;
 		} else
 		{
-			return this.fluid != null ? Ic2FluidStack.create(this.fluid, 1000) : null;
+			return this.fluid != null ? Ic2FluidStack.create(this.fluid, CELL_CAPACITY_MB) : null;
 		}
 	}
 
 	@Override
 	public int getCapacityMb(ItemStack stack)
 	{
-		return this.fluid != null ? 1000 : 0;
+		return this.fluid != null ? CELL_CAPACITY_MB : 0;
 	}
 
 	@Override
@@ -224,22 +220,24 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 			return null;
 		}
 
-		if (amount < 1000)
+		if (amount <= 0)
 		{
 			return Ic2FluidStack.EMPTY;
 		}
 
-		if (!simulate)
+		if (simulate)
 		{
-			stack.shrink(1);
+			return Ic2FluidStack.create(this.fluid, Math.min(amount, CELL_CAPACITY_MB));
 		}
+
+		stack.shrink(1);
 
 		if (newStack != null)
 		{
 			newStack.setValue(new ItemStack(Ic2Items.EMPTY_CELL));
 		}
 
-		return Ic2FluidStack.create(this.fluid, 1000);
+		return Ic2FluidStack.create(this.fluid, CELL_CAPACITY_MB);
 	}
 
 	@Override
@@ -255,24 +253,27 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 			throw new IllegalArgumentException("invalid stack size");
 		}
 
-		if (drainFs.getAmountMb() < 1000)
+		int amount = drainFs.getAmountMb();
+		if (amount <= 0)
 		{
 			return 0;
 		}
 
 		if (this.fluid != null && this.fluid != Fluids.EMPTY && drainFs.hasExactFluid(this.fluid))
 		{
-			if (!simulate)
+			if (simulate)
 			{
-				stack.shrink(1);
+				return Math.min(amount, CELL_CAPACITY_MB);
 			}
+
+			stack.shrink(1);
 
 			if (newStack != null)
 			{
 				newStack.setValue(new ItemStack(Ic2Items.EMPTY_CELL));
 			}
 
-			return 1000;
+			return CELL_CAPACITY_MB;
 		} else
 		{
 			return 0;
@@ -292,7 +293,7 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 			throw new IllegalArgumentException("invalid stack size");
 		}
 
-		if (fillFs.getAmountMb() < 1000)
+		if (fillFs.getAmountMb() < CELL_CAPACITY_MB)
 		{
 			return 0;
 		}
@@ -315,7 +316,7 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 				newStack.setValue(new ItemStack(newItem));
 			}
 
-			return 1000;
+			return CELL_CAPACITY_MB;
 		} else
 		{
 			return 0;
