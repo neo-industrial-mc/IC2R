@@ -10,10 +10,12 @@ import ic2.core.ref.Ic2ScreenHandlers;
 
 public class ContainerMeter extends ContainerHandHeldInventory<HandHeldMeter>
 {
+	private static final int SCALE = 1000;
+
 	private IEnergyTile uut;
-	private double resultAvg;
-	private double resultMin;
-	private double resultMax;
+	private int resultAvg;
+	private int resultMin;
+	private int resultMax;
 	private int resultCount;
 	@ClientModifiable
 	private ContainerMeter.Mode mode = ContainerMeter.Mode.EnergyIn;
@@ -27,59 +29,62 @@ public class ContainerMeter extends ContainerHandHeldInventory<HandHeldMeter>
 	public void broadcastChanges()
 	{
 		super.broadcastChanges();
-		if (this.uut != null)
+		if (!IC2.sideProxy.isSimulating() || this.uut == null)
 		{
-			NodeStats stats = EnergyNet.instance.getNodeStats(this.uut);
-			if (stats == null)
+			return;
+		}
+
+		NodeStats stats = EnergyNet.instance.getNodeStats(this.uut);
+		if (stats == null)
+		{
+			this.base.closeGUI();
+		} else
+		{
+			double result = switch (this.mode)
 			{
-				this.base.closeGUI();
+				case EnergyIn -> stats.getEnergyIn();
+				case EnergyOut -> stats.getEnergyOut();
+				case EnergyGain -> stats.getEnergyIn() - stats.getEnergyOut();
+				case Voltage -> stats.getVoltage();
+			};
+			int scaled = (int) Math.round(result * SCALE);
+
+			if (this.resultCount == 0)
+			{
+				this.resultAvg = this.resultMin = this.resultMax = scaled;
 			} else
 			{
-				double result = switch (this.mode)
+				if (scaled < this.resultMin)
 				{
-					case EnergyIn -> stats.getEnergyIn();
-					case EnergyOut -> stats.getEnergyOut();
-					case EnergyGain -> stats.getEnergyIn() - stats.getEnergyOut();
-					case Voltage -> stats.getVoltage();
-				};
-
-				if (this.resultCount == 0)
-				{
-					this.resultAvg = this.resultMin = this.resultMax = result;
-				} else
-				{
-					if (result < this.resultMin)
-					{
-						this.resultMin = result;
-					}
-
-					if (result > this.resultMax)
-					{
-						this.resultMax = result;
-					}
-
-					this.resultAvg = (this.resultAvg * this.resultCount + result) / (this.resultCount + 1);
+					this.resultMin = scaled;
 				}
 
-				this.resultCount++;
-				IC2.network.get(true).sendContainerFields(this, "resultAvg", "resultMin", "resultMax", "resultCount");
+				if (scaled > this.resultMax)
+				{
+					this.resultMax = scaled;
+				}
+
+				this.resultAvg = (int) (((long) this.resultAvg * this.resultCount + scaled) / (this.resultCount + 1));
 			}
+
+			this.resultCount++;
+			IC2.network.get(true).sendContainerFields(this, "resultAvg", "resultMin", "resultMax", "resultCount");
 		}
 	}
 
 	public double getResultAvg()
 	{
-		return this.resultAvg;
+		return this.resultAvg / (double) SCALE;
 	}
 
 	public double getResultMin()
 	{
-		return this.resultMin;
+		return this.resultMin / (double) SCALE;
 	}
 
 	public double getResultMax()
 	{
-		return this.resultMax;
+		return this.resultMax / (double) SCALE;
 	}
 
 	public int getResultCount()
@@ -103,7 +108,11 @@ public class ContainerMeter extends ContainerHandHeldInventory<HandHeldMeter>
 	{
 		if (IC2.sideProxy.isSimulating())
 		{
+			this.resultAvg = 0;
+			this.resultMin = 0;
+			this.resultMax = 0;
 			this.resultCount = 0;
+			IC2.network.get(true).sendContainerFields(this, "resultAvg", "resultMin", "resultMax", "resultCount");
 		} else
 		{
 			IC2.network.get(false).sendContainerEvent(this, "reset");

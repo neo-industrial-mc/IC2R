@@ -891,7 +891,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 				for (EnergyPath path : paths)
 				{
-					if (path.lastCalcId == calcId)
+					if (path.lastCalcId <= calcId && path.energySupplied > 0.0)
 					{
 						sum += path.energySupplied;
 						max = Math.max(path.maxPacketConducted, max);
@@ -912,7 +912,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 			}
 		}
 
-		return new NodeStats(in, out, max);
+		return new NodeStats(in, out, EnergyNet.instance.getTierFromPower(max));
 	}
 
 	@Override
@@ -961,7 +961,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 			}
 
 			n++;
-			if (path.lastCalcId != calcId)
+			if (path.lastCalcId > calcId || path.energySupplied <= 0.0)
 			{
 				if (printPathEnergy)
 				{

@@ -12,13 +12,11 @@ import ic2.core.item.IHandHeldInventory;
 import ic2.core.item.PriorityUsableItem;
 import ic2.core.util.StackUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
@@ -36,10 +34,6 @@ public class ItemToolMeter extends Item implements IBoxable, IHandHeldInventory,
 		BlockPos pos = context.getClickedPos();
 		Player player = context.getPlayer();
 		InteractionHand hand = context.getHand();
-		if (world == null)
-		{
-			return InteractionResult.PASS;
-		}
 
 		if (player == null)
 		{
@@ -73,7 +67,7 @@ public class ItemToolMeter extends Item implements IBoxable, IHandHeldInventory,
 			if (euReader.isThisContainer(stack))
 			{
 				euReader.saveAsThrown(stack);
-				((ServerPlayer) player).closeContainer();
+				player.closeContainer();
 			}
 		}
 

@@ -2,15 +2,13 @@
 
 欢迎来到制作和反馈清单。这里记录了下版本的计划和已知问题。
 
-We'd apologize for our documentations are in Chinese. Please use translation.
-
 ## 已知问题
 
 ### 紧急
 
-- 创造模式物品栏乱序（目前是按照注册顺序的，后续会调整为分类顺序）
-- 拟态板物品模型不显示
-- 电表什么都不显示
+- 注册键 `ingot_*` 和 `*_ingot` 到底哪个才是正确的？这导致 **暂时** 和机械动力不兼容。
+- 创造模式物品栏目前是按照注册键A-Z排序，后续会调整为分类顺序
+- 拟态板物品模型不显示。功能似乎正常。
 - 声音系统隐藏式字幕
 - 待添加：太阳能头盔（3/2 韧性）、静电靴（3/2 韧性）
 
@@ -36,7 +34,7 @@ We'd apologize for our documentations are in Chinese. Please use translation.
 ### 小巧思
 
 - 充电座：现在的无线充电机制不受电压等级限制，但充电速率仍然受限于充电座的规格；充电的顺序为：主手、副手、头盔、胸甲、护腿、靴子、快捷栏0~8、物品栏从左上到右下。
-- 删除：旧版粉色粘球形态的 UU 物质、精炼铁锭
+- 删除：旧版粉色粘球形态的 UU 物质、精炼铁锭、脚手架
 - 翻译：以中文为基准, 重做翻译。全部扁平化
 - 矿脉生成，请使用 [JustEnoughResources](https://github.com/way2muchnoise/JustEnoughResources) 查看。
 
