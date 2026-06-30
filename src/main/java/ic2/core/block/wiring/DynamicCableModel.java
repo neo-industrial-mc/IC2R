@@ -28,6 +28,7 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -185,7 +186,7 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 	protected T getMesh(BlockState state)
 	{
 		DyeColor color = CableBlock.getColor(state, this.type, this.insulation);
-		int connections = 0;
+		int connections = getConnections(state);
 		int key = color.ordinal() << 6 | connections;
 		long stamp = this.cacheLock.readLock();
 
@@ -228,6 +229,26 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 		{
 			this.cacheLock.unlock(stamp);
 		}
+	}
+
+	private static int getConnections(BlockState state)
+	{
+		if (!(state.getBlock() instanceof AbstractCableBlock cable) || cable.isFoam())
+		{
+			return 0;
+		}
+
+		int connections = 0;
+
+		for (Direction direction : Direction.values())
+		{
+			if (state.getValue(PipeBlock.PROPERTY_BY_DIRECTION.get(direction)))
+			{
+				connections |= 1 << direction.ordinal();
+			}
+		}
+
+		return connections;
 	}
 
 	protected abstract T generateMesh(DyeColor var1, int var2);
