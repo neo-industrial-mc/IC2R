@@ -5,7 +5,7 @@ import ic2.core.ref.Ic2Items;
 import ic2.core.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
@@ -17,6 +17,7 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -52,7 +53,7 @@ public class RubberLogBlock extends RotatedPillarBlock
 		if (random.nextInt(7) == 0)
 		{
 			RubberLogBlock.RubberWoodState rwState = state.getValue(stateProperty);
-			if (!rwState.canRegenerate())
+			if (!rwState.canRegenerate(world, pos))
 			{
 				return;
 			}
@@ -61,10 +62,57 @@ public class RubberLogBlock extends RotatedPillarBlock
 		}
 	}
 
+	@Override
+	public void onRemove(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean movedByPiston)
+	{
+		if (!state.is(newState.getBlock()) && !world.isClientSide)
+		{
+			BlockPos.MutableBlockPos cPos = new BlockPos.MutableBlockPos();
+
+			for (int y = -4; y <= 4; y++)
+			{
+				for (int z = -4; z <= 4; z++)
+				{
+					for (int x = -4; x <= 4; x++)
+					{
+						cPos.set(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+						BlockState cState = world.getBlockState(cPos);
+						if (cState.is(BlockTags.LEAVES))
+						{
+							world.scheduleTick(cPos, cState.getBlock(), 1);
+						}
+					}
+				}
+			}
+		}
+
+		super.onRemove(state, world, pos, newState, movedByPiston);
+	}
+
 	public PushReaction getPistonPushReaction(BlockState state)
 	{
-		Axis axis = state.getValue(AXIS);
-		return axis != Axis.X && axis != Axis.Y && axis != Axis.Z ? PushReaction.BLOCK : PushReaction.NORMAL;
+		RubberWoodState rwState = state.getValue(stateProperty);
+		return rwState.isPlain() ? PushReaction.NORMAL : PushReaction.BLOCK;
+	}
+
+	private static boolean hasContactingLeaves(Level world, BlockPos pos)
+	{
+		BlockPos.MutableBlockPos top = new BlockPos.MutableBlockPos();
+		top.set(pos);
+
+		while (world.getBlockState(top).is(Ic2Blocks.RUBBER_LOG))
+		{
+			BlockPos above = top.above();
+			if (world.getBlockState(above).is(Ic2Blocks.RUBBER_LOG))
+			{
+				top.set(above);
+			} else
+			{
+				return world.getBlockState(above).is(BlockTags.LEAVES);
+			}
+		}
+
+		return false;
 	}
 
 	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit)
@@ -128,9 +176,9 @@ public class RubberLogBlock extends RotatedPillarBlock
 			return this.facing == null;
 		}
 
-		public boolean canRegenerate()
+		public boolean canRegenerate(Level world, BlockPos pos)
 		{
-			return !this.isPlain() && !this.wet;
+			return !this.isPlain() && !this.wet && hasContactingLeaves(world, pos);
 		}
 
 		public RubberLogBlock.RubberWoodState getWet()
@@ -147,6 +195,18 @@ public class RubberLogBlock extends RotatedPillarBlock
 		public RubberLogBlock.RubberWoodState getDry()
 		{
 			return !this.isPlain() && this.wet ? values[this.ordinal() - 4] : this;
+		}
+
+		public static RubberWoodState getWet(Direction facing)
+		{
+			return switch (facing)
+			{
+				case NORTH -> wet_north;
+				case SOUTH -> wet_south;
+				case WEST -> wet_west;
+				case EAST -> wet_east;
+				default -> throw new IllegalArgumentException("incompatible facing: " + facing);
+			};
 		}
 	}
 }
