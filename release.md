@@ -15,9 +15,7 @@ We'd apologize for our documentations are in Chinese. Please use translation.
 - 高级采矿机挖掘深度验证
 - 声音系统隐藏式字幕
 - 高炉等等接电网
-- 热交换器配方
 - 防爆石配方添加
-- 建筑泡沫导线
 - 单元不正确识别为桶
 - 待添加：太阳能头盔（3/2 韧性）、静电靴（3/2 韧性）
 - 护甲值（数字表示：盔甲值/盔甲韧性）

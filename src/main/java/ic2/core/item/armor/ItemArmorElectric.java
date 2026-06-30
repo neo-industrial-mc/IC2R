@@ -207,9 +207,18 @@ public abstract class ItemArmorElectric extends ItemArmorIC2 implements IElectri
 		}
 
 		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+		Multimap<Attribute, AttributeModifier> defaults = this.getDefaultAttributeModifiers(slot);
+		for (Attribute attribute : defaults.keySet())
+		{
+			if (attribute != Attributes.ARMOR)
+			{
+				builder.putAll(attribute, defaults.get(attribute));
+			}
+		}
+
 		Attribute attr = Attributes.ARMOR;
 		UUID uuid = MODIFIERS[slot.getIndex()];
-		Collection<AttributeModifier> plain = this.getDefaultAttributeModifiers(slot).get(attr);
+		Collection<AttributeModifier> plain = defaults.get(attr);
 		if (plain != null)
 		{
 			for (AttributeModifier modifier : plain)
