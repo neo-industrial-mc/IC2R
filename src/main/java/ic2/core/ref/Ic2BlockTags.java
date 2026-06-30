@@ -20,7 +20,6 @@ public final class Ic2BlockTags
 	public static final TagKey<Block> LEAD_BLOCKS = create("c:lead_blocks", "forge:storage_blocks/lead");
 	public static final TagKey<Block> SILVER_BLOCKS = create("c:silver_blocks", "forge:storage_blocks/silver");
 	public static final TagKey<Block> TIN_BLOCKS = create("c:tin_blocks", "forge:storage_blocks/tin");
-	public static final TagKey<Block> CABLE_CONNECTABLE = create("c:cable_connectable", "forge:cable_connectable");
 
 	public static void init()
 	{

@@ -5,12 +5,15 @@ import ic2.api.energy.tile.IColoredEnergyTile;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyEmitter;
+import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.info.ILocatable;
 import ic2.core.block.ChunkLoadAwareBlock;
+import ic2.core.block.comp.Energy;
 import ic2.core.block.misc.FoamBlock;
+import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
+import ic2.core.block.tileentity.Ic2TileEntity;
 import ic2.core.item.tool.ItemToolCutter;
-import ic2.core.ref.Ic2BlockTags;
 import ic2.core.ref.Ic2Fluids;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceMap;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
@@ -36,6 +39,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -223,7 +227,7 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 
 		if (!(neighborState.getBlock() instanceof AbstractCableBlock neighborBlock))
 		{
-			return neighborState.is(Ic2BlockTags.CABLE_CONNECTABLE);
+			return isEuConnectable(world, neighborPos);
 		} else if (neighborBlock.hasColor() && this.hasColor())
 		{
 			DyeColor color = this.getColor(state);
@@ -233,6 +237,31 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 		{
 			return true;
 		}
+	}
+
+	private static boolean isEuConnectable(Level world, BlockPos pos)
+	{
+		if (!world.isClientSide)
+		{
+			IEnergyTile tile = EnergyNet.instance.getTile(world, pos);
+			if (tile != null)
+			{
+				return !(tile instanceof IEnergyConductor);
+			}
+		}
+
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof Ic2TileEntity ic2 && ic2.hasComponent(Energy.class))
+		{
+			return true;
+		}
+
+		if (be instanceof TileEntityNuclearReactorElectric reactor)
+		{
+			return !reactor.isFluidCooled();
+		}
+
+		return be instanceof IEnergySink || be instanceof IEnergyEmitter;
 	}
 
 	public BlockState getStateForPlacement(BlockPlaceContext ctx)

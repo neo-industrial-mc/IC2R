@@ -9,11 +9,9 @@ We'd apologize for our documentations are in Chinese. Please use translation.
 ### 紧急
 
 - 创造模式物品栏乱序（目前是按照注册顺序的，后续会调整为分类顺序）
-- 末影珍珠粉材质更改
 - 拟态板物品模型不显示
 - 电表什么都不显示
 - 声音系统隐藏式字幕
-- 高炉等等接电网
 - 待添加：太阳能头盔（3/2 韧性）、静电靴（3/2 韧性）
 
 ### 不急
