@@ -329,7 +329,7 @@ public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGe
 
 	public int getKuOutput()
 	{
-		return this.getActive() ? (int) Math.abs(this.waterFlow * 0.2F * (float) IC2Config.balance.energy.kineticGenerator.water.get().floatValue()) : 0;
+		return this.getActive() ? (int) Math.abs(this.waterFlow * 0.2F * IC2Config.balance.energy.kineticGenerator.water.get().floatValue()) : 0;
 	}
 
 	public float getEfficiency()

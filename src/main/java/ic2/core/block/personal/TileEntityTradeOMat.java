@@ -19,7 +19,6 @@ import ic2.core.util.LogCategory;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
 
-import java.io.IOException;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;

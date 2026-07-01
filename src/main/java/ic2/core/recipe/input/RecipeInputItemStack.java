@@ -6,9 +6,9 @@ import com.mojang.serialization.JsonOps;
 import ic2.core.util.StackUtil;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
@@ -114,7 +114,7 @@ public class RecipeInputItemStack extends RecipeInputBase
 	@Override
 	protected List<ItemStack> listStacks()
 	{
-		return Arrays.asList(this.input);
+		return Collections.singletonList(this.input);
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class RecipeInputItemStack extends RecipeInputBase
 	{
 		JsonObject obj = new JsonObject();
 		obj.addProperty("item", BuiltInRegistries.ITEM.getKey(this.input.getItem()).toString());
-		obj.add("data", (JsonElement) NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, this.input.getTag()));
+		obj.add("data", NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, this.input.getTag()));
 		if (this.input.getCount() != 1)
 		{
 			obj.addProperty("count", this.input.getCount());

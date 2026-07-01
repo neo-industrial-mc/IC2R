@@ -230,7 +230,7 @@ public class PumpUtil
 			return level;
 		} else
 		{
-			return block instanceof LiquidBlock ? (Integer) state.getValue(LiquidBlock.LEVEL) : -1;
+			return block instanceof LiquidBlock ? state.getValue(LiquidBlock.LEVEL) : -1;
 		}
 	}
 

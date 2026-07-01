@@ -21,7 +21,6 @@ import ic2.core.network.GrowingBuffer;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.util.StackUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;

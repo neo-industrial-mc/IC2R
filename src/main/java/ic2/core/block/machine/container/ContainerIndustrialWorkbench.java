@@ -126,7 +126,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 		}
 
 		MinecraftServer server = world.getServer();
-		return server == null ? null : (CraftingRecipe) server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, inventory, world).orElse(null);
+		return server == null ? null : server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, inventory, world).orElse(null);
 	}
 
 	@Override
@@ -184,7 +184,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 		while (iter.hasNext())
 		{
 			int currentSlot = iter.nextInt();
-			((Slot) this.slots.get(currentSlot + 37)).setChanged();
+			this.slots.get(currentSlot + 37).setChanged();
 		}
 
 		return !changes.a.isEmpty() ? super.handlePlayerSlotShiftClick(player, changes.a.get(0)) : StackUtil.emptyStack;
@@ -210,7 +210,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 
 		for (int i = this.indexBufferStart; i < this.indexBufferEnd; i++)
 		{
-			Slot slot = (Slot) this.slots.get(i);
+			Slot slot = this.slots.get(i);
 			if (slot.getItem() == sourceItemStack)
 			{
 				isBuffer = true;

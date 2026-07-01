@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 @NotClassic
 public class TileEntityRTHeatGenerator extends TileEntityHeatSourceInventory implements IHasGui
 {
-	public static final float outputMultiplier = 2.0F * (float) IC2Config.balance.energy.heatGenerator.radioisotope.get().floatValue();
+	public static final float outputMultiplier = 2.0F * IC2Config.balance.energy.heatGenerator.radioisotope.get().floatValue();
 	public final InvSlotConsumable fuelSlot = new InvSlotConsumableItemStack(this, "fuelSlot", 6, new ItemStack(Ic2Items.RTG_PELLET));
 	private boolean newActive;
 

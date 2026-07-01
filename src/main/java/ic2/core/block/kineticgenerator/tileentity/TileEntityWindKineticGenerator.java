@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.state.BlockState;
 @NotClassic
 public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui
 {
-	public static final float outputModifier = 10.0F * (float) IC2Config.balance.energy.kineticGenerator.wind.get().floatValue();
+	public static final float outputModifier = 10.0F * IC2Config.balance.energy.kineticGenerator.wind.get().floatValue();
 	private static final ResourceLocation woodenRotorTexture = ResourceLocation.fromNamespaceAndPath("ic2", "textures/item/rotor/wood_rotor_model.png");
 	public final InvSlotConsumableClass rotorSlot;
 	private double windStrength;

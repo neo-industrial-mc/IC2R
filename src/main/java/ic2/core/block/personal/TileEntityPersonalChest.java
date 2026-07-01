@@ -208,7 +208,7 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 	@Override
 	public Container getPrivilegedInventory(GameProfile accessor)
 	{
-		return (Container) (!this.permitsAccess(accessor) ? this : new DelegatingInventory(this)
+		return !this.permitsAccess(accessor) ? this : new DelegatingInventory(this)
 		{
 			@Override
 			public int getContainerSize()
@@ -282,7 +282,7 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 			{
 				return TileEntityPersonalChest.this.contentSlot.accepts(stack);
 			}
-		});
+		};
 	}
 
 	@Override

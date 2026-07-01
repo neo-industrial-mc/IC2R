@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap.Entry;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.Comparator;
@@ -37,14 +36,14 @@ public final class ChunkLoaderLogic
 			throw new IllegalArgumentException("missing own position");
 		}
 
-		ChunkLoaderLogic.SavedState state = (ChunkLoaderLogic.SavedState) world.getDataStorage()
-			.computeIfAbsent(ChunkLoaderLogic.SavedState::new, ChunkLoaderLogic.SavedState::new, savedStateId);
-		((Set) state.chunksToChunkLoaders.computeIfAbsent(loaderChunk, ignore -> new ObjectOpenHashSet<>(1))).add(pos);
+		ChunkLoaderLogic.SavedState state = world.getDataStorage()
+			.computeIfAbsent(SavedState::new, SavedState::new, savedStateId);
+		state.chunksToChunkLoaders.computeIfAbsent(loaderChunk, ignore -> new ObjectOpenHashSet<>(1)).add(pos);
 		WorldData worldData = WorldData.get(world);
 
 		for (long chunk : chunks)
 		{
-			Set<BlockPos> loaders = (Set<BlockPos>) worldData.loadedChunks.computeIfAbsent(chunk, ignore -> new ObjectOpenHashSet<>(1));
+			Set<BlockPos> loaders = worldData.loadedChunks.computeIfAbsent(chunk, ignore -> new ObjectOpenHashSet<>(1));
 			if (loaders.isEmpty())
 			{
 				addChunkTicket(world, new ChunkPos(chunk));
@@ -58,11 +57,11 @@ public final class ChunkLoaderLogic
 
 	public static void removeChunkLoader(ServerLevel world, BlockPos pos)
 	{
-		ChunkLoaderLogic.SavedState state = (ChunkLoaderLogic.SavedState) world.getDataStorage().get(ChunkLoaderLogic.SavedState::new, savedStateId);
+		ChunkLoaderLogic.SavedState state = world.getDataStorage().get(SavedState::new, savedStateId);
 		if (state != null)
 		{
 			long chunkPos = ChunkPos.asLong(pos);
-			Set<BlockPos> positions = (Set<BlockPos>) state.chunksToChunkLoaders.get(chunkPos);
+			Set<BlockPos> positions = state.chunksToChunkLoaders.get(chunkPos);
 			if (positions != null && positions.remove(pos) && positions.isEmpty())
 			{
 				state.chunksToChunkLoaders.remove(chunkPos);
@@ -78,13 +77,13 @@ public final class ChunkLoaderLogic
 
 	private static void disableChunkLoader(ServerLevel world, BlockPos pos, WorldData worldData)
 	{
-		LongSet positions = (LongSet) worldData.chunkLoaders.remove(pos);
+		LongSet positions = worldData.chunkLoaders.remove(pos);
 		if (positions != null)
 		{
 
 			for (long chunkPos : positions)
 			{
-				Set<BlockPos> loaders = (Set<BlockPos>) worldData.loadedChunks.get(chunkPos);
+				Set<BlockPos> loaders = worldData.loadedChunks.get(chunkPos);
 				if (loaders != null && loaders.remove(pos) && loaders.isEmpty())
 				{
 					worldData.loadedChunks.remove(chunkPos);
@@ -103,7 +102,7 @@ public final class ChunkLoaderLogic
 		}
 
 		WorldData worldData = WorldData.get(world);
-		LongSet prev = (LongSet) worldData.chunkLoaders.get(pos);
+		LongSet prev = worldData.chunkLoaders.get(pos);
 		if (prev == null)
 		{
 			addChunkLoader(world, pos, chunks);
@@ -117,7 +116,7 @@ public final class ChunkLoaderLogic
 				if (!chunks.contains(chunk))
 				{
 					it.remove();
-					Set<BlockPos> loaders = (Set<BlockPos>) worldData.loadedChunks.get(chunk);
+					Set<BlockPos> loaders = worldData.loadedChunks.get(chunk);
 					loaders.remove(pos);
 					if (loaders.isEmpty())
 					{
@@ -131,10 +130,10 @@ public final class ChunkLoaderLogic
 
 			while (it.hasNext())
 			{
-				long chunk = (Long) it.next();
+				long chunk = it.next();
 				if (prev.add(chunk))
 				{
-					Set<BlockPos> loaders = (Set<BlockPos>) worldData.loadedChunks.computeIfAbsent(chunk, ignore -> new ObjectOpenHashSet<>());
+					Set<BlockPos> loaders = worldData.loadedChunks.computeIfAbsent(chunk, ignore -> new ObjectOpenHashSet<>());
 					if (loaders.isEmpty())
 					{
 						addChunkTicket(world, new ChunkPos(chunk));
@@ -148,7 +147,7 @@ public final class ChunkLoaderLogic
 
 	public static void onWorldLoad(ServerLevel world)
 	{
-		ChunkLoaderLogic.SavedState state = (ChunkLoaderLogic.SavedState) world.getDataStorage().get(ChunkLoaderLogic.SavedState::new, savedStateId);
+		ChunkLoaderLogic.SavedState state = world.getDataStorage().get(SavedState::new, savedStateId);
 		if (state != null && !state.chunksToChunkLoaders.isEmpty())
 		{
 			WorldData worldData = WorldData.get(world);
@@ -156,12 +155,12 @@ public final class ChunkLoaderLogic
 			for (Entry<Set<BlockPos>> entry : state.chunksToChunkLoaders.long2ObjectEntrySet())
 			{
 				long chunkPos = entry.getLongKey();
-				Set<BlockPos> loaders = (Set<BlockPos>) entry.getValue();
+				Set<BlockPos> loaders = entry.getValue();
 				worldData.loadedChunks.put(chunkPos, new ObjectOpenHashSet<>(loaders));
 
 				for (BlockPos pos : loaders)
 				{
-					((LongSet) worldData.chunkLoaders.computeIfAbsent(pos, ignore -> new LongOpenHashSet(1))).add(chunkPos);
+					worldData.chunkLoaders.computeIfAbsent(pos, ignore -> new LongOpenHashSet(1)).add(chunkPos);
 				}
 
 				addChunkTicket(world, new ChunkPos(chunkPos));
@@ -173,10 +172,10 @@ public final class ChunkLoaderLogic
 	{
 		assert !chunk.getLevel().isClientSide;
 		ServerLevel world = (ServerLevel) chunk.getLevel();
-		ChunkLoaderLogic.SavedState state = (ChunkLoaderLogic.SavedState) world.getDataStorage().get(ChunkLoaderLogic.SavedState::new, savedStateId);
+		ChunkLoaderLogic.SavedState state = world.getDataStorage().get(SavedState::new, savedStateId);
 		if (state != null && !state.chunksToChunkLoaders.isEmpty())
 		{
-			Set<BlockPos> loaders = (Set<BlockPos>) state.chunksToChunkLoaders.get(chunk.getPos().toLong());
+			Set<BlockPos> loaders = state.chunksToChunkLoaders.get(chunk.getPos().toLong());
 			if (loaders != null && !loaders.isEmpty())
 			{
 				WorldData worldData = WorldData.get(world, false);
@@ -217,7 +216,7 @@ public final class ChunkLoaderLogic
 			{
 				CompoundTag contentTag = loaders.getCompound(i);
 				BlockPos pos = new BlockPos(contentTag.getInt("x"), contentTag.getInt("y"), contentTag.getInt("z"));
-				((Set) this.chunksToChunkLoaders.computeIfAbsent(ChunkPos.asLong(pos), ignore -> new ObjectOpenHashSet<>(1))).add(pos);
+				this.chunksToChunkLoaders.computeIfAbsent(ChunkPos.asLong(pos), ignore -> new ObjectOpenHashSet<>(1)).add(pos);
 			}
 		}
 

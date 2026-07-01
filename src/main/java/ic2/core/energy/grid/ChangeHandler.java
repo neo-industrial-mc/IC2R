@@ -12,7 +12,6 @@ import ic2.core.util.LogCategory;
 import ic2.core.util.Util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;

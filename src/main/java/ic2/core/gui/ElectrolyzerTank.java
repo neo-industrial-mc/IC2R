@@ -80,7 +80,7 @@ public class ElectrolyzerTank extends AbstractFluidSlot
 		List<Component> ret = super.getToolTip();
 		if (this.output != null)
 		{
-			ret.add(Component.literal("Output Tank: " + StringUtils.capitalize(((Direction) this.output.getRight()).getSerializedName())));
+			ret.add(Component.literal("Output Tank: " + StringUtils.capitalize(this.output.getRight().getSerializedName())));
 		}
 
 		return ret;
@@ -89,6 +89,6 @@ public class ElectrolyzerTank extends AbstractFluidSlot
 	@Override
 	protected Ic2FluidStack getFluidStack()
 	{
-		return this.output != null ? (Ic2FluidStack) this.output.getLeft() : null;
+		return this.output != null ? this.output.getLeft() : null;
 	}
 }

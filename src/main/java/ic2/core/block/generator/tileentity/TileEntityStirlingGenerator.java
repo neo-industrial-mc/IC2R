@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 @NotClassic
 public class TileEntityStirlingGenerator extends TileEntityConversionGenerator
 {
-	private final double productionpeerheat = (double) (0.5F * (float) IC2Config.balance.energy.generator.stirling.get().floatValue());
+	private final double productionpeerheat = 0.5F * IC2Config.balance.energy.generator.stirling.get().floatValue();
 	protected IHeatSource source;
 
 	public TileEntityStirlingGenerator(BlockPos pos, BlockState state)

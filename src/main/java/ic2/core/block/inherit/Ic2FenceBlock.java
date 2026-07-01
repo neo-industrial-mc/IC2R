@@ -111,12 +111,12 @@ public class Ic2FenceBlock extends FenceBlock
 	public BlockState getStateForPlacement(BlockPlaceContext ctx)
 	{
 		FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
-		return this.getActualState((BlockState) this.defaultBlockState().setValue(WATERLOGGED, fluidState.is(Fluids.WATER)), ctx.getLevel(), ctx.getClickedPos());
+		return this.getActualState(this.defaultBlockState().setValue(WATERLOGGED, fluidState.is(Fluids.WATER)), ctx.getLevel(), ctx.getClickedPos());
 	}
 
 	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos)
 	{
-		if ((Boolean) state.getValue(WATERLOGGED))
+		if (state.getValue(WATERLOGGED))
 		{
 			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
@@ -151,7 +151,7 @@ public class Ic2FenceBlock extends FenceBlock
 				connects = true;
 			}
 
-			ret = (BlockState) ret.setValue((Property) connectProperties.get(facing), connects);
+			ret = ret.setValue(connectProperties.get(facing), connects);
 		}
 
 		if (!isPole && magnetizerConnected)
@@ -164,7 +164,7 @@ public class Ic2FenceBlock extends FenceBlock
 				BlockState neighborState = world.getBlockState(neighborPos);
 				boolean connects = this.isFence(neighborState)
 						|| this.connectsTo(neighborState, neighborState.isFaceSturdy(world, neighborPos, facing.getOpposite()), facing.getOpposite());
-				ret = (BlockState) ret.setValue((Property) connectProperties.get(facing), connects);
+				ret = ret.setValue(connectProperties.get(facing), connects);
 			}
 		}
 

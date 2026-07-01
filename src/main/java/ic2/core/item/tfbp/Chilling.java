@@ -85,10 +85,10 @@ public class Chilling extends TerraformerBase
 				return true;
 			}
 
-			int size = (Integer) state.getValue(SnowLayerBlock.LAYERS);
+			int size = state.getValue(SnowLayerBlock.LAYERS);
 			if (SnowLayerBlock.LAYERS.getPossibleValues().contains(size + 1))
 			{
-				world.setBlockAndUpdate(pos, (BlockState) state.setValue(SnowLayerBlock.LAYERS, size + 1));
+				world.setBlockAndUpdate(pos, state.setValue(SnowLayerBlock.LAYERS, size + 1));
 				return true;
 			}
 		}

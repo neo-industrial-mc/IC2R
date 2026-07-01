@@ -14,17 +14,13 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.PreparableReloadListener.PreparationBarrier;
-import net.minecraft.util.profiling.ProfilerFiller;
 import org.lwjgl.opengl.GL11;
 
 public class GlTexture implements Closeable

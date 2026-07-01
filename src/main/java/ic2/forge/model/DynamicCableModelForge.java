@@ -1,16 +1,13 @@
 package ic2.forge.model;
 
-import com.mojang.datafixers.util.Pair;
 import ic2.core.block.wiring.AbstractCableBlock;
 import ic2.core.block.wiring.CableFoam;
 import ic2.core.block.wiring.CableType;
 import ic2.core.block.wiring.DynamicCableModel;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 import net.minecraft.client.renderer.RenderType;
@@ -21,7 +18,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;

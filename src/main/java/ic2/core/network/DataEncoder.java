@@ -417,9 +417,7 @@ public final class DataEncoder
 					}
 
 					return (IResolvableValue<Object>) server ->
-					{
-						return ince.decode(is);
-					};
+						ince.decode(is);
 				}
 			case Array:
 				DataEncoder.EncodedType componentType = typeFromId(is.readUnsignedByte());

@@ -22,7 +22,7 @@ public class GuiSolarDestiller extends Ic2Gui<ContainerSolarDistiller>
 	{
 		super.renderBg(guiGraphics, delta, mouseX, mouseY);
 		this.bindTexture();
-		if (((ContainerSolarDistiller) this.menu).base.canWork())
+		if (this.menu.base.canWork())
 		{
 			this.drawTexturedRect(guiGraphics.pose(), this.leftPos + 36, this.topPos + 26, 0.0, 184.0, 97.0, 29.0);
 		}

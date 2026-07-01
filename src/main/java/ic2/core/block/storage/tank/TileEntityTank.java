@@ -22,7 +22,6 @@ import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.LiquidUtil;
 import ic2.core.util.StackUtil;
 
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;

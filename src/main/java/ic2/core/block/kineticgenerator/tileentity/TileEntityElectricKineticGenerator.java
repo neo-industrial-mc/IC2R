@@ -38,7 +38,7 @@ public class TileEntityElectricKineticGenerator extends TileEntityAbstractKineti
 	public TileEntityElectricKineticGenerator(BlockPos pos, BlockState state)
 	{
 		super(Ic2BlockEntities.ELECTRIC_KINETIC_GENERATOR, pos, state);
-		this.kuPerEU = 4.0F * (float) IC2Config.balance.energy.kineticGenerator.electric.get().floatValue();
+		this.kuPerEU = 4.0F * IC2Config.balance.energy.kineticGenerator.electric.get().floatValue();
 		this.slotMotor = new InvSlotConsumableItemStack(this, "slotMotor", 10, new ItemStack(Ic2Items.ELECTRIC_MOTOR));
 		this.slotMotor.setStackSizeLimit(1);
 		this.dischargeSlot = new InvSlotDischarge(this, InvSlot.Access.NONE, 4);

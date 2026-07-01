@@ -23,13 +23,12 @@ public class ReflectionUtil
 
 	public static Field getField(Class<?> clazz, String... names)
 	{
-		String[] var2 = names;
-		int var3 = var2.length;
+		int var3 = names.length;
 		int var4 = 0;
 
 		while (var4 < var3)
 		{
-			String name = var2[var4];
+			String name = names[var4];
 
 			try
 			{
@@ -197,13 +196,12 @@ public class ReflectionUtil
 
 	public static Method getMethod(Class<?> clazz, String[] names, Class<?>... parameterTypes)
 	{
-		String[] var3 = names;
-		int var4 = var3.length;
+		int var4 = names.length;
 		int var5 = 0;
 
 		while (var5 < var4)
 		{
-			String name = var3[var5];
+			String name = names[var5];
 
 			try
 			{

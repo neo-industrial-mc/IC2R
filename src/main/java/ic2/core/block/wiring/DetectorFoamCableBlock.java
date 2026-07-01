@@ -25,6 +25,6 @@ public class DetectorFoamCableBlock extends AbstractDetectorCableBlock
 	@Override
 	public boolean isHardFoam(BlockState state)
 	{
-		return ((CableFoam) state.getValue(foamProperty)).isHard();
+		return state.getValue(foamProperty).isHard();
 	}
 }

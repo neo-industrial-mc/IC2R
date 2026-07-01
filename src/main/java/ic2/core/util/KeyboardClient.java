@@ -30,11 +30,11 @@ public class KeyboardClient extends Keyboard
 		if (!registeredKeys)
 		{
 			registeredKeys = true;
-			SideProxyClient.envProxy.registerKeyBinding(this.altKey);
-			SideProxyClient.envProxy.registerKeyBinding(this.boostKey);
-			SideProxyClient.envProxy.registerKeyBinding(this.modeSwitchKey);
-			SideProxyClient.envProxy.registerKeyBinding(this.sideInventoryKey);
-			SideProxyClient.envProxy.registerKeyBinding(this.expandInfo);
+			SideProxyClient.envProxy.registerKeyBinding(altKey);
+			SideProxyClient.envProxy.registerKeyBinding(boostKey);
+			SideProxyClient.envProxy.registerKeyBinding(modeSwitchKey);
+			SideProxyClient.envProxy.registerKeyBinding(sideInventoryKey);
+			SideProxyClient.envProxy.registerKeyBinding(expandInfo);
 		}
 	}
 
@@ -45,12 +45,12 @@ public class KeyboardClient extends Keyboard
 		Screen currentScreen = SideProxyClient.mc.screen;
 		if (currentScreen == null)
 		{
-			if (this.altKey.isDown())
+			if (altKey.isDown())
 			{
 				keys.add(Keyboard.Key.alt);
 			}
 
-			if (this.boostKey.isDown())
+			if (boostKey.isDown())
 			{
 				keys.add(Keyboard.Key.boost);
 			}
@@ -60,7 +60,7 @@ public class KeyboardClient extends Keyboard
 				keys.add(Keyboard.Key.forward);
 			}
 
-			if (this.modeSwitchKey.isDown())
+			if (modeSwitchKey.isDown())
 			{
 				keys.add(Keyboard.Key.modeSwitch);
 			}
@@ -70,12 +70,12 @@ public class KeyboardClient extends Keyboard
 				keys.add(Keyboard.Key.jump);
 			}
 
-			if (this.sideInventoryKey.isDown())
+			if (sideInventoryKey.isDown())
 			{
 				keys.add(Keyboard.Key.sideInventory);
 			}
 
-			if (this.expandInfo.isDown())
+			if (expandInfo.isDown())
 			{
 				keys.add(Keyboard.Key.hubMode);
 			}

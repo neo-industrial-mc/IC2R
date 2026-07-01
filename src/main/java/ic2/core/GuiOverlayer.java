@@ -122,10 +122,9 @@ public class GuiOverlayer
 						guiGraphics.renderItem(rightItem, 5, 74);
 						guiGraphics.drawString(this.mc.font, rightItem.getHoverName().getString(), 30, 78, 0xFFFFFF);
 
-						List<String> info = new LinkedList<>();
 						if (rightItem.getItem() instanceof IItemHudInfo)
 						{
-							info.addAll(((IItemHudInfo) rightItem.getItem()).getHudInfo(rightItem, hudMode == HudMode.ADVANCED));
+							List<String> info = new LinkedList<>(((IItemHudInfo) rightItem.getItem()).getHudInfo(rightItem, hudMode == HudMode.ADVANCED));
 							if (!info.isEmpty())
 							{
 								for (int l = 0; l < info.size(); l++)
@@ -158,10 +157,9 @@ public class GuiOverlayer
 						guiGraphics.renderItem(leftItem, 5, nextLine - 9);
 						guiGraphics.drawString(this.mc.font, leftItem.getHoverName().getString(), 30, nextLine - 5, 0xFFFFFF);
 
-						List<String> info = new LinkedList<>();
 						if (leftItem.getItem() instanceof IItemHudInfo)
 						{
-							info.addAll(((IItemHudInfo) leftItem.getItem()).getHudInfo(leftItem, hudMode == HudMode.ADVANCED));
+							List<String> info = new LinkedList<>(((IItemHudInfo) leftItem.getItem()).getHudInfo(leftItem, hudMode == HudMode.ADVANCED));
 							if (!info.isEmpty())
 							{
 								for (int l = 0; l < info.size(); l++)

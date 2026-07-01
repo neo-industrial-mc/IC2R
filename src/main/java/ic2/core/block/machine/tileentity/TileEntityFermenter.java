@@ -53,7 +53,6 @@ public class TileEntityFermenter extends TileEntityInventory implements IHasGui,
 	private final int maxProgress = IC2Config.balance.fermenter.biomassPerFertilizier.get();
 	public int progress = 0;
 	private int heatBuffer = 0;
-	private boolean newActive = false;
 
 	public TileEntityFermenter(BlockPos pos, BlockState state)
 	{
@@ -112,10 +111,10 @@ public class TileEntityFermenter extends TileEntityInventory implements IHasGui,
 		super.updateEntityServer();
 		this.fluidInputCellInSlot.processIntoTank(this.inputTank, this.fluidInputCellOutSlot);
 		this.fluidOutputCellInSlot.processFromTank(this.outputTank, this.fluidOutputCellOutSlot);
-		this.newActive = this.work();
-		if (this.getActive() != this.newActive)
+		boolean newActive = this.work();
+		if (this.getActive() != newActive)
 		{
-			this.setActive(this.newActive);
+			this.setActive(newActive);
 		}
 
 		this.upgradeSlot.tick();

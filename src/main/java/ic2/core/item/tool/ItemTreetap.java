@@ -39,7 +39,7 @@ public class ItemTreetap extends Item implements IBoxable
 	{
      RandomSource rng = RandomSource.create();
 		assert state.getBlock() == Ic2Blocks.RUBBER_LOG;
-		RubberLogBlock.RubberWoodState rwState = (RubberLogBlock.RubberWoodState) state.getValue(RubberLogBlock.stateProperty);
+		RubberLogBlock.RubberWoodState rwState = state.getValue(RubberLogBlock.stateProperty);
 		if (rwState.isPlain() || rwState.facing != side)
 		{
 			return false;
@@ -49,7 +49,7 @@ public class ItemTreetap extends Item implements IBoxable
 		{
 			if (!world.isClientSide)
 			{
-				world.setBlockAndUpdate(pos, (BlockState) state.setValue(RubberLogBlock.stateProperty, rwState.getDry()));
+				world.setBlockAndUpdate(pos, state.setValue(RubberLogBlock.stateProperty, rwState.getDry()));
 				if (stacks != null)
 				{
 					stacks.add(StackUtil.copyWithSize(new ItemStack(Ic2Items.RESIN), rng.nextInt(3) + 1));
@@ -68,7 +68,7 @@ public class ItemTreetap extends Item implements IBoxable
 			{
 				if (rng.nextInt(5) == 0)
 				{
-					world.setBlockAndUpdate(pos, (BlockState) state.setValue(RubberLogBlock.stateProperty, RubberLogBlock.RubberWoodState.plain));
+					world.setBlockAndUpdate(pos, state.setValue(RubberLogBlock.stateProperty, RubberLogBlock.RubberWoodState.plain));
 					triggerToolUseEvent(world, pos, player, state, isElectric);
 					ret = true;
 				}

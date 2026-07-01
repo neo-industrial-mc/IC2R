@@ -1,7 +1,6 @@
 package ic2.core.item.tool;
 
 import ic2.core.Ic2Gui;
-import ic2.core.ref.Ic2Items;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

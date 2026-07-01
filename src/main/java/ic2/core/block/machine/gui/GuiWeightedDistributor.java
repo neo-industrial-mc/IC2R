@@ -4,7 +4,6 @@ import ic2.core.ContainerBase;
 import ic2.core.Ic2Gui;
 import ic2.core.block.machine.tileentity.IWeightedDistributor;
 import ic2.core.gui.IClickHandler;
-import ic2.core.gui.IEnableHandler;
 import ic2.core.gui.MouseButton;
 import ic2.core.gui.StickyVanillaButton;
 import ic2.core.gui.TextLabel;
@@ -100,7 +99,7 @@ public abstract class GuiWeightedDistributor<T extends ContainerBase<? extends I
 							}
 						}
 
-						List<Direction> priorities = ((IWeightedDistributor) GuiWeightedDistributor.this.getContainer().base).getPriority();
+						List<Direction> priorities = GuiWeightedDistributor.this.getContainer().base.getPriority();
 						priorities.clear();
 
 						for (StickyVanillaButton[] switches : GuiWeightedDistributor.this.buttons)
@@ -115,9 +114,9 @@ public abstract class GuiWeightedDistributor<T extends ContainerBase<? extends I
 							}
 						}
 
-						((IWeightedDistributor) GuiWeightedDistributor.this.getContainer().base).updatePriority(false);
+						GuiWeightedDistributor.this.getContainer().base.updatePriority(false);
 					}
-				}).withDisableHandler(() -> ((IWeightedDistributor) GuiWeightedDistributor.this.getContainer().base).getFacing() != facing).withText(facing.getSerializedName().substring(0, 1).toUpperCase(Locale.ENGLISH)).withTooltip(getNameForFacing(facing)));
+				}).withDisableHandler(() -> GuiWeightedDistributor.this.getContainer().base.getFacing() != facing).withText(facing.getSerializedName().substring(0, 1).toUpperCase(Locale.ENGLISH)).withTooltip(getNameForFacing(facing)));
 			}
 			this.addElement(TextLabel.create(this, 8, 21 + y * 18, switch (y)
 			{
@@ -132,7 +131,7 @@ public abstract class GuiWeightedDistributor<T extends ContainerBase<? extends I
 
 		int end = 0;
 
-		for (Direction side : ((IWeightedDistributor) container.base).getPriority())
+		for (Direction side : container.base.getPriority())
 		{
 			this.buttons[end++][buttonOffset(side.get3DDataValue())].setOn(true);
 		}
@@ -158,7 +157,6 @@ public abstract class GuiWeightedDistributor<T extends ContainerBase<? extends I
 			case UP -> "ic2.dir.Top";
 			case NORTH -> "ic2.dir.North";
 			case SOUTH -> "ic2.dir.South";
-			default -> throw new IllegalStateException("Unexpected direction: " + facing);
 		};
 	}
 }

@@ -1,7 +1,6 @@
 package ic2.core.block.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.joml.Vector3f;
 import com.mojang.math.Axis;
 import ic2.api.tile.IRotorProvider;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceMap;
@@ -36,7 +35,7 @@ public class KineticGeneratorRenderer<T extends BlockEntity & IRotorProvider> im
 		{
 			float angle = windGen.getAngle();
 			ResourceLocation rotorRL = windGen.getRotorRenderTexture();
-			ModelPart model = (ModelPart) rotorModels.get(diameter);
+			ModelPart model = rotorModels.get(diameter);
 			if (model == null)
 			{
 				MeshDefinition modelData = new MeshDefinition();

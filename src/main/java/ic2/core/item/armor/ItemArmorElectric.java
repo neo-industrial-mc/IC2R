@@ -111,10 +111,9 @@ public abstract class ItemArmorElectric extends ItemArmorIC2 implements IElectri
 	{
 		return switch (this.getEquipmentSlot())
 		{
-			case HEAD -> 0.15;
+			case HEAD, FEET -> 0.15;
 			case CHEST -> 0.4;
 			case LEGS -> 0.3;
-			case FEET -> 0.15;
 			default -> 0.0;
 		};
 	}

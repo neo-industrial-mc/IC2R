@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 @NotClassic
 public class TileEntityKineticGenerator extends TileEntityConversionGenerator
 {
-	private final double euPerKu = 0.25 * (float) IC2Config.balance.energy.generator.kinetic.get().floatValue();
+	private final double euPerKu = 0.25 * IC2Config.balance.energy.generator.kinetic.get().floatValue();
 	protected IKineticSource source;
 
 	public TileEntityKineticGenerator(BlockPos pos, BlockState state)

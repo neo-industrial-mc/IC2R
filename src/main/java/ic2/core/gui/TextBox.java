@@ -414,13 +414,13 @@ public class TextBox extends GuiElement<TextBox>
 		int insertionPoint = this.maxTextLength - this.text.length() - (start - end);
 		if (!this.text.isEmpty())
 		{
-			newText.append(this.text.substring(0, start));
+			newText.append(this.text, 0, start);
 		}
 
 		int extraLength;
 		if (insertionPoint < cleanString.length())
 		{
-			newText.append(cleanString.substring(0, insertionPoint));
+			newText.append(cleanString, 0, insertionPoint);
 			extraLength = insertionPoint;
 		} else
 		{
@@ -477,7 +477,7 @@ public class TextBox extends GuiElement<TextBox>
 				StringBuilder newText = new StringBuilder();
 				if (end >= 0)
 				{
-					newText.append(this.text.substring(0, end));
+					newText.append(this.text, 0, end);
 				}
 
 				if (start < this.text.length())

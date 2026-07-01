@@ -11,20 +11,19 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ContainerNuclearReactor extends ContainerBase<TileEntityNuclearReactorElectric>
 {
-	private final int size;
 
 	public ContainerNuclearReactor(int syncId, Inventory playerInventory, TileEntityNuclearReactorElectric te)
 	{
 		super(Ic2ScreenHandlers.NUCLEAR_REACTOR, syncId, playerInventory, te);
-		this.size = te.getReactorSize();
+		int size = te.getReactorSize();
 		int startX = 26;
 		int startY = 25;
 		int slotCount = te.reactorSlot.size();
 
 		for (int i = 0; i < slotCount; i++)
 		{
-			int x = i % this.size;
-			int y = i / this.size;
+			int x = i % size;
+			int y = i / size;
 			this.addSlot(new SlotInvSlot(te.reactorSlot, i, startX + 18 * x, startY + 18 * y));
 		}
 

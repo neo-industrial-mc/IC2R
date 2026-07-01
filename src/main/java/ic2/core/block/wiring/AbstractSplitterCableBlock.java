@@ -16,20 +16,20 @@ public abstract class AbstractSplitterCableBlock extends AbstractCableBlock
 	protected AbstractSplitterCableBlock(Properties settings)
 	{
 		super(settings, CableType.splitter, 0);
-		this.registerDefaultState((BlockState) this.defaultBlockState().setValue(active, false));
+		this.registerDefaultState(this.defaultBlockState().setValue(active, false));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
 		super.createBlockStateDefinition(builder);
-		builder.add(new Property[] { active });
+		builder.add(active);
 	}
 
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext ctx)
 	{
-		return (BlockState) super.getStateForPlacement(ctx).setValue(active, ctx.getLevel().hasNeighborSignal(ctx.getClickedPos()));
+		return super.getStateForPlacement(ctx).setValue(active, ctx.getLevel().hasNeighborSignal(ctx.getClickedPos()));
 	}
 
 	@Override
@@ -38,9 +38,9 @@ public abstract class AbstractSplitterCableBlock extends AbstractCableBlock
 		if (!world.isClientSide)
 		{
 			boolean newActive = world.hasNeighborSignal(pos);
-			if ((Boolean) state.getValue(active) != newActive)
+			if (state.getValue(active) != newActive)
 			{
-				state = (BlockState) state.setValue(active, newActive);
+				state = state.setValue(active, newActive);
 				world.setBlockAndUpdate(pos, state);
 				if (newActive)
 				{
@@ -58,7 +58,7 @@ public abstract class AbstractSplitterCableBlock extends AbstractCableBlock
 	@Override
 	protected void addToEnet(BlockState state, Level world, BlockPos pos, boolean checkConflicting)
 	{
-		if ((Boolean) state.getValue(active))
+		if (state.getValue(active))
 		{
 			super.addToEnet(state, world, pos, checkConflicting);
 		}

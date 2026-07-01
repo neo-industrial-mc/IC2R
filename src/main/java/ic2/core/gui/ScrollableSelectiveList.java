@@ -69,7 +69,6 @@ public class ScrollableSelectiveList extends AbstractScrollingList<ScrollableSel
 
 				yield false;
 			}
-			default -> false;
 		};
 	}
 

@@ -23,7 +23,7 @@ public class GuiFluidBottler extends Ic2Gui<ContainerFluidBottler>
 	{
 		super.renderBg(guiGraphics, delta, mouseX, mouseY);
 		this.bindTexture();
-		int progressSize = Math.round(((ContainerFluidBottler) this.menu).base.getProgress() * 16.0F);
+		int progressSize = Math.round(this.menu.base.getProgress() * 16.0F);
 		if (progressSize > 0)
 		{
 			this.drawTexturedRect(guiGraphics.pose(), 61, 36, 198.0, 0.0, progressSize, 13.0);

@@ -108,7 +108,7 @@ public class TileEntityNuke extends TileEntityBridgeNuke implements IHasGui
 			}
 		}
 
-		ret = Math.min(ret, (float) IC2Config.protection.nukeExplosionPowerLimit.get().floatValue());
+		ret = Math.min(ret, IC2Config.protection.nukeExplosionPowerLimit.get().floatValue());
 		return (float) ret;
 	}
 

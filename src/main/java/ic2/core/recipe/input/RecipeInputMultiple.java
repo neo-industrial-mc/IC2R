@@ -62,7 +62,7 @@ public class RecipeInputMultiple extends RecipeInputBase
 	@Override
 	public String toString()
 	{
-		if (this.inputs.length <= 0)
+		if (this.inputs.length == 0)
 		{
 			return "RecipeInputMultiple<Nothing>";
 		}

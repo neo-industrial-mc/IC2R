@@ -9,11 +9,12 @@ import java.io.OutputStream;
 import java.io.UTFDataFormatException;
 import java.nio.BufferUnderflowException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class GrowingBuffer extends OutputStream implements IGrowingBuffer
 {
-	private static final Charset utf8 = Charset.forName("UTF-8");
+	private static final Charset utf8 = StandardCharsets.UTF_8;
 	private static byte[] emptyBuffer = new byte[0];
 	private byte[] buffer;
 	private int pos;

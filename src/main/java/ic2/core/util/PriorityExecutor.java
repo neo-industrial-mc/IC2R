@@ -303,7 +303,7 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		@Override
 		public synchronized <T> T[] toArray(T[] a)
 		{
-			return (T[]) super.toArray(a);
+			return super.toArray(a);
 		}
 
 		@Override

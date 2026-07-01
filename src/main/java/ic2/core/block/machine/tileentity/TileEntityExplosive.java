@@ -126,7 +126,7 @@ public abstract class TileEntityExplosive extends TileEntityInventory implements
 		}
 
 		world.addFreshEntity(entity);
-		world.playSound((Player) null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
+		world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
 		this.exploded = true;
 		return true;
 	}

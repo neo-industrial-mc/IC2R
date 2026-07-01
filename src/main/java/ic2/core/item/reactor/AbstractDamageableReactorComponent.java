@@ -7,7 +7,6 @@ import ic2.core.util.Util;
 
 import java.util.List;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;

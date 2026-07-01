@@ -8,6 +8,7 @@ import ic2.core.ContainerBase;
 import ic2.core.IC2;
 import ic2.core.IHasGui;
 import ic2.core.block.comp.Fluids;
+import ic2.core.block.comp.Process;
 import ic2.core.block.invslot.InvSlotConsumableLiquid;
 import ic2.core.block.invslot.InvSlotConsumableLiquidByList;
 import ic2.core.block.invslot.InvSlotOutput;
@@ -71,8 +72,7 @@ public class TileEntityReplicator extends TileEntityElectricMachine implements I
 
 	private static int applyModifier(int base, int extra, double multiplier)
 	{
-		double ret = Math.round(((double) base + extra) * multiplier);
-		return ret > 2.147483647E9 ? Integer.MAX_VALUE : (int) ret;
+		return Process.applyModifier(base, extra, multiplier);
 	}
 
 	@Override

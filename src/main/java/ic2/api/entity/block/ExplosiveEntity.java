@@ -167,7 +167,7 @@ public abstract class ExplosiveEntity extends Entity
 
 	public int getFuse()
 	{
-		return (Integer) this.entityData.get(FUSE);
+		return this.entityData.get(FUSE);
 	}
 
 	public void setFuse(int fuse)

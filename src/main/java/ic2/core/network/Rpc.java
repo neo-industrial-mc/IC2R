@@ -39,7 +39,7 @@ public class Rpc<V> implements Future<V>
 	}
 
 	@Override
-	public V get() throws InterruptedException, ExecutionException
+	public V get() throws InterruptedException
 	{
 		try
 		{

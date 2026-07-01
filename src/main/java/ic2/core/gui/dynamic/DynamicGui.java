@@ -84,7 +84,7 @@ public class DynamicGui<T extends Container> extends GuiDefaultBackground<Dynami
 						case RECIPE:
 							if (RecipeButton.canUse() && node.eventName != null)
 							{
-								button = new RecipeButton(this, node.x, node.y, node.width, node.height, node.eventName.split(",[ ]*"));
+								button = new RecipeButton(this, node.x, node.y, node.width, node.height, node.eventName.split(", *"));
 								node.text = TextProvider.of("");
 							}
 					}
@@ -204,7 +204,6 @@ public class DynamicGui<T extends Container> extends GuiDefaultBackground<Dynami
 						case Start -> node.x;
 						case Center -> node.x + this.imageWidth / 2;
 						case End -> node.x + this.imageWidth;
-						default -> throw new IllegalArgumentException("invalid alignment: " + node.align);
 					};
 					TextLabel text;
 					if (node.rightAligned)

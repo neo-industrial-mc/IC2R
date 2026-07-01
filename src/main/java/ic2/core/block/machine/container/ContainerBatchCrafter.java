@@ -67,7 +67,7 @@ public class ContainerBatchCrafter extends ContainerElectricMachine<TileEntityBa
 		while (iter.hasNext())
 		{
 			int currentSlot = iter.nextInt();
-			((Slot) this.slots.get(this.indexToSlot.get(currentSlot))).setChanged();
+			this.slots.get(this.indexToSlot.get(currentSlot)).setChanged();
 		}
 
 		return changes.a.isEmpty() ? StackUtil.emptyStack : changes.a.get(0);

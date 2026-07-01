@@ -279,6 +279,6 @@ public class Process extends TileEntityComponent
 
 	public double getProgressRatio()
 	{
-		return this.progress / this.operationDuration;
+		return (double) this.progress / this.operationDuration;
 	}
 }

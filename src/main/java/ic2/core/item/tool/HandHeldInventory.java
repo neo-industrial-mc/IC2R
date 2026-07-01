@@ -6,12 +6,12 @@ import ic2.core.slot.SlotHologramSlot;
 import ic2.core.util.LogCategory;
 import ic2.core.util.StackUtil;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
-import net.minecraft.CrashReportDetail;
 import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -323,10 +323,7 @@ public abstract class HandHeldInventory implements IHasGui
 
 	public void clearContent()
 	{
-		for (int i = 0; i < this.inventory.length; i++)
-		{
-			this.inventory[i] = null;
-		}
+		Arrays.fill(this.inventory, null);
 
 		this.cleared = true;
 	}

@@ -1,7 +1,6 @@
 package ic2.core.block.state;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.UnmodifiableIterator;
 
 import java.util.Map.Entry;
 
@@ -93,7 +92,7 @@ public class BlockStateUtil
 		{
 			if (value.equals(property.getName(cValue)))
 			{
-				return (BlockState) state.setValue(property, cValue);
+				return state.setValue(property, cValue);
 			}
 		}
 

@@ -62,7 +62,7 @@ class LogOutputStream extends OutputStream
 	}
 
 	@Override
-	public void close() throws IOException
+	public void close()
 	{
 		this.flush();
 		if (!this.output.isEmpty())

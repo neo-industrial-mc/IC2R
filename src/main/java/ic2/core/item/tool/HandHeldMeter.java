@@ -19,7 +19,7 @@ public class HandHeldMeter extends HandHeldInventory
 	{
 		if (!this.player.level().isClientSide)
 		{
-			((ServerPlayer) this.player).closeContainer();
+			this.player.closeContainer();
 		}
 	}
 

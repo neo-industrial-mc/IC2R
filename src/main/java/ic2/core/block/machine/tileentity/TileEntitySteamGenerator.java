@@ -48,7 +48,6 @@ public class TileEntitySteamGenerator extends TileEntityInventory implements IHa
 	private TileEntitySteamGenerator.outputType outputFluid = TileEntitySteamGenerator.outputType.NONE;
 	private float systemHeat;
 	private int pressure = 0;
-	private boolean newActive = false;
 
 	public TileEntitySteamGenerator(BlockPos pos, BlockState state)
 	{
@@ -90,10 +89,10 @@ public class TileEntitySteamGenerator extends TileEntityInventory implements IHa
 			}
 		} else
 		{
-			this.newActive = this.work();
-			if (this.getActive() != this.newActive)
+			boolean newActive = this.work();
+			if (this.getActive() != newActive)
 			{
-				this.setActive(this.newActive);
+				this.setActive(newActive);
 			}
 		}
 

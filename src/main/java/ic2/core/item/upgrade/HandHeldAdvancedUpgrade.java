@@ -53,7 +53,7 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 			&& ((ContainerHandHeldInventory<?>) player.containerMenu).base instanceof HandHeldUpgradeOption)
 		{
 			addMaintainedPlayer(player);
-			return ((HandHeldInventory) ((ContainerHandHeldInventory<?>) player.containerMenu).base).getContainerStack();
+			return ((ContainerHandHeldInventory<?>) player.containerMenu).base.getContainerStack();
 		} else
 		{
 			return containerStack;

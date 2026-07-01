@@ -139,7 +139,7 @@ public class TileEntitySteamKineticGenerator extends TileEntityAbstractKineticGe
 			throttle = 1.0F - (float) waterAmount / this.distilledWaterTank.getCapacity();
 		}
 
-		this.kuOutput = (int) (rawOutput * throttle * (float) IC2Config.balance.energy.kineticGenerator.steam.get().floatValue());
+		this.kuOutput = (int) (rawOutput * throttle * IC2Config.balance.energy.kineticGenerator.steam.get().floatValue());
 		if (this.condensationProgress >= 100)
 		{
 			if (this.distilledWaterTank.fillMbUnchecked(Ic2FluidStack.create(Ic2Fluids.DISTILLED_WATER.still(), 1), true) == 1)

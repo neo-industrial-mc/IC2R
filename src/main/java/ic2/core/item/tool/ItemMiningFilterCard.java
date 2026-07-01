@@ -4,7 +4,6 @@ import ic2.core.IHasGui;
 import ic2.core.item.IHandHeldInventory;
 import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;

@@ -1,7 +1,6 @@
 package ic2.core.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.joml.Vector3f;
 import com.mojang.math.Axis;
 import ic2.api.entity.block.ExplosiveEntity;
 import net.minecraft.client.renderer.MultiBufferSource;

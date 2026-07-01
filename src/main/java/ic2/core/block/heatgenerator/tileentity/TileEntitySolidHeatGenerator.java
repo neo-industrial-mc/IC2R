@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 @NotClassic
 public class TileEntitySolidHeatGenerator extends TileEntityHeatSourceInventory implements IHasGui, IGuiValueProvider
 {
-	public static final int emittedHU = Math.round(20.0F * (float) IC2Config.balance.energy.heatGenerator.solid.get().floatValue());
+	public static final int emittedHU = Math.round(20.0F * IC2Config.balance.energy.heatGenerator.solid.get().floatValue());
 	public final InvSlotConsumableFuel fuelSlot = new InvSlotConsumableFuel(this, "fuel", 1, false);
 	public final InvSlotOutput outputslot = new InvSlotOutput(this, "output", 1);
 	public int activityMeter = 0;

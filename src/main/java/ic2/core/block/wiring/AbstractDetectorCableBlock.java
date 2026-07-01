@@ -25,14 +25,14 @@ public abstract class AbstractDetectorCableBlock extends AbstractCableBlock
 	protected AbstractDetectorCableBlock(Properties settings)
 	{
 		super(settings, CableType.detector, 0);
-		this.registerDefaultState((BlockState) this.defaultBlockState().setValue(active, false));
+		this.registerDefaultState(this.defaultBlockState().setValue(active, false));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
 		super.createBlockStateDefinition(builder);
-		builder.add(new Property[] { active });
+		builder.add(active);
 	}
 
 	@Override
@@ -54,9 +54,9 @@ public abstract class AbstractDetectorCableBlock extends AbstractCableBlock
 			if (stats != null)
 			{
 				boolean newActive = stats.getEnergyIn() > 0.0;
-				if (newActive != (Boolean) state.getValue(active))
+				if (newActive != state.getValue(active))
 				{
-					world.setBlockAndUpdate(pos, (BlockState) state.setValue(active, newActive));
+					world.setBlockAndUpdate(pos, state.setValue(active, newActive));
 				} else if (newActive)
 				{
 					world.updateNeighbourForOutputSignal(pos, this);

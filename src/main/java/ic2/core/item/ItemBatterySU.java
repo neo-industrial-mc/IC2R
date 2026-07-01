@@ -37,7 +37,7 @@ public class ItemBatterySU extends Item implements IBoxable, IItemHudInfo
 
 		for (int i = 0; i < 9 && energy > 0.0; i++)
 		{
-			ItemStack target = (ItemStack) player.getInventory().items.get(i);
+			ItemStack target = player.getInventory().items.get(i);
 			if (target != null && target != stack)
 			{
 				energy -= ElectricItem.manager.charge(target, energy, this.tier, true, false);

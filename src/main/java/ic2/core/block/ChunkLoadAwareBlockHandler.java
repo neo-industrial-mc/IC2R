@@ -67,7 +67,7 @@ public final class ChunkLoadAwareBlockHandler
 						{
 							for (int x = 0; x < 16; x++)
 							{
-								BlockState state = (BlockState) container.get(x, y, z);
+								BlockState state = container.get(x, y, z);
 								if (state != lastState)
 								{
 									lastState = state;

@@ -106,10 +106,8 @@ public final class Node
 	{
 		return switch (this.nodeType)
 		{
-			case Source -> 0.002;
-			case Sink -> 0.002;
+			case Source, Sink -> 0.002;
 			case Conductor -> ((IEnergyConductor) this.tile.getMainTile()).getConductionLoss();
-			default -> throw new RuntimeException("invalid nodetype: " + this.nodeType);
 		};
 	}
 

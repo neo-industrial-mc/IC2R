@@ -156,9 +156,7 @@ public class TileEntitySortingMachine extends TileEntityElectricMachine implemen
 						{
 							if (filterStack < var7)
 							{
-								ItemStack[] sideFilters = amount[filterStack];
-								ItemStack[] transferStack = sideFilters;
-								int amountx = transferStack.length;
+								int amountx = amount[filterStack].length;
 								int var12 = 0;
 
 								while (true)
@@ -169,7 +167,7 @@ public class TileEntitySortingMachine extends TileEntityElectricMachine implemen
 										continue label68;
 									}
 
-									ItemStack filter = transferStack[var12];
+									ItemStack filter = amount[filterStack][var12];
 									if (StackUtil.checkItemEquality(filter, stack))
 									{
 										inFilter = true;

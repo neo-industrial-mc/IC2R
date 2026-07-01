@@ -2,7 +2,6 @@ package ic2.core.event;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import ic2.api.item.ElectricItem;
-import ic2.api.item.IEnhancedOverlayProvider;
 import ic2.core.GuiOverlayer;
 import ic2.core.IC2;
 import ic2.core.fluid.FluidHandler;

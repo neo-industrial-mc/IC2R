@@ -22,16 +22,16 @@ public class SmeltingRecipeManager implements IMachineRecipeManager<ItemStack, I
 {
 	public MachineRecipeResult<ItemStack, ItemStack, ItemStack> apply(ItemStack input, boolean acceptTest)
 	{
-		SmeltingRecipe recipe = (SmeltingRecipe) IC2.sideProxy
+		SmeltingRecipe recipe = IC2.sideProxy
 			.getRecipeManager()
-			.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(new ItemStack[] { input }), null)
+			.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(input), null)
 			.orElse(null);
 		if (recipe == null)
 		{
 			return null;
 		}
 
-		ItemStack output = recipe.getResultItem((RegistryAccess) null);
+		ItemStack output = recipe.getResultItem(null);
 		if (StackUtil.isEmpty(output))
 		{
 			return null;

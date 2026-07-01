@@ -42,12 +42,9 @@ public class TileEntityWeightedItemDistributor extends TileEntityInventory imple
 	{
 		super.load(nbt);
 		int[] indexes = nbt.getIntArray("priority");
-		if (indexes.length > 0)
+		for (int index : indexes)
 		{
-			for (int index : indexes)
-			{
-				this.priority.add(Direction.from3DDataValue(index));
-			}
+			this.priority.add(Direction.from3DDataValue(index));
 		}
 	}
 

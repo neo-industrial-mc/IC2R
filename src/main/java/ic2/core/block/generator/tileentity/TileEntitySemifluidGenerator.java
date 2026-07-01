@@ -40,9 +40,9 @@ public class TileEntitySemifluidGenerator extends TileEntityBaseGenerator
 	public static void init()
 	{
 		Recipes.semiFluidGenerator = new SemiFluidFuelManager();
-		if ((float) IC2Config.balance.energy.generator.semiFluidBiogas.get().floatValue() > 0.0F)
+		if (IC2Config.balance.energy.generator.semiFluidBiogas.get().floatValue() > 0.0F)
 		{
-			addFuel(Ic2Fluids.BIOGAS.still(), 10, Math.round(16.0F * (float) IC2Config.balance.energy.generator.semiFluidBiogas.get().floatValue()));
+			addFuel(Ic2Fluids.BIOGAS.still(), 10, Math.round(16.0F * IC2Config.balance.energy.generator.semiFluidBiogas.get().floatValue()));
 		}
 	}
 

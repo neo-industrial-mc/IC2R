@@ -8,7 +8,6 @@ import ic2.api.upgrade.IUpgradeItem;
 import ic2.api.upgrade.UpgradableProperty;
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
-import ic2.core.block.IInventorySlotHolder;
 import ic2.core.block.SimpleCraftingInventory;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.invslot.InvSlotOutput;
@@ -27,7 +26,6 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.MinecraftServer;
@@ -77,7 +75,7 @@ public class TileEntityBatchCrafter
 			TileEntityBatchCrafter.this.ingredientsRow[index].put(stack);
 		}
 	};
-	public final Predicate<Tuple.T2<ItemStack, Integer>> acceptPredicate = input -> this.ingredientsRow[(Integer) input.b].accepts((ItemStack) input.a);
+	public final Predicate<Tuple.T2<ItemStack, Integer>> acceptPredicate = input -> this.ingredientsRow[input.b].accepts(input.a);
 	public final InvSlotOutput craftingOutput = new InvSlotOutput(this, "output", 1, InvSlot.InvSide.SIDE);
 	public final InvSlotOutput containerOutput = new InvSlotOutput(this, "containersOut", this.craftingGrid.length, InvSlot.InvSide.NOTSIDE);
 	public final InvSlotUpgrade upgradeSlot = new InvSlotUpgrade(this, "upgrade", 4);
@@ -186,14 +184,14 @@ public class TileEntityBatchCrafter
 	{
 		Level world = this.getLevel();
 		MinecraftServer server = world.getServer();
-		return server == null ? null : (CraftingRecipe) server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this.crafting, world).orElse(null);
+		return server == null ? null : server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this.crafting, world).orElse(null);
 	}
 
 	protected CraftingRecipe findCraftingRecipe()
 	{
 		Level world = this.getLevel();
 		MinecraftServer server = world.getServer();
-		return server == null ? null : (CraftingRecipe) server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this.ingredients, world).orElse(null);
+		return server == null ? null : server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this.ingredients, world).orElse(null);
 	}
 
 	public ItemStack getCraftingRecipeOutput()

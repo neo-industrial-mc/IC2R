@@ -8,7 +8,6 @@ import ic2.core.uu.UuIndex;
 
 import java.util.List;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;

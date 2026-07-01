@@ -37,7 +37,7 @@ public class ItemBattery extends BaseElectricItem implements INetworkItemEventLi
 
 				for (int i = 0; i < 9; i++)
 				{
-					ItemStack target = (ItemStack) player.getInventory().items.get(i);
+					ItemStack target = player.getInventory().items.get(i);
 					if (target != null
 						&& target != stack
 						&& !(ElectricItem.manager.discharge(target, Double.POSITIVE_INFINITY, Integer.MAX_VALUE, true, true, true) > 0.0))

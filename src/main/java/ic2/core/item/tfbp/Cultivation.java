@@ -9,7 +9,6 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
@@ -37,7 +36,7 @@ public class Cultivation extends TerraformerBase
 			BlockState plant = pickRandomPlant(rng);
 			if (plant.getValues().containsKey(DirectionalBlock.FACING))
 			{
-				plant = (BlockState) plant.setValue(DirectionalBlock.FACING, Util.HORIZONTAL_DIRS[rng.nextInt(Util.HORIZONTAL_DIRS.length)]);
+				plant = plant.setValue(DirectionalBlock.FACING, Util.HORIZONTAL_DIRS[rng.nextInt(Util.HORIZONTAL_DIRS.length)]);
 			}
 
 			if (plant.getBlock() instanceof CropBlock)
@@ -45,8 +44,8 @@ public class Cultivation extends TerraformerBase
 				world.setBlockAndUpdate(pos, Blocks.FARMLAND.defaultBlockState());
 			} else if (plant.getBlock() instanceof DoublePlantBlock)
 			{
-				world.setBlockAndUpdate(above, (BlockState) plant.setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER));
-				world.setBlockAndUpdate(above.above(), (BlockState) plant.setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER));
+				world.setBlockAndUpdate(above, plant.setValue(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER));
+				world.setBlockAndUpdate(above.above(), plant.setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER));
 				return true;
 			}
 
@@ -77,7 +76,7 @@ public class Cultivation extends TerraformerBase
 
 		for (Holder<Block> entry : BuiltInRegistries.BLOCK.getTagOrEmpty(BlockTags.SAPLINGS))
 		{
-			Block block = (Block) entry.value();
+			Block block = entry.value();
 			if (isVanilla(block))
 			{
 				plants.add(block.defaultBlockState());

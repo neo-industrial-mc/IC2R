@@ -1,5 +1,6 @@
 package ic2.core.fluid;
 
+import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -21,12 +22,7 @@ public interface StandardFluidItem extends Ic2FluidItem
 
 	static void setFs(ItemStack stack, Ic2FluidStack fs)
 	{
-		CompoundTag nbt = stack.getTag();
-		if (nbt == null)
-		{
-			nbt = new CompoundTag();
-			stack.setTag(nbt);
-		}
+		CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
 
 		if (fs != null && !fs.isEmpty())
 		{

@@ -5,7 +5,6 @@ import ic2.core.util.Ic2Tooltip;
 
 import java.util.List;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;

@@ -148,7 +148,7 @@ public class TileEntityFluidDistributor extends TileEntityInventory implements I
 				}
 
 				amount /= acceptingNeighbors.size();
-				if (amount <= 0)
+				if (amount == 0)
 				{
 					for (Entry<Direction, BlockEntity> entry : acceptingNeighbors.entrySet())
 					{

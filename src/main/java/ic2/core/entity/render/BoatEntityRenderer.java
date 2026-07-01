@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import com.mojang.math.Axis;
 import ic2.api.entity.boat.AbstractBoatEntity;
 import ic2.api.entity.boat.BoatType;
@@ -67,8 +66,8 @@ public class BoatEntityRenderer extends EntityRenderer<AbstractBoatEntity>
 		}
 
 		Pair<ResourceLocation, BoatModel> pair = this.texturesAndModels.get(boatEntity.getOverrideBoatType());
-		ResourceLocation identifier = (ResourceLocation) pair.getFirst();
-		BoatModel boatEntityModel = (BoatModel) pair.getSecond();
+		ResourceLocation identifier = pair.getFirst();
+		BoatModel boatEntityModel = pair.getSecond();
 		matrixStack.scale(-1.0F, -1.0F, 1.0F);
 		matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 		boatEntityModel.setupAnim(boatEntity, g, 0.0F, -0.1F, 0.0F, 0.0F);
@@ -91,6 +90,6 @@ public class BoatEntityRenderer extends EntityRenderer<AbstractBoatEntity>
 
 	public ResourceLocation getTextureLocation(AbstractBoatEntity boatEntity)
 	{
-		return (ResourceLocation) this.texturesAndModels.get(boatEntity.getOverrideBoatType()).getFirst();
+		return this.texturesAndModels.get(boatEntity.getOverrideBoatType()).getFirst();
 	}
 }

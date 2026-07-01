@@ -143,9 +143,9 @@ public class ItemObscurator extends BaseElectricItem implements PriorityUsableIt
 			int dx = side.getStepX();
 			int dy = side.getStepY();
 			int dz = side.getStepZ();
-			float xS = (dx + 1) / 2;
-			float yS = (dy + 1) / 2;
-			float zS = (dz + 1) / 2;
+			float xS = (float) (dx + 1) / 2;
+			float yS = (float) (dy + 1) / 2;
+			float zS = (float) (dz + 1) / 2;
 			int firstVertex = -1;
 
 			for (int v = 0; v < 4; v++)

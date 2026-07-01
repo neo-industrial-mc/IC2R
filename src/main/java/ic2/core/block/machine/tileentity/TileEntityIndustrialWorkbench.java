@@ -2,7 +2,6 @@ package ic2.core.block.machine.tileentity;
 
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
-import ic2.core.block.IInventorySlotHolder;
 import ic2.core.block.SimpleCraftingInventory;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.invslot.InvSlotConsumable;
@@ -22,7 +21,6 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -297,7 +295,7 @@ public class TileEntityIndustrialWorkbench extends TileEntityInventory implement
 					return true;
 				}
 
-				this.recipe = (CraftingRecipe) world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this.crafting, world).orElse(null);
+				this.recipe = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this.crafting, world).orElse(null);
 				return this.recipe != null;
 			} else
 			{

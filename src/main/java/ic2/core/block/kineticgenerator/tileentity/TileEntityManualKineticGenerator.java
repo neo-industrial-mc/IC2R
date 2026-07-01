@@ -56,7 +56,7 @@ public class TileEntityManualKineticGenerator extends TileEntityAbstractKineticG
 						ku = 20;
 					}
 
-					ku = (int) (ku * Math.round((float) IC2Config.balance.energy.kineticGenerator.manual.get().floatValue()));
+					ku = ku * Math.round(IC2Config.balance.energy.kineticGenerator.manual.get().floatValue());
 					this.kuBuffer = Math.min(this.kuBuffer + ku, this.maxKuBuffer);
 					player.causeFoodExhaustion(0.25F);
 					this.clicks++;

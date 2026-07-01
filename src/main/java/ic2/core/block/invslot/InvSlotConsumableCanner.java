@@ -22,11 +22,6 @@ public class InvSlotConsumableCanner extends InvSlotConsumableLiquid
 				.apply(new ICannerBottleRecipeManager.RawInput(stack, ((TileEntityCanner) this.base).inputSlot.get()), true)
 				!= null;
 			case BottleLiquid, EmptyLiquid, EnrichLiquid -> super.accepts(stack);
-			default ->
-			{
-				assert false;
-				yield false;
-			}
 		};
 	}
 }

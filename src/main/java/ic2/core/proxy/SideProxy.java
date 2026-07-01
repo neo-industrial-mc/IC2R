@@ -5,13 +5,10 @@ import ic2.core.sound.SoundManager;
 import ic2.core.util.Keyboard;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;

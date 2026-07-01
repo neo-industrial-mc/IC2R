@@ -38,7 +38,7 @@ public final class Ic2Tooltip
 			return true;
 		}
 
-		if (component.getContents() instanceof LiteralContents literal && literal.text().indexOf('\u00a7') >= 0)
+		if (component.getContents() instanceof LiteralContents literal && literal.text().indexOf('§') >= 0)
 		{
 			return true;
 		}

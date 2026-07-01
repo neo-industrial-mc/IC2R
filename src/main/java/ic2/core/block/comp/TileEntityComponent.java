@@ -66,6 +66,6 @@ public abstract class TileEntityComponent
 
 	protected void setNetworkUpdate(ServerPlayer player, GrowingBuffer data)
 	{
-		IC2.network.get(true).sendComponentUpdate(this.parent, Components.getId((Class<? extends TileEntityComponent>) this.getClass()), player, data);
+		IC2.network.get(true).sendComponentUpdate(this.parent, Components.getId(this.getClass()), player, data);
 	}
 }

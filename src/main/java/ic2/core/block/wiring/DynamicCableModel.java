@@ -192,7 +192,7 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 
 		try
 		{
-			T ret = (T) this.cache.get(key);
+			T ret = this.cache.get(key);
 			if (ret != null)
 			{
 				return ret;
@@ -202,12 +202,12 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 			this.cacheLock.unlock(stamp);
 		}
 
-		Object var20 = this.generateMesh(color, connections);
+		T var20 = this.generateMesh(color, connections);
 		stamp = this.cacheLock.readLock();
 
 		try
 		{
-			T prev = (T) this.cache.get(key);
+			T prev = this.cache.get(key);
 			if (prev != null)
 			{
 				return prev;
@@ -223,7 +223,7 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 				stamp = this.cacheLock.writeLock();
 			}
 
-			prev = this.cache.putIfAbsent(key, (T) var20);
+			prev = this.cache.putIfAbsent(key, var20);
 			return (T) (prev != null ? prev : var20);
 		} finally
 		{

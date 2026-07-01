@@ -129,13 +129,13 @@ public class TileEntityCropmatron extends TileEntityElectricMachine implements I
 		Level world = this.getLevel();
 		BlockState state = world.getBlockState(pos);
 		int hydration;
-		if (state.getBlock() == Blocks.FARMLAND && (hydration = (Integer) state.getValue(FarmBlock.MOISTURE)) < 7)
+		if (state.getBlock() == Blocks.FARMLAND && (hydration = state.getValue(FarmBlock.MOISTURE)) < 7)
 		{
 			int drainAmount = Math.min(this.waterTank.getFluidAmount(), 7 - hydration);
 			assert drainAmount > 0;
 			assert drainAmount <= 7;
 			this.waterTank.drainMbUnchecked(drainAmount, false);
-			world.setBlock(pos, (BlockState) state.setValue(FarmBlock.MOISTURE, hydration + drainAmount), 2);
+			world.setBlock(pos, state.setValue(FarmBlock.MOISTURE, hydration + drainAmount), 2);
 			return true;
 		} else
 		{

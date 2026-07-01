@@ -71,7 +71,7 @@ public class TileEntityWaterGenerator extends TileEntityBaseRotorGenerator imple
 		} else if (this.fuel <= 0)
 		{
 			this.flowPower();
-			this.production = this.microStorage / 100;
+			this.production = (double) this.microStorage / 100;
 			this.microStorage = (int) (this.microStorage - this.production * 100.0);
 			if (this.production > 0.0)
 			{

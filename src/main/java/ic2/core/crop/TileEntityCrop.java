@@ -668,7 +668,7 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile
 	@Override
 	public void setCurrentAge(int size)
 	{
-		int maxAge = ((Ic2TileEntityBlock) this.getBlockType()).getCropMaxAge();
+		int maxAge = this.getBlockType().getCropMaxAge();
 		if (size > maxAge) size = maxAge;
 		this.currentAge = (byte) size;
 		this.withCropAge(size);

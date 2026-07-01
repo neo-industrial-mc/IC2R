@@ -69,7 +69,7 @@ public class ItemCropSeed extends Item implements ICropSeed
 	public Component getName(ItemStack stack)
 	{
 		CropCard crop = Crops.instance.getCropCard(stack);
-		return Component.translatable(crop == null ? "ic2.crop.seeds" : crop.getSeedType(), new Object[] { super.getName(stack) });
+		return Component.translatable(crop == null ? "ic2.crop.seeds" : crop.getSeedType(), super.getName(stack));
 	}
 
 	@OnlyIn(Dist.CLIENT)

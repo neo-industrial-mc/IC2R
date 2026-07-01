@@ -2,7 +2,6 @@ package ic2.forge;
 
 import ic2.core.block.comp.Fluids;
 import ic2.core.block.tileentity.Ic2TileEntity;
-import ic2.core.fluid.Ic2FluidBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;

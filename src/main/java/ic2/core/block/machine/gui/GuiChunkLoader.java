@@ -44,9 +44,9 @@ public class GuiChunkLoader extends Ic2Gui<ContainerChunkLoader>
 	@Override
 	protected void drawForegroundLayer(GuiGraphics guiGraphics, int mouseX, int mouseY)
 	{
-		ChunkPos mainChunk = new ChunkPos(((ContainerChunkLoader) this.menu).base.getBlockPos());
-		LongSet loadedChunks = ((ContainerChunkLoader) this.menu).base.getLoadedChunks();
-		Level world = ((ContainerChunkLoader) this.menu).base.getLevel();
+		ChunkPos mainChunk = new ChunkPos(this.menu.base.getBlockPos());
+		LongSet loadedChunks = this.menu.base.getLoadedChunks();
+		Level world = this.menu.base.getLevel();
 		int amountLoadedChunks = 0;
 
 		for (int i = -4; i <= 4; i++)
@@ -71,7 +71,7 @@ public class GuiChunkLoader extends Ic2Gui<ContainerChunkLoader>
 			}
 		}
 
-		this.drawTrimmedString(guiGraphics, 8, 58, amountLoadedChunks + " / " + ((ContainerChunkLoader) this.menu).base.getMaxChunks(), 15, 4210752);
+		this.drawTrimmedString(guiGraphics, 8, 58, amountLoadedChunks + " / " + this.menu.base.getMaxChunks(), 15, 4210752);
 		super.drawForegroundLayer(guiGraphics, mouseX, mouseY);
 	}
 
@@ -144,7 +144,7 @@ public class GuiChunkLoader extends Ic2Gui<ContainerChunkLoader>
 	{
 		if (mouseButton == 0)
 		{
-			ChunkPos mainChunk = new ChunkPos(((ContainerChunkLoader) this.menu).base.getBlockPos());
+			ChunkPos mainChunk = new ChunkPos(this.menu.base.getBlockPos());
 
 			for (int dx = -4; dx <= 4; dx++)
 			{
@@ -167,11 +167,11 @@ public class GuiChunkLoader extends Ic2Gui<ContainerChunkLoader>
 
 	private void changeChunk(ChunkPos chunk)
 	{
-		ChunkPos mainChunk = new ChunkPos(((ContainerChunkLoader) this.menu).base.getBlockPos());
+		ChunkPos mainChunk = new ChunkPos(this.menu.base.getBlockPos());
 		IC2.network
 			.get(false)
 			.initiateClientTileEntityEvent(
-				((ContainerChunkLoader) this.menu).base, chunk.x - mainChunk.x + 8 & 15 | (chunk.z - mainChunk.z + 8 & 15) << 4
+				this.menu.base, chunk.x - mainChunk.x + 8 & 15 | (chunk.z - mainChunk.z + 8 & 15) << 4
 			);
 	}
 

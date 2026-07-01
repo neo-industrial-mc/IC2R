@@ -510,7 +510,7 @@ public final class StackUtil
 
 		for (int i = 0; i < contents.size(); i++)
 		{
-			ItemStack stack = (ItemStack) contents.get(i);
+			ItemStack stack = contents.get(i);
 			if (request.test(stack))
 			{
 				if (player.getAbilities().instabuild)
@@ -556,7 +556,7 @@ public final class StackUtil
 
 			for (int i = 0; i < contents.size(); i++)
 			{
-				ItemStack stack = (ItemStack) contents.get(i);
+				ItemStack stack = contents.get(i);
 				if (request.test(stack))
 				{
 					if (player.getAbilities().instabuild)
@@ -716,7 +716,7 @@ public final class StackUtil
 
 		for (int i = 0; i < player.getInventory().items.size() && sizeLeft > 0; i++)
 		{
-			ItemStack invStack = (ItemStack) player.getInventory().items.get(i);
+			ItemStack invStack = player.getInventory().items.get(i);
 			if (isEmpty(invStack))
 			{
 				sizeLeft -= maxStackSize;

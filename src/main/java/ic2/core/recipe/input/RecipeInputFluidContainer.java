@@ -9,7 +9,6 @@ import ic2.core.util.StackUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,10 +50,10 @@ public class RecipeInputFluidContainer extends RecipeInputBase
 			int amount = FluidHandler.fillMb(stack.copy(), fillFs, false, container);
 			if (amount > 0 && container.getValue() != null)
 			{
-				Ic2FluidStack fs = FluidHandler.drainMb((ItemStack) container.getValue(), Integer.MAX_VALUE, true, null);
+				Ic2FluidStack fs = FluidHandler.drainMb(container.getValue(), Integer.MAX_VALUE, true, null);
 				if (fs != null && fs.getAmountMb() > 0)
 				{
-					ret.add((ItemStack) container.getValue());
+					ret.add(container.getValue());
 				}
 			}
 		}
@@ -82,7 +81,7 @@ public class RecipeInputFluidContainer extends RecipeInputBase
 				Ic2FluidStack fs = FluidHandler.drainMb(stack, Integer.MAX_VALUE, false, container);
 				if (fs != null)
 				{
-					stack = (ItemStack) container.getValue();
+					stack = container.getValue();
 					if (!stack.isEmpty())
 					{
 						fs = FluidHandler.drainMb(stack, Integer.MAX_VALUE, true, null);

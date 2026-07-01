@@ -40,7 +40,7 @@ public class ItemToolbox extends Item implements IHandHeldInventory
 			if (toolbox.isThisContainer(stack))
 			{
 				toolbox.saveAsThrown(stack);
-				((ServerPlayer) player).closeContainer();
+				player.closeContainer();
 			}
 		}
 

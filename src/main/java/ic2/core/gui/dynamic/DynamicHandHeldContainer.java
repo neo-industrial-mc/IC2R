@@ -52,7 +52,7 @@ public class DynamicHandHeldContainer<T extends HandHeldInventory> extends Dynam
 		Slot realSlot = null;
 		if (!player.getCommandSenderWorld().isClientSide && slot >= 0 && slot < this.slots.size())
 		{
-			realSlot = (Slot) this.slots.get(slot);
+			realSlot = this.slots.get(slot);
 			stack = realSlot.getItem();
 			thrown = this.base.isThisContainer(stack);
 		}
@@ -61,7 +61,7 @@ public class DynamicHandHeldContainer<T extends HandHeldInventory> extends Dynam
 		if (thrown && !realSlot.hasItem())
 		{
 			this.base.saveAsThrown(stack);
-			((ServerPlayer) player).closeContainer();
+			player.closeContainer();
 		}
 	}
 

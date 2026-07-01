@@ -50,7 +50,6 @@ public abstract class Ic2Gui<T extends ContainerBase<? extends Container>> exten
 	protected final List<GuiElement<?>> elements = new ArrayList<>();
 	private final Set<GuiElement.ImplementedMethod> elementMethods = EnumSet.noneOf(GuiElement.ImplementedMethod.class);
 	private final Queue<Ic2Gui.Tooltip> queuedTooltips = new ArrayDeque<>();
-	private boolean fixKeyEvents = false;
 	private GuiGraphics guiGraphics;
 
 	public Ic2Gui(T container, Inventory playerInventory, Component title)
@@ -122,7 +121,7 @@ public abstract class Ic2Gui<T extends ContainerBase<? extends Container>> exten
 			{
 				// TODO: In 1.20.1, keyboardHandler.setSendRepeatsToGui was removed.
 				// this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
-				this.fixKeyEvents = true;
+				boolean fixKeyEvents = true;
 				break;
 			}
 		}

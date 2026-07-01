@@ -189,12 +189,12 @@ public class InvSlotConsumableLiquid extends InvSlotConsumable
 
 		MutableObject<ItemStack> output = new MutableObject<>();
 		boolean wasChange = false;
-		if (this.transferToTank(tank, output, true) && (StackUtil.isEmpty((ItemStack) output.getValue()) || outputSlot.canAdd((ItemStack) output.getValue())))
+		if (this.transferToTank(tank, output, true) && (StackUtil.isEmpty(output.getValue()) || outputSlot.canAdd(output.getValue())))
 		{
 			wasChange = this.transferToTank(tank, output, false);
-			if (!StackUtil.isEmpty((ItemStack) output.getValue()))
+			if (!StackUtil.isEmpty(output.getValue()))
 			{
-				outputSlot.add((ItemStack) output.getValue());
+				outputSlot.add(output.getValue());
 			}
 		}
 
@@ -207,12 +207,12 @@ public class InvSlotConsumableLiquid extends InvSlotConsumable
 		{
 			MutableObject<ItemStack> output = new MutableObject<>();
 			boolean wasChange = false;
-			if (this.transferFromTank(tank, output, true) && (StackUtil.isEmpty((ItemStack) output.getValue()) || outputSlot.canAdd((ItemStack) output.getValue())))
+			if (this.transferFromTank(tank, output, true) && (StackUtil.isEmpty(output.getValue()) || outputSlot.canAdd(output.getValue())))
 			{
 				wasChange = this.transferFromTank(tank, output, false);
-				if (!StackUtil.isEmpty((ItemStack) output.getValue()))
+				if (!StackUtil.isEmpty(output.getValue()))
 				{
-					outputSlot.add((ItemStack) output.getValue());
+					outputSlot.add(output.getValue());
 				}
 			}
 

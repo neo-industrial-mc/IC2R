@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import com.mojang.math.Axis;
 import ic2.core.IC2;
 import ic2.core.entity.LaserBulletEntity;
