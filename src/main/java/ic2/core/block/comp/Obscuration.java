@@ -26,6 +26,7 @@ public class Obscuration extends TileEntityComponent
 	@Override
 	public void readFromNbt(CompoundTag nbt)
 	{
+		this.dataMap = null;
 		if (!nbt.isEmpty())
 		{
 			for (Direction facing : Util.ALL_DIRS)
@@ -77,7 +78,7 @@ public class Obscuration extends TileEntityComponent
 			{
 				CompoundTag nbt = new CompoundTag();
 				nbt.putString("block", Util.getName(data.state.getBlock()).toString());
-				nbt.putString("variant", data.variant);
+				nbt.putString("variant", BlockStateUtil.getVariantString(data.state()));
 				nbt.putByte("side", (byte) data.side.ordinal());
 				nbt.putIntArray("colorMuls", data.colorMultipliers);
 				ret.put(facing.getSerializedName(), nbt);

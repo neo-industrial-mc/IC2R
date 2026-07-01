@@ -6,7 +6,6 @@ import ic2.core.item.tool.ItemObscurator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -59,29 +58,25 @@ public final class MaskOverlayItemModel implements Ic2Model, BakedModel
 			int seed
 		)
 		{
+			List<BakedQuad> overlayQuads = List.of();
 			CompoundTag nbt = stack.getTag();
-			if (nbt == null)
+			if (nbt != null)
 			{
-				return MaskOverlayItemModel.this.baseModel;
+				BlockState state = ItemObscurator.getState(nbt);
+				Direction side = ItemObscurator.getSide(nbt);
+				int[] colorMultipliers = ItemObscurator.getColorMultipliers(nbt);
+				if (state != null && side != null && colorMultipliers != null)
+				{
+					ItemObscurator.ObscuredRenderInfo renderInfo = ItemObscurator.getRenderInfo(state, side);
+					if (renderInfo != null
+						&& colorMultipliers.length * 4 == renderInfo.uvs.length
+						&& !MaskOverlayItemModel.this.overlayTemplates.isEmpty())
+					{
+						overlayQuads = MaskOverlayItemModel.this.buildOverlayQuads(renderInfo, colorMultipliers);
+					}
+				}
 			}
 
-			BlockState state = ItemObscurator.getState(nbt);
-			Direction side = ItemObscurator.getSide(nbt);
-			int[] colorMultipliers = ItemObscurator.getColorMultipliers(nbt);
-			if (state == null || side == null || colorMultipliers == null)
-			{
-				return MaskOverlayItemModel.this.baseModel;
-			}
-
-			ItemObscurator.ObscuredRenderInfo renderInfo = ItemObscurator.getRenderInfo(state, side);
-			if (renderInfo == null
-				|| colorMultipliers.length * 4 != renderInfo.uvs.length
-				|| MaskOverlayItemModel.this.overlayTemplates.isEmpty())
-			{
-				return MaskOverlayItemModel.this.baseModel;
-			}
-
-			List<BakedQuad> overlayQuads = MaskOverlayItemModel.this.buildOverlayQuads(renderInfo, colorMultipliers);
 			return new OverlaidModel(MaskOverlayItemModel.this.baseModel, MaskOverlayItemModel.this.getDefaultQuads(), overlayQuads);
 		}
 	};
@@ -428,11 +423,11 @@ public final class MaskOverlayItemModel implements Ic2Model, BakedModel
 		{
 			if (side != null)
 			{
-				return Collections.emptyList();
+				return this.baseModel.getQuads(state, side, random, extraData, renderType);
 			}
 
 			List<BakedQuad> resolvedBaseQuads = this.baseQuads.isEmpty()
-				? this.baseModel.getQuads(state, side, random, extraData, renderType)
+				? this.baseModel.getQuads(state, null, random, extraData, renderType)
 				: this.baseQuads;
 			List<BakedQuad> combined = new ArrayList<>(resolvedBaseQuads.size() + this.overlayQuads.size());
 			combined.addAll(resolvedBaseQuads);

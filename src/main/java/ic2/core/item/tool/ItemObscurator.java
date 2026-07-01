@@ -341,7 +341,7 @@ public class ItemObscurator extends BaseElectricItem implements PriorityUsableIt
 			return false;
 		}
 
-		String variant = ModelUtil.getVariant(state);
+		String variant = BlockStateUtil.getVariantString(state);
 		int[] colorMultipliers = new int[renderInfo.tints.length];
 
 		for (int i = 0; i < renderInfo.tints.length; i++)
