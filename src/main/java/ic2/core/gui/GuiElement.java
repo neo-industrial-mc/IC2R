@@ -1,6 +1,5 @@
 package ic2.core.gui;
 
-import com.google.common.base.Suppliers;
 import net.minecraft.client.gui.GuiGraphics;
 import ic2.core.Ic2Gui;
 import ic2.core.gui.dynamic.TextProvider;
@@ -29,7 +28,6 @@ import net.minecraft.world.inventory.InventoryMenu;
 public abstract class GuiElement<T extends GuiElement<T>>
 {
 	public static final ResourceLocation commonTexture = ResourceLocation.fromNamespaceAndPath("ic2", "textures/gui/common.png");
-	protected static final int hoverColor = -2130706433;
 	private static final Map<Class<?>, Set<GuiElement.ImplementedMethod>> IMPLEMENTED_METHOD_CACHE = new IdentityHashMap<>();
 	protected final Ic2Gui<?> gui;
 	protected int x;
@@ -121,7 +119,7 @@ public abstract class GuiElement<T extends GuiElement<T>>
 
 	public T withTooltip(String tooltip)
 	{
-		return this.withTooltip(Suppliers.ofInstance(tooltip));
+		return this.withTooltip(() -> tooltip);
 	}
 
 	public T withTooltip(Supplier<String> tooltipProvider)

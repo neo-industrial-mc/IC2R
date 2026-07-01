@@ -1,7 +1,5 @@
 package ic2.core.ref;
 
-import com.google.common.base.Suppliers;
-
 import java.util.function.Supplier;
 
 import net.minecraft.sounds.SoundEvent;
@@ -18,8 +16,10 @@ public enum Ic2ArmorMaterials implements ArmorMaterial
 	NANO_SUIT("ic2:ic2_nano", 0, new int[] { 0, 0, 0, 0 }, 0, 2.0F, Ingredient::of),
 	QUANTUM_SUIT("ic2:ic2_quantum", 0, new int[] { 0, 0, 0, 0 }, 0, 2.0F, Ingredient::of),
 	NIGHT_VISION_GOGGLES("ic2:ic2_night_vision", 0, new int[] { 0, 0, 0, 3 }, 0, 2.0F, Ingredient::of),
+	SOLAR_HELMET("ic2:ic2_solar_helmet", 0, new int[] { 0, 0, 0, 3 }, 0, 0.0F, Ingredient::of),
+	STATIC_BOOTS("ic2:ic2_static_boots", SoundEvents.ARMOR_EQUIP_LEATHER, new int[] { 3, 0, 0, 0 }, 0.0F),
 	HAZMAT("ic2:ic2_hazmat", SoundEvents.ARMOR_EQUIP_LEATHER, new int[] { 3, 6, 8, 3 }, 2.0F),
-	CF_PACK("ic2:ic2_cf_pack", SoundEvents.ARMOR_EQUIP_IRON),
+	CF_PACK("ic2:ic2_cf_pack", SoundEvents.ARMOR_EQUIP_IRON, new int[] { 0, 0, 8, 0 }, 2.0f),
 	JET_PACK("ic2:ic2_jet_pack", SoundEvents.ARMOR_EQUIP_IRON, new int[] { 0, 0, 8, 0 }, 2.0F),
 	JET_PACK_ELECTRIC("ic2:ic2_jet_pack_electric", SoundEvents.ARMOR_EQUIP_IRON, new int[] { 0, 0, 8, 0 }, 2.0F),
 	BAT_PACK("ic2:ic2_bat_pack", SoundEvents.ARMOR_EQUIP_IRON, new int[] { 0, 0, 8, 0 }, 2.0F),
@@ -48,12 +48,7 @@ public enum Ic2ArmorMaterials implements ArmorMaterial
 		this.knockbackResistance = (float) 0.0;
 		this.repairIngredientSupplier = repairIngredientSupplier;
 	}
-
-	Ic2ArmorMaterials(String name, SoundEvent equipSound)
-	{
-		this(name, equipSound, new int[] { 0, 0, 0, 0 }, 0.0F);
-	}
-
+	
 	Ic2ArmorMaterials(String name, SoundEvent equipSound, int[] protectionAmounts, float toughness)
 	{
 		this.name = name;
@@ -63,7 +58,7 @@ public enum Ic2ArmorMaterials implements ArmorMaterial
 		this.knockbackResistance = 0.0F;
 		this.protectionAmounts = protectionAmounts;
 		this.toughness = toughness;
-		this.repairIngredientSupplier = Suppliers.memoize(Ingredient::of);
+		this.repairIngredientSupplier = Ingredient::of;
 	}
 
 	public int getDurabilityForType(ArmorItem.Type type)

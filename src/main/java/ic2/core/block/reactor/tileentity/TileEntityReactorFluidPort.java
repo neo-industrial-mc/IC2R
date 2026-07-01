@@ -1,6 +1,5 @@
 package ic2.core.block.reactor.tileentity;
 
-import com.google.common.base.Supplier;
 import ic2.api.reactor.IReactorChamber;
 import ic2.api.upgrade.IUpgradableBlock;
 import ic2.api.upgrade.UpgradableProperty;
@@ -16,7 +15,6 @@ import ic2.core.profile.NotClassic;
 import ic2.core.ref.Ic2BlockEntities;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;

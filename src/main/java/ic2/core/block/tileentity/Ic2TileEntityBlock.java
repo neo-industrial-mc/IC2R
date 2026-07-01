@@ -1,6 +1,5 @@
 package ic2.core.block.tileentity;
 
-import com.google.common.base.Suppliers;
 import ic2.api.block.BreakableBlock;
 import ic2.api.crops.CropSoilType;
 import ic2.api.tile.IWrenchAble;
@@ -99,7 +98,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		this.allowWrenchRotating = allowWrenchRotating;
 		this.supportedFacings = data.supportedFacings;
 		this.facingProperty = this.supportedFacings.size() > 1 ? (Property<Direction>) this.stateDefinition.getProperty("facing") : null;
-		this.dummyTe = Suppliers.memoize(() -> this.newBlockEntity(BlockPos.ZERO, this.defaultBlockState()));
+		this.dummyTe = () -> this.newBlockEntity(BlockPos.ZERO, this.defaultBlockState());
 		this.explosive = TileEntityExplosive.class.isAssignableFrom(teClass);
 	}
 
@@ -195,7 +194,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		return this.supportedFacings;
 	}
 
-	public Ic2TileEntity newBlockEntity(BlockPos pos, BlockState state)
+	public Ic2TileEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state)
 	{
 		try
 		{
@@ -206,12 +205,12 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 	}
 
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type)
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level world, @NotNull BlockState state, @NotNull BlockEntityType<T> type)
 	{
 		return (BlockEntityTicker<T>) TICKER;
 	}
 
-	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(@NotNull Builder<Block, BlockState> builder)
 	{
 		Ic2TileEntityBlock.InitData data = pendingInitData.get();
 		Set<Direction> facings = data.supportedFacings;
@@ -249,7 +248,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 	}
 
-	public BlockState getStateForPlacement(BlockPlaceContext ctx)
+	public BlockState getStateForPlacement(@NotNull BlockPlaceContext ctx)
 	{
 		BlockState ret = super.getStateForPlacement(ctx);
 		if (ret == null)
@@ -318,7 +317,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 	}
 
-	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos)
+	public boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos)
 	{
 		if (this.teClass == TileEntityLuminator.class && this.facingProperty != null)
 		{
@@ -329,7 +328,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		return this.cropType == null ? super.canSurvive(state, world, pos) : CropSoilType.contains(world.getBlockState(pos.below()).getBlock()) && super.canSurvive(state, world, pos);
 	}
 
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos)
+	public @NotNull BlockState updateShape(@NotNull BlockState state, @NotNull Direction direction, @NotNull BlockState neighborState, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockPos neighborPos)
 	{
 		if (this.cropType == null)
 		{
@@ -340,7 +339,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 	}
 
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify)
+	public void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block sourceBlock, @NotNull BlockPos sourcePos, boolean notify)
 	{
 		super.neighborChanged(state, world, pos, sourceBlock, sourcePos, notify);
 		Ic2TileEntity tileEntity = getTe(world, pos);
@@ -350,12 +349,12 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 	}
 
-	public boolean isSignalSource(BlockState state)
+	public boolean isSignalSource(@NotNull BlockState state)
 	{
 		return this.dummyTe.get().hasComponent(RedstoneEmitter.class);
 	}
 
-	public int getSignal(BlockState state, BlockGetter world, BlockPos pos, Direction direction)
+	public int getSignal(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Direction direction)
 	{
 		Ic2TileEntity te = getTe(world, pos);
 		if (te == null)
@@ -367,12 +366,12 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		return emitter != null ? emitter.getLevel() : 0;
 	}
 
-	public boolean hasAnalogOutputSignal(BlockState state)
+	public boolean hasAnalogOutputSignal(@NotNull BlockState state)
 	{
 		return this.dummyTe.get().hasComponent(ComparatorEmitter.class);
 	}
 
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos)
+	public int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos)
 	{
 		Ic2TileEntity te = getTe(world, pos);
 		if (te == null)
@@ -384,7 +383,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		return emitter != null ? emitter.getLevel() : 0;
 	}
 
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity)
+	public void entityInside(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Entity entity)
 	{
 		if (this.cropType != null && entity instanceof Ravager && world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING))
 		{
@@ -413,7 +412,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 	}
 
-	public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+	public void setPlacedBy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, LivingEntity placer, @NotNull ItemStack stack)
 	{
 		Ic2TileEntity te = getTe(world, pos);
 		if (te != null)
@@ -423,7 +422,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 	}
 
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
+	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context)
 	{
 		Ic2TileEntity be = getTe(world, pos);
 		if (be == null)
@@ -435,7 +434,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 	}
 
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
+	public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context)
 	{
 		Ic2TileEntity be = getTe(world, pos);
 		if (be == null)
@@ -447,7 +446,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 	}
 
-	public VoxelShape getOcclusionShape(BlockState state, BlockGetter world, BlockPos pos)
+	public @NotNull VoxelShape getOcclusionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos)
 	{
 		Ic2TileEntity be = getTe(world, pos);
 		if (be == null)
@@ -459,7 +458,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 	}
 
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit)
 	{
 		if (player.isShiftKeyDown())
 		{
@@ -491,7 +490,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		return super.getDrops(state, builder);
 	}
 
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved)
+	public void onRemove(BlockState state, @NotNull Level world, @NotNull BlockPos pos, BlockState newState, boolean moved)
 	{
 		if (!state.is(newState.getBlock()) && !moved)
 		{
@@ -584,7 +583,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 	}
 
 	@Override
-	public boolean dropFromExplosion(Explosion explosion)
+	public boolean dropFromExplosion(@NotNull Explosion explosion)
 	{
 		return !this.explosive && super.dropFromExplosion(explosion);
 	}

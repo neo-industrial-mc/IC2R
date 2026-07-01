@@ -1114,6 +1114,8 @@
   "item.ic2.small_tin_dust": "Tiny Pile of Tin Dust",
   "item.ic2.small_uranium_235": "Tiny Pile of Uranium 235",
   "item.ic2.small_uranium_238": "Tiny Pile of Uranium 238",
+  "item.ic2.solar_helmet": "Solar Helmet",
+  "item.ic2.static_boots": "Static Boots",
   "item.ic2.steam_bucket": "Steam Bucket",
   "item.ic2.steam_cell": "Steam Cell",
   "item.ic2.steam_turbine": "Steam Turbine",
@@ -1233,5 +1235,6 @@
   "subtitle.ic2.machine.teleporter.use": "Teleporter: Use",
   "subtitle.ic2.machine.teleporter.charge": "Teleporter: Charge",
   "subtitle.ic2.machine.terraformer.loop": "Terraformer: Loop",
-  "subtitle.ic2.block.nuke.explode": "Nuke: Explode"
+  "subtitle.ic2.block.nuke.explode": "Nuke: Explode",
+  "block.ic2.obscured_wall": "Obscured Wall"
 }

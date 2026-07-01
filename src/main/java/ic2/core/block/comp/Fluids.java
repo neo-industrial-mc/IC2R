@@ -1,8 +1,6 @@
 package ic2.core.block.comp;
 
 import com.google.common.base.Predicates;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import ic2.api.recipe.ILiquidAcceptManager;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.tileentity.Ic2TileEntity;
@@ -19,6 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,7 +31,7 @@ import net.minecraft.world.level.material.Fluid;
 public class Fluids extends TileEntityComponent implements Ic2FluidBlock
 {
 	protected final List<Fluids.InternalFluidTank> managedTanks = new ArrayList<>();
-	protected final List<Supplier<? extends Collection<Fluids.InternalFluidTank>>> unmanagedTanks = new ArrayList<>();
+	protected final List<Supplier<? extends Collection<InternalFluidTank>>> unmanagedTanks = new ArrayList<>();
 
 	public Fluids(Ic2TileEntity parent)
 	{
@@ -135,16 +134,6 @@ public class Fluids extends TileEntityComponent implements Ic2FluidBlock
 	{
 		this.managedTanks.add(tank);
 		return tank;
-	}
-
-	public void addUnmanagedTanks(Fluids.InternalFluidTank tank)
-	{
-		this.unmanagedTanks.add(Suppliers.ofInstance(Collections.singleton(tank)));
-	}
-
-	public void addUnmanagedTanks(Collection<Fluids.InternalFluidTank> tanks)
-	{
-		this.addUnmanagedTankHook(Suppliers.ofInstance(tanks));
 	}
 
 	public void addUnmanagedTankHook(Supplier<? extends Collection<Fluids.InternalFluidTank>> suppl)

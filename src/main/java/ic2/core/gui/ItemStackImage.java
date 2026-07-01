@@ -1,10 +1,11 @@
 package ic2.core.gui;
 
-import com.google.common.base.Supplier;
 import net.minecraft.client.gui.GuiGraphics;
 import ic2.core.Ic2Gui;
 import ic2.core.util.StackUtil;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.function.Supplier;
 
 public class ItemStackImage extends GuiElement<ItemStackImage>
 {
@@ -20,7 +21,7 @@ public class ItemStackImage extends GuiElement<ItemStackImage>
 	public void drawBackground(GuiGraphics guiGraphics, int mouseX, int mouseY)
 	{
 		super.drawBackground(guiGraphics, mouseX, mouseY);
-		ItemStack stack = (ItemStack) this.itemSupplier.get();
+		ItemStack stack = this.itemSupplier.get();
 		if (!StackUtil.isEmpty(stack))
 		{
 			this.gui.drawItemStack(this.x, this.y, stack);
@@ -32,7 +33,7 @@ public class ItemStackImage extends GuiElement<ItemStackImage>
 	{
 		if (this.contains(mouseX, mouseY))
 		{
-			ItemStack stack = (ItemStack) this.itemSupplier.get();
+			ItemStack stack = this.itemSupplier.get();
 			if (!StackUtil.isEmpty(stack))
 			{
 				this.gui.drawTooltip(guiGraphics, mouseX, mouseY, stack);

@@ -20,6 +20,8 @@ import ic2.core.item.armor.ItemArmorLappack;
 import ic2.core.item.armor.ItemArmorNanoSuit;
 import ic2.core.item.armor.ItemArmorNightVisionGoggles;
 import ic2.core.item.armor.ItemArmorQuantumSuit;
+import ic2.core.item.armor.ItemArmorSolarHelmet;
+import ic2.core.item.armor.ItemArmorStaticBoots;
 import ic2.core.item.boat.BoatItem;
 import ic2.core.item.crafting.BlockCuttingBlade;
 import ic2.core.item.reactor.ItemReactorCondensator;
@@ -608,6 +610,8 @@ public final class Ic2Items
 	public static final Item QUANTUM_LEGGINGS = register("quantum_leggings", new ItemArmorQuantumSuit(Ic2ArmorMaterials.QUANTUM_SUIT, EquipmentSlot.LEGS, new Properties().rarity(Rarity.UNCOMMON)));
 	public static final Item RUBBER_BOOTS = register("rubber_boots", new ItemArmorHazmat(EquipmentSlot.FEET, new Properties()));
 	public static final Item NIGHT_VISION_GOGGLES = register("night_vision_goggles", new ItemArmorNightVisionGoggles(new Properties().durability(27)));
+	public static final Item SOLAR_HELMET = register("solar_helmet", new ItemArmorSolarHelmet(new Properties()));
+	public static final Item STATIC_BOOTS = register("static_boots", new ItemArmorStaticBoots(new Properties()));
 
 	public static final EnumMap<Ic2ItemGroupType, List<Supplier<Item>>> CREATIVE_TAB_ITEMS = new EnumMap<>(Ic2ItemGroupType.class);
 
@@ -639,6 +643,8 @@ public final class Ic2Items
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> NANO_LEGGINGS);
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> NANO_SABER);
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> NIGHT_VISION_GOGGLES);
+		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> SOLAR_HELMET);
+		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> STATIC_BOOTS);
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> NUKE);
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> QUANTUM_BOOTS);
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> QUANTUM_CHESTPLATE);

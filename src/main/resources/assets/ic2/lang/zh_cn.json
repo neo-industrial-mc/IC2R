@@ -1114,6 +1114,8 @@
   "item.ic2.small_tin_dust": "小撮锡粉",
   "item.ic2.small_uranium_235": "小撮铀-235",
   "item.ic2.small_uranium_238": "小撮铀-238",
+  "item.ic2.solar_helmet": "太阳能头盔",
+  "item.ic2.static_boots": "静电靴",
   "item.ic2.steam_bucket": "蒸汽桶",
   "item.ic2.steam_cell": "蒸汽单元",
   "item.ic2.steam_turbine": "蒸汽涡轮",
@@ -1233,5 +1235,6 @@
   "subtitle.ic2.machine.teleporter.use": "传送机：使用",
   "subtitle.ic2.machine.teleporter.charge": "传送机：充能",
   "subtitle.ic2.machine.terraformer.loop": "地形转换机：工作",
-  "subtitle.ic2.block.nuke.explode": "核弹：爆炸"
+  "subtitle.ic2.block.nuke.explode": "核弹：爆炸",
+  "block.ic2.obscured_wall": "拟态墙"
 }

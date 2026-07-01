@@ -1,6 +1,5 @@
 package ic2.core.item.upgrade;
 
-import com.google.common.base.Supplier;
 import ic2.core.IC2;
 import ic2.core.gui.EnumCycleHandler;
 import ic2.core.gui.MouseButton;
@@ -13,6 +12,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import java.util.function.Supplier;
 
 public final class AdvancedUpgradeScreenFactory implements ClientEnvProxy.ScreenFactory<DynamicContainer<HandHeldAdvancedUpgrade>>
 {
