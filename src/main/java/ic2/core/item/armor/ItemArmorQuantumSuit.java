@@ -55,6 +55,17 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 		potionRemovalCost.put(MobEffects.WITHER, 25000);
 	}
 
+	private static int getPotionRemovalCost(MobEffect potion, MobEffectInstance effect, int baseCost)
+	{
+		if (potion == Ic2Potion.radiation)
+		{
+			// IC2 radiation uses high amplifier values for damage scaling, not vanilla potion levels.
+			return baseCost + effect.getAmplifier() * 100;
+		}
+
+		return baseCost * (effect.getAmplifier() + 1);
+	}
+
 	private static final Map<Player, Float> jumpCharges = new WeakHashMap<>();
 
 	public ItemArmorQuantumSuit(ArmorMaterial material, EquipmentSlot armorType, Properties settings)
@@ -256,17 +267,20 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 				IC2.grantAdvancement(player, "ic2/build_generator/build_compressor/build_nano_suit/build_quantum_suits/starve_with_q_helmet");
 			}
 
-			for (MobEffectInstance effect : new LinkedList<>(player.getActiveEffects()))
+			if (IC2.sideProxy.isSimulating())
 			{
-				MobEffect potion = effect.getEffect();
-				Integer cost = potionRemovalCost.get(potion);
-				if (cost != null)
+				for (MobEffectInstance effect : new LinkedList<>(player.getActiveEffects()))
 				{
-					cost = cost * (effect.getAmplifier() + 1);
-					if (ElectricItem.manager.canUse(stack, cost))
+					MobEffect potion = effect.getEffect();
+					Integer baseCost = potionRemovalCost.get(potion);
+					if (baseCost != null)
 					{
-						ElectricItem.manager.use(stack, cost, player);
-						player.removeEffect(potion);
+						int cost = getPotionRemovalCost(potion, effect, baseCost);
+						if (ElectricItem.manager.canUse(stack, cost))
+						{
+							ElectricItem.manager.use(stack, cost, player);
+							player.removeEffect(potion);
+						}
 					}
 				}
 			}
