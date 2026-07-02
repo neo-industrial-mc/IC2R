@@ -41,6 +41,7 @@ import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack, IHazmatLike, IItemHudProvider, DyeableLeatherItem
 {
@@ -54,7 +55,7 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 		potionRemovalCost.put(MobEffects.WITHER, 25000);
 	}
 
-	private float jumpCharge;
+	private static final Map<Player, Float> jumpCharges = new WeakHashMap<>();
 
 	public ItemArmorQuantumSuit(ArmorMaterial material, EquipmentSlot armorType, Properties settings)
 	{
@@ -431,30 +432,30 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 					{
 						nbtData.putBoolean("on_ground", player.onGround());
 					}
-				} else
+				}
+
+				if (ElectricItem.manager.canUse(stack, 4000.0) && player.onGround())
 				{
-					if (ElectricItem.manager.canUse(stack, 4000.0) && player.onGround())
-					{
-						this.jumpCharge = 1.0F;
-					}
+					jumpCharges.put(player, 1.0F);
+				}
 
-					if (player.getDeltaMovement().y >= 0.0 && this.jumpCharge > 0.0F && !player.isInWater())
+				float jumpCharge = jumpCharges.getOrDefault(player, 0.0F);
+				if (player.getDeltaMovement().y >= 0.0 && jumpCharge > 0.0F && !player.isInWater())
+				{
+					if (IC2.keyboard.isJumpKeyDown(player) && IC2.keyboard.isBoostKeyDown(player))
 					{
-						if (IC2.keyboard.isJumpKeyDown(player) && IC2.keyboard.isBoostKeyDown(player))
+						if (jumpCharge == 1.0F)
 						{
-							if (this.jumpCharge == 1.0F)
-							{
-								Vec3 motion = player.getDeltaMovement();
-								player.setDeltaMovement(motion.x * 3.5, motion.y, motion.z * 3.5);
-							}
-
 							Vec3 motion = player.getDeltaMovement();
-							player.setDeltaMovement(motion.x, motion.y + this.jumpCharge * 0.3F, motion.z);
-							this.jumpCharge = (float) (this.jumpCharge * 0.75);
-						} else if (this.jumpCharge < 1.0F)
-						{
-							this.jumpCharge = 0.0F;
+							player.setDeltaMovement(motion.x * 3.5, motion.y, motion.z * 3.5);
 						}
+
+						Vec3 motion = player.getDeltaMovement();
+						player.setDeltaMovement(motion.x, motion.y + jumpCharge * 0.3F, motion.z);
+						jumpCharges.put(player, jumpCharge * 0.75F);
+					} else if (jumpCharge < 1.0F)
+					{
+						jumpCharges.put(player, 0.0F);
 					}
 				}
 			}
