@@ -4,6 +4,7 @@ import ic2.core.IC2;
 import ic2.core.Ic2Gui;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.fluid.Ic2FluidTank;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -41,7 +42,7 @@ public class TankFluidSlot extends AbstractFluidSlot
 			Container base = this.getBase();
 			if (base instanceof BlockEntity)
 			{
-				IC2.network.get(false).initiateClientTileEntityEvent((BlockEntity) base, 0);
+				IC2.network.get(false).initiateClientTileEntityEvent((BlockEntity) base, Screen.hasShiftDown() ? 1 : 0);
 				return true;
 			}
 		}
