@@ -29,16 +29,18 @@ public class GuiElectricBlock extends Ic2Gui<ContainerElectricBlock>
 		int color = 4207152;
 		super.drawForegroundLayer(guiGraphics, mouseX, mouseY);
 		this.drawString(guiGraphics, 8, 74, Component.translatable("ic2.EUStorage.gui.info.armor").getString(), color);
-		this.drawString(guiGraphics, 79, rightTextHeight, Component.translatable("ic2.EUStorage.gui.info.level", ElectricalDisplay.formatTierName(this.menu.base.energy.getWorkingVoltage())).getString(), color);
+		this.drawString(guiGraphics, 82, rightTextHeight, Component.translatable("ic2.EUStorage.gui.info.level", ElectricalDisplay.formatTierName(this.menu.base.energy.getWorkingVoltage())).getString(), color);
 		int e = (int) Math.min(this.menu.base.energy.getEnergy(), this.menu.base.energy.getCapacity());
 		this.drawString(guiGraphics, 110, rightTextHeight + 10, " " + e, color);
 		this.drawString(guiGraphics, 110, rightTextHeight + 20, "/" + (int) this.menu.base.energy.getCapacity(), color);
-		String output = Component.translatable("ic2.EUStorage.gui.info.output", ElectricalDisplay.formatPower(
+		String output = Component.translatable("ic2.EUStorage.gui.info.output").getString();
+		String power = ElectricalDisplay.formatPower(
 			this.menu.base.energy.getWorkingVoltage().getVoltage() * this.menu.base.energy.getMaxSourceAmperage(),
 			this.menu.base.energy.getWorkingVoltage(),
 			this.menu.base.energy.getMaxSourceAmperage()
-		).getString()).getString();
-		this.drawString(guiGraphics, 85, rightTextHeight + 35, output, color);
+		).getString();
+		this.drawString(guiGraphics, 82, rightTextHeight + 35, output, color);
+		this.drawString(guiGraphics, 82, rightTextHeight + 45, power, color);
 	}
 
 	@Override

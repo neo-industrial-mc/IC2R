@@ -490,7 +490,7 @@
   "ic2.Condenser.gui.tooltipvent": "Add heat vents for faster progress ( %1$s EU/Vent )",
   "ic2.EUStorage.gui.info.armor": "Armor",
   "ic2.EUStorage.gui.info.level": "Voltage: %1$s",
-  "ic2.EUStorage.gui.info.output": "Out: %1$s",
+  "ic2.EUStorage.gui.info.output": "Out:",
   "ic2.EUStorage.gui.mod.redstone0": "Redstone Behavior: Nothing",
   "ic2.EUStorage.gui.mod.redstone1": "Redstone Behavior: Emit if full",
   "ic2.EUStorage.gui.mod.redstone2": "Redstone Behavior: Emit if partially filled",
@@ -1258,5 +1258,6 @@
   "subtitle.ic2.machine.teleporter.charge": "Teleporter: Charge",
   "subtitle.ic2.machine.terraformer.loop": "Terraformer: Loop",
   "subtitle.ic2.block.nuke.explode": "Nuke: Explode",
-  "block.ic2.obscured_wall": "Obscured Wall"
+  "block.ic2.obscured_wall": "Obscured Wall",
+  "item.ic2.tank.tooltip": "Capacity: %s mB"
 }

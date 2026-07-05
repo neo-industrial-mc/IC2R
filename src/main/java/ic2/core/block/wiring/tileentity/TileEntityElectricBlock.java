@@ -1,6 +1,5 @@
 package ic2.core.block.wiring.tileentity;
 
-import ic2.api.energy.EnergyNet;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.api.tile.IEnergyStorage;
 import ic2.core.ContainerBase;

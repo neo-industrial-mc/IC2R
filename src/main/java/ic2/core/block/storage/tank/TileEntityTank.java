@@ -106,7 +106,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IHas
 	@Override
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		Ic2Tooltip.add(tooltip, Component.literal("Capacity: " + this.contents.getCapacity() + " mB"));
+		Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.tank.tooltip", contents.getCapacity()));
 		CompoundTag nbt = stack.getTag();
 		if (nbt != null && !nbt.contains("Empty"))
 		{
@@ -114,16 +114,12 @@ public abstract class TileEntityTank extends TileEntityInventory implements IHas
 			if (fluidStack != null && !fluidStack.isEmpty())
 			{
 				Ic2Tooltip.add(tooltip, Component.literal(SideProxyClient.envProxy.getFluidName(fluidStack)));
-				Ic2Tooltip.add(tooltip, Component.literal("Amount: " + fluidStack.getAmountMb() + " mB"));
+				Ic2Tooltip.add(tooltip, Component.translatable("ic2.generic.text.amount", fluidStack.getAmountMb()));
 				Ic2Tooltip.add(tooltip, Component.literal("Type: " + (FluidHandler.isGaseous(fluidStack.getFluid()) ? "Gas" : "Liquid")));
-			} else
-			{
-				Ic2Tooltip.add(tooltip, Component.literal("Empty"));
+				return;
 			}
-		} else
-		{
-			Ic2Tooltip.add(tooltip, Component.literal("Empty"));
 		}
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.fluid_container.empty"));
 	}
 
 	@Override
