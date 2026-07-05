@@ -32,28 +32,22 @@ public final class ElectricalNodes
 
 	public static int getGtOfferAmps(IEnergySource source)
 	{
+		double offered = source.getOfferedEnergy();
+		if (offered <= 0.0)
+		{
+			return 0;
+		}
+
 		IElectricalNode node = resolve(source);
 		if (node != null)
 		{
 			int voltage = node.getWorkingVoltage().getVoltage();
-			if (voltage <= 0)
+			if (voltage <= 0 || offered < voltage)
 			{
 				return 0;
 			}
 
-			double fill = getBufferFill(node);
-			if (fill < voltage)
-			{
-				double offered = source.getOfferedEnergy();
-				if (offered >= voltage)
-				{
-					return Math.min(node.getMaxSourceAmperage(), (int) Math.floor(offered / voltage));
-				}
-
-				return 0;
-			}
-
-			return Math.min(node.getMaxSourceAmperage(), (int) Math.floor(fill / voltage));
+			return Math.min(node.getMaxSourceAmperage(), (int) Math.floor(offered / voltage));
 		}
 
 		int tier = source.getSourceTier();
@@ -63,11 +57,22 @@ public final class ElectricalNodes
 		}
 
 		int voltage = (int) EnergyNet.instance.getPowerFromTier(tier);
-		return voltage > 0 ? (int) Math.floor(source.getOfferedEnergy() / voltage) : 0;
+		if (voltage <= 0 || offered < voltage)
+		{
+			return 0;
+		}
+
+		return (int) Math.floor(offered / voltage);
 	}
 
 	public static int getGtDemandAmps(IEnergySink sink)
 	{
+		double demanded = sink.getDemandedEnergy();
+		if (demanded <= 0.0)
+		{
+			return 0;
+		}
+
 		IElectricalNode node = resolve(sink);
 		if (node != null)
 		{
@@ -77,7 +82,13 @@ public final class ElectricalNodes
 				return 0;
 			}
 
-			return Math.min(node.getMaxSinkAmperage(), (int) Math.floor(node.getEnergyBufferFree() / voltage));
+			int fromBuffer = (int) Math.floor(node.getEnergyBufferFree() / voltage);
+			if (fromBuffer <= 0)
+			{
+				return 0;
+			}
+
+			return Math.min(node.getMaxSinkAmperage(), fromBuffer);
 		}
 
 		int tier = sink.getSinkTier();
@@ -87,7 +98,7 @@ public final class ElectricalNodes
 		}
 
 		int voltage = (int) EnergyNet.instance.getPowerFromTier(tier);
-		return voltage > 0 ? (int) Math.floor(sink.getDemandedEnergy() / voltage) : 0;
+		return voltage > 0 ? (int) Math.floor(demanded / voltage) : 0;
 	}
 
 	/**

@@ -259,7 +259,12 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 
 		if (ampsUsed > 0)
 		{
-			((IEnergySource) tile.getMainTile()).drawEnergy((double) ampsUsed * voltage);
+			IEnergySource source = (IEnergySource) tile.getMainTile();
+			double draw = Math.min((double) ampsUsed * voltage, source.getOfferedEnergy());
+			if (draw > 0.0)
+			{
+				source.drawEnergy(draw);
+			}
 		}
 
 		if (remainingAmps > 0)
@@ -313,7 +318,7 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 			{
 				cablesToRemove.add(cableTile);
 				addConductorAmpLoad(path.conductors, traversedConductors + 1, ampsToSend, conductorAmpLoads);
-				return ampsToSend;
+				return 0;
 			}
 
 			int currentLoad = conductorAmpLoads.getOrDefault(conductorNode, 0);
@@ -321,7 +326,7 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 			{
 				cablesToRemove.add(cableTile);
 				addConductorAmpLoad(path.conductors, traversedConductors + 1, ampsToSend, conductorAmpLoads);
-				return ampsToSend;
+				return 0;
 			}
 
 			packetEU -= cable.getLossPerMeterPerAmp();
@@ -336,12 +341,12 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 		addConductorAmpLoad(path.conductors, traversedConductors, ampsToSend, conductorAmpLoads);
 		if (packetEU <= 0)
 		{
-			return ampsToSend;
+			return 0;
 		}
 
 		IEnergySink sink = (IEnergySink) targetTile.getMainTile();
 		double totalEU = (double) ampsToSend * packetEU;
-		double injectTier = EnergyNet.instance.getTierFromPower(packetVoltage);
+		double injectTier = ElectricalNodes.getInjectTierParameter(sink, totalEU);
 		double rejected = sink.injectEnergy(path.targetDirection, totalEU, injectTier);
 		if (rejected >= totalEU)
 		{

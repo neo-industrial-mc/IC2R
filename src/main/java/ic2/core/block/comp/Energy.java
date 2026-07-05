@@ -450,7 +450,13 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 	@Override
 	public int getMaxSourceAmperage()
 	{
-		return this.multiSource ? this.sourcePackets : 1;
+		if (this.multiSource)
+		{
+			return this.sourcePackets;
+		}
+
+		int workingCurrent = this.profile.getWorkingCurrent();
+		return workingCurrent > 0 ? workingCurrent : 1;
 	}
 
 	@Override
