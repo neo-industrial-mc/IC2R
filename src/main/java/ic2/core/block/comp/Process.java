@@ -10,6 +10,7 @@ import ic2.core.block.invslot.InvSlotOutput;
 import ic2.core.block.invslot.InvSlotProcessable;
 import ic2.core.block.invslot.InvSlotProcessableGeneric;
 import ic2.core.block.invslot.InvSlotUpgrade;
+import ic2.core.block.machine.tileentity.TileEntityElectricMachine;
 import ic2.core.block.tileentity.TileEntityInventory;
 import ic2.core.recipe.SmeltingRecipeManager;
 import ic2.core.util.StackUtil;
@@ -220,6 +221,10 @@ public class Process extends TileEntityComponent
 		}
 
 		this.progress = (short) Math.floor(previousProgress * this.operationDuration + 0.1);
+		if (this.parent instanceof TileEntityElectricMachine machine)
+		{
+			machine.syncElectricalProfile(this.energyConsume * this.operationsPerTick);
+		}
 	}
 
 	public void operate(MachineRecipeResult<IRecipeInput, Collection<ItemStack>, ItemStack> result)

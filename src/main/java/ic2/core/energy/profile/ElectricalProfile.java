@@ -6,6 +6,7 @@ public class ElectricalProfile
 {
 	private VoltageTier workingVoltage;
 	private int recipePower;
+	private int maxSinkAmperageOverride = -1;
 
 	public ElectricalProfile(VoltageTier workingVoltage)
 	{
@@ -32,6 +33,16 @@ public class ElectricalProfile
 		this.recipePower = Math.max(0, recipePower);
 	}
 
+	public void setMaxSinkAmperageOverride(int maxSinkAmperageOverride)
+	{
+		this.maxSinkAmperageOverride = maxSinkAmperageOverride;
+	}
+
+	public void clearMaxSinkAmperageOverride()
+	{
+		this.maxSinkAmperageOverride = -1;
+	}
+
 	public double getDisplayCurrent()
 	{
 		int voltage = this.workingVoltage.getVoltage();
@@ -51,6 +62,11 @@ public class ElectricalProfile
 
 	public int getMaxSinkAmperage()
 	{
+		if (this.maxSinkAmperageOverride >= 0)
+		{
+			return this.maxSinkAmperageOverride;
+		}
+
 		if (this.recipePower <= 0)
 		{
 			return 1;

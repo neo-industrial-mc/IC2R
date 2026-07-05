@@ -1,8 +1,11 @@
 package ic2.core.block.generator.tileentity;
 
 import ic2.api.energy.EnergyNet;
+import ic2.api.energy.profile.IElectricalNode;
+import ic2.api.energy.profile.VoltageTier;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergySource;
+import ic2.core.energy.profile.ElectricalProfile;
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
 import ic2.core.block.tileentity.TileEntityInventory;
@@ -21,7 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class TileEntityConversionGenerator extends TileEntityInventory implements IHasGui, IEnergySource
+public abstract class TileEntityConversionGenerator extends TileEntityInventory implements IHasGui, IEnergySource, IElectricalNode
 {
 	private static final NumberFormat FORMAT = new DecimalFormat("#.#");
 	@GuiSynced
@@ -30,6 +33,7 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	private double maxProduction;
 	private double production;
 	private boolean registeredToEnet;
+	private final ElectricalProfile profile = new ElectricalProfile(VoltageTier.LV);
 
 	public TileEntityConversionGenerator(BlockEntityType<? extends TileEntityConversionGenerator> type, BlockPos pos, BlockState state)
 	{
@@ -114,7 +118,58 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	@Override
 	public double getOfferedEnergy()
 	{
-		return this.maxProduction = this.getEnergyAvailable() * this.getMultiplier();
+		this.maxProduction = this.getEnergyAvailable() * this.getMultiplier();
+		this.syncSourceProfile(this.maxProduction);
+		return this.maxProduction;
+	}
+
+	private void syncSourceProfile(double outputEuPerTick)
+	{
+		VoltageTier tier = VoltageTier.fromPower(outputEuPerTick);
+		this.profile.setWorkingVoltage(tier);
+		this.profile.setRecipePower((int) Math.round(outputEuPerTick));
+	}
+
+	@Override
+	public VoltageTier getWorkingVoltage()
+	{
+		return this.profile.getWorkingVoltage();
+	}
+
+	@Override
+	public int getWorkingCurrent()
+	{
+		return this.profile.getWorkingCurrent();
+	}
+
+	@Override
+	public double getAverageCurrent()
+	{
+		return this.profile.getDisplayCurrent();
+	}
+
+	@Override
+	public int getMaxSourceAmperage()
+	{
+		return 1;
+	}
+
+	@Override
+	public int getMaxSinkAmperage()
+	{
+		return 1;
+	}
+
+	@Override
+	public double getEnergyBufferCapacity()
+	{
+		return Math.max(this.maxProduction, VoltageTier.LV.getVoltage());
+	}
+
+	@Override
+	public double getEnergyBufferFree()
+	{
+		return Math.max(0.0, this.getEnergyAvailable() * this.getMultiplier() - this.production);
 	}
 
 	@Override

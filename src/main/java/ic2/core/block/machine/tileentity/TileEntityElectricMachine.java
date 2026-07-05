@@ -25,6 +25,12 @@ public abstract class TileEntityElectricMachine extends TileEntityBase
 		super(type, pos, state);
 		this.dischargeSlot = new InvSlotDischarge(this, InvSlot.Access.NONE, tier, allowRedstone, InvSlot.InvSide.ANY);
 		this.energy = this.addComponent(Energy.asBasicSink(this, maxEnergy, tier).addManagedSlot(this.dischargeSlot));
+		this.syncElectricalProfile(0);
+	}
+
+	public void syncElectricalProfile(int recipePower)
+	{
+		this.energy.syncConsumerProfile(recipePower);
 	}
 
 	public boolean hasEnergy()

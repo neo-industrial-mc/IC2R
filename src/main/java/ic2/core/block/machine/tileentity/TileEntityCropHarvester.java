@@ -38,6 +38,7 @@ public class TileEntityCropHarvester extends TileEntityElectricMachine implement
 	public TileEntityCropHarvester(BlockPos pos, BlockState state)
 	{
 		super(Ic2BlockEntities.CROP_HARVESTER, pos, state, 10000, 1, false);
+		this.syncElectricalProfile(21);
 		this.contentSlot = new InvSlot(this, "content", InvSlot.Access.IO, 15);
 		this.upgradeSlot = new InvSlotUpgrade(this, "upgrade", 4);
 	}

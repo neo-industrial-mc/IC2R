@@ -122,6 +122,13 @@ public class TileEntityCentrifuge extends TileEntityStandardMachine<IRecipeInput
 	}
 
 	@Override
+	public void setOverclockRates()
+	{
+		super.setOverclockRates();
+		this.syncElectricalProfile(this.energyConsume * this.operationsPerTick + 1);
+	}
+
+	@Override
 	public Set<UpgradableProperty> getUpgradableProperties()
 	{
 		return EnumSet.of(

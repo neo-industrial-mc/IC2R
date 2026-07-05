@@ -128,6 +128,7 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 
 			this.outputFlow = EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier());
 			this.inputFlow = EnergyNet.instance.getPowerFromTier(this.energy.getSinkTier());
+			this.energy.configureTransformerProfile();
 		}
 	}
 

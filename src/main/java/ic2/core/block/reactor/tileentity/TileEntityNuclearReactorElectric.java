@@ -1,9 +1,12 @@
 package ic2.core.block.reactor.tileentity;
 
 import ic2.api.energy.EnergyNet;
+import ic2.api.energy.profile.IElectricalNode;
+import ic2.api.energy.profile.VoltageTier;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
+import ic2.core.energy.profile.ElectricalProfile;
 import ic2.api.energy.tile.IMetaDelegate;
 import ic2.api.reactor.IBaseReactorComponent;
 import ic2.api.reactor.IReactor;
@@ -75,7 +78,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
-public class TileEntityNuclearReactorElectric extends TileEntityInventory implements IHasGui, IReactor, IEnergySource, IMetaDelegate, IGuiValueProvider
+public class TileEntityNuclearReactorElectric extends TileEntityInventory implements IHasGui, IReactor, IEnergySource, IMetaDelegate, IGuiValueProvider, IElectricalNode
 {
 	public final Fluids.InternalFluidTank inputTank;
 	public final Fluids.InternalFluidTank outputTank;
@@ -97,6 +100,8 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	public int EmitHeat = 0;
 	public boolean addedToEnergyNet = false;
 	private float lastOutput = 0.0F;
+	private final ElectricalProfile profile = new ElectricalProfile(VoltageTier.LV);
+	private float lastSyncedOfferedOutput = -1.0F;
 	private int EmitHeatbuffer = 0;
 	private boolean fluidCooled = false;
 
@@ -246,7 +251,63 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	@Override
 	public double getOfferedEnergy()
 	{
-		return this.getReactorEnergyOutput() * 5.0F * IC2Config.balance.energy.generator.nuclear.get().floatValue();
+		float offeredOutput = this.getReactorEnergyOutput() * 5.0F * IC2Config.balance.energy.generator.nuclear.get().floatValue();
+		this.syncSourceProfile(offeredOutput);
+		return offeredOutput;
+	}
+
+	private void syncSourceProfile(float outputEuPerTick)
+	{
+		if (this.lastSyncedOfferedOutput == outputEuPerTick)
+		{
+			return;
+		}
+
+		this.lastSyncedOfferedOutput = outputEuPerTick;
+		this.profile.setWorkingVoltage(VoltageTier.fromPower(outputEuPerTick));
+		this.profile.setRecipePower(Math.round(outputEuPerTick));
+	}
+
+	@Override
+	public VoltageTier getWorkingVoltage()
+	{
+		return this.profile.getWorkingVoltage();
+	}
+
+	@Override
+	public int getWorkingCurrent()
+	{
+		return this.profile.getWorkingCurrent();
+	}
+
+	@Override
+	public double getAverageCurrent()
+	{
+		return this.profile.getDisplayCurrent();
+	}
+
+	@Override
+	public int getMaxSourceAmperage()
+	{
+		return 1;
+	}
+
+	@Override
+	public int getMaxSinkAmperage()
+	{
+		return 1;
+	}
+
+	@Override
+	public double getEnergyBufferCapacity()
+	{
+		return Math.max(this.profile.getRecipePower(), VoltageTier.LV.getVoltage());
+	}
+
+	@Override
+	public double getEnergyBufferFree()
+	{
+		return this.profile.getRecipePower();
 	}
 
 	@Override

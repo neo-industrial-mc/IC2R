@@ -136,7 +136,8 @@ public class TileEntityCondenser extends TileEntityElectricMachine implements IH
 			{
 				byte vents = this.getVents();
 				int drain = 100 + vents * 100;
-				if (this.energy.useEnergy(vents * 2))
+				this.syncElectricalProfile(vents * this.ventEUCost);
+				if (this.energy.useEnergy(vents * this.ventEUCost))
 				{
 					this.progress = this.progress + this.inputTank.drainMbUnchecked(drain, false).getAmountMb();
 				}
@@ -150,6 +151,7 @@ public class TileEntityCondenser extends TileEntityElectricMachine implements IH
 		int tier = this.upgradeSlot.getTier(3);
 		this.energy.setSinkTier(tier);
 		this.dischargeSlot.setTier(tier);
+		this.syncElectricalProfile(0);
 	}
 
 	@Override

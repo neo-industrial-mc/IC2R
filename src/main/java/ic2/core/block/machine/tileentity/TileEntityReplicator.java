@@ -226,6 +226,7 @@ public class TileEntityReplicator extends TileEntityElectricMachine implements I
 		this.euPerTick = (512.0 + this.upgradeSlot.extraEnergyDemand) * this.upgradeSlot.energyDemandMultiplier;
 		this.energy.setSinkTier(applyModifier(4, this.upgradeSlot.extraTier, 1.0));
 		this.energy.setCapacity(applyModifier(2000000, this.upgradeSlot.extraEnergyStorage, this.upgradeSlot.energyStorageMultiplier));
+		this.syncElectricalProfile((int) Math.round(this.euPerTick));
 	}
 
 	@Override

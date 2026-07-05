@@ -50,6 +50,7 @@ public class TileEntityMagnetizer extends TileEntityElectricMachine implements I
 		this.energy.setSinkTier(tier);
 		this.dischargeSlot.setTier(tier);
 		this.energy.setCapacity(this.upgradeSlot.getEnergyStorage(100, 0, 0));
+		this.syncElectricalProfile(0);
 	}
 
 	private int distance()

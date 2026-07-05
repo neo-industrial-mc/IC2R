@@ -103,6 +103,7 @@ public class TileEntityTerra extends TileEntityElectricMachine
 		if (!StackUtil.isEmpty(stack))
 		{
 			ITerraformingBP tfbp = (ITerraformingBP) stack.getItem();
+			this.syncElectricalProfile((int) Math.ceil(tfbp.getConsume(stack)));
 			if (this.energy.getEnergy() >= tfbp.getConsume(stack))
 			{
 				newActive = true;
@@ -148,6 +149,9 @@ public class TileEntityTerra extends TileEntityElectricMachine
 					this.lastPos = null;
 				}
 			}
+		} else
+		{
+			this.syncElectricalProfile(0);
 		}
 
 		if (newActive)

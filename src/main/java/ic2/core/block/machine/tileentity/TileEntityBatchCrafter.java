@@ -405,6 +405,7 @@ public class TileEntityBatchCrafter
 		this.dischargeSlot.setTier(tier);
 		this.energy.setCapacity(this.upgradeSlot.getEnergyStorage(20000, 40, 2));
 		this.progress = (short) Math.floor(previousProgress * this.operationLength + 0.1);
+		this.energy.syncConsumerProfile(this.energyConsume * this.operationsPerTick);
 	}
 
 	@Override

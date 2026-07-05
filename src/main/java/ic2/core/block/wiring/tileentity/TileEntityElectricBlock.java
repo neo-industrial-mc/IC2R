@@ -46,6 +46,10 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 	public final Redstone redstone;
 	public final RedstoneEmitter rsEmitter;
 	public byte redstoneMode = 0;
+	/**
+	 * @deprecated Use {@link ic2.api.energy.profile.VoltageTier} × 1A ({@code getSourceTier()} voltage) for output EU/t.
+	 */
+	@Deprecated
 	protected double output;
 
 	public TileEntityElectricBlock(BlockEntityType<? extends TileEntityElectricBlock> type, BlockPos pos, BlockState state, int tier, int output, int maxStorage)
@@ -55,9 +59,17 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 		this.chargeSlot = new InvSlotCharge(this, tier);
 		this.dischargeSlot = new InvSlotDischarge(this, InvSlot.Access.IO, tier, InvSlot.InvSide.BOTTOM);
 		this.energy = this.addComponent(new Energy(this, maxStorage, EnumSet.complementOf(EnumSet.of(Direction.DOWN)), EnumSet.of(Direction.DOWN), tier, tier, true).addManagedSlot(this.chargeSlot).addManagedSlot(this.dischargeSlot));
+		this.energy.configureStorageBlock();
 		this.rsEmitter = this.addComponent(new RedstoneEmitter(this));
 		this.redstone = this.addComponent(new Redstone(this));
 		this.comparator.setUpdate(this.energy::getComparatorValue);
+	}
+
+	@Override
+	protected void onLoaded()
+	{
+		super.onLoaded();
+		this.energy.configureStorageBlock();
 	}
 
 	@Override

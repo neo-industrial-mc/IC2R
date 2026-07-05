@@ -59,7 +59,9 @@ public class TileEntityChunkLoader extends TileEntityInventory implements INetwo
 	public void updateEntityServer()
 	{
 		super.updateEntityServer();
-		boolean active = this.energy.useEnergy(this.getLoadedChunks().size() * this.euPerChunk);
+		int recipePower = (int) (this.getLoadedChunks().size() * this.euPerChunk);
+		this.energy.syncConsumerProfile(recipePower);
+		boolean active = this.energy.useEnergy(recipePower);
 		if (active != this.getActive())
 		{
 			this.setActive(active);
@@ -246,6 +248,7 @@ public class TileEntityChunkLoader extends TileEntityInventory implements INetwo
 		this.energy.setSinkTier(tier);
 		this.dischargeSlot.setTier(tier);
 		this.energy.setCapacity(this.upgradeSlot.getEnergyStorage(2500, 0, 0));
+		this.energy.syncConsumerProfile(0);
 	}
 
 	@Override

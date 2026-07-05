@@ -50,6 +50,7 @@ public class TileEntityCropmatron extends TileEntityElectricMachine implements I
 	public TileEntityCropmatron(BlockPos pos, BlockState state)
 	{
 		super(Ic2BlockEntities.CROPMATRON, pos, state, 10000, 1);
+		this.syncElectricalProfile(31);
 		this.waterTank = this.fluids.addTankInsert("waterTank", 2000, Fluids.fluidPredicate(net.minecraft.world.level.material.Fluids.WATER));
 		this.exTank = this.fluids.addTankInsert("exTank", 2000, Fluids.fluidPredicate(Ic2Fluids.WEED_EX.still()));
 		this.fertilizerSlot = new InvSlotConsumableItemStack(this, "fertilizer", 7, new ItemStack(Ic2Items.FERTILIZER));

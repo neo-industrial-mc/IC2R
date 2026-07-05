@@ -350,6 +350,52 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		this.profile.setWorkingVoltage(workingVoltage);
 	}
 
+	public void syncConsumerProfile(int recipePowerEuPerTick)
+	{
+		VoltageTier voltage = VoltageTier.fromIcTier(this.sinkTier);
+		if (this.profile.getRecipePower() == recipePowerEuPerTick && this.profile.getWorkingVoltage() == voltage)
+		{
+			return;
+		}
+
+		this.profile.clearMaxSinkAmperageOverride();
+		this.profile.setRecipePower(recipePowerEuPerTick);
+		this.profile.setWorkingVoltage(voltage);
+	}
+
+	public void configureStorageBlock()
+	{
+		VoltageTier tier = VoltageTier.fromIcTier(this.sinkTier);
+		this.profile.setWorkingVoltage(tier);
+		this.profile.setRecipePower(0);
+		this.profile.setMaxSinkAmperageOverride(2);
+	}
+
+	public void configureFixedSource(int productionEuPerTick)
+	{
+		this.profile.setWorkingVoltage(VoltageTier.LV);
+		this.profile.setRecipePower(productionEuPerTick);
+		this.setSourceTier(VoltageTier.LV.getIcTier());
+	}
+
+	public void configureDynamicSource(double outputEuPerTick)
+	{
+		VoltageTier tier = VoltageTier.fromPower(outputEuPerTick);
+		this.profile.setWorkingVoltage(tier);
+		this.profile.setRecipePower((int) Math.round(outputEuPerTick));
+		if (this.sinkDirections.isEmpty())
+		{
+			this.setSourceTier(tier.getIcTier());
+		}
+	}
+
+	public void configureTransformerProfile()
+	{
+		this.profile.clearMaxSinkAmperageOverride();
+		this.profile.setRecipePower(0);
+		this.profile.setWorkingVoltage(VoltageTier.fromIcTier(this.sourceTier));
+	}
+
 	@Override
 	public VoltageTier getWorkingVoltage()
 	{

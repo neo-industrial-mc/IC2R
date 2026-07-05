@@ -260,6 +260,7 @@ public class TileEntityPump extends TileEntityElectricMachine implements IHasGui
 		this.dischargeSlot.setTier(this.energy.getSinkTier());
 		this.energy.setCapacity(this.upgradeSlot.getEnergyStorage(this.defaultEnergyStorage, this.defaultOperationLength, this.defaultEnergyConsume));
 		this.progress = (short) Math.floor(previousProgress * this.operationLength + 0.1);
+		this.energy.syncConsumerProfile(this.energyConsume * this.operationsPerTick);
 	}
 
 	@Override

@@ -33,6 +33,14 @@ public abstract class TileEntityBaseGenerator extends TileEntityBase implements 
 		this.ticksSinceLastActiveUpdate = IC2.random.nextInt(256);
 		this.chargeSlot = new InvSlotCharge(this, 1);
 		this.energy = this.addComponent(Energy.asBasicSource(this, maxStorage, tier).addManagedSlot(this.chargeSlot));
+		this.energy.configureFixedSource((int) this.production);
+	}
+
+	@Override
+	protected void onLoaded()
+	{
+		super.onLoaded();
+		this.energy.configureFixedSource((int) this.production);
 	}
 
 	@Override

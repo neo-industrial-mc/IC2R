@@ -33,6 +33,7 @@ public class TileEntityTesla extends Ic2TileEntity
 		super(Ic2BlockEntities.TESLA_COIL, pos, state);
 		this.redstone = this.addComponent(new Redstone(this));
 		this.energy = this.addComponent(Energy.asBasicSink(this, 10000.0, 2));
+		this.energy.syncConsumerProfile(1);
 	}
 
 	@Override
