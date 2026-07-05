@@ -1,7 +1,6 @@
 package ic2.core.energy.grid;
 
 import ic2.api.energy.EnergyNet;
-import ic2.api.energy.profile.IElectricalNode;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.energy.tile.IExplosionPowerOverride;
@@ -63,12 +62,6 @@ public final class EnergyNetExplosions
 
 	public static boolean isOverVoltage(IEnergySink sink, double packetVoltage)
 	{
-		IElectricalNode node = ElectricalNodes.resolve(sink);
-		if (node != null)
-		{
-			return packetVoltage > node.getWorkingVoltage().getVoltage();
-		}
-
 		return packetVoltage > EnergyNet.instance.getPowerFromTier(sink.getSinkTier());
 	}
 

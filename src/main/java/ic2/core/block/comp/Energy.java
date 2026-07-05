@@ -45,6 +45,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 	private double capacity;
 	private double storage;
 	private int sinkTier;
+	private final int nativeSinkTier;
 	private int sourceTier;
 	private Set<Direction> sinkDirections;
 	private Set<Direction> sourceDirections;
@@ -74,6 +75,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		super(parent);
 		this.capacity = capacity;
 		this.sinkTier = sinkTier;
+		this.nativeSinkTier = sinkTier;
 		this.sourceTier = sourceTier;
 		this.sinkDirections = sinkDirections;
 		this.sourceDirections = sourceDirections;
@@ -324,7 +326,6 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 	public void setSinkTier(int tier)
 	{
 		this.sinkTier = tier;
-		this.profile.setWorkingVoltage(VoltageTier.fromIcTier(tier));
 	}
 
 	public int getSourceTier()
@@ -358,7 +359,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 
 	public void syncConsumerProfile(int recipePowerEuPerTick)
 	{
-		VoltageTier voltage = VoltageTier.fromIcTier(this.sinkTier);
+		VoltageTier voltage = resolveConsumerWorkingVoltage(recipePowerEuPerTick);
 		if (this.profile.getRecipePower() == recipePowerEuPerTick && this.profile.getWorkingVoltage() == voltage)
 		{
 			return;
@@ -367,6 +368,18 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		this.profile.clearMaxSinkAmperageOverride();
 		this.profile.setRecipePower(recipePowerEuPerTick);
 		this.profile.setWorkingVoltage(voltage);
+	}
+
+	private VoltageTier resolveConsumerWorkingVoltage(int recipePowerEuPerTick)
+	{
+		VoltageTier nativeTier = VoltageTier.fromIcTier(this.nativeSinkTier);
+		if (recipePowerEuPerTick <= 0 || recipePowerEuPerTick <= nativeTier.getVoltage())
+		{
+			return nativeTier;
+		}
+
+		VoltageTier fromPower = VoltageTier.fromPower(recipePowerEuPerTick);
+		return fromPower.getIcTier() < nativeTier.getIcTier() ? nativeTier : fromPower;
 	}
 
 	public void configureStorageBlock()
