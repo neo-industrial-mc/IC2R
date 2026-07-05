@@ -130,7 +130,7 @@ public class EnergyNetLocal
 	{
 		if (this.updater.isInChangeStep())
 		{
-			this.updater.awaitCompletion();
+			this.awaitGridCompletion();
 		}
 
 		return this.registeredTiles.get(pos);
@@ -189,7 +189,7 @@ public class EnergyNetLocal
 
 	NodeStats getNodeStats(IEnergyTile ioTile)
 	{
-		this.updater.awaitCompletion();
+		this.awaitGridCompletion();
 		Tile tile = this.registeredIoTiles.get(ioTile);
 		return tile == null ? null : EnergyNetGlobal.getCalculator().getNodeStats(tile);
 	}
@@ -230,7 +230,7 @@ public class EnergyNetLocal
 	{
 		if (this.updater.isInChangeStep())
 		{
-			this.updater.awaitCompletion();
+			this.awaitGridCompletion();
 		}
 
 		List<GridInfo> ret = new ArrayList<>();
@@ -245,7 +245,7 @@ public class EnergyNetLocal
 
 	boolean dumpDebugInfo(BlockPos pos, PrintStream console, PrintStream chat)
 	{
-		this.updater.awaitCompletion();
+		this.awaitGridCompletion();
 		Tile tile = this.registeredTiles.get(pos);
 		if (tile == null)
 		{
@@ -277,7 +277,7 @@ public class EnergyNetLocal
 	{
 		if (this.updater.isInChangeStep())
 		{
-			this.updater.awaitCompletion();
+			this.awaitGridCompletion();
 			if (!this.ioTilesToNotify.isEmpty())
 			{
 				ChunkSource chunkManager = this.world.getChunkSource();
@@ -312,7 +312,7 @@ public class EnergyNetLocal
 
 	public void onTickEnd()
 	{
-		this.updater.awaitCompletion();
+		this.awaitGridCompletion();
 		if (!this.gridChangesQueue.isEmpty() && this.gridChangesQueue.peek() != QUEUE_DELAY_CHANGE)
 		{
 			this.updater.startChangeCalc(this.gridChangesQueue, this.gridAdditionsMap);
@@ -320,6 +320,7 @@ public class EnergyNetLocal
 		{
 			this.gridChangesQueue.poll();
 			this.updater.startTransferCalc();
+			EnergyNetGlobal.getCalculator().applyDeferredEffects(this);
 		}
 
 		this.gridChangesQueue.add(QUEUE_DELAY_CHANGE);
@@ -381,5 +382,11 @@ public class EnergyNetLocal
 	void shuffleGrids()
 	{
 		Collections.shuffle(this.grids);
+	}
+
+	private void awaitGridCompletion()
+	{
+		this.updater.awaitCompletion();
+		EnergyNetGlobal.getCalculator().applyDeferredEffects(this);
 	}
 }

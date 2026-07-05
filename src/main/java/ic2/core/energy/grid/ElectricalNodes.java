@@ -76,7 +76,7 @@ public final class ElectricalNodes
 		IElectricalNode node = resolve(sink);
 		if (node != null)
 		{
-			int voltage = node.getWorkingVoltage().getVoltage();
+			int voltage = node.getSinkWorkingVoltage().getVoltage();
 			if (voltage <= 0)
 			{
 				return 0;

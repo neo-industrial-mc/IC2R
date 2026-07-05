@@ -112,17 +112,15 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 	@Override
 	public boolean runSyncStep(Grid grid)
 	{
-		return runCalculation(grid, GridData.get(grid));
+		runCalculation(grid, GridData.get(grid));
+		// GT transfer runs entirely on the server thread; async would call inject/draw and
+		// CableSpec.fromConductor (world access) off-thread and deadlock when work remains.
+		return false;
 	}
 
 	@Override
 	public void runAsyncStep(Grid grid)
 	{
-		GridData data = GridData.get(grid);
-		if (data.active)
-		{
-			runCalculation(grid, data);
-		}
 	}
 
 	@Override
@@ -195,8 +193,7 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 			distribute(activeSources.get(i), data, activeSinks, shufflePaths, calcId, rand, conductorAmpLoads, cablesToRemove, sinksToExplode);
 		}
 
-		applyGtCableEffects(cablesToRemove);
-		applyExplosions(world, sinksToExplode);
+		queueDeferredEffects(data, cablesToRemove, sinksToExplode);
 		return true;
 	}
 
@@ -438,6 +435,41 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 		Node first = path.conductors.isEmpty() ? path.target : path.conductors.get(0);
 		NodeLink link = path.source.getLinkTo(first);
 		return link != null ? link.getDirFrom(path.source) : null;
+	}
+
+	@Override
+	public void applyDeferredEffects(EnergyNetLocal enet)
+	{
+		Level world = enet.getWorld();
+
+		for (Grid grid : enet.getGrids())
+		{
+			GridData data = grid.getData();
+			if (data == null || data.deferredCablesToRemove.isEmpty() && data.deferredSinksToExplode.isEmpty())
+			{
+				continue;
+			}
+
+			applyGtCableEffects(data.deferredCablesToRemove);
+			applyExplosions(world, data.deferredSinksToExplode);
+			data.deferredCablesToRemove.clear();
+			data.deferredSinksToExplode.clear();
+		}
+	}
+
+	private static void queueDeferredEffects(GridData data, Set<Tile> cablesToRemove, Map<Tile, Double> sinksToExplode)
+	{
+		data.deferredCablesToRemove.addAll(cablesToRemove);
+
+		for (Entry<Tile, Double> entry : sinksToExplode.entrySet())
+		{
+			Double prev = data.deferredSinksToExplode.get(entry.getKey());
+			double power = entry.getValue();
+			if (prev == null || prev < power)
+			{
+				data.deferredSinksToExplode.put(entry.getKey(), power);
+			}
+		}
 	}
 
 	private static void applyGtCableEffects(Set<Tile> cablesToRemove)

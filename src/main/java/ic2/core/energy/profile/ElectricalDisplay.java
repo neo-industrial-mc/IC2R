@@ -58,6 +58,11 @@ public final class ElectricalDisplay
 		return Component.translatable("ic2.electric.tooltip.power.with_tier", euPerTick, amps, formatTierName(tier));
 	}
 
+	public static Component formatPowerCompact(int euPerTick, VoltageTier tier, int amps)
+	{
+		return Component.translatable("ic2.electric.tooltip.power.compact", euPerTick, amps, formatTierName(tier));
+	}
+
 	public static Component formatStorageOutput(Energy energy)
 	{
 		VoltageTier tier = energy.getWorkingVoltage();
@@ -67,18 +72,20 @@ public final class ElectricalDisplay
 
 	public static void appendCableTooltip(AbstractCableBlock block, List<Component> tooltip, TooltipFlag flag)
 	{
-		CableSpec spec = CableSpec.forType(block.type);
-		int loss = spec.getLossPerMeterPerAmp();
-		if (block.getCableInsulation() == 0 && loss > 0)
+		if (EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get()) == EnergyNetMode.GT)
 		{
-			loss *= 2;
+			CableSpec spec = CableSpec.forType(block.type);
+			int loss = spec.getLossPerMeterPerAmp();
+			if (block.getCableInsulation() == 0 && loss > 0)
+			{
+				loss *= 2;
+			}
+
+			Ic2Tooltip.add(tooltip, Component.translatable("ic2.electric.tooltip.cable.max_voltage", formatTierWithValue(spec.getMaxVoltage())));
+			Ic2Tooltip.add(tooltip, Component.translatable("ic2.electric.tooltip.cable.max_amperage", spec.getMaxAmperage()));
+			Ic2Tooltip.add(tooltip, Component.translatable("ic2.electric.tooltip.cable.loss", loss));
 		}
-
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.electric.tooltip.cable.max_voltage", formatTierWithValue(spec.getMaxVoltage())));
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.electric.tooltip.cable.max_amperage", spec.getMaxAmperage()));
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.electric.tooltip.cable.loss", loss));
-
-		if (flag.isAdvanced() && EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get()) == EnergyNetMode.IC2)
+		else
 		{
 			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.cable.tooltip0", block.type.capacity));
 			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.cable.tooltip1", block.getLoss()));

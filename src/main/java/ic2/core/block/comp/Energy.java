@@ -408,11 +408,23 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		}
 	}
 
-	public void configureTransformerProfile()
+	public void configureTransformerProfile(boolean stepUp)
 	{
 		this.profile.clearMaxSinkAmperageOverride();
 		this.profile.setRecipePower(0);
 		this.profile.setWorkingVoltage(VoltageTier.fromIcTier(this.sourceTier));
+		this.profile.setMaxSinkAmperageOverride(stepUp ? 4 : 1);
+	}
+
+	@Override
+	public VoltageTier getSinkWorkingVoltage()
+	{
+		if (!this.sinkDirections.isEmpty() && !this.sourceDirections.isEmpty())
+		{
+			return VoltageTier.fromIcTier(this.sinkTier);
+		}
+
+		return this.profile.getWorkingVoltage();
 	}
 
 	public boolean applyTransformerModeSwitch(TileEntityTransformer.Mode newMode, TileEntityTransformer.Mode oldMode)
@@ -664,6 +676,12 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		public VoltageTier getWorkingVoltage()
 		{
 			return Energy.this.getWorkingVoltage();
+		}
+
+		@Override
+		public VoltageTier getSinkWorkingVoltage()
+		{
+			return Energy.this.getSinkWorkingVoltage();
 		}
 
 		@Override

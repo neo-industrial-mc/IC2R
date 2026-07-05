@@ -7,6 +7,7 @@ import ic2.api.info.ILocatable;
 import ic2.core.block.wiring.AbstractCableBlock;
 import ic2.core.block.wiring.CableType;
 
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -85,16 +86,6 @@ public final class CableSpec implements ICableSpec
 
 	private static CableType resolveCableType(IEnergyConductor conductor)
 	{
-		if (conductor instanceof ILocatable locatable)
-		{
-			BlockState state = locatable.getWorldObj().getBlockState(locatable.getPosition());
-			Block block = state.getBlock();
-			if (block instanceof AbstractCableBlock cableBlock)
-			{
-				return cableBlock.type;
-			}
-		}
-
 		int capacity = (int) Math.round(conductor.getConductorBreakdownEnergy() - 1.0);
 		CableType fallback = null;
 		for (CableType type : CableType.values)
@@ -113,6 +104,16 @@ public final class CableSpec implements ICableSpec
 			return fallback;
 		}
 
+		if (conductor instanceof ILocatable locatable)
+		{
+			BlockState state = locatable.getWorldObj().getBlockState(locatable.getPosition());
+			Block block = state.getBlock();
+			if (block instanceof AbstractCableBlock cableBlock)
+			{
+				return cableBlock.type;
+			}
+		}
+
 		throw new IllegalArgumentException("unknown conductor capacity: " + capacity);
 	}
 
@@ -120,11 +121,15 @@ public final class CableSpec implements ICableSpec
 	{
 		if (conductor instanceof ILocatable locatable)
 		{
-			BlockState state = locatable.getWorldObj().getBlockState(locatable.getPosition());
-			Block block = state.getBlock();
-			if (block instanceof AbstractCableBlock cableBlock)
+			Level world = locatable.getWorldObj();
+			if (world != null && world.getServer() != null && world.getServer().isSameThread())
 			{
-				return cableBlock.getCableInsulation();
+				BlockState state = world.getBlockState(locatable.getPosition());
+				Block block = state.getBlock();
+				if (block instanceof AbstractCableBlock cableBlock)
+				{
+					return cableBlock.getCableInsulation();
+				}
 			}
 		}
 

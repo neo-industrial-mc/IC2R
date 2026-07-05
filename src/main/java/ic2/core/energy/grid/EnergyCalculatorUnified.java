@@ -493,7 +493,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 			if (!data.eventPaths.isEmpty())
 			{
-				applyCableEffects(data.eventPaths, grid.getEnergyNet().getWorld());
+				data.deferredEventPaths.addAll(data.eventPaths);
 				data.eventPaths.clear();
 			}
 
@@ -813,6 +813,24 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 		if (data.active)
 		{
 			runCalculation(grid, data);
+		}
+	}
+
+	@Override
+	public void applyDeferredEffects(EnergyNetLocal enet)
+	{
+		Level world = enet.getWorld();
+
+		for (Grid grid : enet.getGrids())
+		{
+			GridData data = grid.getData();
+			if (data == null || data.deferredEventPaths.isEmpty())
+			{
+				continue;
+			}
+
+			applyCableEffects(data.deferredEventPaths, world);
+			data.deferredEventPaths.clear();
 		}
 	}
 

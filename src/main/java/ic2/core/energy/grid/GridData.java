@@ -16,6 +16,10 @@ class GridData
 	final Map<Node, MutableDouble> activeSinks = new IdentityHashMap<>();
 	final Set<EnergyPath> eventPaths = Collections.newSetFromMap(new IdentityHashMap<>());
 	final Map<Node, List<EnergyPath>> pathCache = new IdentityHashMap<>();
+	final Set<Tile> deferredCablesToRemove = Collections.newSetFromMap(new IdentityHashMap<>());
+	final Set<Tile> deferredCablesToStrip = Collections.newSetFromMap(new IdentityHashMap<>());
+	final Map<Tile, Double> deferredSinksToExplode = new IdentityHashMap<>();
+	final List<EnergyPath> deferredEventPaths = new ArrayList<>();
 	boolean active;
 	int currentCalcId = -1;
 

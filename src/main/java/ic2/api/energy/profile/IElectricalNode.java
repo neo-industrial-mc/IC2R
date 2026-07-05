@@ -4,6 +4,11 @@ public interface IElectricalNode
 {
 	VoltageTier getWorkingVoltage();
 
+	default VoltageTier getSinkWorkingVoltage()
+	{
+		return this.getWorkingVoltage();
+	}
+
 	int getWorkingCurrent();
 
 	double getAverageCurrent();

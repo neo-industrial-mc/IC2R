@@ -138,7 +138,7 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 
 			this.outputFlow = EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier());
 			this.inputFlow = EnergyNet.instance.getPowerFromTier(this.energy.getSinkTier());
-			this.energy.configureTransformerProfile();
+			this.energy.configureTransformerProfile(this.isStepUp());
 		}
 	}
 
@@ -158,8 +158,8 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 		super.appendItemTooltip(stack, tooltip, advanced);
 		VoltageTier lowTier = VoltageTier.fromIcTier(this.defaultTier);
 		VoltageTier highTier = VoltageTier.fromIcTier(this.defaultTier + 1);
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.input", ElectricalDisplay.formatPower(highTier.getVoltage(), highTier, 1)));
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.output", ElectricalDisplay.formatPower(lowTier.getVoltage() * 4, lowTier, 4)));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.high", ElectricalDisplay.formatPowerCompact(highTier.getVoltage(), highTier, 1)));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.low", ElectricalDisplay.formatPowerCompact(lowTier.getVoltage() * 4, lowTier, 4)));
 	}
 
 	public Component getInputFlowDisplay()
@@ -174,20 +174,22 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 
 	private Component getFlowDisplay(boolean input)
 	{
-		int amps = input ? this.getInputAmperage() : this.getOutputAmperage();
-		VoltageTier tier = VoltageTier.fromIcTier(input ? this.energy.getSinkTier() : this.energy.getSourceTier());
-		int euPerTick = tier.getVoltage() * amps;
-		return ElectricalDisplay.formatPower(euPerTick, tier, amps);
-	}
+		boolean stepUp = this.isStepUp();
+		VoltageTier lowTier = VoltageTier.fromIcTier(this.defaultTier);
+		VoltageTier highTier = VoltageTier.fromIcTier(this.defaultTier + 1);
+		int amps;
+		VoltageTier tier;
+		if (input)
+		{
+			amps = stepUp ? 4 : 1;
+			tier = stepUp ? lowTier : highTier;
+		} else
+		{
+			amps = stepUp ? 1 : 4;
+			tier = stepUp ? highTier : lowTier;
+		}
 
-	private int getInputAmperage()
-	{
-		return this.isStepUp() ? 4 : 1;
-	}
-
-	private int getOutputAmperage()
-	{
-		return this.isStepUp() ? 1 : 4;
+		return ElectricalDisplay.formatPower(tier.getVoltage() * amps, tier, amps);
 	}
 
 	@Override
@@ -214,7 +216,17 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 
 	private boolean isStepUp()
 	{
-		return this.transformMode == TileEntityTransformer.Mode.stepUp;
+		if (this.transformMode != null)
+		{
+			return this.transformMode == TileEntityTransformer.Mode.stepUp;
+		}
+
+		return switch (this.configuredMode)
+		{
+			case stepUp -> true;
+			case stepDown -> false;
+			case redstone -> this.getLevel() != null && this.getLevel().hasNeighborSignal(this.worldPosition);
+		};
 	}
 
 	public enum Mode
