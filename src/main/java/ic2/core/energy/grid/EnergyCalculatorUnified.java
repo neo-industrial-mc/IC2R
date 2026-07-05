@@ -799,22 +799,10 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 		}
 	}
 
-	private static GridData getData(Grid grid)
-	{
-		GridData ret = grid.getData();
-		if (ret == null)
-		{
-			ret = new GridData();
-			grid.setData(ret);
-		}
-
-		return ret;
-	}
-
 	@Override
 	public void handleGridChange(Grid grid)
 	{
-		GridData data = getData(grid);
+		GridData data = GridData.get(grid);
 		updateCache(grid, data);
 	}
 
@@ -858,14 +846,14 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 	@Override
 	public boolean runSyncStep(Grid grid)
 	{
-		GridData data = getData(grid);
+		GridData data = GridData.get(grid);
 		return runCalculation(grid, data);
 	}
 
 	@Override
 	public void runAsyncStep(Grid grid)
 	{
-		GridData data = getData(grid);
+		GridData data = GridData.get(grid);
 		if (data.active)
 		{
 			runCalculation(grid, data);
@@ -917,7 +905,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 	@Override
 	public void dumpNodeInfo(Node node, String prefix, PrintStream console, PrintStream chat)
 	{
-		GridData data = getData(node.getGrid());
+		GridData data = GridData.get(node.getGrid());
 		Collection<EnergyPath> paths = getPaths(node, data);
 		switch (node.getType())
 		{
@@ -991,16 +979,5 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 	private record OptimizedGraph(Map<Node, List<OptLink>> nodeToLinks)
 	{
-	}
-
-	private static class GridData
-	{
-		final Map<Node, List<EnergyPath>> energySourceToEnergyPathMap = new IdentityHashMap<>();
-		final List<Node> activeSources = new ArrayList<>();
-		final Map<Node, MutableDouble> activeSinks = new IdentityHashMap<>();
-		final Set<EnergyPath> eventPaths = Collections.newSetFromMap(new IdentityHashMap<>());
-		final Map<Node, List<EnergyPath>> pathCache = new IdentityHashMap<>();
-		boolean active;
-		int currentCalcId = -1;
 	}
 }

@@ -72,6 +72,11 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	private static boolean pendingHasColor;
 	public final CableType type;
 	final int insulation;
+
+	public int getCableInsulation()
+	{
+		return this.insulation;
+	}
 	private final boolean hasColor;
 
 	protected AbstractCableBlock(Properties settings, CableType type, int insulation)

@@ -25,6 +25,65 @@ public final class ElectricalNodes
 		return null;
 	}
 
+	public static double getBufferFill(IElectricalNode node)
+	{
+		return node.getEnergyBufferCapacity() - node.getEnergyBufferFree();
+	}
+
+	public static int getGtOfferAmps(IEnergySource source)
+	{
+		IElectricalNode node = resolve(source);
+		if (node != null)
+		{
+			int voltage = node.getWorkingVoltage().getVoltage();
+			if (voltage <= 0)
+			{
+				return 0;
+			}
+
+			double fill = getBufferFill(node);
+			if (fill < voltage)
+			{
+				return 0;
+			}
+
+			return Math.min(node.getMaxSourceAmperage(), (int) Math.floor(fill / voltage));
+		}
+
+		int tier = source.getSourceTier();
+		if (tier < 0)
+		{
+			return 0;
+		}
+
+		int voltage = (int) EnergyNet.instance.getPowerFromTier(tier);
+		return voltage > 0 ? (int) Math.floor(source.getOfferedEnergy() / voltage) : 0;
+	}
+
+	public static int getGtDemandAmps(IEnergySink sink)
+	{
+		IElectricalNode node = resolve(sink);
+		if (node != null)
+		{
+			int voltage = node.getWorkingVoltage().getVoltage();
+			if (voltage <= 0)
+			{
+				return 0;
+			}
+
+			return Math.min(node.getMaxSinkAmperage(), (int) Math.floor(node.getEnergyBufferFree() / voltage));
+		}
+
+		int tier = sink.getSinkTier();
+		if (tier < 0)
+		{
+			return 0;
+		}
+
+		int voltage = (int) EnergyNet.instance.getPowerFromTier(tier);
+		return voltage > 0 ? (int) Math.floor(sink.getDemandedEnergy() / voltage) : 0;
+	}
+
 	/**
 	 * Per-packet EU for sources, or working voltage (V) for sinks used in inject tier lookup.
 	 * Falls back to {@link EnergyNet#getPowerFromTier(int)} when no electrical profile is available.

@@ -2,7 +2,13 @@ package ic2.core.energy.profile;
 
 import ic2.api.energy.profile.ICableSpec;
 import ic2.api.energy.profile.VoltageTier;
+import ic2.api.energy.tile.IEnergyConductor;
+import ic2.api.info.ILocatable;
+import ic2.core.block.wiring.AbstractCableBlock;
 import ic2.core.block.wiring.CableType;
+
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class CableSpec implements ICableSpec
 {
@@ -63,5 +69,65 @@ public final class CableSpec implements ICableSpec
 			default:
 				throw new IllegalArgumentException("unknown cable type: " + type);
 		}
+	}
+
+	public static CableSpec fromConductor(IEnergyConductor conductor)
+	{
+		CableType type = resolveCableType(conductor);
+		CableSpec spec = forType(type);
+		if (resolveInsulation(conductor) == 0 && spec.lossPerMeterPerAmp > 0)
+		{
+			return new CableSpec(type, spec.maxVoltage, spec.maxAmperage, spec.lossPerMeterPerAmp * 2);
+		}
+
+		return spec;
+	}
+
+	private static CableType resolveCableType(IEnergyConductor conductor)
+	{
+		if (conductor instanceof ILocatable locatable)
+		{
+			BlockState state = locatable.getWorldObj().getBlockState(locatable.getPosition());
+			Block block = state.getBlock();
+			if (block instanceof AbstractCableBlock cableBlock)
+			{
+				return cableBlock.type;
+			}
+		}
+
+		int capacity = (int) Math.round(conductor.getConductorBreakdownEnergy() - 1.0);
+		CableType fallback = null;
+		for (CableType type : CableType.values)
+		{
+			if (type.capacity == capacity)
+			{
+				if (fallback == null || type.loss == conductor.getConductionLoss())
+				{
+					fallback = type;
+				}
+			}
+		}
+
+		if (fallback != null)
+		{
+			return fallback;
+		}
+
+		throw new IllegalArgumentException("unknown conductor capacity: " + capacity);
+	}
+
+	private static int resolveInsulation(IEnergyConductor conductor)
+	{
+		if (conductor instanceof ILocatable locatable)
+		{
+			BlockState state = locatable.getWorldObj().getBlockState(locatable.getPosition());
+			Block block = state.getBlock();
+			if (block instanceof AbstractCableBlock cableBlock)
+			{
+				return cableBlock.getCableInsulation();
+			}
+		}
+
+		return 1;
 	}
 }
