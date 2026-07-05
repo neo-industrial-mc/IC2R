@@ -6,12 +6,9 @@ import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
-import ic2.api.energy.tile.IExplosionPowerOverride;
 import ic2.api.energy.tile.IMultiEnergySource;
-import ic2.api.energy.tile.IOverloadHandler;
 import ic2.core.IC2;
 import ic2.core.Ic2DamageSource;
-import ic2.core.Ic2Explosion;
 import ic2.core.init.IC2Config;
 import ic2.core.util.LogCategory;
 import ic2.core.util.Util;
@@ -37,7 +34,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.mutable.MutableDouble;
 
@@ -713,7 +709,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 				Tile sinkTile = path.target.getTile();
 				IEnergySink sink = (IEnergySink) sinkTile.getMainTile();
-				if (amount > EnergyNet.instance.getPowerFromTier(sink.getSinkTier()))
+				if (EnergyNetExplosions.isOverVoltage(sink, amount))
 				{
 					MutableDouble prev = sinksToExplode.get(sinkTile);
 					if (prev == null)
@@ -740,7 +736,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 			for (Entry<Tile, MutableDouble> entry : sinksToExplode.entrySet())
 			{
-				explodeTile(world, entry.getKey(), entry.getValue().doubleValue());
+				EnergyNetExplosions.explodeTile(world, entry.getKey(), entry.getValue().doubleValue());
 			}
 
 			for (Entry<LivingEntity, MutableDouble> entry : shockEnergyMap.entrySet())
@@ -754,46 +750,6 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 						Ic2DamageSource.init(target.level().registryAccess());
 					}
 					target.hurt(Ic2DamageSource.electricity, damage);
-				}
-			}
-		}
-	}
-
-	private static void explodeTile(Level world, Tile tile, double maxPower)
-	{
-		if (IC2Config.misc.enableEnetExplosions.get())
-		{
-			int tier = EnergyNet.instance.getTierFromPower(maxPower);
-
-			for (IEnergyTile subTile : tile.getSubTiles())
-			{
-				IEnergySink mainTile = (IEnergySink) tile.getMainTile();
-				BlockPos pos = EnergyNet.instance.getPos(subTile);
-				BlockEntity realTe = world.getBlockEntity(pos);
-				if (!(mainTile instanceof IOverloadHandler handler && handler.onOverload(tier)) && !(realTe instanceof IOverloadHandler handler2 && handler2.onOverload(tier)))
-				{
-					float power = 2.5F;
-					if (mainTile instanceof IExplosionPowerOverride override)
-					{
-						if (!override.shouldExplode())
-						{
-							continue;
-						}
-
-						power = override.getExplosionPower(tier, power);
-					} else if (realTe instanceof IExplosionPowerOverride override)
-					{
-						if (!override.shouldExplode())
-						{
-							continue;
-						}
-
-						power = override.getExplosionPower(tier, power);
-					}
-
-					world.removeBlock(pos, false);
-					Ic2Explosion explosion = new Ic2Explosion(world, null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, power, 0.75F, Ic2Explosion.Type.Electrical);
-					explosion.doExplosion();
 				}
 			}
 		}

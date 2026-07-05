@@ -107,6 +107,14 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 			case stepDown, stepUp -> this.configuredMode;
 		};
 
+		if (!force && this.transformMode != null && this.transformMode != newMode)
+		{
+			if (this.energy.applyTransformerModeSwitch(newMode, this.transformMode))
+			{
+				return;
+			}
+		}
+
 		this.energy.setEnabled(true);
 		if (force || this.transformMode != newMode)
 		{

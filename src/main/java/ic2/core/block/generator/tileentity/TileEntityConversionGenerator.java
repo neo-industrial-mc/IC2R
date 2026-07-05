@@ -160,16 +160,25 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 		return 1;
 	}
 
+	private double getCurrentOfferedOutput()
+	{
+		return this.getEnergyAvailable() * this.getMultiplier();
+	}
+
 	@Override
 	public double getEnergyBufferCapacity()
 	{
-		return Math.max(this.maxProduction, VoltageTier.LV.getVoltage());
+		double offered = this.getCurrentOfferedOutput();
+		int voltage = VoltageTier.fromPower(offered).getVoltage();
+		return Math.max(voltage, offered);
 	}
 
 	@Override
 	public double getEnergyBufferFree()
 	{
-		return Math.max(0.0, this.getEnergyAvailable() * this.getMultiplier() - this.production);
+		double offered = this.getCurrentOfferedOutput();
+		double capacity = this.getEnergyBufferCapacity();
+		return Math.max(0.0, capacity - Math.min(offered, capacity));
 	}
 
 	@Override
@@ -182,7 +191,7 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	@Override
 	public int getSourceTier()
 	{
-		return Math.max(EnergyNet.instance.getTierFromPower(this.maxProduction), 2);
+		return VoltageTier.fromPower(this.getCurrentOfferedOutput()).getIcTier();
 	}
 
 	@Override

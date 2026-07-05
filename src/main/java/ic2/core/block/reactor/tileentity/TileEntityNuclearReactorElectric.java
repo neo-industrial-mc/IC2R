@@ -298,22 +298,31 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		return 1;
 	}
 
+	private float getCurrentOfferedOutput()
+	{
+		return this.getReactorEnergyOutput() * 5.0F * IC2Config.balance.energy.generator.nuclear.get().floatValue();
+	}
+
 	@Override
 	public double getEnergyBufferCapacity()
 	{
-		return Math.max(this.profile.getRecipePower(), VoltageTier.LV.getVoltage());
+		float offered = this.getCurrentOfferedOutput();
+		int voltage = VoltageTier.fromPower(offered).getVoltage();
+		return Math.max(voltage, Math.round(offered));
 	}
 
 	@Override
 	public double getEnergyBufferFree()
 	{
-		return this.profile.getRecipePower();
+		float offered = this.getCurrentOfferedOutput();
+		double capacity = this.getEnergyBufferCapacity();
+		return Math.max(0.0, capacity - Math.min(offered, capacity));
 	}
 
 	@Override
 	public int getSourceTier()
 	{
-		return 5;
+		return VoltageTier.fromPower(this.getCurrentOfferedOutput()).getIcTier();
 	}
 
 	@Override
@@ -443,6 +452,10 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 
 				this.setActive(this.heat >= 1000 || this.output > 0.0F);
 				this.setChanged();
+				if (!this.isFluidCooled())
+				{
+					this.syncSourceProfile(this.getCurrentOfferedOutput());
+				}
 			}
 
 			IC2.network.get(true).updateTileEntityField(this, "output");

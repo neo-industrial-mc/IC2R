@@ -44,6 +44,12 @@ public final class ElectricalNodes
 			double fill = getBufferFill(node);
 			if (fill < voltage)
 			{
+				double offered = source.getOfferedEnergy();
+				if (offered >= voltage)
+				{
+					return Math.min(node.getMaxSourceAmperage(), (int) Math.floor(offered / voltage));
+				}
+
 				return 0;
 			}
 

@@ -14,7 +14,13 @@ import ic2.api.info.ILocatable;
 import ic2.core.IC2;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.tileentity.Ic2TileEntity;
+import ic2.core.block.wiring.tileentity.TileEntityTransformer;
+import ic2.core.energy.EnergyNetMode;
+import ic2.core.energy.grid.EnergyNetExplosions;
+import ic2.core.energy.grid.EnergyNetGlobal;
+import ic2.core.energy.grid.Tile;
 import ic2.core.energy.profile.ElectricalProfile;
+import ic2.core.init.IC2Config;
 import ic2.core.network.GrowingBuffer;
 import ic2.core.util.LogCategory;
 import ic2.core.util.Util;
@@ -394,6 +400,33 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		this.profile.clearMaxSinkAmperageOverride();
 		this.profile.setRecipePower(0);
 		this.profile.setWorkingVoltage(VoltageTier.fromIcTier(this.sourceTier));
+	}
+
+	public boolean applyTransformerModeSwitch(TileEntityTransformer.Mode newMode, TileEntityTransformer.Mode oldMode)
+	{
+		if (oldMode == null || newMode == oldMode)
+		{
+			return false;
+		}
+
+		if (EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get()) != EnergyNetMode.GT)
+		{
+			return false;
+		}
+
+		if (this.storage <= 0.0)
+		{
+			return false;
+		}
+
+		Level world = this.parent.getLevel();
+		Tile tile = EnergyNetGlobal.getLocal(world).getTile(this.parent.getBlockPos());
+		if (tile != null)
+		{
+			EnergyNetExplosions.explodeTile(world, tile, EnergyNet.instance.getPowerFromTier(this.sourceTier));
+		}
+
+		return true;
 	}
 
 	@Override
