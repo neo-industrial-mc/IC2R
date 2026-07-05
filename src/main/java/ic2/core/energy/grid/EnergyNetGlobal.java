@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public class EnergyNetGlobal implements IEnergyNet
 {
 	private static final List<IEnergyNetEventReceiver> eventReceivers = new CopyOnWriteArrayList<>();
-	private static IEnergyCalculator calculator;
+	private static IEnergyCalculator calculator = new EnergyCalculatorUnified();
 
 	private EnergyNetGlobal()
 	{
@@ -32,10 +32,13 @@ public class EnergyNetGlobal implements IEnergyNet
 	public static EnergyNetGlobal create()
 	{
 		System.getProperty("IC2ExpEnet");
+		return new EnergyNetGlobal();
+	}
 
+	public static void initCalculator()
+	{
 		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get());
 		calculator = mode == EnergyNetMode.GT ? new EnergyCalculatorGT() : new EnergyCalculatorUnified();
-		return new EnergyNetGlobal();
 	}
 
 	private static void addTile(IEnergyTile tile, Level world, BlockPos pos)
@@ -58,6 +61,11 @@ public class EnergyNetGlobal implements IEnergyNet
 
 	static IEnergyCalculator getCalculator()
 	{
+		if (calculator == null)
+		{
+			calculator = new EnergyCalculatorUnified();
+		}
+
 		return calculator;
 	}
 

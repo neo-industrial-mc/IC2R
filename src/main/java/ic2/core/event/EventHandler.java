@@ -111,6 +111,7 @@ public final class EventHandler
 
 	public static void onInit()
 	{
+		EnergyNetGlobal.initCalculator();
 		MainConfig.ignoreInvalidRecipes = IC2Config.recipes.ignoreInvalidRecipes.get();
 		TileEntityMatter.init();
 		TileEntitySemifluidGenerator.init();
