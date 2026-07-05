@@ -48,16 +48,13 @@ public class TileEntityStirlingGenerator extends TileEntityConversionGenerator
 
 	protected void updateSource()
 	{
-		if (this.source == null || ((BlockEntity) this.source).isRemoved())
+		BlockEntity te = this.level.getBlockEntity(this.worldPosition.relative(this.getFacing()));
+		if (te instanceof IHeatSource heatSource && !te.isRemoved())
 		{
-			BlockEntity te = this.level.getBlockEntity(this.worldPosition.relative(this.getFacing()));
-			if (te instanceof IHeatSource)
-			{
-				this.source = (IHeatSource) te;
-			} else
-			{
-				this.source = null;
-			}
+			this.source = heatSource;
+		} else
+		{
+			this.source = null;
 		}
 	}
 

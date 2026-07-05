@@ -48,16 +48,13 @@ public class TileEntityKineticGenerator extends TileEntityConversionGenerator
 
 	protected void updateSource()
 	{
-		if (this.source == null || ((BlockEntity) this.source).isRemoved())
+		BlockEntity te = this.level.getBlockEntity(this.worldPosition.relative(this.getFacing()));
+		if (te instanceof IKineticSource kineticSource && !te.isRemoved())
 		{
-			BlockEntity te = this.level.getBlockEntity(this.worldPosition.relative(this.getFacing()));
-			if (te instanceof IKineticSource)
-			{
-				this.source = (IKineticSource) te;
-			} else
-			{
-				this.source = null;
-			}
+			this.source = kineticSource;
+		} else
+		{
+			this.source = null;
 		}
 	}
 
