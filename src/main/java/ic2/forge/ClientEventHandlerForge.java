@@ -1,6 +1,7 @@
 package ic2.forge;
 
 import com.mojang.blaze3d.shaders.FogShape;
+import ic2.core.command.CommandIc2c;
 import ic2.core.event.EventHandlerClient;
 import ic2.core.event.TickHandler;
 import ic2.core.sound.DeferredSoundOps;
@@ -16,6 +17,7 @@ import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.event.sound.SoundEngineLoadEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -24,6 +26,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public final class ClientEventHandlerForge
 {
+	@SubscribeEvent
+	public void registerClientCommands(RegisterClientCommandsEvent event)
+	{
+		CommandIc2c.register(event.getDispatcher());
+	}
+
 	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event)
 	{

@@ -1,0 +1,475 @@
+package ic2.core.command;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import ic2.api.crops.CropCard;
+import ic2.api.crops.Crops;
+import ic2.api.recipe.IRecipeInput;
+import ic2.core.block.state.BlockStateUtil;
+import ic2.core.energy.grid.EnergyNetGlobal;
+import ic2.core.energy.grid.EnergyNetSettings;
+import ic2.core.energy.grid.GridInfo;
+import ic2.core.item.ItemCropSeed;
+import ic2.core.uu.DropScan;
+import ic2.core.uu.UuGraph;
+import ic2.core.util.ConfigUtil;
+import ic2.core.util.StackUtil;
+import ic2.core.util.Util;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map.Entry;
+
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.ForgeRegistries;
+
+public final class CommandIc2
+{
+	private static final SimpleCommandExceptionType UNKNOWN_COMMAND = new SimpleCommandExceptionType(Component.literal("Unknown Command."));
+	private static final SuggestionProvider<CommandSourceStack> SCAN_SIZE_SUGGESTIONS = (ctx, builder) -> SharedSuggestionProvider.suggest(new String[] { "tiny", "small", "medium", "large" }, builder);
+	private static final SuggestionProvider<CommandSourceStack> DEBUG_ACTION_SUGGESTIONS = (ctx, builder) -> SharedSuggestionProvider.suggest(new String[] { "dumpUuValues", "resolveIngredient", "dumpTextures", "dumpLargeGrids", "enet" }, builder);
+	private static final SuggestionProvider<CommandSourceStack> ENET_OPTION_SUGGESTIONS = (ctx, builder) -> SharedSuggestionProvider.suggest(new String[] { "logIssues", "logUpdates" }, builder);
+	private static final SuggestionProvider<CommandSourceStack> BOOL_SUGGESTIONS = (ctx, builder) -> SharedSuggestionProvider.suggest(new String[] { "true", "false" }, builder);
+	private static final SuggestionProvider<CommandSourceStack> ITEM_SUGGESTIONS = (ctx, builder) -> {
+		String remaining = builder.getRemaining().toLowerCase();
+
+		for (Item item : ForgeRegistries.ITEMS)
+		{
+			String name = Util.getName(item).toString();
+			if (name.toLowerCase().contains(remaining))
+			{
+				builder.suggest(name);
+			}
+		}
+
+		if ("tag:".startsWith(remaining) || remaining.startsWith("tag:"))
+		{
+			builder.suggest("Tag:");
+		}
+
+		for (var fluid : ForgeRegistries.FLUIDS)
+		{
+			String suggestion = "Fluid:" + Util.getName(fluid);
+			if (suggestion.toLowerCase().contains(remaining))
+			{
+				builder.suggest(suggestion);
+			}
+		}
+
+		return builder.buildFuture();
+	};
+	private static final SuggestionProvider<CommandSourceStack> TEXTURE_SIZE_SUGGESTIONS = (ctx, builder) -> {
+		for (int size = 512; size > 8; size >>= 1)
+		{
+			builder.suggest(Integer.toString(size));
+		}
+
+		return builder.buildFuture();
+	};
+
+	private CommandIc2()
+	{
+	}
+
+	public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
+	{
+		dispatcher.register(
+			Commands.literal("ic2")
+				.requires(source -> source.hasPermission(4))
+				.then(
+					Commands.literal("uu-world-scan")
+						.then(
+							Commands.argument("size", StringArgumentType.word())
+								.suggests(SCAN_SIZE_SUGGESTIONS)
+								.executes(ctx -> cmdUuWorldScan(ctx.getSource(), StringArgumentType.getString(ctx, "size")))
+						)
+				)
+				.then(
+					Commands.literal("debug")
+						.then(Commands.literal("dumpUuValues").executes(ctx -> cmdDumpUuValues(ctx.getSource())))
+						.then(
+							Commands.literal("resolveIngredient")
+								.then(
+									Commands.argument("name", StringArgumentType.greedyString())
+										.suggests(ITEM_SUGGESTIONS)
+										.executes(ctx -> cmdDebugResolveIngredient(ctx.getSource(), StringArgumentType.getString(ctx, "name")))
+								)
+						)
+						.then(
+							Commands.literal("dumpTextures")
+								.then(
+									Commands.argument("name", StringArgumentType.greedyString())
+										.suggests(ITEM_SUGGESTIONS)
+										.then(
+											Commands.argument("size", IntegerArgumentType.integer(8, 512))
+												.suggests(TEXTURE_SIZE_SUGGESTIONS)
+												.executes(ctx -> cmdDebugDumpTextures(
+													ctx.getSource(),
+													StringArgumentType.getString(ctx, "name"),
+													IntegerArgumentType.getInteger(ctx, "size")
+												))
+										)
+								)
+						)
+						.then(Commands.literal("dumpLargeGrids").executes(ctx -> dumpLargeGrids(ctx.getSource())))
+						.then(
+							Commands.literal("enet")
+								.then(
+									Commands.argument("option", StringArgumentType.word())
+										.suggests(ENET_OPTION_SUGGESTIONS)
+										.then(
+											Commands.argument("value", BoolArgumentType.bool())
+												.suggests(BOOL_SUGGESTIONS)
+												.executes(ctx -> cmdDebugEnet(
+													ctx.getSource(),
+													StringArgumentType.getString(ctx, "option"),
+													BoolArgumentType.getBool(ctx, "value")
+												))
+										)
+								)
+						)
+				)
+				.then(Commands.literal("currentItem").executes(ctx -> cmdCurrentItem(ctx.getSource())))
+				.then(Commands.literal("itemNameWithVariant").executes(ctx -> cmdItemNameWithVariant(ctx.getSource())))
+				.then(
+					Commands.literal("giveCrop")
+						.then(
+							Commands.argument("owner", StringArgumentType.word())
+								.then(
+									Commands.argument("name", StringArgumentType.word())
+										.then(
+											Commands.argument("growth", IntegerArgumentType.integer(1, 31))
+												.then(
+													Commands.argument("gain", IntegerArgumentType.integer(1, 31))
+														.then(
+															Commands.argument("resistance", IntegerArgumentType.integer(1, 31))
+																.executes(ctx -> cmdGiveCrop(
+																	ctx.getSource(),
+																	StringArgumentType.getString(ctx, "owner"),
+																	StringArgumentType.getString(ctx, "name"),
+																	IntegerArgumentType.getInteger(ctx, "growth"),
+																	IntegerArgumentType.getInteger(ctx, "gain"),
+																	IntegerArgumentType.getInteger(ctx, "resistance")
+																))
+														)
+												)
+										)
+								)
+						)
+				)
+		);
+	}
+
+	private static int cmdUuWorldScan(CommandSourceStack source, String size) throws CommandSyntaxException
+	{
+		int areaCount = switch (size)
+		{
+			case "tiny" -> 128;
+			case "small" -> 1024;
+			case "medium" -> 2048;
+			case "large" -> 4096;
+			default -> throw invalidUsage(source);
+		};
+
+		float time = areaCount * 0.0032F;
+		msg(source, String.format("Starting world scan, this will take about %.1f minutes with a powerful cpu.", time));
+		msg(source, "The server will not respond while the calculations are running.");
+
+		ServerLevel world = source.getLevel();
+		if (source.getEntity() instanceof ServerPlayer player)
+		{
+			world = player.serverLevel();
+		}
+
+		if (world == null)
+		{
+			msg(source, "Can't determine the world to scan.");
+			return 0;
+		}
+
+		int area = 50000;
+		int range = 5;
+		DropScan scan = new DropScan(world, range);
+
+		try
+		{
+			scan.start(area, areaCount);
+		}
+		finally
+		{
+			scan.cleanup();
+		}
+
+		return 1;
+	}
+
+	private static int cmdDumpUuValues(CommandSourceStack source)
+	{
+		List<Entry<ItemStack, Double>> list = new ArrayList<>();
+
+		for (var it = UuGraph.iterator(); it.hasNext();)
+		{
+			list.add(it.next());
+		}
+
+		list.sort(Comparator.comparing(a -> a.getKey().getHoverName().getString()));
+		msg(source, "UU Values:");
+
+		for (Entry<ItemStack, Double> entry : list)
+		{
+			msg(source, String.format("  %s: %s", entry.getKey().getHoverName().getString(), entry.getValue()));
+		}
+
+		msg(source, "(check console for full list)");
+		return 1;
+	}
+
+	private static int cmdDebugResolveIngredient(CommandSourceStack source, String arg)
+	{
+		try
+		{
+			IRecipeInput input = ConfigUtil.asRecipeInput(arg);
+			if (input == null)
+			{
+				msg(source, "No match");
+			} else
+			{
+				List<ItemStack> inputs = input.getInputs();
+				msg(source, inputs.size() + " matches:");
+
+				for (ItemStack stack : inputs)
+				{
+					if (stack == null)
+					{
+						msg(source, " null");
+					} else
+					{
+						msg(
+							source,
+							String.format(
+								" %s (%s, tags: %s, name: %s)",
+								StackUtil.toStringSafe(stack),
+								Util.getName(stack.getItem()),
+								getTagNames(stack),
+								stack.getHoverName().getString()
+							)
+						);
+					}
+				}
+			}
+		} catch (Exception e)
+		{
+			msg(source, "Error: " + e);
+		}
+
+		return 1;
+	}
+
+	private static String getTagNames(ItemStack stack)
+	{
+		StringBuilder ret = new StringBuilder();
+
+		stack.getTags().forEach(tag -> {
+			if (!ret.isEmpty())
+			{
+				ret.append(", ");
+			}
+
+			ret.append(tag.location());
+		});
+
+		return ret.isEmpty() ? "<none>" : ret.toString();
+	}
+
+	private static int cmdDebugDumpTextures(CommandSourceStack source, String name, int size)
+	{
+		if (FMLEnvironment.dist.isDedicatedServer())
+		{
+			msg(source, "Can't dump textures on the dedicated server.");
+		} else
+		{
+			// Client-only texture dumping relies on legacy OpenGL capture and has not been ported yet.
+			msg(source, "Texture dumping is not yet available on this version.");
+		}
+
+		return 1;
+	}
+
+	private static int dumpLargeGrids(CommandSourceStack source)
+	{
+		MinecraftServer server = source.getServer();
+		List<GridInfo> allGrids = new ArrayList<>();
+
+		for (ServerLevel level : server.getAllLevels())
+		{
+			allGrids.addAll(EnergyNetGlobal.getLocal(level).getGridInfos());
+		}
+
+		allGrids.sort((a, b) -> b.complexNodeCount() - a.complexNodeCount());
+		msg(source, "found " + allGrids.size() + " grids overall");
+
+		for (int i = 0; i < 8 && i < allGrids.size(); i++)
+		{
+			GridInfo grid = allGrids.get(i);
+			if (grid.nodeCount() == 0)
+			{
+				msg(source, "grid " + grid.id() + " is empty");
+			} else
+			{
+				msg(
+					source,
+					String.format(
+						"%d complex / %d total nodes in grid %d (%d/%d/%d - %d/%d/%d)",
+						grid.complexNodeCount(),
+						grid.nodeCount(),
+						grid.id(),
+						grid.minX(),
+						grid.minY(),
+						grid.minZ(),
+						grid.maxX(),
+						grid.maxY(),
+						grid.maxZ()
+					)
+				);
+			}
+		}
+
+		return 1;
+	}
+
+	private static int cmdDebugEnet(CommandSourceStack source, String option, boolean value) throws CommandSyntaxException
+	{
+		if ("logIssues".equals(option))
+		{
+			msg(source, "setting logGridUpdateIssues to " + value);
+			EnergyNetSettings.logGridUpdateIssues = value;
+		} else if ("logUpdates".equals(option))
+		{
+			msg(source, "setting logGridUpdatesVerbose to " + value);
+			EnergyNetSettings.logGridUpdatesVerbose = value;
+		} else
+		{
+			throw invalidUsage(source);
+		}
+
+		return 1;
+	}
+
+	static int cmdCurrentItem(CommandSourceStack source) throws CommandSyntaxException
+	{
+		if (!(source.getEntity() instanceof Player player))
+		{
+			msg(source, "Not applicable for non-player");
+			return 0;
+		}
+
+		ItemStack stack = player.getMainHandItem();
+		if (StackUtil.isEmpty(stack))
+		{
+			msg(source, "empty: " + StackUtil.toStringSafe(stack));
+		} else
+		{
+			msg(
+				source,
+				String.format(
+					"ID: %s, Damage: %d/%d, NBT: %s",
+					Util.getName(stack.getItem()),
+					stack.getDamageValue(),
+					stack.getMaxDamage(),
+					stack.getTag()
+				)
+			);
+			msg(source, "Current Item excluding amount: " + ConfigUtil.fromStack(stack));
+			msg(source, "Current Item including amount: " + ConfigUtil.fromStackWithAmount(stack));
+		}
+
+		return 1;
+	}
+
+	private static int cmdItemNameWithVariant(CommandSourceStack source) throws CommandSyntaxException
+	{
+		if (!(source.getEntity() instanceof Player player))
+		{
+			throw new SimpleCommandExceptionType(Component.literal("Not applicable for non-player")).create();
+		}
+
+		ItemStack stack = player.getMainHandItem();
+		if (StackUtil.isEmpty(stack))
+		{
+			msg(source, "empty: " + StackUtil.toStringSafe(stack));
+		} else if (!stack.getItem().getClass().getCanonicalName().startsWith("ic2.core"))
+		{
+			msg(source, "Not an IC2 Item.");
+		} else
+		{
+			String name = Util.getName(stack.getItem()).getPath();
+			String variant = null;
+			if (stack.getItem() instanceof BlockItem blockItem)
+			{
+				BlockState state = blockItem.getBlock().defaultBlockState();
+				variant = BlockStateUtil.getVariantString(state);
+			}
+
+			msg(source, "Name: " + name + (variant == null || "normal".equals(variant) ? "" : " Variant: " + variant));
+		}
+
+		return 1;
+	}
+
+	private static int cmdGiveCrop(CommandSourceStack source, String owner, String name, int growth, int gain, int resistance) throws CommandSyntaxException
+	{
+		if (!(source.getEntity() instanceof Player player))
+		{
+			throw new SimpleCommandExceptionType(Component.literal("Not applicable for non-player")).create();
+		}
+
+		if (!StackUtil.isEmpty(player.getMainHandItem()))
+		{
+			msg(source, "The currently selected slot needs to be empty.");
+			return 0;
+		}
+
+		CropCard crop = Crops.instance.getCropCard(owner, name);
+		if (crop == null)
+		{
+			msg(source, "The crop you specified does not exist.");
+			return 0;
+		}
+
+		player.getInventory().add(ItemCropSeed.generateItemStackFromValues(crop, growth, gain, resistance, 4));
+		return 1;
+	}
+
+	public static void msg(CommandSourceStack source, String text)
+	{
+		source.sendSuccess(() -> Component.literal(text), false);
+	}
+
+	private static CommandSyntaxException invalidUsage(CommandSourceStack source)
+	{
+		return new SimpleCommandExceptionType(Component.literal(getUsage())).create();
+	}
+
+	public static String getUsage()
+	{
+		return "/ic2 uu-world-scan <tiny|small|medium|large> | debug (dumpUuValues | resolveIngredient <name> | dumpTextures <name> <size> | dumpLargeGrids | enet (logIssues | logUpdates) (true|false)) | currentItem | itemNameWithVariant | giveCrop <owner> <name> <growth (1-31)> <gain (1-31)> <resistance (1-31)>";
+	}
+}
