@@ -857,7 +857,7 @@
   "item.ic2.bronze_shovel": "Bronze Shovel",
   "item.ic2.bronze_sword": "Bronze Sword",
   "item.ic2.brown_painter": "Brown Painter",
-  "item.ic2.cable.tooltip0": "Max voltage: %s EU/t",
+  "item.ic2.cable.tooltip0": "Max: %s EU/t",
   "item.ic2.cable.tooltip1": "Loss: %s EU/t",
   "item.ic2.carbon_boat": "Carbon Boat",
   "item.ic2.carbon_fibre": "Raw Carbon Fibre",

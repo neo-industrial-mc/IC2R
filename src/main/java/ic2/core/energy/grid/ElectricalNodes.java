@@ -141,7 +141,7 @@ public final class ElectricalNodes
 	static double getInjectTierParameter(IEnergySink sink, double amount)
 	{
 		IElectricalNode node = resolve(sink);
-		double powerForTier = node != null ? node.getWorkingVoltage().getVoltage() : amount;
+		double powerForTier = node != null ? node.getSinkWorkingVoltage().getVoltage() : amount;
 		return EnergyNet.instance.getTierFromPower(powerForTier);
 	}
 
@@ -164,7 +164,7 @@ public final class ElectricalNodes
 		IElectricalNode node = resolve(sink);
 		if (node != null)
 		{
-			return node.getWorkingVoltage().getVoltage();
+			return node.getSinkWorkingVoltage().getVoltage();
 		}
 
 		int tier = sink.getSinkTier();

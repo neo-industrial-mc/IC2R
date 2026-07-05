@@ -857,7 +857,7 @@
   "item.ic2.bronze_shovel": "青铜铲",
   "item.ic2.bronze_sword": "青铜剑",
   "item.ic2.brown_painter": "棕色刷子",
-  "item.ic2.cable.tooltip0": "最大电压：%s EU/t",
+  "item.ic2.cable.tooltip0": "最大：%s EU/t",
   "item.ic2.cable.tooltip1": "流失量：%s EU/t",
   "item.ic2.carbon_boat": "碳纤维轻艇",
   "item.ic2.carbon_fibre": "粗制碳网",

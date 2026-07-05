@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.TooltipFlag;
 
 public final class ElectricalDisplay
 {
@@ -21,11 +20,6 @@ public final class ElectricalDisplay
 	}
 
 	public static Component formatVoltage(VoltageTier tier)
-	{
-		return Component.translatable("ic2.electric.tooltip.voltage", formatTierWithValue(tier));
-	}
-
-	public static Component formatVoltageWithValue(VoltageTier tier)
 	{
 		return Component.translatable("ic2.electric.tooltip.voltage", formatTierWithValue(tier));
 	}
@@ -67,10 +61,10 @@ public final class ElectricalDisplay
 	{
 		VoltageTier tier = energy.getWorkingVoltage();
 		int euPerTick = tier.getVoltage() * energy.getMaxSourceAmperage();
-		return Component.translatable("ic2.electric.tooltip.output", formatPower(euPerTick, tier, energy.getMaxSourceAmperage()));
+		return Component.translatable("ic2.electric.tooltip.output", formatPowerCompact(euPerTick, tier, energy.getMaxSourceAmperage()));
 	}
 
-	public static void appendCableTooltip(AbstractCableBlock block, List<Component> tooltip, TooltipFlag flag)
+	public static void appendCableTooltip(AbstractCableBlock block, List<Component> tooltip)
 	{
 		if (EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get()) == EnergyNetMode.GT)
 		{
