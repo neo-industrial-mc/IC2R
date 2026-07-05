@@ -207,7 +207,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 				}
 
 				Ic2FluidStack fs = this.currentRecipe.outputFluid.copy();
-				int filled = ((TileEntityCokeKilnGrate) grate).fluidTank.fillMb(fs, false);
+				int filled = ((TileEntityCokeKilnGrate) grate).fluidTank.fillMb(fs, true);
 				if (filled < fs.getAmountMb())
 				{
 					return false;
@@ -245,7 +245,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 				}
 
 				Ic2FluidStack fs = found.outputFluid.copy();
-				int filled = ((TileEntityCokeKilnGrate) grate).fluidTank.fillMb(fs, false);
+				int filled = ((TileEntityCokeKilnGrate) grate).fluidTank.fillMb(fs, true);
 				if (filled < fs.getAmountMb())
 				{
 					return false;
@@ -299,9 +299,10 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 						this.worldPosition.getZ() - this.getFacing().getStepZ()
 					);
 					BlockEntity grate = this.level.getBlockEntity(gratePos);
-					if (grate instanceof TileEntityCokeKilnGrate)
+					if (grate instanceof TileEntityCokeKilnGrate grateTe)
 					{
-						((TileEntityCokeKilnGrate) grate).fluidTank.fillMb(this.currentRecipe.outputFluid.copy(), false);
+						grateTe.fluidTank.fillMb(this.currentRecipe.outputFluid.copy(), false);
+						grateTe.setChanged();
 					}
 				}
 
