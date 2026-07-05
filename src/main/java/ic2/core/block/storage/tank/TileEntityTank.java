@@ -2,7 +2,6 @@ package ic2.core.block.storage.tank;
 
 import ic2.api.upgrade.IUpgradableBlock;
 import ic2.api.upgrade.UpgradableProperty;
-import ic2.api.util.FluidContainerOutputMode;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
@@ -85,41 +84,13 @@ public abstract class TileEntityTank extends TileEntityInventory implements IHas
 	@Override
 	protected InteractionResult onActivated(Player player, InteractionHand hand, Direction side, Vec3 hit)
 	{
-		ItemStack inHand = StackUtil.get(player, hand);
-		if (!LiquidUtil.isFluidContainer(inHand))
+		if (LiquidUtil.transferFluidFromHandClick(player, hand, this.contents, player.isShiftKeyDown()))
 		{
-			return super.onActivated(player, hand, side, hit);
-		}
-
-		Ic2FluidStack fs = this.contents.getFluidStack();
-		int amount;
-		if (fs != null && !fs.isEmpty())
-		{
-			amount = LiquidUtil.fillContainer(player, hand, fs, FluidContainerOutputMode.InPlacePreferred, false);
-			if (amount != 0)
-			{
-				fs.decreaseMb(amount);
-				return InteractionResult.SUCCESS;
-			}
-		}
-
-		amount = fs != null ? fs.getAmountMb() : 0;
-		fs = LiquidUtil.drainContainer(
-			player,
-			hand,
-			fs != null && !fs.isEmpty() ? fs.getFluid() : null,
-			this.contents.getCapacity() - amount,
-			FluidContainerOutputMode.InPlacePreferred,
-			false
-		);
-		if (fs != null && !fs.isEmpty())
-		{
-			this.contents.fillMb(fs, false);
+			this.setChanged();
 			return InteractionResult.SUCCESS;
-		} else
-		{
-			return InteractionResult.PASS;
 		}
+
+		return super.onActivated(player, hand, side, hit);
 	}
 
 	@Override

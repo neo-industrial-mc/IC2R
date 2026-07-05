@@ -1,25 +1,21 @@
 package ic2.core.block.steam;
 
 import ic2.api.network.INetworkClientTileEntityEventListener;
-import ic2.api.util.FluidContainerOutputMode;
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
 import ic2.core.block.comp.Fluids;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.tileentity.TileEntityInventory;
-import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.gui.dynamic.DynamicContainer;
 import ic2.core.network.GuiSynced;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.util.LiquidUtil;
-import ic2.core.util.StackUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -38,26 +34,13 @@ public class TileEntityCokeKilnGrate extends TileEntityInventory implements IHas
 	@Override
 	protected InteractionResult onActivated(Player player, InteractionHand hand, Direction side, Vec3 hit)
 	{
-		ItemStack inHand = StackUtil.get(player, hand);
-		if (!LiquidUtil.isFluidContainer(inHand))
+		if (LiquidUtil.transferFluidFromHandClick(player, hand, this.fluidTank, player.isShiftKeyDown()))
 		{
-			return super.onActivated(player, hand, side, hit);
+			this.setChanged();
+			return InteractionResult.SUCCESS;
 		}
 
-		Ic2FluidStack fs = this.fluidTank.getFluidStack();
-		int amount;
-		if (fs != null && !fs.isEmpty())
-		{
-			amount = LiquidUtil.fillContainer(player, hand, fs, FluidContainerOutputMode.InPlacePreferred, false);
-			if (amount != 0)
-			{
-				fs.decreaseMb(amount);
-				this.setChanged();
-				return InteractionResult.SUCCESS;
-			}
-		}
-
-		return InteractionResult.PASS;
+		return super.onActivated(player, hand, side, hit);
 	}
 
 	@Override

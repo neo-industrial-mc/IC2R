@@ -1,6 +1,3 @@
 {
-  "parent": "ic2:item/default",
-  "textures": {
-    "layer0": "ic2:item/cell/fluid_cell"
-  }
+  "parent": "ic2:item/fluid_cell_tinted"
 }

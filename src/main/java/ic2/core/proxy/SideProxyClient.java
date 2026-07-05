@@ -59,6 +59,9 @@ import ic2.core.item.tool.GuiToolbox;
 import ic2.core.item.upgrade.AdvancedUpgradeScreenFactory;
 import ic2.core.item.upgrade.HandHeldOre;
 import ic2.core.item.upgrade.HandHeldValueConfig;
+import ic2.core.fluid.FluidHandler;
+import ic2.core.fluid.Ic2FluidItem;
+import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.ref.Ic2Blocks;
 import ic2.core.ref.Ic2Entities;
@@ -84,6 +87,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -155,6 +159,13 @@ public final class SideProxyClient implements SideProxy
 		envProxy.registerScreen(Ic2ScreenHandlers.SOLAR_GENERATOR, GuiSolarGenerator::new);
 		envProxy.registerColorProvider((state, world, post, tintIndex) -> 6723908, Ic2Blocks.RUBBER_LEAVES);
 		envProxy.registerColorProvider((var1, var2) -> 6723908, Ic2Items.RUBBER_LEAVES);
+		envProxy.registerColorProvider(SideProxyClient::getFluidCellTintColor,
+			Ic2Items.CREOSOTE_CELL,
+			Ic2Items.HEAVY_WATER_CELL,
+			Ic2Items.HOT_WATER_CELL,
+			Ic2Items.HYDROGEN_CELL,
+			Ic2Items.OXYGEN_CELL
+		);
 		envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.FOAM);
 		envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.REINFORCED_GLASS);
 		envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.REINFORCED_DOOR);
@@ -381,6 +392,17 @@ public final class SideProxyClient implements SideProxy
 	public <T extends BlockEntity & IRotorProvider> void registerRotorProvider(BlockEntityType<T> type)
 	{
 		envProxy.registerBer(type, KineticGeneratorRenderer::new);
+	}
+
+	private static int getFluidCellTintColor(ItemStack stack, int tintIndex)
+	{
+		if (tintIndex != 1 || !(stack.getItem() instanceof Ic2FluidItem fluidItem))
+		{
+			return -1;
+		}
+
+		Ic2FluidStack fluidStack = fluidItem.getFluidStack(stack);
+		return fluidStack != null && !fluidStack.isEmpty() ? FluidHandler.getColor(fluidStack.getFluid()) : -1;
 	}
 
 }
