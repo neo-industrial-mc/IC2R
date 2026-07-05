@@ -69,6 +69,12 @@ public final class EventHandlerForge
 	}
 
 	@SubscribeEvent
+	public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
+	{
+		EventHandler.onPlayerLogin(event.getEntity());
+	}
+
+	@SubscribeEvent
 	public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event)
 	{
 		EventHandler.onPlayerLogout(event.getEntity());
