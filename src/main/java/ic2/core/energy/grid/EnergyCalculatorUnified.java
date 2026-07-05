@@ -564,7 +564,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 	private static double distributeMultiple(double offer, Tile tile, List<EnergyPath> paths, int pathOffset, GridData data, int calcId, int packetCount)
 	{
 		IEnergySource source = (IEnergySource) tile.getMainTile();
-		double power = EnergyNet.instance.getPowerFromTier(source.getSourceTier());
+		double power = ElectricalNodes.getPacketPower(source, 0);
 
 		do
 		{
@@ -603,7 +603,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 		IEnergySink sink = (IEnergySink) targetTile.getMainTile();
 		double amount = Math.min(injectAmount, sinkDemand.doubleValue());
-		double rejected = sink.injectEnergy(path.targetDirection, amount, EnergyNet.instance.getTierFromPower(amount));
+		double rejected = sink.injectEnergy(path.targetDirection, amount, ElectricalNodes.getInjectTierParameter(sink, amount));
 		if (rejected >= amount)
 		{
 			return 0.0;
@@ -843,8 +843,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 				} else
 				{
 					foundAny = true;
-					double power = EnergyNet.instance.getPowerFromTier(tier);
-					amount = Math.min(amount, power * packets);
+					amount = Math.min(amount, ElectricalNodes.getMaxOfferPower(source, packets));
 					tile.setSourceData(amount, packets);
 				}
 			} else
