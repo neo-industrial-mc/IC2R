@@ -2,12 +2,10 @@ package ic2.core.uu;
 
 import ic2.core.IC2;
 import ic2.core.init.IC2Config;
+import ic2.core.init.IC2UuScanConfig;
 import ic2.core.util.ConfigUtil;
 import ic2.core.util.LogCategory;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,14 +60,13 @@ public class UuIndex
 
 	public void refresh(boolean reset)
 	{
-		List<? extends String> worldScanList = IC2Config.balance.uuValues.worldScan.get();
+		List<? extends String> worldScanList = IC2UuScanConfig.values.get();
 		if (worldScanList.isEmpty())
 		{
-			IC2.log.info(LogCategory.Uu, "Loading predefined UU world scan values, run /ic2 uu-world-scan <small|medium|large> to calibrate them for your world.");
-			loadScanValuesFromLegacyIni();
+			IC2.log.warn(LogCategory.Uu, "No UU world scan values configured in ic2-uu-scan-values.toml.");
 		} else
 		{
-			IC2.log.debug(LogCategory.Uu, "Loading UU world scan values from the user config.");
+			IC2.log.debug(LogCategory.Uu, "Loading UU world scan values from ic2-uu-scan-values.toml.");
 			for (String entry : worldScanList)
 			{
 				parseUuEntry(entry, "world scan");
@@ -116,41 +113,4 @@ public class UuIndex
 		}
 	}
 
-	private void loadScanValuesFromLegacyIni()
-	{
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-			IC2.class.getResourceAsStream("/assets/ic2/config/uu_scan_values.ini"), StandardCharsets.UTF_8)))
-		{
-			String line;
-			while ((line = reader.readLine()) != null)
-			{
-				line = line.trim();
-				if (line.isEmpty() || line.startsWith(";")) continue;
-
-				int eqPos = line.indexOf('=');
-				if (eqPos <= 0) continue;
-
-				String itemName = line.substring(0, eqPos).trim();
-				String valueStr = line.substring(eqPos + 1).trim();
-
-				ItemStack stack = ConfigUtil.asStack(itemName);
-				if (stack != null)
-				{
-					try
-					{
-						this.add(stack, Double.parseDouble(valueStr));
-					} catch (NumberFormatException e)
-					{
-						IC2.log.warn(LogCategory.Uu, "UU scan default config: Invalid value %s for %s.", valueStr, itemName);
-					}
-				} else
-				{
-					IC2.log.warn(LogCategory.Uu, "UU scan default config: Can't find ItemStack for %s.", itemName);
-				}
-			}
-		} catch (Exception e)
-		{
-			throw new RuntimeException("Error loading default UU scan values", e);
-		}
-	}
 }

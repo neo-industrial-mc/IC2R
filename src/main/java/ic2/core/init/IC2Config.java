@@ -385,7 +385,6 @@ public class IC2Config
 		public static class UuValues
 		{
 			public final ForgeConfigSpec.ConfigValue<List<? extends String>> predefined;
-			public final ForgeConfigSpec.ConfigValue<List<? extends String>> worldScan;
 
 			UuValues(ForgeConfigSpec.Builder b)
 			{
@@ -393,7 +392,8 @@ public class IC2Config
 				b.comment(
 					"Additional initial UU values. Format: \"mod:item value\".",
 					"A value of 1 equals cobblestone.",
-					"Recipes may cause the final value to be lower than the one specified here."
+					"Recipes may cause the final value to be lower than the one specified here.",
+					"World scan defaults are configured in ic2-uu-scan-values.toml."
 				);
 				predefined = b.defineListAllowEmpty("predefined", () ->
 				{
@@ -402,8 +402,6 @@ public class IC2Config
 					defaults.add("ic2:iridium_shard 1333");
 					return defaults;
 				}, e -> e instanceof String);
-				b.comment("UU world scan values (populated by /ic2 uu-world-scan command).");
-				worldScan = b.defineListAllowEmpty("worldScan", ArrayList::new, e -> e instanceof String);
 				b.pop();
 			}
 		}
@@ -425,9 +423,6 @@ public class IC2Config
 		{
 			b.push("recipes");
 			b.comment(
-				"To modify recipes or add custom recipes, copy the corresponding .ini file to",
-				"\"minecraft/config/ic2\" and modify it.",
-				"",
 				"Disable IC2 crafting recipes with the specified output, comma separated list.",
 				"Non-IC2 recipes can be removed via the purge list below.",
 				"Format: <name>[@metadata], e.g. minecraft:bucket to disable IC2's bucket recipe from tin."
