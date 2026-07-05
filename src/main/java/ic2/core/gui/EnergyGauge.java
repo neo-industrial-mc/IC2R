@@ -4,6 +4,7 @@ import ic2.core.IC2;
 import ic2.core.Ic2Gui;
 import ic2.core.block.comp.Energy;
 import ic2.core.block.tileentity.Ic2TileEntity;
+import ic2.core.energy.profile.ElectricalDisplay;
 import ic2.core.util.Util;
 
 import java.util.HashMap;
@@ -40,6 +41,8 @@ public class EnergyGauge extends Gauge<EnergyGauge>
 		double amount = this.energy.getEnergy();
 		double capacity = this.energy.getCapacity();
 		ret.add(Component.literal(Util.toSiString(amount, 4) + "/" + Util.toSiString(capacity, 4) + " " + Component.translatable("ic2.generic.text.EU").getString()));
+		ret.add(ElectricalDisplay.formatVoltage(this.energy.getWorkingVoltage()));
+		ret.add(ElectricalDisplay.formatPower(this.energy));
 		return ret;
 	}
 

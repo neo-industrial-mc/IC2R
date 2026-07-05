@@ -17,6 +17,7 @@ import ic2.core.block.tileentity.TileEntityInventory;
 import ic2.core.block.wiring.ContainerElectricBlock;
 import ic2.core.init.IC2Config;
 import ic2.core.network.GrowingBuffer;
+import ic2.core.energy.profile.ElectricalDisplay;
 import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 
@@ -235,9 +236,8 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 	@Override
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		super.appendItemTooltip(stack, tooltip, advanced);
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Output",
-				Math.round(EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier()))));
+		Ic2Tooltip.add(tooltip, ElectricalDisplay.formatVoltage(this.energy.getWorkingVoltage()));
+		Ic2Tooltip.add(tooltip, ElectricalDisplay.formatStorageOutput(this.energy));
 		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Capacity", this.getCapacity()));
 		double stored = StackUtil.getOrCreateNbtData(stack).getDouble("energy");
 		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Store", (long) stored));

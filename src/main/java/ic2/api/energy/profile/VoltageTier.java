@@ -29,6 +29,19 @@ public enum VoltageTier
 		return this.icTier;
 	}
 
+	public String getTranslationKey()
+	{
+		return switch (this)
+		{
+			case ULV -> "ic2.voltage.ulv";
+			case LV -> "ic2.voltage.lv";
+			case MV -> "ic2.voltage.mv";
+			case HV -> "ic2.voltage.hv";
+			case EV -> "ic2.voltage.ev";
+			case IV -> "ic2.voltage.iv";
+		};
+	}
+
 	public static VoltageTier fromIcTier(int tier)
 	{
 		if (tier <= ULV.icTier)

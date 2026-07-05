@@ -1,7 +1,9 @@
 package ic2.core.block.wiring.tileentity;
 
 import ic2.api.energy.EnergyNet;
+import ic2.api.energy.profile.VoltageTier;
 import ic2.api.network.INetworkClientTileEntityEventListener;
+import ic2.core.energy.profile.ElectricalDisplay;
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
 import ic2.core.block.comp.Energy;
@@ -154,7 +156,38 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
 		super.appendItemTooltip(stack, tooltip, advanced);
-		Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.transformer.tooltip", EnergyNet.instance.getPowerFromTier(this.energy.getSinkTier()), EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier() + 1)));
+		VoltageTier lowTier = VoltageTier.fromIcTier(this.defaultTier);
+		VoltageTier highTier = VoltageTier.fromIcTier(this.defaultTier + 1);
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.input", ElectricalDisplay.formatPower(highTier.getVoltage(), highTier, 1)));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.output", ElectricalDisplay.formatPower(lowTier.getVoltage() * 4, lowTier, 4)));
+	}
+
+	public Component getInputFlowDisplay()
+	{
+		return this.getFlowDisplay(true);
+	}
+
+	public Component getOutputFlowDisplay()
+	{
+		return this.getFlowDisplay(false);
+	}
+
+	private Component getFlowDisplay(boolean input)
+	{
+		int amps = input ? this.getInputAmperage() : this.getOutputAmperage();
+		VoltageTier tier = VoltageTier.fromIcTier(input ? this.energy.getSinkTier() : this.energy.getSourceTier());
+		int euPerTick = tier.getVoltage() * amps;
+		return ElectricalDisplay.formatPower(euPerTick, tier, amps);
+	}
+
+	private int getInputAmperage()
+	{
+		return this.isStepUp() ? 4 : 1;
+	}
+
+	private int getOutputAmperage()
+	{
+		return this.isStepUp() ? 1 : 4;
 	}
 
 	@Override

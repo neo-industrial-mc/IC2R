@@ -10,6 +10,7 @@ import ic2.core.block.comp.TileEntityComponent;
 import ic2.core.event.TickHandler;
 import ic2.core.gui.dynamic.IGuiConditionProvider;
 import ic2.core.ref.Ic2Items;
+import ic2.core.energy.profile.ElectricalDisplay;
 import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.LogCategory;
 import ic2.core.util.Util;
@@ -599,12 +600,19 @@ public abstract class Ic2TileEntity extends BlockEntity implements INetworkDataP
 		if (this.hasComponent(Energy.class))
 		{
 			Energy energy = this.getComponent(Energy.class);
-			if (!energy.getSourceDirs().isEmpty())
+			boolean hasSource = !energy.getSourceDirs().isEmpty();
+			boolean hasSink = !energy.getSinkDirs().isEmpty();
+			if (hasSource || hasSink)
 			{
-				Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.power_tier", energy.getSourceTier()));
-			} else if (!energy.getSinkDirs().isEmpty())
+				Ic2Tooltip.add(tooltip, ElectricalDisplay.formatVoltage(energy.getWorkingVoltage()));
+			}
+
+			if (hasSource && !hasSink)
 			{
-				Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.power_tier", energy.getSinkTier()));
+				Ic2Tooltip.add(tooltip, ElectricalDisplay.formatPower(energy));
+			} else if (hasSink && !hasSource)
+			{
+				Ic2Tooltip.add(tooltip, ElectricalDisplay.formatPower(energy));
 			}
 		}
 	}

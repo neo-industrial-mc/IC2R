@@ -80,6 +80,7 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		this.outputSlot = new InvSlotOutput(this, "output", outputSlots);
 		this.upgradeSlot = new InvSlotUpgrade(this, "upgrade", 4);
 		this.comparator.setUpdate(() -> this.progress * 15 / this.operationLength);
+		this.syncElectricalProfile(this.defaultEnergyConsume);
 	}
 
 	private static <RI> boolean isSameRecipeInput(RI a, RI b)

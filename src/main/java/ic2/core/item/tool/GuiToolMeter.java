@@ -18,6 +18,7 @@ public class GuiToolMeter extends Ic2Gui<ContainerMeter>
 		this.addElement(new CustomButton(this, 132, 55, 20, 20, this.createModeSetter(ContainerMeter.Mode.EnergyOut)).withTooltip("ic2.meter.mode.switch\nic2.meter.mode.EnergyOut"));
 		this.addElement(new CustomButton(this, 112, 75, 20, 20, this.createModeSetter(ContainerMeter.Mode.EnergyGain)).withTooltip("ic2.meter.mode.switch\nic2.meter.mode.EnergyGain"));
 		this.addElement(new CustomButton(this, 132, 75, 20, 20, this.createModeSetter(ContainerMeter.Mode.Voltage)).withTooltip("ic2.meter.mode.switch\nic2.meter.mode.Voltage"));
+		this.addElement(new CustomButton(this, 152, 65, 20, 20, this.createModeSetter(ContainerMeter.Mode.Amperage)).withTooltip("ic2.meter.mode.switch\nic2.meter.mode.Amperage"));
 	}
 
 	private IClickHandler createModeSetter(ContainerMeter.Mode mode)
@@ -45,8 +46,12 @@ public class GuiToolMeter extends Ic2Gui<ContainerMeter>
 	{
 		super.drawForegroundLayer(guiGraphics, mouseX, mouseY);
 		ContainerMeter container = this.getContainer();
-		String unit = container.getMode() == ContainerMeter.Mode.Voltage ? "ic2.generic.text.v" : "ic2.generic.text.EUt";
-		unit = Component.translatable(unit).getString();
+		String unit = switch (container.getMode())
+		{
+			case Voltage -> Component.translatable("ic2.generic.text.v").getString();
+			case Amperage -> Component.translatable("ic2.generic.text.a").getString();
+			default -> Component.translatable("ic2.generic.text.EUt").getString();
+		};
 		this.drawString(guiGraphics, 115, 43, Component.translatable("ic2.meter.mode").getString(), 2157374);
 		this.drawString(guiGraphics, 15, 42, Component.translatable("ic2.meter.avg").getString(), 2157374);
 		this.drawString(guiGraphics, 15, 52, Util.toSiString(container.getResultAvg(), 6) + unit, 2157374);
@@ -68,6 +73,9 @@ public class GuiToolMeter extends Ic2Gui<ContainerMeter>
 				break;
 			case Voltage:
 				this.drawString(guiGraphics, 105, 1236, Component.translatable("ic2.meter.mode.Voltage").getString(), 2157374);
+				break;
+			case Amperage:
+				this.drawString(guiGraphics, 105, 1236, Component.translatable("ic2.meter.mode.Amperage").getString(), 2157374);
 		}
 	}
 
@@ -90,6 +98,9 @@ public class GuiToolMeter extends Ic2Gui<ContainerMeter>
 				break;
 			case Voltage:
 				this.drawTexturedRect(guiGraphics.pose(), 112.0, 55.0, 40.0, 40.0, 176.0, 80.0);
+				break;
+			case Amperage:
+				this.drawTexturedRect(guiGraphics.pose(), 152.0, 65.0, 20.0, 20.0, 176.0, 80.0);
 		}
 	}
 
