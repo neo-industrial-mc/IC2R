@@ -6,6 +6,7 @@ import ic2.core.ref.Ic2SoundEvents;
 import ic2.core.sound.Sound;
 import ic2.core.util.StackUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -14,8 +15,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class JetpackLogic
 {
-	private static boolean lastJetpackUsed;
 	private static Sound jetpackSound;
+	private static SoundEvent jetpackSoundEvent;
 
 	public static boolean useJetpack(Player player, boolean hoverMode, IJetpack jetpack, ItemStack stack)
 	{
@@ -167,46 +168,58 @@ public class JetpackLogic
 				nbtData.putByte("toggle_timer", --toggleTimer);
 			}
 
-			if (world.isClientSide() && player == IC2.sideProxy.getPlayerInstance())
-			{
-				if (lastJetpackUsed != jetpackUsed)
-				{
-					if (jetpackUsed)
-					{
-						if (jetpackSound == null)
-						{
-							jetpackSound = IC2.soundManager.createSound(player, jetpack instanceof ItemArmorJetpack ? Ic2SoundEvents.ITEM_JETPACK_FIRE : Ic2SoundEvents.ITEM_JETPACK_LOOP, SoundSource.PLAYERS, player, 1.0F, 1.0F);
-						}
-
-						if (jetpackSound != null)
-						{
-							jetpackSound.play();
-						}
-					} else if (jetpackSound != null)
-					{
-						IC2.soundManager.removeSound(player, jetpackSound);
-						jetpackSound = null;
-					}
-
-					lastJetpackUsed = jetpackUsed;
-				}
-			}
+			updateJetpackSound(player, jetpackUsed, jetpack);
 
 			if (jetpackUsed)
 			{
 				player.inventoryMenu.broadcastChanges();
 			}
+		} else
+		{
+			stopJetpackSound(player);
+		}
+	}
+
+	private static void updateJetpackSound(Player player, boolean jetpackUsed, IJetpack jetpack)
+	{
+		if (!IC2.sideProxy.isRendering() || player != IC2.sideProxy.getPlayerInstance())
+		{
+			return;
+		}
+
+		if (jetpackUsed)
+		{
+			SoundEvent soundEvent = jetpack instanceof ItemArmorJetpack ? Ic2SoundEvents.ITEM_JETPACK_FIRE : Ic2SoundEvents.ITEM_JETPACK_LOOP;
+			if (jetpackSound == null || jetpackSoundEvent != soundEvent)
+			{
+				stopJetpackSound(player);
+				jetpackSoundEvent = soundEvent;
+				jetpackSound = IC2.soundManager.createSound(player, soundEvent, SoundSource.PLAYERS, player, 1.0F, 1.0F);
+			}
+
+			if (jetpackSound != null)
+			{
+				jetpackSound.play();
+			}
+		} else
+		{
+			stopJetpackSound(player);
 		}
 	}
 
 	public static void stopJetpackSound(Player player)
 	{
+		if (!IC2.sideProxy.isRendering())
+		{
+			return;
+		}
+
 		if (jetpackSound != null)
 		{
 			IC2.soundManager.removeSound(player, jetpackSound);
 			jetpackSound = null;
 		}
 
-		lastJetpackUsed = false;
+		jetpackSoundEvent = null;
 	}
 }

@@ -29,6 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -268,6 +269,22 @@ public class JetpackHandler implements IBackupElectricItemManager
 				Ic2Tooltip.add(event.getToolTip(), Component.literal(energyTooltip));
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public void onEquipmentChange(LivingEquipmentChangeEvent event)
+	{
+		if (event.getSlot() != EquipmentSlot.CHEST || !(event.getEntity() instanceof Player player))
+		{
+			return;
+		}
+
+		if (!hasJetpack(event.getTo()) && !hasJetpack(event.getFrom()))
+		{
+			return;
+		}
+
+		JetpackLogic.stopJetpackSound(player);
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
