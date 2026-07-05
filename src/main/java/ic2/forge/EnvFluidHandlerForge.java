@@ -587,21 +587,19 @@ class EnvFluidHandlerForge implements EnvFluidHandler
 	public int getWorldFluidLevel(BlockState state, Level world, BlockPos pos)
 	{
 		Block block = state.getBlock();
-		if (block instanceof IFluidBlock)
+		if (block instanceof IFluidBlock fb)
 		{
-			float fillPct = Math.abs(((IFluidBlock) block).getFilledPercentage(world, pos));
+			if (fb.canDrain(world, pos))
+			{
+				return 0;
+			}
+
+			float fillPct = Math.abs(fb.getFilledPercentage(world, pos));
 			return 7 - Util.limit(Math.round(6.0F * fillPct), 0, 6);
 		}
 		if (block instanceof LiquidBlock)
 		{
-			FluidState fluidState = state.getFluidState();
-			if (fluidState.isSource())
-			{
-				return 0;
-			}
-			Integer level = fluidState.getValue(FlowingFluid.LEVEL);
-			float fillPct = level / 8.0F;
-			return 7 - Util.limit(Math.round(6.0F * fillPct), 0, 6);
+			return state.getValue(LiquidBlock.LEVEL);
 		}
 		return -1;
 	}

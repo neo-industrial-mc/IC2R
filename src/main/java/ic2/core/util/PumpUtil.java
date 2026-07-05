@@ -1,7 +1,5 @@
 package ic2.core.util;
 
-import ic2.core.fluid.FluidHandler;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fluids.IFluidBlock;
 
 public class PumpUtil
 {
@@ -204,7 +203,10 @@ public class PumpUtil
 						return cPos;
 					}
 
-					if (decay >= 7 || !(state.getBlock() instanceof LiquidBlock))
+					if (decay >= 1 && decay < 7 && state.getBlock() instanceof LiquidBlock)
+					{
+						world.setBlock(cPos, state.setValue(LiquidBlock.LEVEL, decay + 1), 3);
+					} else
 					{
 						world.removeBlock(cPos, false);
 					}
@@ -224,14 +226,18 @@ public class PumpUtil
 	protected static int getFlowDecay(BlockState state, Level world, BlockPos pos)
 	{
 		Block block = state.getBlock();
-		int level = FluidHandler.getWorldFluidLevel(state, world, pos);
-		if (level >= 0)
+		if (block instanceof IFluidBlock fb)
 		{
-			return level;
-		} else
-		{
-			return block instanceof LiquidBlock ? state.getValue(LiquidBlock.LEVEL) : -1;
+			if (fb.canDrain(world, pos))
+			{
+				return 0;
+			}
+
+			float level = Math.abs(fb.getFilledPercentage(world, pos));
+			return 7 - Util.limit(Math.round(6.0F * level), 0, 6);
 		}
+
+		return block instanceof LiquidBlock ? state.getValue(LiquidBlock.LEVEL) : -1;
 	}
 
 	protected static boolean isExistInArray(int x, int y, int z, int[][] xyz, int end_i)

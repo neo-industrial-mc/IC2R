@@ -518,6 +518,8 @@
   "ic2.Magnetizer.gui.noMetalShoes": "No Metal Shoes detected!",
   "ic2.MassFabricator.gui.energy": "Energy: %s%%",
   "ic2.MassFabricator.gui.scrap": "Scrap: %s%%",
+  "ic2.Miner.gui.pumpMode.off": "Pump Mode: OFF (mine ores; pause at liquid sources)",
+  "ic2.Miner.gui.pumpMode.on": "Pump Mode: ON (prioritize liquids when pump is adjacent)",
   "ic2.Matter.gui.info.amplifier": "Amplifier:",
   "ic2.Matter.gui.info.progress": "Progress:",
   "ic2.MetalFormer.gui.switch.Cutting": "Cutting",

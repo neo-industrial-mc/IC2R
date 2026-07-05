@@ -2,6 +2,7 @@ package ic2.core.block.machine.tileentity;
 
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IMiningDrill;
+import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.api.upgrade.IUpgradableBlock;
 import ic2.api.upgrade.UpgradableProperty;
 import ic2.core.ContainerBase;
@@ -19,6 +20,7 @@ import ic2.core.init.IC2Config;
 import ic2.core.init.OreValues;
 import ic2.core.item.tool.ItemScanner;
 import ic2.core.network.GrowingBuffer;
+import ic2.core.network.GuiSynced;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.ref.Ic2BlockTags;
 import ic2.core.ref.Ic2Blocks;
@@ -35,7 +37,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import ic2.core.IC2;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -48,7 +53,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TileEntityMiner extends TileEntityElectricMachine implements IHasGui, IUpgradableBlock
+public class TileEntityMiner extends TileEntityElectricMachine implements IHasGui, IUpgradableBlock, INetworkClientTileEntityEventListener
 {
 	public final InvSlot buffer;
 	public final InvSlotUpgrade upgradeSlot;
@@ -56,6 +61,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 	public final InvSlotConsumable pipeSlot;
 	public final InvSlotConsumable scannerSlot;
 	public int progress = 0;
+	@GuiSynced
 	public boolean pumpMode = false;
 	public boolean canProvideLiquid = false;
 	public BlockPos liquidPos;
@@ -113,6 +119,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 		super.load(nbt);
 		this.lastMode = TileEntityMiner.Mode.values()[nbt.getInt("lastMode")];
 		this.progress = nbt.getInt("progress");
+		this.pumpMode = nbt.getBoolean("pumpMode");
 	}
 
 	@Override
@@ -121,6 +128,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 		super.saveAdditional(nbt);
 		nbt.putInt("lastMode", this.lastMode.ordinal());
 		nbt.putInt("progress", this.progress);
+		nbt.putBoolean("pumpMode", this.pumpMode);
 	}
 
 	@Override
@@ -343,7 +351,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 				} else if (this.pumpMode)
 				{
 					LiquidUtil.LiquidData liquid = LiquidUtil.getLiquid(world, target);
-					if (liquid != null && this.canPump())
+					if (liquid != null && this.canPump(target))
 					{
 						isValidTarget = true;
 					}
@@ -403,7 +411,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 			} else if (!state.isAir())
 			{
 				LiquidUtil.LiquidData liquid = LiquidUtil.getLiquid(world, target);
-				if (liquid == null || liquid.isSource || this.pumpMode && this.canPump())
+				if (liquid == null || liquid.isSource || this.pumpMode && this.canPump(target))
 				{
 					isBlocking = true;
 				}
@@ -438,7 +446,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 			LiquidUtil.LiquidData liquidData = LiquidUtil.getLiquid(world, target);
 			if (liquidData != null)
 			{
-				if (liquidData.isSource || this.pumpMode && this.canPump())
+				if (liquidData.isSource || this.pumpMode && this.canPump(target))
 				{
 					this.liquidPos = new BlockPos(target);
 					this.canProvideLiquid = true;
@@ -571,9 +579,24 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 		}
 	}
 
-	public boolean canPump()
+	public boolean canPump(BlockPos target)
 	{
-		return false;
+		return this.isPumpConnected(target);
+	}
+
+	public String getPumpModeTooltip()
+	{
+		return Component.translatable(this.pumpMode ? "ic2.Miner.gui.pumpMode.on" : "ic2.Miner.gui.pumpMode.off").getString();
+	}
+
+	@Override
+	public void onNetworkEvent(Player player, int event)
+	{
+		if (event == 0)
+		{
+			this.pumpMode = !this.pumpMode;
+			IC2.sideProxy.messagePlayer(player, this.getPumpModeTooltip());
+		}
 	}
 
 	public boolean canMine(BlockPos target, BlockState state)

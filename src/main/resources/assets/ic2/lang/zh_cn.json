@@ -518,6 +518,8 @@
   "ic2.Magnetizer.gui.noMetalShoes": "没有检测到金属鞋子!",
   "ic2.MassFabricator.gui.energy": "能量: %s%%",
   "ic2.MassFabricator.gui.scrap": "废料: %s%%",
+  "ic2.Miner.gui.pumpMode.off": "泵抽模式：关（仅挖矿，遇源液体暂停）",
+  "ic2.Miner.gui.pumpMode.on": "泵抽模式：开（相邻泵时主动抽取液体）",
   "ic2.Matter.gui.info.amplifier": "效率增幅:",
   "ic2.Matter.gui.info.progress": "进程:",
   "ic2.MetalFormer.gui.switch.Cutting": "剪切",

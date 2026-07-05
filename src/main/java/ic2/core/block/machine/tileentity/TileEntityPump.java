@@ -115,7 +115,14 @@ public class TileEntityPump extends TileEntityElectricMachine implements IHasGui
 			} else
 			{
 				this.progress = 0;
-				this.operate(false);
+
+				for (int i = 0; i < this.operationsPerTick; i++)
+				{
+					if (!this.operate(false))
+					{
+						break;
+					}
+				}
 			}
 
 			this.activate(false);
