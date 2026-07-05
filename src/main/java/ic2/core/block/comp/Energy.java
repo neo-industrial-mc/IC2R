@@ -1,6 +1,8 @@
 package ic2.core.block.comp;
 
 import ic2.api.energy.EnergyNet;
+import ic2.api.energy.profile.IElectricalNode;
+import ic2.api.energy.profile.VoltageTier;
 import ic2.api.energy.tile.IChargingSlot;
 import ic2.api.energy.tile.IDischargingSlot;
 import ic2.api.energy.tile.IEnergyAcceptor;
@@ -12,6 +14,7 @@ import ic2.api.info.ILocatable;
 import ic2.core.IC2;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.tileentity.Ic2TileEntity;
+import ic2.core.energy.profile.ElectricalProfile;
 import ic2.core.network.GrowingBuffer;
 import ic2.core.util.LogCategory;
 import ic2.core.util.Util;
@@ -29,7 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
-public class Energy extends TileEntityComponent
+public class Energy extends TileEntityComponent implements IElectricalNode
 {
 	private static final boolean debugLoad = System.getProperty("ic2.comp.energy.debugload") != null;
 	private final boolean fullEnergy;
@@ -46,6 +49,7 @@ public class Energy extends TileEntityComponent
 	private boolean loaded;
 	private boolean receivingDisabled;
 	private boolean sendingSidabled;
+	private final ElectricalProfile profile;
 
 	public Energy(Ic2TileEntity parent, double capacity)
 	{
@@ -68,6 +72,9 @@ public class Energy extends TileEntityComponent
 		this.sinkDirections = sinkDirections;
 		this.sourceDirections = sourceDirections;
 		this.fullEnergy = fullEnergy;
+		this.profile = new ElectricalProfile(
+			!sinkDirections.isEmpty() ? VoltageTier.fromIcTier(sinkTier) : VoltageTier.fromIcTier(sourceTier)
+		);
 	}
 
 	public static Energy asBasicSink(Ic2TileEntity parent, double capacity)
@@ -311,6 +318,7 @@ public class Energy extends TileEntityComponent
 	public void setSinkTier(int tier)
 	{
 		this.sinkTier = tier;
+		this.profile.setWorkingVoltage(VoltageTier.fromIcTier(tier));
 	}
 
 	public int getSourceTier()
@@ -321,6 +329,67 @@ public class Energy extends TileEntityComponent
 	public void setSourceTier(int tier)
 	{
 		this.sourceTier = tier;
+		if (this.sinkDirections.isEmpty())
+		{
+			this.profile.setWorkingVoltage(VoltageTier.fromIcTier(tier));
+		}
+	}
+
+	public ElectricalProfile getElectricalProfile()
+	{
+		return this.profile;
+	}
+
+	public void setRecipePower(int recipePower)
+	{
+		this.profile.setRecipePower(recipePower);
+	}
+
+	public void setWorkingVoltage(VoltageTier workingVoltage)
+	{
+		this.profile.setWorkingVoltage(workingVoltage);
+	}
+
+	@Override
+	public VoltageTier getWorkingVoltage()
+	{
+		return this.profile.getWorkingVoltage();
+	}
+
+	@Override
+	public int getWorkingCurrent()
+	{
+		return this.profile.getWorkingCurrent();
+	}
+
+	@Override
+	public double getAverageCurrent()
+	{
+		return this.profile.getDisplayCurrent();
+	}
+
+	@Override
+	public int getMaxSourceAmperage()
+	{
+		return this.multiSource ? this.sourcePackets : 1;
+	}
+
+	@Override
+	public int getMaxSinkAmperage()
+	{
+		return this.profile.getMaxSinkAmperage();
+	}
+
+	@Override
+	public double getEnergyBufferCapacity()
+	{
+		return this.capacity;
+	}
+
+	@Override
+	public double getEnergyBufferFree()
+	{
+		return this.getFreeEnergy();
 	}
 
 	public void setEnabled(boolean enabled)
@@ -472,7 +541,7 @@ public class Energy extends TileEntityComponent
 			: this.sourcePackets;
 	}
 
-	private abstract static class EnergyNetDelegate implements ILocatable, IEnergyTile
+	private abstract class EnergyNetDelegate implements ILocatable, IEnergyTile, IElectricalNode
 	{
 		private final Ic2TileEntity parent;
 
@@ -491,6 +560,48 @@ public class Energy extends TileEntityComponent
 		public BlockPos getPosition()
 		{
 			return this.parent.getBlockPos();
+		}
+
+		@Override
+		public VoltageTier getWorkingVoltage()
+		{
+			return Energy.this.getWorkingVoltage();
+		}
+
+		@Override
+		public int getWorkingCurrent()
+		{
+			return Energy.this.getWorkingCurrent();
+		}
+
+		@Override
+		public double getAverageCurrent()
+		{
+			return Energy.this.getAverageCurrent();
+		}
+
+		@Override
+		public int getMaxSourceAmperage()
+		{
+			return Energy.this.getMaxSourceAmperage();
+		}
+
+		@Override
+		public int getMaxSinkAmperage()
+		{
+			return Energy.this.getMaxSinkAmperage();
+		}
+
+		@Override
+		public double getEnergyBufferCapacity()
+		{
+			return Energy.this.getEnergyBufferCapacity();
+		}
+
+		@Override
+		public double getEnergyBufferFree()
+		{
+			return Energy.this.getEnergyBufferFree();
 		}
 	}
 

@@ -1,6 +1,7 @@
 package ic2.core.energy.grid;
 
 import ic2.api.energy.EnergyNet;
+import ic2.api.energy.profile.IElectricalNode;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
@@ -458,6 +459,22 @@ public class Grid
 			case Conductor:
 			default:
 				break;
+		}
+
+		if (ioTile instanceof IElectricalNode electricalNode)
+		{
+			chat.printf(
+				"%s electrical: %s %dV, %dA (avg %.4fA), max sink %dA, max source %dA, buffer %.0f/%.0f EU%n",
+				" ",
+				electricalNode.getWorkingVoltage(),
+				electricalNode.getWorkingVoltage().getVoltage(),
+				electricalNode.getWorkingCurrent(),
+				electricalNode.getAverageCurrent(),
+				electricalNode.getMaxSinkAmperage(),
+				electricalNode.getMaxSourceAmperage(),
+				electricalNode.getEnergyBufferCapacity() - electricalNode.getEnergyBufferFree(),
+				electricalNode.getEnergyBufferCapacity()
+			);
 		}
 
 		chat.printf("%s %d neighbor links:%n", " ", node.links.size());

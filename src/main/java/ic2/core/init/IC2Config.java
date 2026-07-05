@@ -466,6 +466,7 @@ public class IC2Config
 		public final ForgeConfigSpec.BooleanValue roundEnetLoss;
 		public final ForgeConfigSpec.BooleanValue enableEnetExplosions;
 		public final ForgeConfigSpec.BooleanValue enableEnetCableMeltdown;
+		public final ForgeConfigSpec.ConfigValue<String> energyNetMode;
 
 		Misc(ForgeConfigSpec.Builder b)
 		{
@@ -487,6 +488,10 @@ public class IC2Config
 			enableEnetExplosions = b.define("enableEnetExplosions", true);
 			b.comment("Same for cable meltdown.");
 			enableEnetCableMeltdown = b.define("enableEnetCableMeltdown", true);
+			b.push("energyNet");
+			b.comment("IC2 = classic EU packets (default); GT = voltage/current/ampere limits");
+			energyNetMode = b.define("mode", "IC2");
+			b.pop();
 			b.pop();
 		}
 	}

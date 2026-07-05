@@ -6,8 +6,9 @@ import ic2.api.energy.NodeStats;
 import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.info.ILocatable;
 import ic2.core.IC2;
-// EnergyCalculatorUnified replaces EnergyCalculatorLeg
+import ic2.core.energy.EnergyNetMode;
 import ic2.core.event.WorldData;
+import ic2.core.init.IC2Config;
 import ic2.core.util.LogCategory;
 import ic2.core.util.Util;
 
@@ -32,7 +33,8 @@ public class EnergyNetGlobal implements IEnergyNet
 	{
 		System.getProperty("IC2ExpEnet");
 
-		calculator = new EnergyCalculatorUnified();
+		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get());
+		calculator = mode == EnergyNetMode.GT ? new EnergyCalculatorGT() : new EnergyCalculatorUnified();
 		return new EnergyNetGlobal();
 	}
 
