@@ -16,6 +16,7 @@
 
 - 自动弹出升级、自动抽入升级、撬棍：原版还没有配方
 - 尚未添加：管道系统
+- 超频过的泵稳定性极差，极差极差特别差很差非常差。尽管它们使用了同一套代码
 
 ### 要做
 
@@ -27,6 +28,9 @@
 - [METS](https://www.mcmod.cn/class/2217.html)
 - [Gravitation Suite](https://www.mcmod.cn/class/255.html)
 - [ASP](https://www.mcmod.cn/class/23.html)
+- [Advanced Machines](https://www.mcmod.cn/class/22.html)
+- [Compact Solar Arrays](https://www.mcmod.cn/class/112.html)
+- [AFSU](https://www.mcmod.cn/class/852.html)
 
 ## 与原版的区别
 
