@@ -108,6 +108,7 @@ public class TileEntityLuminator extends Ic2TileEntity
 	protected void onLoaded()
 	{
 		this.energy.setDirections(Collections.singleton(this.getFacing().getOpposite()), Collections.emptySet());
+		this.energy.syncConsumerProfile(0);
 		super.onLoaded();
 		TickHandler.requestSingleWorldTick(this.getLevel(), world -> TileEntityLuminator.this.checkPlacement());
 	}

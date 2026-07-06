@@ -2,7 +2,9 @@ package ic2.core.item.tool;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.NodeStats;
+import ic2.api.energy.profile.IElectricalNode;
 import ic2.api.energy.tile.IEnergyTile;
+
 import ic2.api.network.ClientModifiable;
 import ic2.core.IC2;
 import ic2.core.item.ContainerHandHeldInventory;
@@ -46,6 +48,7 @@ public class ContainerMeter extends ContainerHandHeldInventory<HandHeldMeter>
 				case EnergyOut -> stats.getEnergyOut();
 				case EnergyGain -> stats.getEnergyIn() - stats.getEnergyOut();
 				case Voltage -> stats.getVoltage();
+				case Amperage -> this.getAmperageReading();
 			};
 			int scaled = (int) Math.round(result * SCALE);
 
@@ -137,11 +140,23 @@ public class ContainerMeter extends ContainerHandHeldInventory<HandHeldMeter>
 		}
 	}
 
+	private double getAmperageReading()
+	{
+		if (this.uut instanceof IElectricalNode node)
+		{
+			int workingCurrent = node.getWorkingCurrent();
+			return workingCurrent > 0 ? workingCurrent : node.getAverageCurrent();
+		}
+
+		return 0.0;
+	}
+
 	public enum Mode
 	{
 		EnergyIn,
 		EnergyOut,
 		EnergyGain,
-		Voltage
+		Voltage,
+		Amperage
 	}
 }

@@ -141,6 +141,19 @@ public class TileEntityInduction extends TileEntityElectricMachine implements IH
 			this.energy.useEnergy(15.0);
 		}
 
+		int recipePower = 0;
+		if (canOperate || this.redstone.hasRedstoneInput())
+		{
+			recipePower = 1;
+		}
+
+		if (newActive && canOperate)
+		{
+			recipePower += 15;
+		}
+
+		this.syncElectricalProfile(recipePower);
+
 		needsInvUpdate |= this.upgradeSlot.tickNoMark();
 		if (needsInvUpdate)
 		{

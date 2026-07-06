@@ -1,4 +1,4 @@
-# 2.10.33-ex120
+# 2.10.34-ex120
 
 欢迎来到制作和反馈清单。这里记录了下版本的计划和已知问题。
 
@@ -16,11 +16,11 @@
 
 - 自动弹出升级、自动抽入升级、撬棍：原版还没有配方
 - 尚未添加：管道系统
+- 超频过的泵稳定性极差，极差极差特别差很差非常差。尽管它们使用了同一套代码
 
 ### 要做
 
 - 燃料棒（锂）和燃料棒（氚）：原版无功能
-- （可能）改写电网。你能想象吗？MFSU 接 64 个打粉机正常工作而不爆炸。
 
 ### 准备迁移的联动 Mod
 
@@ -28,6 +28,9 @@
 - [METS](https://www.mcmod.cn/class/2217.html)
 - [Gravitation Suite](https://www.mcmod.cn/class/255.html)
 - [ASP](https://www.mcmod.cn/class/23.html)
+- [Advanced Machines](https://www.mcmod.cn/class/22.html)
+- [Compact Solar Arrays](https://www.mcmod.cn/class/112.html)
+- [AFSU](https://www.mcmod.cn/class/852.html)
 
 ## 与原版的区别
 

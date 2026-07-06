@@ -1,6 +1,8 @@
 package ic2.core.block.comp;
 
 import ic2.api.energy.EnergyNet;
+import ic2.api.energy.profile.IElectricalNode;
+import ic2.api.energy.profile.VoltageTier;
 import ic2.api.energy.tile.IChargingSlot;
 import ic2.api.energy.tile.IDischargingSlot;
 import ic2.api.energy.tile.IEnergyAcceptor;
@@ -12,6 +14,13 @@ import ic2.api.info.ILocatable;
 import ic2.core.IC2;
 import ic2.core.block.invslot.InvSlot;
 import ic2.core.block.tileentity.Ic2TileEntity;
+import ic2.core.block.wiring.tileentity.TileEntityTransformer;
+import ic2.core.energy.EnergyNetMode;
+import ic2.core.energy.grid.EnergyNetExplosions;
+import ic2.core.energy.grid.EnergyNetGlobal;
+import ic2.core.energy.grid.Tile;
+import ic2.core.energy.profile.ElectricalProfile;
+import ic2.core.init.IC2Config;
 import ic2.core.network.GrowingBuffer;
 import ic2.core.util.LogCategory;
 import ic2.core.util.Util;
@@ -29,13 +38,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
-public class Energy extends TileEntityComponent
+public class Energy extends TileEntityComponent implements IElectricalNode
 {
 	private static final boolean debugLoad = System.getProperty("ic2.comp.energy.debugload") != null;
 	private final boolean fullEnergy;
 	private double capacity;
 	private double storage;
 	private int sinkTier;
+	private final int nativeSinkTier;
 	private int sourceTier;
 	private Set<Direction> sinkDirections;
 	private Set<Direction> sourceDirections;
@@ -46,6 +56,7 @@ public class Energy extends TileEntityComponent
 	private boolean loaded;
 	private boolean receivingDisabled;
 	private boolean sendingSidabled;
+	private final ElectricalProfile profile;
 
 	public Energy(Ic2TileEntity parent, double capacity)
 	{
@@ -64,10 +75,14 @@ public class Energy extends TileEntityComponent
 		super(parent);
 		this.capacity = capacity;
 		this.sinkTier = sinkTier;
+		this.nativeSinkTier = sinkTier;
 		this.sourceTier = sourceTier;
 		this.sinkDirections = sinkDirections;
 		this.sourceDirections = sourceDirections;
 		this.fullEnergy = fullEnergy;
+		this.profile = new ElectricalProfile(
+			!sinkDirections.isEmpty() ? VoltageTier.fromIcTier(sinkTier) : VoltageTier.fromIcTier(sourceTier)
+		);
 	}
 
 	public static Energy asBasicSink(Ic2TileEntity parent, double capacity)
@@ -321,6 +336,170 @@ public class Energy extends TileEntityComponent
 	public void setSourceTier(int tier)
 	{
 		this.sourceTier = tier;
+		if (this.sinkDirections.isEmpty())
+		{
+			this.profile.setWorkingVoltage(VoltageTier.fromIcTier(tier));
+		}
+	}
+
+	public ElectricalProfile getElectricalProfile()
+	{
+		return this.profile;
+	}
+
+	public void setRecipePower(int recipePower)
+	{
+		this.profile.setRecipePower(recipePower);
+	}
+
+	public void setWorkingVoltage(VoltageTier workingVoltage)
+	{
+		this.profile.setWorkingVoltage(workingVoltage);
+	}
+
+	public void syncConsumerProfile(int recipePowerEuPerTick)
+	{
+		VoltageTier voltage = resolveConsumerWorkingVoltage(recipePowerEuPerTick);
+		if (this.profile.getRecipePower() == recipePowerEuPerTick && this.profile.getWorkingVoltage() == voltage)
+		{
+			return;
+		}
+
+		this.profile.clearMaxSinkAmperageOverride();
+		this.profile.setRecipePower(recipePowerEuPerTick);
+		this.profile.setWorkingVoltage(voltage);
+	}
+
+	private VoltageTier resolveConsumerWorkingVoltage(int recipePowerEuPerTick)
+	{
+		VoltageTier nativeTier = VoltageTier.fromIcTier(this.nativeSinkTier);
+		if (recipePowerEuPerTick <= 0 || recipePowerEuPerTick <= nativeTier.getVoltage())
+		{
+			return nativeTier;
+		}
+
+		VoltageTier fromPower = VoltageTier.fromPower(recipePowerEuPerTick);
+		return fromPower.getIcTier() < nativeTier.getIcTier() ? nativeTier : fromPower;
+	}
+
+	public void configureStorageBlock()
+	{
+		VoltageTier tier = VoltageTier.fromIcTier(this.sinkTier);
+		this.profile.setWorkingVoltage(tier);
+		this.profile.setRecipePower(0);
+		this.profile.setMaxSinkAmperageOverride(2);
+	}
+
+	public void configureFixedSource(int productionEuPerTick)
+	{
+		this.profile.setWorkingVoltage(VoltageTier.LV);
+		this.profile.setRecipePower(productionEuPerTick);
+		this.setSourceTier(VoltageTier.LV.getIcTier());
+	}
+
+	public void configureDynamicSource(double outputEuPerTick)
+	{
+		VoltageTier tier = VoltageTier.fromPower(outputEuPerTick);
+		this.profile.setWorkingVoltage(tier);
+		this.profile.setRecipePower((int) Math.round(outputEuPerTick));
+		if (this.sinkDirections.isEmpty())
+		{
+			this.setSourceTier(tier.getIcTier());
+		}
+	}
+
+	public void configureTransformerProfile(boolean stepUp)
+	{
+		this.profile.clearMaxSinkAmperageOverride();
+		this.profile.setRecipePower(0);
+		this.profile.setWorkingVoltage(VoltageTier.fromIcTier(this.sourceTier));
+		this.profile.setMaxSinkAmperageOverride(stepUp ? 4 : 1);
+	}
+
+	@Override
+	public VoltageTier getSinkWorkingVoltage()
+	{
+		if (!this.sinkDirections.isEmpty() && !this.sourceDirections.isEmpty())
+		{
+			return VoltageTier.fromIcTier(this.sinkTier);
+		}
+
+		return this.profile.getWorkingVoltage();
+	}
+
+	public boolean applyTransformerModeSwitch(TileEntityTransformer.Mode newMode, TileEntityTransformer.Mode oldMode)
+	{
+		if (oldMode == null || newMode == oldMode)
+		{
+			return false;
+		}
+
+		if (EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get()) != EnergyNetMode.GT)
+		{
+			return false;
+		}
+
+		if (this.storage <= 0.0)
+		{
+			return false;
+		}
+
+		Level world = this.parent.getLevel();
+		Tile tile = EnergyNetGlobal.getLocal(world).getTile(this.parent.getBlockPos());
+		if (tile != null)
+		{
+			EnergyNetExplosions.explodeTile(world, tile, EnergyNet.instance.getPowerFromTier(this.sourceTier));
+		}
+
+		return true;
+	}
+
+	@Override
+	public VoltageTier getWorkingVoltage()
+	{
+		return this.profile.getWorkingVoltage();
+	}
+
+	@Override
+	public int getWorkingCurrent()
+	{
+		return this.profile.getWorkingCurrent();
+	}
+
+	@Override
+	public double getAverageCurrent()
+	{
+		return this.profile.getDisplayCurrent();
+	}
+
+	@Override
+	public int getMaxSourceAmperage()
+	{
+		if (this.multiSource)
+		{
+			return this.sourcePackets;
+		}
+
+		int workingCurrent = this.profile.getWorkingCurrent();
+		return workingCurrent > 0 ? workingCurrent : 1;
+	}
+
+	@Override
+	public int getMaxSinkAmperage()
+	{
+		return this.profile.getMaxSinkAmperage();
+	}
+
+	@Override
+	public double getEnergyBufferCapacity()
+	{
+		return this.capacity;
+	}
+
+	@Override
+	public double getEnergyBufferFree()
+	{
+		return this.getFreeEnergy();
 	}
 
 	public void setEnabled(boolean enabled)
@@ -472,7 +651,7 @@ public class Energy extends TileEntityComponent
 			: this.sourcePackets;
 	}
 
-	private abstract static class EnergyNetDelegate implements ILocatable, IEnergyTile
+	private abstract class EnergyNetDelegate implements ILocatable, IEnergyTile, IElectricalNode
 	{
 		private final Ic2TileEntity parent;
 
@@ -491,6 +670,54 @@ public class Energy extends TileEntityComponent
 		public BlockPos getPosition()
 		{
 			return this.parent.getBlockPos();
+		}
+
+		@Override
+		public VoltageTier getWorkingVoltage()
+		{
+			return Energy.this.getWorkingVoltage();
+		}
+
+		@Override
+		public VoltageTier getSinkWorkingVoltage()
+		{
+			return Energy.this.getSinkWorkingVoltage();
+		}
+
+		@Override
+		public int getWorkingCurrent()
+		{
+			return Energy.this.getWorkingCurrent();
+		}
+
+		@Override
+		public double getAverageCurrent()
+		{
+			return Energy.this.getAverageCurrent();
+		}
+
+		@Override
+		public int getMaxSourceAmperage()
+		{
+			return Energy.this.getMaxSourceAmperage();
+		}
+
+		@Override
+		public int getMaxSinkAmperage()
+		{
+			return Energy.this.getMaxSinkAmperage();
+		}
+
+		@Override
+		public double getEnergyBufferCapacity()
+		{
+			return Energy.this.getEnergyBufferCapacity();
+		}
+
+		@Override
+		public double getEnergyBufferFree()
+		{
+			return Energy.this.getEnergyBufferFree();
 		}
 	}
 

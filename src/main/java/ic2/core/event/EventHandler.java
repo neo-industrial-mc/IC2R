@@ -21,6 +21,7 @@ import ic2.core.block.machine.tileentity.TileEntityMatter;
 import ic2.core.block.inherit.Ic2FenceBlock;
 import ic2.core.block.machine.tileentity.TileEntityRecycler;
 import ic2.core.crop.Ic2Crops;
+import ic2.core.energy.EnergyNetMode;
 import ic2.core.energy.grid.EnergyNetGlobal;
 import ic2.core.init.BlocksItems;
 import ic2.core.init.IC2Config;
@@ -54,6 +55,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -111,6 +113,7 @@ public final class EventHandler
 
 	public static void onInit()
 	{
+		EnergyNetGlobal.initCalculator();
 		MainConfig.ignoreInvalidRecipes = IC2Config.recipes.ignoreInvalidRecipes.get();
 		TileEntityMatter.init();
 		TileEntitySemifluidGenerator.init();
@@ -157,6 +160,17 @@ public final class EventHandler
 		{
 			IC2.sideProxy.getKeyboard().removePlayerReferences(player);
 		}
+	}
+
+	public static void onPlayerLogin(Player player)
+	{
+		if (!(player instanceof ServerPlayer))
+		{
+			return;
+		}
+
+		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get());
+		IC2.sideProxy.messagePlayer(player, "ic2.energynet.mode", "ic2.energynet.mode." + mode.name().toLowerCase());
 	}
 
 	public static void onWorldLoad(Level world)

@@ -46,6 +46,7 @@ public class TileEntityFluidRegulator extends TileEntityElectricMachine implemen
 	public TileEntityFluidRegulator(BlockPos pos, BlockState state)
 	{
 		super(Ic2BlockEntities.FLUID_REGULATOR, pos, state, 10000, 4);
+		this.syncElectricalProfile(10);
 		this.fluidTank = this.fluids.addTank("fluidTank", 10000, InvSlot.Access.NONE);
 		this.wasserinputSlot = new InvSlotConsumableLiquidByTank(this, "wasserinputSlot", InvSlot.Access.I, 1, InvSlot.InvSide.TOP, InvSlotConsumableLiquid.OpType.Drain, this.fluidTank);
 		this.wasseroutputSlot = new InvSlotOutput(this, "wasseroutputSlot", 1);

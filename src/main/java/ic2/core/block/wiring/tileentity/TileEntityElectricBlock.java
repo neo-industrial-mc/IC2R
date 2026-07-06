@@ -1,6 +1,5 @@
 package ic2.core.block.wiring.tileentity;
 
-import ic2.api.energy.EnergyNet;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.api.tile.IEnergyStorage;
 import ic2.core.ContainerBase;
@@ -17,6 +16,7 @@ import ic2.core.block.tileentity.TileEntityInventory;
 import ic2.core.block.wiring.ContainerElectricBlock;
 import ic2.core.init.IC2Config;
 import ic2.core.network.GrowingBuffer;
+import ic2.core.energy.profile.ElectricalDisplay;
 import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
 
@@ -46,6 +46,10 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 	public final Redstone redstone;
 	public final RedstoneEmitter rsEmitter;
 	public byte redstoneMode = 0;
+	/**
+	 * @deprecated Use {@link ic2.api.energy.profile.VoltageTier} × 1A ({@code getSourceTier()} voltage) for output EU/t.
+	 */
+	@Deprecated
 	protected double output;
 
 	public TileEntityElectricBlock(BlockEntityType<? extends TileEntityElectricBlock> type, BlockPos pos, BlockState state, int tier, int output, int maxStorage)
@@ -55,9 +59,17 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 		this.chargeSlot = new InvSlotCharge(this, tier);
 		this.dischargeSlot = new InvSlotDischarge(this, InvSlot.Access.IO, tier, InvSlot.InvSide.BOTTOM);
 		this.energy = this.addComponent(new Energy(this, maxStorage, EnumSet.complementOf(EnumSet.of(Direction.DOWN)), EnumSet.of(Direction.DOWN), tier, tier, true).addManagedSlot(this.chargeSlot).addManagedSlot(this.dischargeSlot));
+		this.energy.configureStorageBlock();
 		this.rsEmitter = this.addComponent(new RedstoneEmitter(this));
 		this.redstone = this.addComponent(new Redstone(this));
 		this.comparator.setUpdate(this.energy::getComparatorValue);
+	}
+
+	@Override
+	protected void onLoaded()
+	{
+		super.onLoaded();
+		this.energy.configureStorageBlock();
 	}
 
 	@Override
@@ -223,9 +235,8 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 	@Override
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		super.appendItemTooltip(stack, tooltip, advanced);
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Output",
-				Math.round(EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier()))));
+		Ic2Tooltip.add(tooltip, ElectricalDisplay.formatVoltage(this.energy.getWorkingVoltage()));
+		Ic2Tooltip.add(tooltip, ElectricalDisplay.formatStorageOutput(this.energy));
 		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Capacity", this.getCapacity()));
 		double stored = StackUtil.getOrCreateNbtData(stack).getDouble("energy");
 		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Store", (long) stored));

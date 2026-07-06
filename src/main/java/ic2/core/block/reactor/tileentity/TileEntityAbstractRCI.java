@@ -44,6 +44,7 @@ public abstract class TileEntityAbstractRCI extends TileEntityElectricMachine im
 		this.target = target;
 		this.inputSlot = new InvSlotConsumableItemStack(this, "input", InvSlot.Access.I, 9, InvSlot.InvSide.ANY, coolant);
 		this.upgradeSlot = new InvSlotUpgrade(this, "upgrade", 4);
+		this.syncElectricalProfile(1000);
 	}
 
 	@Override

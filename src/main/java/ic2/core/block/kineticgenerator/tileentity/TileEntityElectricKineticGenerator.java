@@ -124,6 +124,7 @@ public class TileEntityElectricKineticGenerator extends TileEntityAbstractKineti
 		if (1000.0 - this.ku > 1.0)
 		{
 			double max = Math.min(1000.0 - this.ku, this.energy.getEnergy() * this.kuPerEU);
+			this.energy.syncConsumerProfile((int) Math.ceil(max / this.kuPerEU));
 			this.energy.useEnergy(max / this.kuPerEU);
 			this.ku += max;
 			if (max > 0.0)
@@ -131,6 +132,9 @@ public class TileEntityElectricKineticGenerator extends TileEntityAbstractKineti
 				this.setChanged();
 				newActive = true;
 			}
+		} else
+		{
+			this.energy.syncConsumerProfile(0);
 		}
 
 		this.setActive(newActive);

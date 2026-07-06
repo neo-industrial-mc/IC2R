@@ -44,6 +44,7 @@ public class TileEntityScanner extends TileEntityElectricMachine implements IHas
 	public TileEntityScanner(BlockPos pos, BlockState state)
 	{
 		super(Ic2BlockEntities.UU_SCANNER, pos, state, 512000, 4);
+		this.syncElectricalProfile(256);
 		this.inputSlot = new InvSlotScannable(this, "input", 1);
 		this.diskSlot = new InvSlotConsumableId(this, "disk", InvSlot.Access.IO, 1, InvSlot.InvSide.ANY, Ic2Items.CRYSTAL_MEMORY);
 	}

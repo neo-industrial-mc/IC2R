@@ -64,6 +64,7 @@ public class TileEntityElectricHeatGenerator extends TileEntityHeatSourceInvento
 	protected int fillHeatBuffer(int maxAmount)
 	{
 		int amount = Math.min(maxAmount, (int) (this.energy.getEnergy() / outputMultiplier));
+		this.energy.syncConsumerProfile(amount > 0 ? (int) Math.ceil(amount / outputMultiplier) : 0);
 		if (amount > 0)
 		{
 			this.energy.useEnergy(amount / outputMultiplier);

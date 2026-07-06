@@ -81,6 +81,7 @@ public class TileEntityElectrolyzer extends TileEntityElectricMachine implements
 		if (this.canOperate())
 		{
 			assert this.recipe != null;
+			this.syncElectricalProfile(this.recipe.EUaTick());
 			this.setActive(true);
 			this.energy.useEnergy(this.recipe.EUaTick());
 			this.progress++;
@@ -92,6 +93,7 @@ public class TileEntityElectrolyzer extends TileEntityElectricMachine implements
 			}
 		} else
 		{
+			this.syncElectricalProfile(0);
 			this.setActive(false);
 			this.progress = 0;
 		}

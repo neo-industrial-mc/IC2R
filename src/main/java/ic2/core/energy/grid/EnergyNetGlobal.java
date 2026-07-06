@@ -6,8 +6,9 @@ import ic2.api.energy.NodeStats;
 import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.info.ILocatable;
 import ic2.core.IC2;
-// EnergyCalculatorUnified replaces EnergyCalculatorLeg
+import ic2.core.energy.EnergyNetMode;
 import ic2.core.event.WorldData;
+import ic2.core.init.IC2Config;
 import ic2.core.util.LogCategory;
 import ic2.core.util.Util;
 
@@ -22,7 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public class EnergyNetGlobal implements IEnergyNet
 {
 	private static final List<IEnergyNetEventReceiver> eventReceivers = new CopyOnWriteArrayList<>();
-	private static IEnergyCalculator calculator;
+	private static IEnergyCalculator calculator = new EnergyCalculatorUnified();
 
 	private EnergyNetGlobal()
 	{
@@ -31,9 +32,13 @@ public class EnergyNetGlobal implements IEnergyNet
 	public static EnergyNetGlobal create()
 	{
 		System.getProperty("IC2ExpEnet");
-
-		calculator = new EnergyCalculatorUnified();
 		return new EnergyNetGlobal();
+	}
+
+	public static void initCalculator()
+	{
+		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get());
+		calculator = mode == EnergyNetMode.GT ? new EnergyCalculatorGT() : new EnergyCalculatorUnified();
 	}
 
 	private static void addTile(IEnergyTile tile, Level world, BlockPos pos)
@@ -56,6 +61,11 @@ public class EnergyNetGlobal implements IEnergyNet
 
 	static IEnergyCalculator getCalculator()
 	{
+		if (calculator == null)
+		{
+			calculator = new EnergyCalculatorUnified();
+		}
+
 		return calculator;
 	}
 

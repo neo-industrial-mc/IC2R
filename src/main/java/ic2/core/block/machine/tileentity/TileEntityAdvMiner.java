@@ -69,6 +69,7 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 	public TileEntityAdvMiner(BlockPos pos, BlockState state, int tier)
 	{
 		super(Ic2BlockEntities.ADVANCED_MINER, pos, state, 4000000, tier);
+		this.syncElectricalProfile(512);
 		this.defaultTier = tier;
 		this.workTick = 20;
 		this.redstone = this.addComponent(new Redstone(this));

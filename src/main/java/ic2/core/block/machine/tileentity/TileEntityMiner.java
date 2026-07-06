@@ -232,6 +232,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 
 		if (operatingPos.getY() != this.worldPosition.getY() && this.energy.getEnergy() >= 3.0)
 		{
+			this.syncElectricalProfile(3);
 			if (this.progress < 20)
 			{
 				this.energy.useEnergy(3.0);
@@ -501,6 +502,8 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 			this.lastMode = mode;
 			this.progress = 0;
 		}
+
+		this.syncElectricalProfile(energyPerTick);
 
 		if (this.progress < duration)
 		{

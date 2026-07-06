@@ -4,6 +4,8 @@ import ic2.api.item.ElectricItem;
 
 import java.util.List;
 
+import ic2.api.energy.profile.VoltageTier;
+import ic2.core.energy.profile.ElectricalDisplay;
 import ic2.core.util.Ic2Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -21,7 +23,7 @@ public class ElectricItemTooltipHandler
 				Ic2Tooltip.add(out, Component.literal(tooltip));
 				if (Screen.hasShiftDown())
 				{
-					Ic2Tooltip.add(out, Component.translatable("ic2.item.tooltip.power_tier", ElectricItem.manager.getTier(stack)));
+					Ic2Tooltip.add(out, ElectricalDisplay.formatVoltage(VoltageTier.fromIcTier(ElectricItem.manager.getTier(stack))));
 				}
 			}
 		}

@@ -80,6 +80,7 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		this.outputSlot = new InvSlotOutput(this, "output", outputSlots);
 		this.upgradeSlot = new InvSlotUpgrade(this, "upgrade", 4);
 		this.comparator.setUpdate(() -> this.progress * 15 / this.operationLength);
+		this.syncElectricalProfile(this.defaultEnergyConsume);
 	}
 
 	private static <RI> boolean isSameRecipeInput(RI a, RI b)
@@ -210,6 +211,7 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		this.dischargeSlot.setTier(tier);
 		this.energy.setCapacity(this.upgradeSlot.getEnergyStorage(this.defaultEnergyStorage, this.defaultOperationLength, this.defaultEnergyConsume));
 		this.progress = (short) Math.floor(previousProgress * this.operationLength + 0.1);
+		this.energy.syncConsumerProfile(this.energyConsume * this.operationsPerTick);
 	}
 
 	private boolean canOperate()

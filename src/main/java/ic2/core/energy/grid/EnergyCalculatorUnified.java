@@ -6,12 +6,9 @@ import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
-import ic2.api.energy.tile.IExplosionPowerOverride;
 import ic2.api.energy.tile.IMultiEnergySource;
-import ic2.api.energy.tile.IOverloadHandler;
 import ic2.core.IC2;
 import ic2.core.Ic2DamageSource;
-import ic2.core.Ic2Explosion;
 import ic2.core.init.IC2Config;
 import ic2.core.util.LogCategory;
 import ic2.core.util.Util;
@@ -37,7 +34,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.mutable.MutableDouble;
 
@@ -497,7 +493,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 			if (!data.eventPaths.isEmpty())
 			{
-				applyCableEffects(data.eventPaths, grid.getEnergyNet().getWorld());
+				data.deferredEventPaths.addAll(data.eventPaths);
 				data.eventPaths.clear();
 			}
 
@@ -564,7 +560,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 	private static double distributeMultiple(double offer, Tile tile, List<EnergyPath> paths, int pathOffset, GridData data, int calcId, int packetCount)
 	{
 		IEnergySource source = (IEnergySource) tile.getMainTile();
-		double power = EnergyNet.instance.getPowerFromTier(source.getSourceTier());
+		double power = ElectricalNodes.getPacketPower(source, 0);
 
 		do
 		{
@@ -603,7 +599,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 		IEnergySink sink = (IEnergySink) targetTile.getMainTile();
 		double amount = Math.min(injectAmount, sinkDemand.doubleValue());
-		double rejected = sink.injectEnergy(path.targetDirection, amount, EnergyNet.instance.getTierFromPower(amount));
+		double rejected = sink.injectEnergy(path.targetDirection, amount, ElectricalNodes.getInjectTierParameter(sink, amount));
 		if (rejected >= amount)
 		{
 			return 0.0;
@@ -713,7 +709,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 				Tile sinkTile = path.target.getTile();
 				IEnergySink sink = (IEnergySink) sinkTile.getMainTile();
-				if (amount > EnergyNet.instance.getPowerFromTier(sink.getSinkTier()))
+				if (EnergyNetExplosions.isOverVoltage(sink, amount))
 				{
 					MutableDouble prev = sinksToExplode.get(sinkTile);
 					if (prev == null)
@@ -740,7 +736,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 			for (Entry<Tile, MutableDouble> entry : sinksToExplode.entrySet())
 			{
-				explodeTile(world, entry.getKey(), entry.getValue().doubleValue());
+				EnergyNetExplosions.explodeTile(world, entry.getKey(), entry.getValue().doubleValue());
 			}
 
 			for (Entry<LivingEntity, MutableDouble> entry : shockEnergyMap.entrySet())
@@ -759,62 +755,10 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 		}
 	}
 
-	private static void explodeTile(Level world, Tile tile, double maxPower)
-	{
-		if (IC2Config.misc.enableEnetExplosions.get())
-		{
-			int tier = EnergyNet.instance.getTierFromPower(maxPower);
-
-			for (IEnergyTile subTile : tile.getSubTiles())
-			{
-				IEnergySink mainTile = (IEnergySink) tile.getMainTile();
-				BlockPos pos = EnergyNet.instance.getPos(subTile);
-				BlockEntity realTe = world.getBlockEntity(pos);
-				if (!(mainTile instanceof IOverloadHandler handler && handler.onOverload(tier)) && !(realTe instanceof IOverloadHandler handler2 && handler2.onOverload(tier)))
-				{
-					float power = 2.5F;
-					if (mainTile instanceof IExplosionPowerOverride override)
-					{
-						if (!override.shouldExplode())
-						{
-							continue;
-						}
-
-						power = override.getExplosionPower(tier, power);
-					} else if (realTe instanceof IExplosionPowerOverride override)
-					{
-						if (!override.shouldExplode())
-						{
-							continue;
-						}
-
-						power = override.getExplosionPower(tier, power);
-					}
-
-					world.removeBlock(pos, false);
-					Ic2Explosion explosion = new Ic2Explosion(world, null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, power, 0.75F, Ic2Explosion.Type.Electrical);
-					explosion.doExplosion();
-				}
-			}
-		}
-	}
-
-	private static GridData getData(Grid grid)
-	{
-		GridData ret = grid.getData();
-		if (ret == null)
-		{
-			ret = new GridData();
-			grid.setData(ret);
-		}
-
-		return ret;
-	}
-
 	@Override
 	public void handleGridChange(Grid grid)
 	{
-		GridData data = getData(grid);
+		GridData data = GridData.get(grid);
 		updateCache(grid, data);
 	}
 
@@ -843,8 +787,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 				} else
 				{
 					foundAny = true;
-					double power = EnergyNet.instance.getPowerFromTier(tier);
-					amount = Math.min(amount, power * packets);
+					amount = Math.min(amount, ElectricalNodes.getMaxOfferPower(source, packets));
 					tile.setSourceData(amount, packets);
 				}
 			} else
@@ -859,17 +802,35 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 	@Override
 	public boolean runSyncStep(Grid grid)
 	{
-		GridData data = getData(grid);
+		GridData data = GridData.get(grid);
 		return runCalculation(grid, data);
 	}
 
 	@Override
 	public void runAsyncStep(Grid grid)
 	{
-		GridData data = getData(grid);
+		GridData data = GridData.get(grid);
 		if (data.active)
 		{
 			runCalculation(grid, data);
+		}
+	}
+
+	@Override
+	public void applyDeferredEffects(EnergyNetLocal enet)
+	{
+		Level world = enet.getWorld();
+
+		for (Grid grid : enet.getGrids())
+		{
+			GridData data = grid.getData();
+			if (data == null || data.deferredEventPaths.isEmpty())
+			{
+				continue;
+			}
+
+			applyCableEffects(data.deferredEventPaths, world);
+			data.deferredEventPaths.clear();
 		}
 	}
 
@@ -918,7 +879,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 	@Override
 	public void dumpNodeInfo(Node node, String prefix, PrintStream console, PrintStream chat)
 	{
-		GridData data = getData(node.getGrid());
+		GridData data = GridData.get(node.getGrid());
 		Collection<EnergyPath> paths = getPaths(node, data);
 		switch (node.getType())
 		{
@@ -992,16 +953,5 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 	private record OptimizedGraph(Map<Node, List<OptLink>> nodeToLinks)
 	{
-	}
-
-	private static class GridData
-	{
-		final Map<Node, List<EnergyPath>> energySourceToEnergyPathMap = new IdentityHashMap<>();
-		final List<Node> activeSources = new ArrayList<>();
-		final Map<Node, MutableDouble> activeSinks = new IdentityHashMap<>();
-		final Set<EnergyPath> eventPaths = Collections.newSetFromMap(new IdentityHashMap<>());
-		final Map<Node, List<EnergyPath>> pathCache = new IdentityHashMap<>();
-		boolean active;
-		int currentCalcId = -1;
 	}
 }

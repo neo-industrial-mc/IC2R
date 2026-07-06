@@ -1,7 +1,9 @@
 package ic2.core.block.wiring.tileentity;
 
 import ic2.api.energy.EnergyNet;
+import ic2.api.energy.profile.VoltageTier;
 import ic2.api.network.INetworkClientTileEntityEventListener;
+import ic2.core.energy.profile.ElectricalDisplay;
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
 import ic2.core.block.comp.Energy;
@@ -107,6 +109,14 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 			case stepDown, stepUp -> this.configuredMode;
 		};
 
+		if (!force && this.transformMode != null && this.transformMode != newMode)
+		{
+			if (this.energy.applyTransformerModeSwitch(newMode, this.transformMode))
+			{
+				return;
+			}
+		}
+
 		this.energy.setEnabled(true);
 		if (force || this.transformMode != newMode)
 		{
@@ -128,6 +138,7 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 
 			this.outputFlow = EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier());
 			this.inputFlow = EnergyNet.instance.getPowerFromTier(this.energy.getSinkTier());
+			this.energy.configureTransformerProfile(this.isStepUp());
 		}
 	}
 
@@ -145,7 +156,40 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
 		super.appendItemTooltip(stack, tooltip, advanced);
-		Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.transformer.tooltip", EnergyNet.instance.getPowerFromTier(this.energy.getSinkTier()), EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier() + 1)));
+		VoltageTier lowTier = VoltageTier.fromIcTier(this.defaultTier);
+		VoltageTier highTier = VoltageTier.fromIcTier(this.defaultTier + 1);
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.high", ElectricalDisplay.formatPowerCompact(highTier.getVoltage(), highTier, 1)));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.low", ElectricalDisplay.formatPowerCompact(lowTier.getVoltage() * 4, lowTier, 4)));
+	}
+
+	public Component getInputFlowDisplay()
+	{
+		return this.getFlowDisplay(true);
+	}
+
+	public Component getOutputFlowDisplay()
+	{
+		return this.getFlowDisplay(false);
+	}
+
+	private Component getFlowDisplay(boolean input)
+	{
+		boolean stepUp = this.isStepUp();
+		VoltageTier lowTier = VoltageTier.fromIcTier(this.defaultTier);
+		VoltageTier highTier = VoltageTier.fromIcTier(this.defaultTier + 1);
+		int amps;
+		VoltageTier tier;
+		if (input)
+		{
+			amps = stepUp ? 4 : 1;
+			tier = stepUp ? lowTier : highTier;
+		} else
+		{
+			amps = stepUp ? 1 : 4;
+			tier = stepUp ? highTier : lowTier;
+		}
+
+		return ElectricalDisplay.formatPower(tier.getVoltage() * amps, tier, amps);
 	}
 
 	@Override
@@ -172,7 +216,17 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 
 	private boolean isStepUp()
 	{
-		return this.transformMode == TileEntityTransformer.Mode.stepUp;
+		if (this.transformMode != null)
+		{
+			return this.transformMode == TileEntityTransformer.Mode.stepUp;
+		}
+
+		return switch (this.configuredMode)
+		{
+			case stepUp -> true;
+			case stepDown -> false;
+			case redstone -> this.getLevel() != null && this.getLevel().hasNeighborSignal(this.worldPosition);
+		};
 	}
 
 	public enum Mode

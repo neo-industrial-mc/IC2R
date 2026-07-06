@@ -40,6 +40,7 @@ public class TileEntitySortingMachine extends TileEntityElectricMachine implemen
 	public TileEntitySortingMachine(BlockPos pos, BlockState state)
 	{
 		super(Ic2BlockEntities.SORTING_MACHINE, pos, state, 15000, 2, false);
+		this.syncElectricalProfile(20);
 		this.upgradeSlot = new InvSlotUpgrade(this, "upgrade", 3);
 		this.buffer = new InvSlot(this, "Buffer", InvSlot.Access.IO, 11);
 		this.filters = new ItemStack[6][7];

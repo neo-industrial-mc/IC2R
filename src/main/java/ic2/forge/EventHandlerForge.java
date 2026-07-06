@@ -7,6 +7,7 @@ import ic2.api.event.RetextureEvent;
 import ic2.api.tile.RetexturableBlock;
 import ic2.core.IC2;
 import ic2.core.block.tileentity.Ic2TileEntity;
+import ic2.core.command.CommandIc2;
 import ic2.core.event.EventHandler;
 import ic2.core.event.TickHandler;
 import ic2.core.item.armor.jetpack.JetpackHandler;
@@ -47,6 +48,7 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ChunkDataEvent;
 import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -66,6 +68,18 @@ public final class EventHandlerForge
 	public void serverStart(ServerStartingEvent event)
 	{
 		EventHandler.onServerStart(event.getServer());
+	}
+
+	@SubscribeEvent
+	public void registerCommands(RegisterCommandsEvent event)
+	{
+		CommandIc2.register(event.getDispatcher());
+	}
+
+	@SubscribeEvent
+	public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
+	{
+		EventHandler.onPlayerLogin(event.getEntity());
 	}
 
 	@SubscribeEvent

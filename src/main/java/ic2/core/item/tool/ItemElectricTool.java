@@ -1,6 +1,8 @@
 package ic2.core.item.tool;
 
+import ic2.api.energy.profile.VoltageTier;
 import ic2.api.item.ElectricItem;
+import ic2.core.energy.profile.ElectricalDisplay;
 import ic2.api.item.IElectricItem;
 import ic2.api.item.IItemHudInfo;
 import ic2.api.network.INetworkItemEventListener;
@@ -116,7 +118,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 	{
 		List<String> info = new LinkedList<>();
 		info.add(ElectricItem.manager.getToolTip(stack));
-		info.add(Component.translatable("ic2.item.tooltip.power_tier", this.tier).getString());
+		info.add(ElectricalDisplay.formatVoltage(VoltageTier.fromIcTier(this.tier)).getString());
 		return info;
 	}
 

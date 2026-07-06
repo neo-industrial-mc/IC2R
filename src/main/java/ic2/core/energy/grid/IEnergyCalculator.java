@@ -14,6 +14,10 @@ public interface IEnergyCalculator
 
 	void runAsyncStep(Grid var1);
 
+	default void applyDeferredEffects(EnergyNetLocal enet)
+	{
+	}
+
 	NodeStats getNodeStats(Tile var1);
 
 	void dumpNodeInfo(Node var1, String var2, PrintStream var3, PrintStream var4);

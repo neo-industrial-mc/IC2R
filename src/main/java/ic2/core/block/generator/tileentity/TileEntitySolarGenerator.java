@@ -27,7 +27,7 @@ public class TileEntitySolarGenerator extends TileEntityBaseGenerator
 
 	public TileEntitySolarGenerator(BlockPos pos, BlockState state)
 	{
-		super(Ic2BlockEntities.SOLAR_GENERATOR, pos, state, 1.0, 1, 2);
+		super(Ic2BlockEntities.SOLAR_GENERATOR, pos, state, 1.0, 1, 32);
 	}
 
 	public static float getSkyLight(Level world, BlockPos pos)

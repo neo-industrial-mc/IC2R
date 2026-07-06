@@ -3,6 +3,7 @@ package ic2.forge;
 import ic2.core.event.EventHandler;
 import ic2.core.init.IC2ClientConfig;
 import ic2.core.init.IC2Config;
+import ic2.core.init.IC2UuScanConfig;
 import ic2.core.network.NetworkManager;
 import ic2.core.loot.Ic2LootNbtProviderTypes;
 import ic2.core.ref.Ic2Fluids;
@@ -63,6 +64,7 @@ public final class FmlMod
 
 		Ic2Fluids.init();
 		this.ctx.registerConfig(ModConfig.Type.COMMON, IC2Config.SPEC);
+		this.ctx.registerConfig(ModConfig.Type.COMMON, IC2UuScanConfig.SPEC, "ic2-uu-scan-values.toml");
 		modEventBus.addListener(NanoSaberCapabilities::register);
 	}
 	

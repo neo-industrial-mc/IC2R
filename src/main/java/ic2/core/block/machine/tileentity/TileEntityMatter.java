@@ -274,6 +274,7 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 	{
 		this.upgradeSlot.onChanged();
 		this.energy.setSinkTier(applyModifier(getDefaultTier(), this.upgradeSlot.extraTier));
+		this.syncElectricalProfile((int) this.energy.getCapacity());
 	}
 
 	@Override
