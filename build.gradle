@@ -39,9 +39,7 @@ minecraft {
                 "${mod_id}" {
                     source sourceSets.main
                 }
-                ic2r_csas {
-                    source project(':CompactSolarArrays').sourceSets.main
-                }
+                // ic2r_csas { source project(':CompactSolarArrays').sourceSets.main }
             }
         }
         client {
@@ -63,7 +61,7 @@ repositories {
     maven { url "https://api.modrinth.com/maven" }
 }
 
-evaluationDependsOn(':CompactSolarArrays')
+// evaluationDependsOn(':CompactSolarArrays')
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"

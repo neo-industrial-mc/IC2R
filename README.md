@@ -3,7 +3,7 @@
 
 <img src="https://img.shields.io/badge/Minecraft-1.20.1-brightgreen" alt="Minecraft 1.20.1">
 <img src="https://img.shields.io/badge/Forge-47.4.20-orange" alt="Forge 47.4.20">
-<img src="https://img.shields.io/badge/Version-2.10.34--ex120-blue" alt="Version 2.10.34-ex120">
+<img src="https://img.shields.io/badge/Version-2.10.35--ex120-blue" alt="Version 2.10.35-ex120">
 <img src="https://img.shields.io/badge/License-ARR-red" alt="License ARR">
 
 本项目代码基于官方构建版本 `2.9.40-ex119` 反编译得到，并从 `2.8.222-ex112` 迁移了缺失与错误的功能。
