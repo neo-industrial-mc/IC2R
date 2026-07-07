@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "ic2r_csas:blocks/high_voltage_sides",
+    "down": "ic2r_csas:blocks/high_voltage_bottom",
+    "up": "ic2r_csas:blocks/high_voltage_top",
+    "north": "ic2r_csas:blocks/high_voltage_sides",
+    "east": "ic2r_csas:blocks/high_voltage_sides",
+    "south": "ic2r_csas:blocks/high_voltage_sides",
+    "west": "ic2r_csas:blocks/high_voltage_sides"
+  }
+}

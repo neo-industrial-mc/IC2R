@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "SXS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "ic2r_csas:low_voltage_solar_array"
+    },
+    "X": {
+      "item": "ic2:mv_transformer"
+    }
+  },
+  "result": {
+    "item": "ic2r_csas:medium_voltage_solar_array"
+  }
+}

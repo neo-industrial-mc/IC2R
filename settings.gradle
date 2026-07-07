@@ -11,3 +11,6 @@ pluginManagement {
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
+
+rootProject.name = 'IC2R'
+include 'CompactSolarArrays'

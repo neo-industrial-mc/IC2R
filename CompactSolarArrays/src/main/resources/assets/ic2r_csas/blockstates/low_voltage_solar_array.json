@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,active=false": { "model": "ic2r_csas:block/low_voltage_solar_array" },
+    "facing=east,active=false": { "model": "ic2r_csas:block/low_voltage_solar_array", "y": 90 },
+    "facing=south,active=false": { "model": "ic2r_csas:block/low_voltage_solar_array", "y": 180 },
+    "facing=west,active=false": { "model": "ic2r_csas:block/low_voltage_solar_array", "y": 270 },
+    "facing=north,active=true": { "model": "ic2r_csas:block/low_voltage_solar_array" },
+    "facing=east,active=true": { "model": "ic2r_csas:block/low_voltage_solar_array", "y": 90 },
+    "facing=south,active=true": { "model": "ic2r_csas:block/low_voltage_solar_array", "y": 180 },
+    "facing=west,active=true": { "model": "ic2r_csas:block/low_voltage_solar_array", "y": 270 }
+  }
+}

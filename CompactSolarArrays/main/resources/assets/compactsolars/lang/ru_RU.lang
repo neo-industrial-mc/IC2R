@@ -1,0 +1,7 @@
+tile.compactsolars:high_voltage_block.name=Солнечная батарея высокого напряжения
+tile.compactsolars:medium_voltage_block.name=Солнечная батарея среднего напряжения
+tile.compactsolars:low_voltage_block.name=Солнечная батарея низкого напряжения
+
+item.compactsolars:solar_hat_high_voltage.name=ХВСП-шлем
+item.compactsolars:solar_hat_medium_voltage.name=МВСП-шлем
+item.compactsolars:solar_hat_low_voltage.name=ЛВСП-шлем
