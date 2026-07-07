@@ -28,10 +28,10 @@ public class ContainerNuclearReactor extends ContainerBase<TileEntityNuclearReac
 		}
 
 		this.addPlayerInventorySlots(playerInventory, 214, 243);
-		this.addSlot(new SlotInvSlot(te.coolantinputSlot, 0, 8, 25));
-		this.addSlot(new SlotInvSlot(te.hotcoolinputSlot, 0, 188, 25));
-		this.addSlot(new SlotInvSlot(te.coolantoutputSlot, 0, 8, 115));
-		this.addSlot(new SlotInvSlot(te.hotcoolantoutputSlot, 0, 188, 115));
+		this.addSlot(new SlotInvSlot(te.coolantInputSlot, 0, 8, 25));
+		this.addSlot(new SlotInvSlot(te.hotCoolantInputSlot, 0, 188, 25));
+		this.addSlot(new SlotInvSlot(te.coolantOutputSlot, 0, 8, 115));
+		this.addSlot(new SlotInvSlot(te.hotCoolantOutputSlot, 0, 188, 115));
 	}
 
 	@Override

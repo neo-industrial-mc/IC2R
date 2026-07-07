@@ -916,7 +916,7 @@
   "item.ic2.crystal_memory.tooltip.empty": "<空>",
   "item.ic2.crystal_memory.tooltip.energy": "电量:",
   "item.ic2.crystal_memory.tooltip.item": "物品：%s",
-  "item.ic2.crystal_memory.tooltip.uu_matter": "UU物质：",
+  "item.ic2.crystal_memory.tooltip.uu_matter": "UU物质：%sB",
   "item.ic2.cultivation_tfbp": "耕地地形转换模板",
   "item.ic2.cutter": "板材切割剪刀",
   "item.ic2.cyan_painter": "青色刷子",

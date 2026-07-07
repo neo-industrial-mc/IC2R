@@ -4,6 +4,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class Ic2Potion extends MobEffect
 {
@@ -14,7 +15,7 @@ public class Ic2Potion extends MobEffect
 		super(type, liquidColor);
 	}
 
-	public void applyEffectTick(LivingEntity entity, int amplifier)
+	public void applyEffectTick(@NotNull LivingEntity entity, int amplifier)
 	{
 		if (this == radiation)
 		{
@@ -31,7 +32,7 @@ public class Ic2Potion extends MobEffect
 		if (this == radiation)
 		{
 			int rate = 25 >> amplifier;
-			return rate > 0 ? duration % rate == 0 : true;
+			return rate == 0 || duration % rate == 0;
 		} else
 		{
 			return false;

@@ -916,7 +916,7 @@
   "item.ic2.crystal_memory.tooltip.empty": "<Empty>",
   "item.ic2.crystal_memory.tooltip.energy": "Energy:",
   "item.ic2.crystal_memory.tooltip.item": "Item:",
-  "item.ic2.crystal_memory.tooltip.uu_matter": "UU-Matter:",
+  "item.ic2.crystal_memory.tooltip.uu_matter": "UU-Matter: %sB",
   "item.ic2.cultivation_tfbp": "TFBP - Cultivation",
   "item.ic2.cutter": "Cutter",
   "item.ic2.cyan_painter": "Cyan Painter",

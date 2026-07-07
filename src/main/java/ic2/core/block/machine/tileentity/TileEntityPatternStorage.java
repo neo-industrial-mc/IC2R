@@ -199,6 +199,7 @@ public class TileEntityPatternStorage extends TileEntityInventory implements IHa
 		{
 			this.pattern = this.patterns.get(this.index);
 			this.patternUu = UuIndex.instance.getInBuckets(this.pattern);
+			this.patternEu = UuIndex.instance.getReplicationEu(this.pattern);
 		}
 	}
 

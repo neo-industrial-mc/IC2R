@@ -83,10 +83,10 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	public final Fluids.InternalFluidTank inputTank;
 	public final Fluids.InternalFluidTank outputTank;
 	public final InvSlotReactor reactorSlot;
-	public final InvSlotOutput coolantoutputSlot;
-	public final InvSlotOutput hotcoolantoutputSlot;
-	public final InvSlotConsumableLiquidByManager coolantinputSlot;
-	public final InvSlotConsumableLiquidByTank hotcoolinputSlot;
+	public final InvSlotOutput coolantOutputSlot;
+	public final InvSlotOutput hotCoolantOutputSlot;
+	public final InvSlotConsumableLiquidByManager coolantInputSlot;
+	public final InvSlotConsumableLiquidByTank hotCoolantInputSlot;
 	public final Redstone redstone;
 	protected final Fluids fluids;
 	private final List<IEnergyTile> subTiles = new ArrayList<>();
@@ -102,7 +102,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	private float lastOutput = 0.0F;
 	private final ElectricalProfile profile = new ElectricalProfile(VoltageTier.LV);
 	private float lastSyncedOfferedOutput = -1.0F;
-	private int EmitHeatbuffer = 0;
+	private int EmitHeatBuffer = 0;
 	private boolean fluidCooled = false;
 
 	public TileEntityNuclearReactorElectric(BlockPos pos, BlockState state)
@@ -113,14 +113,14 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		this.inputTank = this.fluids.addTank("inputTank", 10000, InvSlot.Access.NONE, InvSlot.InvSide.ANY, Fluids.fluidPredicate(Recipes.liquidHeatUpManager));
 		this.outputTank = this.fluids.addTank("outputTank", 10000, InvSlot.Access.NONE);
 		this.reactorSlot = new InvSlotReactor(this, "reactor", 54);
-		this.coolantinputSlot = new InvSlotConsumableLiquidByManager(
+		this.coolantInputSlot = new InvSlotConsumableLiquidByManager(
 			this, "coolantinputSlot", InvSlot.Access.I, 1, InvSlot.InvSide.ANY, InvSlotConsumableLiquid.OpType.Drain, Recipes.liquidHeatUpManager
 		);
-		this.hotcoolinputSlot = new InvSlotConsumableLiquidByTank(
+		this.hotCoolantInputSlot = new InvSlotConsumableLiquidByTank(
 			this, "hotcoolinputSlot", InvSlot.Access.I, 1, InvSlot.InvSide.ANY, InvSlotConsumableLiquid.OpType.Fill, this.outputTank
 		);
-		this.coolantoutputSlot = new InvSlotOutput(this, "coolantoutputSlot", 1);
-		this.hotcoolantoutputSlot = new InvSlotOutput(this, "hotcoolantoutputSlot", 1);
+		this.coolantOutputSlot = new InvSlotOutput(this, "coolantoutputSlot", 1);
+		this.hotCoolantOutputSlot = new InvSlotOutput(this, "hotcoolantoutputSlot", 1);
 		this.redstone = this.addComponent(new Redstone(this));
 	}
 
@@ -160,7 +160,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		}
 
 		BlockEntity te = world.getBlockEntity(pos);
-		return te == null ? false : te instanceof IReactorChamber && ((IReactorChamber) te).isWall();
+		return te instanceof IReactorChamber && ((IReactorChamber) te).isWall();
 	}
 
 	private float getHuOutputModifier()
@@ -339,8 +339,8 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 
 	private void processFluidsSlots()
 	{
-		this.coolantinputSlot.processIntoTank(this.inputTank, this.coolantoutputSlot);
-		this.hotcoolinputSlot.processFromTank(this.outputTank, this.hotcoolantoutputSlot);
+		this.coolantInputSlot.processIntoTank(this.inputTank, this.coolantOutputSlot);
+		this.hotCoolantInputSlot.processFromTank(this.outputTank, this.hotCoolantOutputSlot);
 	}
 
 	public void refreshChambers()
@@ -409,30 +409,30 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 					this.processFluidsSlots();
 					Ic2FluidStack inputFluid = this.inputTank.getFluidStack();
 					assert inputFluid == null || Recipes.liquidHeatUpManager.acceptsFluid(this.inputTank.getFluidStack().getFluid());
-					int huOtput = (int) (getHuOutputModifier() * this.EmitHeatbuffer);
+					int huOtput = (int) (getHuOutputModifier() * this.EmitHeatBuffer);
 					int outputRoom = this.outputTank.getCapacity() - this.outputTank.getFluidAmount();
-					this.EmitHeatbuffer = 0;
+					this.EmitHeatBuffer = 0;
 					if (outputRoom > 0 && inputFluid != null)
 					{
 						ILiquidHeatExchangerManager.HeatExchangeProperty prop = Recipes.liquidHeatUpManager.getHeatExchangeProperty(inputFluid.getFluid());
 						int fluidOutput = huOtput / prop.huPerMB();
-						Ic2FluidStack draincoolant;
+						Ic2FluidStack drainCoolant;
 						if (fluidOutput < outputRoom)
 						{
-							this.EmitHeatbuffer = (int) (huOtput % prop.huPerMB() / getHuOutputModifier());
+							this.EmitHeatBuffer = (int) (huOtput % prop.huPerMB() / getHuOutputModifier());
 							this.EmitHeat = (int) (huOtput / getHuOutputModifier());
-							draincoolant = this.inputTank.drainMbUnchecked(fluidOutput, true);
+							drainCoolant = this.inputTank.drainMbUnchecked(fluidOutput, true);
 						} else
 						{
 							this.EmitHeat = outputRoom * prop.huPerMB();
-							draincoolant = this.inputTank.drainMbUnchecked(outputRoom, true);
+							drainCoolant = this.inputTank.drainMbUnchecked(outputRoom, true);
 						}
 
-						if (draincoolant != null)
+						if (drainCoolant != null)
 						{
-							this.EmitHeat = draincoolant.getAmountMb() * prop.huPerMB();
-							huOtput -= this.inputTank.drainMbUnchecked(draincoolant.getAmountMb(), false).getAmountMb() * prop.huPerMB();
-							this.outputTank.fillMbUnchecked(Ic2FluidStack.create(prop.outputFluid(), draincoolant.getAmountMb()), false);
+							this.EmitHeat = drainCoolant.getAmountMb() * prop.huPerMB();
+							huOtput -= this.inputTank.drainMbUnchecked(drainCoolant.getAmountMb(), false).getAmountMb() * prop.huPerMB();
+							this.outputTank.fillMbUnchecked(Ic2FluidStack.create(prop.outputFluid(), drainCoolant.getAmountMb()), false);
 						} else
 						{
 							this.EmitHeat = 0;
@@ -493,13 +493,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	public boolean isUsefulItem(ItemStack stack, boolean forInsertion)
 	{
 		Item item = stack.getItem();
-		if (item == null)
-		{
-			return false;
-		} else
-		{
-			return (!forInsertion || !this.fluidCooled || item.getClass() != ItemReactorHeatStorage.class || stack.getDamageValue() <= 0) && item instanceof IBaseReactorComponent && (!forInsertion || ((IBaseReactorComponent) item).canBePlacedIn(stack, this));
-		}
+		return (!forInsertion || !this.fluidCooled || item.getClass() != ItemReactorHeatStorage.class || stack.getDamageValue() <= 0) && item instanceof IBaseReactorComponent && (!forInsertion || ((IBaseReactorComponent) item).canBePlacedIn(stack, this));
 	}
 
 	public void eject(ItemStack drop)
@@ -881,7 +875,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	@Override
 	public void addEmitHeat(int heat)
 	{
-		this.EmitHeatbuffer += heat;
+		this.EmitHeatBuffer += heat;
 	}
 
 	@Override
@@ -1116,12 +1110,12 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		}
 	}
 
-	public Ic2FluidTank getinputtank()
+	public Ic2FluidTank getInputTank()
 	{
 		return this.inputTank;
 	}
 
-	public Ic2FluidTank getoutputtank()
+	public Ic2FluidTank getOutputTank()
 	{
 		return this.outputTank;
 	}

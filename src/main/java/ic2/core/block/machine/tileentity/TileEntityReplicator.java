@@ -188,6 +188,7 @@ public class TileEntityReplicator extends TileEntityElectricMachine implements I
 			{
 				this.pattern = patterns.get(this.index);
 				this.patternUu = UuIndex.instance.getInBuckets(this.pattern);
+				this.patternEu = UuIndex.instance.getReplicationEu(this.pattern);
 				if (!StackUtil.checkItemEqualityStrict(this.pattern, oldPattern))
 				{
 					this.uuProcessed = 0.0;

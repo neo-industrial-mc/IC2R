@@ -128,6 +128,11 @@ public class InvSlotConsumableLiquid extends InvSlotConsumable
 
 	public boolean transferToTank(Ic2FluidTank tank, MutableObject<ItemStack> output, boolean simulate)
 	{
+		if (this.isEmpty())
+		{
+			return false;
+		}
+
 		int space = tank.getCapacity();
 		Fluid fluidRequired = null;
 		Ic2FluidStack tankFluid = tank.getFluidStack();
@@ -137,21 +142,37 @@ public class InvSlotConsumableLiquid extends InvSlotConsumable
 			fluidRequired = tankFluid.getFluid();
 		}
 
-		Ic2FluidStack fluid = this.drain(fluidRequired, space, output, true);
-		if (fluid == null)
+		if (space <= 0)
 		{
 			return false;
 		}
 
-		int amount = tank.fillMb(fluid, simulate);
-		if (amount <= 0)
+		ItemStack stack = this.get();
+		LiquidUtil.FluidOperationResult result = LiquidUtil.drainContainerComplete(stack, fluidRequired, space, FluidContainerOutputMode.EmptyFullToOutput);
+		if (result == null)
+		{
+			return false;
+		}
+
+		int amount = tank.fillMb(result.fluidChange, simulate);
+		if (amount <= 0 || amount != result.fluidChange.getAmountMb())
 		{
 			return false;
 		}
 
 		if (!simulate)
 		{
-			this.drain(fluidRequired, amount, output, false);
+			result = LiquidUtil.drainContainerComplete(stack, fluidRequired, space, FluidContainerOutputMode.EmptyFullToOutput);
+			if (result == null)
+			{
+				return false;
+			}
+
+			output.setValue(result.extraOutput);
+			this.put(result.inPlaceOutput);
+		} else
+		{
+			output.setValue(result.extraOutput);
 		}
 
 		return true;
@@ -159,25 +180,41 @@ public class InvSlotConsumableLiquid extends InvSlotConsumable
 
 	public boolean transferFromTank(Ic2FluidTank tank, MutableObject<ItemStack> output, boolean simulate)
 	{
-		Ic2FluidStack tankFluid = tank.drainMb(tank.getFluidAmount(), true);
-		if (tankFluid != null && !tankFluid.isEmpty())
+		if (this.isEmpty() || tank.isEmpty())
 		{
-			int amount = this.fill(tankFluid, output, simulate);
-			if (amount <= 0)
+			return false;
+		}
+
+		Ic2FluidStack tankFluid = tank.getFluidStack();
+		if (tankFluid == null || tankFluid.isEmpty())
+		{
+			return false;
+		}
+
+		ItemStack stack = this.get();
+		LiquidUtil.FluidOperationResult result = LiquidUtil.fillContainerComplete(stack, tankFluid.copy(), FluidContainerOutputMode.EmptyFullToOutput);
+		if (result == null)
+		{
+			return false;
+		}
+
+		if (!simulate)
+		{
+			result = LiquidUtil.fillContainerComplete(stack, tankFluid.copy(), FluidContainerOutputMode.EmptyFullToOutput);
+			if (result == null)
 			{
 				return false;
 			}
 
-			if (!simulate)
-			{
-				tank.drainMb(amount, false);
-			}
-
-			return true;
+			tank.drainMb(result.fluidChange.getAmountMb(), false);
+			output.setValue(result.extraOutput);
+			this.put(result.inPlaceOutput);
 		} else
 		{
-			return false;
+			output.setValue(result.extraOutput);
 		}
+
+		return true;
 	}
 
 	public boolean processIntoTank(Ic2FluidTank tank, InvSlotOutput outputSlot)
