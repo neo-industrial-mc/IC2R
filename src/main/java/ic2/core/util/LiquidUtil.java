@@ -230,7 +230,7 @@ public class LiquidUtil
 
 		if (tankFs != null && !tankFs.isEmpty())
 		{
-			LiquidUtil.FluidOperationResult result = fillContainer(single.copy(), tankFs.copy(), FluidContainerOutputMode.AnyToOutput);
+			LiquidUtil.FluidOperationResult result = fillContainerComplete(single.copy(), tankFs.copy(), FluidContainerOutputMode.AnyToOutput);
 			if (result != null)
 			{
 				tank.drainMb(result.fluidChange.getAmountMb(), false);
@@ -241,7 +241,7 @@ public class LiquidUtil
 		int space = tank.getCapacity() - (tankFs != null ? tankFs.getAmountMb() : 0);
 		if (space > 0)
 		{
-			LiquidUtil.FluidOperationResult result = drainContainer(
+			LiquidUtil.FluidOperationResult result = drainContainerComplete(
 				single.copy(),
 				tankFs != null && !tankFs.isEmpty() ? tankFs.getFluid() : null,
 				space,
@@ -317,7 +317,7 @@ public class LiquidUtil
 		return changed ? new LiquidUtil.ContainerTankTransferResult(true, remaining, output) : LiquidUtil.ContainerTankTransferResult.UNCHANGED;
 	}
 
-	private static LiquidUtil.FluidOperationResult fillContainerComplete(ItemStack stack, Ic2FluidStack fsIn, FluidContainerOutputMode outputMode)
+	public static LiquidUtil.FluidOperationResult fillContainerComplete(ItemStack stack, Ic2FluidStack fsIn, FluidContainerOutputMode outputMode)
 	{
 		ItemStack testSingle = StackUtil.copyWithSize(stack, 1);
 		Ic2FluidStack fillTestFs = fsIn.copy();
@@ -344,7 +344,7 @@ public class LiquidUtil
 		return fillContainer(stack, fsIn.copyWithAmountMb(fillAmount), outputMode);
 	}
 
-	private static LiquidUtil.FluidOperationResult drainContainerComplete(ItemStack stack, Fluid fluid, int maxAmount, FluidContainerOutputMode outputMode)
+	public static LiquidUtil.FluidOperationResult drainContainerComplete(ItemStack stack, Fluid fluid, int maxAmount, FluidContainerOutputMode outputMode)
 	{
 		ItemStack testSingle = StackUtil.copyWithSize(stack, 1);
 		Ic2FluidStack fullContent = FluidHandler.drainMb(testSingle, Integer.MAX_VALUE, true, null);
