@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 
 public class SoundClient extends Sound
 {
@@ -17,6 +18,13 @@ public class SoundClient extends Sound
 	private RepeatablePositionedSoundInstance repeatInstance = null;
 	private PositionedSoundInstance onceInstance = null;
 	private EntityTrackingSoundInstance entityTrackingInstance = null;
+	private SoundEvent soundEvent;
+	private SoundSource soundCategory;
+	private BlockPos pos;
+	private LivingEntity entity;
+	private float volume;
+	private float pitch;
+	private Item sourceItem;
 	private boolean isStarted = false;
 
 	protected SoundClient()
@@ -26,6 +34,11 @@ public class SoundClient extends Sound
 	public SoundClient(SoundEvent soundEvent, SoundSource soundCategory, BlockPos pos, float volume, float pitch)
 	{
 		this();
+		this.soundEvent = soundEvent;
+		this.soundCategory = soundCategory;
+		this.pos = pos;
+		this.volume = volume;
+		this.pitch = pitch;
 		this.repeatInstance = new RepeatablePositionedSoundInstance(soundEvent, soundCategory, volume, pitch, pos);
 		this.onceInstance = new PositionedSoundInstance(soundEvent, soundCategory, volume, pitch, pos);
 	}
@@ -33,11 +46,17 @@ public class SoundClient extends Sound
 	public SoundClient(SoundEvent soundEvent, SoundSource soundCategory, LivingEntity entity, float volume, float pitch)
 	{
 		this();
+		this.soundEvent = soundEvent;
+		this.soundCategory = soundCategory;
+		this.entity = entity;
+		this.volume = volume;
+		this.pitch = pitch;
 		this.entityTrackingInstance = new EntityTrackingSoundInstance(soundEvent, soundCategory, volume, pitch, entity);
 	}
 
-	public void setSourceItem(net.minecraft.world.item.Item item)
+	public void setSourceItem(Item item)
 	{
+		this.sourceItem = item;
 		if (this.entityTrackingInstance != null)
 		{
 			this.entityTrackingInstance.setSourceItem(item);
@@ -51,19 +70,34 @@ public class SoundClient extends Sound
 		this.isStarted = true;
 		DeferredSoundOps.run(() ->
 		{
-			if (this.repeatInstance != null && !this.vanillaManager.isActive(this.repeatInstance))
+			if (this.repeatInstance != null)
 			{
-				if (this.vanillaManager.isActive(this.onceInstance))
+				if (this.vanillaManager.isActive(this.repeatInstance))
 				{
-					this.vanillaManager.stop(this.onceInstance);
+					return;
 				}
 
+				this.stopInstance(this.onceInstance);
+				this.stopInstance(this.repeatInstance);
+				this.repeatInstance = new RepeatablePositionedSoundInstance(this.soundEvent, this.soundCategory, this.volume, this.pitch, this.pos);
 				this.vanillaManager.play(this.repeatInstance);
 				this.startedSoundList.add(this.repeatInstance);
 			}
 
-			if (this.entityTrackingInstance != null && !this.vanillaManager.isActive(this.entityTrackingInstance))
+			if (this.entityTrackingInstance != null)
 			{
+				if (this.vanillaManager.isActive(this.entityTrackingInstance))
+				{
+					return;
+				}
+
+				this.stopInstance(this.entityTrackingInstance);
+				this.entityTrackingInstance = new EntityTrackingSoundInstance(this.soundEvent, this.soundCategory, this.volume, this.pitch, this.entity);
+				if (this.sourceItem != null)
+				{
+					this.entityTrackingInstance.setSourceItem(this.sourceItem);
+				}
+
 				this.vanillaManager.play(this.entityTrackingInstance);
 				this.startedSoundList.add(this.entityTrackingInstance);
 			}
@@ -79,6 +113,8 @@ public class SoundClient extends Sound
 		{
 			if (this.onceInstance != null)
 			{
+				this.stopInstance(this.onceInstance);
+				this.onceInstance = new PositionedSoundInstance(this.soundEvent, this.soundCategory, this.volume, this.pitch, this.pos);
 				this.vanillaManager.play(this.onceInstance);
 				this.startedSoundList.add(this.onceInstance);
 			}
@@ -98,10 +134,19 @@ public class SoundClient extends Sound
 		this.isStarted = false;
 		DeferredSoundOps.run(() ->
 		{
-			this.vanillaManager.stop(this.repeatInstance);
-			this.vanillaManager.stop(this.onceInstance);
-			this.vanillaManager.stop(this.entityTrackingInstance);
+			this.stopInstance(this.repeatInstance);
+			this.stopInstance(this.onceInstance);
+			this.stopInstance(this.entityTrackingInstance);
 		});
+	}
+
+	private void stopInstance(SoundInstance instance)
+	{
+		if (instance != null)
+		{
+			this.vanillaManager.stop(instance);
+			this.startedSoundList.remove(instance);
+		}
 	}
 
 	private boolean isPlayingSound(SoundInstance instance)
