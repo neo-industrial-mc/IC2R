@@ -106,12 +106,17 @@ public class TileEntityBase extends TileEntityInventory
 	{
 		this.initSound();
 		super.onLoaded();
-		if (this.level != null && this.level.isClientSide)
+		if (this.level != null)
 		{
-			this.clientLastActive = this.getActive();
-			if (this.getActive())
+			if (this.level.isClientSide)
 			{
-				this.playLoopingSound(false);
+				if (this.getActive())
+				{
+					this.playLoopingSound(false);
+				}
+			} else if (this.getActive() && this.hasSound())
+			{
+				IC2.network.get(true).updateTileEntityField(this, "active");
 			}
 		}
 	}
@@ -136,6 +141,9 @@ public class TileEntityBase extends TileEntityInventory
 			{
 				this.startPlaySound(playSubSound);
 			}
+		} else if (this.level != null && this.level.isClientSide && this.isLoopingSoundIdling())
+		{
+			this.playLoopingSound(playSubSound);
 		}
 	}
 
