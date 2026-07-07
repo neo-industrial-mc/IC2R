@@ -21,6 +21,7 @@ public class TileEntityBase extends TileEntityInventory
 	protected Sound stopSound;
 	protected Sound interruptSound;
 	private boolean clientLastActive;
+	private boolean playInterruptOnDeactivate;
 
 	public TileEntityBase(BlockEntityType<? extends TileEntityInventory> type, BlockPos pos, BlockState state)
 	{
@@ -53,7 +54,7 @@ public class TileEntityBase extends TileEntityInventory
 		{
 			if (shouldPlay && this.isLoopingSoundIdling() && !this.isStartSoundPlaying())
 			{
-				this.startPlaySound(false);
+				this.playLoopingSound(false);
 			} else if (!shouldPlay && this.loopingSound.isPlaying())
 			{
 				this.loopingSound.stop();
@@ -85,13 +86,11 @@ public class TileEntityBase extends TileEntityInventory
 				this.startPlaySound(false);
 			} else
 			{
-				this.stopStartSound();
-				this.stopLoopingSound();
-				this.playStopSound();
+				this.handleClientDeactivation();
 			}
 		} else if (nowActive && this.isLoopingSoundIdling() && !this.isStartSoundPlaying())
 		{
-			this.startPlaySound(false);
+			this.playLoopingSound(false);
 		}
 	}
 
@@ -99,9 +98,35 @@ public class TileEntityBase extends TileEntityInventory
 	public void onNetworkUpdate(String field)
 	{
 		super.onNetworkUpdate(field);
-		if (field.equals("active") && this.level != null && this.level.isClientSide)
+		if (this.level == null || !this.level.isClientSide)
+		{
+			return;
+		}
+
+		if (field.equals("active"))
 		{
 			this.onActiveFieldUpdated();
+		} else if (field.equals("playInterruptOnDeactivate")
+			&& this.playInterruptOnDeactivate
+			&& !this.shouldSoundActive())
+		{
+			this.handleClientDeactivation();
+		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void handleClientDeactivation()
+	{
+		this.initSound();
+		this.stopStartSound();
+		this.stopLoopingSound();
+		if (this.playInterruptOnDeactivate)
+		{
+			this.playInterruptSound();
+			this.playInterruptOnDeactivate = false;
+		} else
+		{
+			this.playStopSound();
 		}
 	}
 
@@ -148,7 +173,7 @@ public class TileEntityBase extends TileEntityInventory
 		if (this.shouldSoundActive() && this.isLoopingSoundIdling() && !this.isStartSoundPlaying())
 		{
 			this.clientLastActive = false;
-			this.startPlaySound(false);
+			this.playLoopingSound(false);
 		}
 	}
 
@@ -249,21 +274,29 @@ public class TileEntityBase extends TileEntityInventory
 
 	public void shutdown(boolean isInterrupted)
 	{
-		if (this.getActive())
+		if (!this.getActive())
 		{
-			this.teBlock.setActive(this.level, this.worldPosition, this.getBlockState(), false);
-			if (this.level != null && this.level.isClientSide)
+			return;
+		}
+
+		boolean useInterrupt = isInterrupted && this.getInterruptSoundEvent() != null;
+		if (useInterrupt)
+		{
+			this.playInterruptOnDeactivate = true;
+			if (this.level != null && !this.level.isClientSide)
 			{
-				this.stopStartSound();
-				this.stopLoopingSound();
-				if (isInterrupted)
-				{
-					this.playInterruptSound();
-				} else
-				{
-					this.playStopSound();
-				}
+				IC2.network.get(true).updateTileEntityField(this, "playInterruptOnDeactivate");
 			}
+		} else
+		{
+			this.playInterruptOnDeactivate = false;
+		}
+
+		this.teBlock.setActive(this.level, this.worldPosition, this.getBlockState(), false);
+
+		if (this.level != null && this.level.isClientSide)
+		{
+			this.handleClientDeactivation();
 		}
 	}
 
