@@ -19,8 +19,9 @@ import net.minecraftforge.client.event.sound.SoundEngineLoadEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.event.TickEvent;
-
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -136,5 +137,32 @@ public final class ClientEventHandlerForge
 	public void onDisconnect(PlayerEvent.PlayerLoggedOutEvent event)
 	{
 		EventHandlerClient.onDisconnect();
+	}
+
+	@SubscribeEvent
+	public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
+	{
+		if (event.getEntity().level().isClientSide)
+		{
+			EventHandlerClient.onClientPlayerJoin(event.getEntity());
+		}
+	}
+
+	@SubscribeEvent
+	public void onWorldLoad(LevelEvent.Load event)
+	{
+		Level world = (Level) event.getLevel();
+		if (!world.isClientSide)
+		{
+			return;
+		}
+
+		TickHandler.requestSingleWorldTick(world, loadedWorld ->
+		{
+			if (SideProxyClient.mc.player != null && SideProxyClient.mc.player.level() == loadedWorld)
+			{
+				EventHandlerClient.onClientPlayerJoin(SideProxyClient.mc.player);
+			}
+		});
 	}
 }

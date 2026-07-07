@@ -10,6 +10,8 @@ import ic2.core.item.tool.AbstractItemNanoSaber;
 import ic2.core.item.tool.ContainerToolbox;
 import ic2.core.item.upgrade.ItemUpgradeModule;
 import ic2.core.network.RpcHandler;
+import ic2.core.block.tileentity.TileEntityBase;
+import ic2.core.event.TickHandler;
 import ic2.core.proxy.SideProxyClient;
 import ic2.core.sound.SoundManagerClient;
 import ic2.core.util.StackUtil;
@@ -30,6 +32,8 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -175,5 +179,57 @@ public class EventHandlerClient
 	public static void onDisconnect()
 	{
 		RpcHandler.onDisconnect();
+	}
+
+	public static void onClientPlayerJoin(Player player)
+	{
+		Level world = player.level();
+		if (!world.isClientSide)
+		{
+			return;
+		}
+
+		TickHandler.requestContinuousWorldTick(world, new IWorldTickCallback()
+		{
+			private int age = 0;
+
+			@Override
+			public void onTick(Level level)
+			{
+				if (player.isRemoved() || ++this.age > 30)
+				{
+					TickHandler.removeContinuousWorldTick(level, this);
+					return;
+				}
+
+				if (this.age < 3)
+				{
+					return;
+				}
+
+				ChunkPos center = player.chunkPosition();
+				for (int dx = -4; dx <= 4; dx++)
+				{
+					for (int dz = -4; dz <= 4; dz++)
+					{
+						if (!level.hasChunk(center.x + dx, center.z + dz))
+						{
+							continue;
+						}
+
+						LevelChunk chunk = level.getChunk(center.x + dx, center.z + dz);
+						for (BlockEntity blockEntity : chunk.getBlockEntities().values())
+						{
+							if (blockEntity instanceof TileEntityBase tileEntity)
+							{
+								tileEntity.requestSoundResume();
+							}
+						}
+					}
+				}
+
+				TickHandler.removeContinuousWorldTick(level, this);
+			}
+		});
 	}
 }

@@ -1,10 +1,13 @@
 package ic2.core.block.tileentity;
 
 import ic2.core.IC2;
+import ic2.core.event.IWorldTickCallback;
+import ic2.core.event.TickHandler;
 import ic2.core.sound.Sound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,12 +46,15 @@ public class TileEntityBase extends TileEntityInventory
 	@OnlyIn(Dist.CLIENT)
 	private void syncLoopingSounds()
 	{
+		this.initSound();
+		boolean shouldPlay = this.shouldSoundActive();
+
 		if (this.loopingSound != null)
 		{
-			if (this.getActive() && !this.loopingSound.isPlaying())
+			if (shouldPlay && this.isLoopingSoundIdling() && !this.isStartSoundPlaying())
 			{
-				this.loopingSound.play();
-			} else if (!this.getActive() && this.loopingSound.isPlaying())
+				this.startPlaySound(false);
+			} else if (!shouldPlay && this.loopingSound.isPlaying())
 			{
 				this.loopingSound.stop();
 			}
@@ -56,13 +62,36 @@ public class TileEntityBase extends TileEntityInventory
 
 		if (this.subLoopingSound != null)
 		{
-			if (this.getActive() && !this.subLoopingSound.isPlaying())
+			if (shouldPlay && !this.subLoopingSound.isPlaying())
 			{
 				this.subLoopingSound.play();
-			} else if (!this.getActive() && this.subLoopingSound.isPlaying())
+			} else if (!shouldPlay && this.subLoopingSound.isPlaying())
 			{
 				this.subLoopingSound.stop();
 			}
+		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void onActiveFieldUpdated()
+	{
+		this.initSound();
+		boolean nowActive = this.shouldSoundActive();
+		if (nowActive != this.clientLastActive)
+		{
+			this.clientLastActive = nowActive;
+			if (nowActive)
+			{
+				this.startPlaySound(false);
+			} else
+			{
+				this.stopStartSound();
+				this.stopLoopingSound();
+				this.playStopSound();
+			}
+		} else if (nowActive && this.isLoopingSoundIdling() && !this.isStartSoundPlaying())
+		{
+			this.startPlaySound(false);
 		}
 	}
 
@@ -72,20 +101,7 @@ public class TileEntityBase extends TileEntityInventory
 		super.onNetworkUpdate(field);
 		if (field.equals("active") && this.level != null && this.level.isClientSide)
 		{
-			boolean nowActive = this.getActive();
-			if (nowActive != this.clientLastActive)
-			{
-				this.clientLastActive = nowActive;
-				if (nowActive)
-				{
-					this.startPlaySound(false);
-				} else
-				{
-					this.stopStartSound();
-					this.stopLoopingSound();
-					this.playStopSound();
-				}
-			}
+			this.onActiveFieldUpdated();
 		}
 	}
 
@@ -106,19 +122,103 @@ public class TileEntityBase extends TileEntityInventory
 	{
 		this.initSound();
 		super.onLoaded();
-		if (this.level != null)
+		if (this.level == null)
 		{
-			if (this.level.isClientSide)
-			{
-				if (this.getActive())
-				{
-					this.playLoopingSound(false);
-				}
-			} else if (this.getActive() && this.hasSound())
-			{
-				IC2.network.get(true).updateTileEntityField(this, "active");
-			}
+			return;
 		}
+
+		if (this.level.isClientSide)
+		{
+			this.scheduleClientSoundResume();
+		} else if (this.getActive() && this.hasSound())
+		{
+			this.scheduleServerActiveResync();
+		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public void requestSoundResume()
+	{
+		if (this.level == null || !this.level.isClientSide)
+		{
+			return;
+		}
+
+		this.initSound();
+		if (this.shouldSoundActive() && this.isLoopingSoundIdling() && !this.isStartSoundPlaying())
+		{
+			this.clientLastActive = false;
+			this.startPlaySound(false);
+		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void scheduleClientSoundResume()
+	{
+		TickHandler.requestContinuousWorldTick(this.level, new IWorldTickCallback()
+		{
+			private int age = 0;
+
+			@Override
+			public void onTick(Level world)
+			{
+				if (TileEntityBase.this.isRemoved() || ++this.age > 40)
+				{
+					TickHandler.removeContinuousWorldTick(world, this);
+					return;
+				}
+
+				TileEntityBase.this.requestSoundResume();
+				if (!TileEntityBase.this.shouldSoundActive() || !TileEntityBase.this.isLoopingSoundIdling())
+				{
+					TickHandler.removeContinuousWorldTick(world, this);
+				}
+			}
+		});
+	}
+
+	private void scheduleServerActiveResync()
+	{
+		TickHandler.requestContinuousWorldTick(this.level, new IWorldTickCallback()
+		{
+			private int age = 0;
+
+			@Override
+			public void onTick(Level world)
+			{
+				if (TileEntityBase.this.isRemoved() || ++this.age > 100)
+				{
+					TickHandler.removeContinuousWorldTick(world, this);
+					return;
+				}
+
+				if (TileEntityBase.this.getActive() && TileEntityBase.this.hasSound())
+				{
+					IC2.network.get(true).updateTileEntityField(TileEntityBase.this, "active");
+					TickHandler.removeContinuousWorldTick(world, this);
+				}
+			}
+		});
+	}
+
+	protected boolean shouldSoundActive()
+	{
+		if (!this.teBlock.canActive())
+		{
+			return false;
+		}
+
+		if (this.getActive())
+		{
+			return true;
+		}
+
+		return this.getBlockState().getValue(Ic2TileEntityBlock.ACTIVE);
+	}
+
+	private boolean isStartSoundPlaying()
+	{
+		return this.startSound != null && this.startSound.isPlaying();
 	}
 
 	public void setActiveState(boolean active, boolean playSubSound)
