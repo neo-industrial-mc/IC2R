@@ -35,6 +35,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.util.RandomSource;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @NotClassic
 public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui
@@ -45,7 +47,6 @@ public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGe
 	private boolean rightFacing;
 	private int distanceToNormalBiome;
 	private int waterFlow;
-	private long lastCheck;
 	private float angle = 0.0F;
 	private float rotationSpeed;
 
@@ -365,16 +366,26 @@ public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGe
 	}
 
 	@Override
+	public float getRotorAnimationSpeed()
+	{
+		return this.rotationSpeed * 0.1F;
+	}
+
+	@Override
 	public float getAngle()
 	{
-		if (this.rotationSpeed != 0.0F)
-		{
-			this.angle = this.angle + (float) (System.currentTimeMillis() - this.lastCheck) * this.rotationSpeed * 0.1F;
-			this.angle %= 360.0F;
-		}
-
-		this.lastCheck = System.currentTimeMillis();
 		return this.angle;
+	}
+
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	protected void updateEntityClient()
+	{
+		float animationSpeed = this.getRotorAnimationSpeed();
+		if (animationSpeed != 0.0F)
+		{
+			this.angle = (this.angle + animationSpeed * 50.0F) % 360.0F;
+		}
 	}
 
 	public enum BiomeState

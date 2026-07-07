@@ -512,6 +512,7 @@
   "ic2.IronFurnace.gui.xp": "Collect experience",
   "ic2.KineticGenerator.gui.Bandwidth": "Bandwidth: %1$s EU/t",
   "ic2.KineticGenerator.gui.Output": "Production: %1$s EU/t",
+  "ic2.KineticGenerator.tooltip.max_output_voltage": "Max Output Voltage: %s",
   "ic2.LiquidHeatExchanger.gui.tooltipheat": "currently transmitted heat / max transferable heat",
   "ic2.LiquidHeatExchanger.gui.tooltipvent": "Add heat conductors for faster conversion",
   "ic2.Magnetizer.gui.hasMetalShoes": "Metal Shoes detected!",

@@ -30,6 +30,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @NotClassic
 public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui
@@ -42,7 +44,6 @@ public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGen
 	private int crossSection;
 	private float rotationSpeed;
 	private float angle = 0.0F;
-	private long lastCheck;
 
 	public TileEntityWindKineticGenerator(BlockPos pos, BlockState state)
 	{
@@ -248,16 +249,25 @@ public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGen
 	}
 
 	@Override
+	public float getRotorAnimationSpeed()
+	{
+		return this.rotationSpeed;
+	}
+
+	@Override
 	public float getAngle()
+	{
+		return this.angle;
+	}
+
+	@Override
+	@OnlyIn(Dist.CLIENT)
+	protected void updateEntityClient()
 	{
 		if (this.rotationSpeed != 0.0F)
 		{
-			this.angle = this.angle + (float) (System.currentTimeMillis() - this.lastCheck) * this.rotationSpeed;
-			this.angle %= 360.0F;
+			this.angle = (this.angle + this.rotationSpeed * 50.0F) % 360.0F;
 		}
-
-		this.lastCheck = System.currentTimeMillis();
-		return this.angle;
 	}
 
 	public float getEfficiency()

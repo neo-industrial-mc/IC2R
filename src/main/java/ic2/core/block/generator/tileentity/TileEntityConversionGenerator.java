@@ -5,11 +5,13 @@ import ic2.api.energy.profile.IElectricalNode;
 import ic2.api.energy.profile.VoltageTier;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergySource;
+import ic2.core.energy.EnergyNetMode;
 import ic2.core.energy.profile.ElectricalProfile;
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
 import ic2.core.block.tileentity.TileEntityInventory;
 import ic2.core.gui.dynamic.DynamicContainer;
+import ic2.core.init.IC2Config;
 import ic2.core.network.GrowingBuffer;
 import ic2.core.network.GuiSynced;
 
@@ -17,6 +19,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -32,6 +35,7 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	@GuiSynced
 	private double maxProduction;
 	private double production;
+	private double energyBuffer;
 	private boolean registeredToEnet;
 	private final ElectricalProfile profile = new ElectricalProfile(VoltageTier.LV);
 
@@ -41,12 +45,41 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	}
 
 	@Override
+	public void load(CompoundTag nbt)
+	{
+		super.load(nbt);
+		this.energyBuffer = nbt.getDouble("energyBuffer");
+	}
+
+	@Override
+	public void saveAdditional(CompoundTag nbt)
+	{
+		super.saveAdditional(nbt);
+		nbt.putDouble("energyBuffer", this.energyBuffer);
+	}
+
+	@Override
 	protected void updateEntityServer()
 	{
 		super.updateEntityServer();
+		double tickOutput = this.getEnergyAvailable() * this.getMultiplier();
+		double outputEuPerTick = this.clampOutputEuPerTick(tickOutput);
+		if (this.isGtEnergyNet() && outputEuPerTick > 0.0)
+		{
+			int voltage = this.getOutputVoltageTier(outputEuPerTick).getVoltage();
+			double maxBuffer = Math.max(voltage, outputEuPerTick);
+			double previousBuffer = this.energyBuffer;
+			this.energyBuffer = Math.min(this.energyBuffer + outputEuPerTick, maxBuffer);
+			double added = this.energyBuffer - previousBuffer;
+			if (added > 0.0)
+			{
+				this.drawEnergyAvailable((int) Math.ceil(added / this.getMultiplier()));
+			}
+		}
+
 		this.lastProduction = this.production;
 		this.production = 0.0;
-		this.setActive(this.maxProduction > 0.0);
+		this.setActive(tickOutput > 0.0 || this.isGtEnergyNet() && this.energyBuffer > 0.0);
 	}
 
 	@Override
@@ -119,15 +152,42 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	public double getOfferedEnergy()
 	{
 		this.maxProduction = this.getEnergyAvailable() * this.getMultiplier();
-		this.syncSourceProfile(this.maxProduction);
-		return this.maxProduction;
+		this.syncSourceProfile(this.clampOutputEuPerTick(this.maxProduction));
+		return this.isGtEnergyNet() ? this.energyBuffer : this.clampOutputEuPerTick(this.maxProduction);
+	}
+
+	protected double clampOutputEuPerTick(double outputEuPerTick)
+	{
+		return outputEuPerTick;
+	}
+
+	protected VoltageTier clampOutputVoltageTier(VoltageTier tier)
+	{
+		return tier;
+	}
+
+	protected VoltageTier getOutputVoltageTier(double outputEuPerTick)
+	{
+		if (outputEuPerTick <= 0.0)
+		{
+			return VoltageTier.ULV;
+		}
+
+		return this.clampOutputVoltageTier(VoltageTier.fromPower(outputEuPerTick));
 	}
 
 	private void syncSourceProfile(double outputEuPerTick)
 	{
-		VoltageTier tier = VoltageTier.fromPower(outputEuPerTick);
-		this.profile.setWorkingVoltage(tier);
-		this.profile.setRecipePower((int) Math.round(outputEuPerTick));
+		if (outputEuPerTick > 0.0)
+		{
+			VoltageTier tier = this.getOutputVoltageTier(outputEuPerTick);
+			this.profile.setWorkingVoltage(tier);
+			this.profile.setRecipePower((int) Math.round(outputEuPerTick));
+		} else if (!this.isGtEnergyNet() || this.energyBuffer <= 0.0)
+		{
+			this.profile.setWorkingVoltage(VoltageTier.ULV);
+			this.profile.setRecipePower(0);
+		}
 	}
 
 	@Override
@@ -168,30 +228,56 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	@Override
 	public double getEnergyBufferCapacity()
 	{
-		double offered = this.getCurrentOfferedOutput();
-		int voltage = VoltageTier.fromPower(offered).getVoltage();
+		double offered = this.clampOutputEuPerTick(this.getCurrentOfferedOutput());
+		if (offered <= 0.0 && this.isGtEnergyNet() && this.energyBuffer > 0.0)
+		{
+			return this.profile.getWorkingVoltage().getVoltage();
+		}
+
+		int voltage = this.getOutputVoltageTier(offered).getVoltage();
 		return Math.max(voltage, offered);
 	}
 
 	@Override
 	public double getEnergyBufferFree()
 	{
-		double offered = this.getCurrentOfferedOutput();
 		double capacity = this.getEnergyBufferCapacity();
+		if (this.isGtEnergyNet())
+		{
+			return Math.max(0.0, capacity - Math.min(this.energyBuffer, capacity));
+		}
+
+		double offered = this.getCurrentOfferedOutput();
 		return Math.max(0.0, capacity - Math.min(offered, capacity));
 	}
 
 	@Override
 	public void drawEnergy(double amount)
 	{
+		if (this.isGtEnergyNet())
+		{
+			this.energyBuffer = Math.max(0.0, this.energyBuffer - amount);
+		} else
+		{
+			this.drawEnergyAvailable((int) Math.ceil(amount / this.getMultiplier()));
+		}
+
 		this.production += amount;
-		this.drawEnergyAvailable((int) Math.ceil(amount / this.getMultiplier()));
+		if (amount > 0.0)
+		{
+			this.lastProduction = this.production;
+		}
 	}
 
 	@Override
 	public int getSourceTier()
 	{
-		return VoltageTier.fromPower(this.getCurrentOfferedOutput()).getIcTier();
+		return this.profile.getWorkingVoltage().getIcTier();
+	}
+
+	private boolean isGtEnergyNet()
+	{
+		return EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get()) == EnergyNetMode.GT;
 	}
 
 	@Override

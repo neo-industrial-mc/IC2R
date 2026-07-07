@@ -11,5 +11,10 @@ public interface IRotorProvider
 
 	float getAngle();
 
+	default float getRotorAnimationSpeed()
+	{
+		return 0.0F;
+	}
+
 	ResourceLocation getRotorRenderTexture();
 }

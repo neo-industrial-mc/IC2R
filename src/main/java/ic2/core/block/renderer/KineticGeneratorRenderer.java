@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class KineticGeneratorRenderer<T extends BlockEntity & IRotorProvider> implements BlockEntityRenderer<T>
 {
+	private static final float DEGREES_PER_TICK = 50.0F;
 	private static final Int2ReferenceMap<ModelPart> rotorModels = new Int2ReferenceOpenHashMap<>();
 
 	public KineticGeneratorRenderer(Context ctx)
@@ -33,7 +35,8 @@ public class KineticGeneratorRenderer<T extends BlockEntity & IRotorProvider> im
 		int diameter = windGen.getRotorDiameter();
 		if (diameter != 0)
 		{
-			float angle = windGen.getAngle();
+			float partial = Minecraft.getInstance().isPaused() ? 0.0F : tickDelta;
+			float angle = (windGen.getAngle() + windGen.getRotorAnimationSpeed() * DEGREES_PER_TICK * partial) % 360.0F;
 			ResourceLocation rotorRL = windGen.getRotorRenderTexture();
 			ModelPart model = rotorModels.get(diameter);
 			if (model == null)

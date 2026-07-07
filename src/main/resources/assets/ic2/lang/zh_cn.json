@@ -512,6 +512,7 @@
   "ic2.IronFurnace.gui.xp": "收集经验值",
   "ic2.KineticGenerator.gui.Bandwidth": "传输上限: %1$s EU/t",
   "ic2.KineticGenerator.gui.Output": "输出: %1$s EU/t",
+  "ic2.KineticGenerator.tooltip.max_output_voltage": "最大输出电压：%s",
   "ic2.LiquidHeatExchanger.gui.tooltipheat": "目前已传输热量/最大传输热量",
   "ic2.LiquidHeatExchanger.gui.tooltipvent": "放置热传导器来加速进程",
   "ic2.Magnetizer.gui.hasMetalShoes": "检测到金属鞋子!",
