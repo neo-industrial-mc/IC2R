@@ -13,3 +13,5 @@ gradle-wrapper.jar
 
 .cache/
 run-data/
+
+addons/

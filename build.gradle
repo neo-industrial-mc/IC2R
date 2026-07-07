@@ -26,6 +26,49 @@ mixin {
 }
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+
+def devAddons = (findProperty('dev_addons') ?: '')
+        .toString()
+        .split(',')
+        .collect { it.trim() }
+        .findAll { !it.isEmpty() }
+
+def resolvedDevAddons = devAddons.findAll { addon ->
+    def addonProject = findProject(":$addon")
+    if (addonProject == null) {
+        logger.lifecycle("Dev addon '$addon' not found in addons/, skipping.")
+        return false
+    }
+    true
+}
+
+resolvedDevAddons.each { addon ->
+    evaluationDependsOn(":$addon")
+}
+
+def resolveAddonModId(addonProject) {
+    def propsFile = addonProject.file('gradle.properties')
+    if (!propsFile.isFile()) {
+        throw new GradleException("Cannot determine mod id for dev addon '${addonProject.name}': gradle.properties not found.")
+    }
+
+    def props = new Properties()
+    propsFile.withInputStream { props.load(it) }
+
+    def modId = props.getProperty('mod_id')
+    if (modId != null && !modId.trim().isEmpty()) {
+        return modId.trim()
+    }
+
+    def modIdEntry = props.find { key, _ -> key.toString().endsWith('_mod_id') }
+    if (modIdEntry != null) {
+        return modIdEntry.value.toString().trim()
+    }
+
+    throw new GradleException("Cannot determine mod id for dev addon '${addonProject.name}'. " +
+            'Set mod_id or *_mod_id in the addon gradle.properties.')
+}
+
 minecraft {
     mappings channel: mapping_channel, version: mapping_version
     copyIdeResources = true
@@ -39,7 +82,12 @@ minecraft {
                 "${mod_id}" {
                     source sourceSets.main
                 }
-                // ic2r_csas { source project(':CompactSolarArrays').sourceSets.main }
+                resolvedDevAddons.each { addon ->
+                    def addonProject = project(":$addon")
+                    create(resolveAddonModId(addonProject)) {
+                        source addonProject.sourceSets.main
+                    }
+                }
             }
         }
         client {
@@ -60,8 +108,6 @@ repositories {
     maven { url = "https://maven.blamejared.com/" }
     maven { url "https://api.modrinth.com/maven" }
 }
-
-// evaluationDependsOn(':CompactSolarArrays')
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"

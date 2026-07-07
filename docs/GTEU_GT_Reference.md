@@ -2,7 +2,7 @@
 
 > **读者**：IC2R 开发者、SubAgent、代码审查者。  
 > **用途**：实现 GT Mode 时的行为基准；与 IC Mode 对照。  
-> **配套文档**：[GTEU_Migration_Project.md](./GTEU_Migration_Project.md)（迁移规格与 PR 计划）。
+> **配套文档**：[GTEU_Migration_Project.md](GTEU_Migration_Project.md)（迁移规格与 PR 计划）。
 
 ---
 

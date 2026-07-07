@@ -13,4 +13,17 @@ plugins {
 }
 
 rootProject.name = 'IC2R'
-include 'CompactSolarArrays'
+
+def devAddons = (providers.gradleProperty('dev_addons').orElse('').get())
+        .split(',')
+        .collect { it.trim() }
+        .findAll { !it.isEmpty() }
+
+def addonsDir = file('addons')
+devAddons.each { addon ->
+    def addonDir = new File(addonsDir, addon)
+    if (addonDir.isDirectory() && new File(addonDir, 'build.gradle').isFile()) {
+        include addon
+        project(":$addon").projectDir = addonDir
+    }
+}
