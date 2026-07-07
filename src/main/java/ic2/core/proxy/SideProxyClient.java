@@ -160,6 +160,7 @@ public final class SideProxyClient implements SideProxy
 		envProxy.registerColorProvider((state, world, post, tintIndex) -> 6723908, Ic2Blocks.RUBBER_LEAVES);
 		envProxy.registerColorProvider((var1, var2) -> 6723908, Ic2Items.RUBBER_LEAVES);
 		envProxy.registerColorProvider(SideProxyClient::getFluidCellTintColor,
+			Ic2Items.EMPTY_CELL,
 			Ic2Items.CREOSOTE_CELL,
 			Ic2Items.HEAVY_WATER_CELL,
 			Ic2Items.HOT_WATER_CELL,

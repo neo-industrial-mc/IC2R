@@ -1,10 +1,13 @@
 package ic2.core.item;
 
 import ic2.core.crop.TileEntityCrop;
+import ic2.core.fluid.FluidHandler;
 import ic2.core.fluid.Ic2FluidItem;
 import ic2.core.fluid.Ic2FluidStack;
+import ic2.core.fluid.StandardFluidItem;
 import ic2.core.ref.Ic2Items;
 import ic2.core.util.Ic2Tooltip;
+import ic2.core.util.LiquidUtil;
 import ic2.core.util.StackUtil;
 
 import java.util.IdentityHashMap;
@@ -22,11 +25,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import net.minecraftforge.api.distmarker.Dist;
@@ -59,7 +69,7 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 	@Override
 	public List<Fluid> getDrainableFluidList()
 	{
-		return List.copyOf(instances.keySet());
+		return this.fluid == Fluids.EMPTY ? LiquidUtil.getAllFluidsSorted() : List.copyOf(instances.keySet());
 	}
 
 	@Override
@@ -86,6 +96,83 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 	public boolean emptyContents(@Nullable Player player, Level world, BlockPos pos, @Nullable BlockHitResult hitResult)
 	{
 		return super.emptyContents(player, world, pos, hitResult);
+	}
+
+	@Override
+	public ItemStack tryDrainFluid(LevelAccessor world, BlockPos pos, BlockState state)
+	{
+		if (this.fluid != Fluids.EMPTY)
+		{
+			return super.tryDrainFluid(world, pos, state);
+		}
+
+		if (!(world instanceof Level level))
+		{
+			return ItemStack.EMPTY;
+		}
+
+		Ic2FluidStack drained = FluidHandler.drainWorldFluid(state, level, pos, true);
+		if (drained == null || drained.isEmpty())
+		{
+			if (state.getBlock() instanceof LiquidBlock && state.getValue(LiquidBlock.LEVEL) == 0)
+			{
+				drained = Ic2FluidStack.create(state.getFluidState().getType(), CELL_CAPACITY_MB);
+			} else if (state.getBlock() instanceof SimpleWaterloggedBlock && state.getValue(BlockStateProperties.WATERLOGGED))
+			{
+				drained = Ic2FluidStack.create(Fluids.WATER, CELL_CAPACITY_MB);
+			} else
+			{
+				return this.tryDrain(world, pos, state);
+			}
+		}
+
+		if (drained.getAmountMb() < CELL_CAPACITY_MB)
+		{
+			return ItemStack.EMPTY;
+		}
+
+		ItemStack testStack = new ItemStack(this);
+		if (this.fillMb(testStack, drained.copyWithAmountMb(CELL_CAPACITY_MB), true, null) < CELL_CAPACITY_MB)
+		{
+			return ItemStack.EMPTY;
+		}
+
+		Ic2FluidStack actualDrain = FluidHandler.drainWorldFluid(state, level, pos, false);
+		if (actualDrain == null || actualDrain.isEmpty())
+		{
+			if (state.getBlock() instanceof LiquidBlock && state.getValue(LiquidBlock.LEVEL) == 0)
+			{
+				if (!level.isClientSide())
+				{
+					world.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
+				}
+
+				actualDrain = drained;
+			} else if (state.getBlock() instanceof SimpleWaterloggedBlock && state.getValue(BlockStateProperties.WATERLOGGED))
+			{
+				world.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, false), 3);
+				if (!state.canSurvive(world, pos))
+				{
+					world.destroyBlock(pos, true);
+				}
+
+				actualDrain = Ic2FluidStack.create(Fluids.WATER, CELL_CAPACITY_MB);
+			} else
+			{
+				return ItemStack.EMPTY;
+			}
+		}
+
+		if (actualDrain.getAmountMb() < CELL_CAPACITY_MB)
+		{
+			return ItemStack.EMPTY;
+		}
+
+		ItemStack result = new ItemStack(this);
+		MutableObject<ItemStack> newStack = new MutableObject<>();
+		this.fillMb(result, actualDrain.copyWithAmountMb(CELL_CAPACITY_MB), false, newStack);
+		ItemStack filled = newStack.getValue() != null ? newStack.getValue() : result;
+		return filled.isEmpty() ? ItemStack.EMPTY : filled;
 	}
 
 	public boolean useOnCrop(ItemStack stack, TileEntityCrop crop, boolean manual)
@@ -173,6 +260,18 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
+		if (this.fluid == Fluids.EMPTY)
+		{
+			Ic2FluidStack stored = StandardFluidItem.getFs(stack);
+			if (stored != null && !stored.isEmpty())
+			{
+				Ic2Tooltip.add(
+					tooltip,
+					Component.translatable("ic2.item.fluid_container.with_fluid", Component.translatable(stored.getFluidTypeKey()), stored.getAmountMb())
+				);
+			}
+		}
+
 		if (this.charges > 1 && stack.getCount() == 1 && advanced.isAdvanced())
 		{
 			Ic2Tooltip.add(tooltip, Component.translatable("item.durability", this.charges - this.getUsage(stack), this.charges));
@@ -184,7 +283,8 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 	{
 		if (this.fluid == Fluids.EMPTY)
 		{
-			return Ic2FluidStack.EMPTY;
+			Ic2FluidStack stored = StandardFluidItem.getFs(stack);
+			return stored != null && !stored.isEmpty() ? stored : Ic2FluidStack.EMPTY;
 		} else
 		{
 			return this.fluid != null ? Ic2FluidStack.create(this.fluid, CELL_CAPACITY_MB) : null;
@@ -212,7 +312,29 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 
 		if (this.fluid == Fluids.EMPTY)
 		{
-			return Ic2FluidStack.EMPTY;
+			Ic2FluidStack stored = StandardFluidItem.getFs(stack);
+			if (stored == null || stored.isEmpty())
+			{
+				return Ic2FluidStack.EMPTY;
+			}
+
+			if (amount <= 0)
+			{
+				return Ic2FluidStack.EMPTY;
+			}
+
+			if (simulate)
+			{
+				return stored.copyWithAmountMb(Math.min(amount, CELL_CAPACITY_MB));
+			}
+
+			StandardFluidItem.setFs(stack, null);
+			if (newStack != null)
+			{
+				newStack.setValue(stack);
+			}
+
+			return stored;
 		}
 
 		if (this.fluid == null)
@@ -257,6 +379,28 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 		if (amount <= 0)
 		{
 			return 0;
+		}
+
+		if (this.fluid == Fluids.EMPTY)
+		{
+			Ic2FluidStack stored = StandardFluidItem.getFs(stack);
+			if (stored == null || stored.isEmpty() || !stored.hasExactFluid(drainFs))
+			{
+				return 0;
+			}
+
+			if (simulate)
+			{
+				return Math.min(amount, CELL_CAPACITY_MB);
+			}
+
+			StandardFluidItem.setFs(stack, null);
+			if (newStack != null)
+			{
+				newStack.setValue(stack);
+			}
+
+			return CELL_CAPACITY_MB;
 		}
 
 		if (this.fluid != null && this.fluid != Fluids.EMPTY && drainFs.hasExactFluid(this.fluid))
@@ -317,9 +461,24 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 			}
 
 			return CELL_CAPACITY_MB;
-		} else
+		}
+
+		Ic2FluidStack stored = StandardFluidItem.getFs(stack);
+		if (stored != null && !stored.isEmpty())
 		{
 			return 0;
 		}
+
+		if (!simulate)
+		{
+			StandardFluidItem.setFs(stack, fillFs.copyWithAmountMb(CELL_CAPACITY_MB));
+		}
+
+		if (newStack != null)
+		{
+			newStack.setValue(stack);
+		}
+
+		return CELL_CAPACITY_MB;
 	}
 }
