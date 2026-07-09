@@ -483,6 +483,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 				}
 
 				super.onRemove(state, world, pos, newState, moved);
+				tileEntity.onBlockBreak();
 			}
 		} else
 		{

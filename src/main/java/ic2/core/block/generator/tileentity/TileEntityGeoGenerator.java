@@ -11,6 +11,7 @@ import ic2.core.init.IC2Config;
 import ic2.core.network.GuiSynced;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.ref.Ic2SoundEvents;
+import ic2.core.util.LiquidUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.state.BlockState;
@@ -70,6 +71,9 @@ public class TileEntityGeoGenerator extends TileEntityBaseGenerator
 	protected void onBlockBreak()
 	{
 		super.onBlockBreak();
-		this.fluidTank.isEmpty();
+		if (!this.fluidTank.isEmpty())
+		{
+			LiquidUtil.fillWorldFluidBlock(Ic2FluidStack.create(net.minecraft.world.level.material.Fluids.LAVA, 1000), this.getLevel(), this.worldPosition, false);
+		}
 	}
 }

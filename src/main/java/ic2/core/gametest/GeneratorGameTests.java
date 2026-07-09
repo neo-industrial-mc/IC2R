@@ -69,6 +69,23 @@ public class GeneratorGameTests
 		});
 	}
 
+	// geothermal: breaking a generator with lava in its tank spills a lava source at its position
+	@GameTest(template = EMPTY, timeoutTicks = 40)
+	public static void geoGeneratorSpillsLavaWhenBrokenWithLava(GameTestHelper helper)
+	{
+		BlockPos pos = new BlockPos(1, 1, 1);
+		helper.setBlock(pos, Ic2Blocks.GEO_GENERATOR);
+		TileEntityGeoGenerator geo = getTe(helper, pos, TileEntityGeoGenerator.class);
+		geo.fluidSlot.put(0, new ItemStack(Items.LAVA_BUCKET));
+
+		helper.runAtTickTime(2, () ->
+		{
+			helper.destroyBlock(pos);
+			helper.assertBlockPresent(Blocks.LAVA, pos);
+			helper.succeed();
+		});
+	}
+
 	// solar: with the sun up it trickles 1 EU/t into an adjacent batbox
 	@GameTest(template = EMPTY, timeoutTicks = 200)
 	public static void solarGeneratorChargesBatboxInDaylight(GameTestHelper helper)
