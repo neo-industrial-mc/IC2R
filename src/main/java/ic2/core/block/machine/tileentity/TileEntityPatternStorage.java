@@ -107,9 +107,7 @@ public class TileEntityPatternStorage extends TileEntityInventory implements IHa
 
 		for (ItemStack stack : this.patterns)
 		{
-			CompoundTag contentTag = new CompoundTag();
-			stack.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
-			list.add(contentTag);
+			list.add(stack.save(net.minecraft.core.RegistryAccess.EMPTY, new CompoundTag()));
 		}
 
 		nbt.put("patterns", list);

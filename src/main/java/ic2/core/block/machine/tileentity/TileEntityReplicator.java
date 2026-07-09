@@ -290,9 +290,7 @@ public class TileEntityReplicator extends TileEntityElectricMachine implements I
 		nbt.putInt("mode", this.mode.ordinal());
 		if (this.pattern != null)
 		{
-			CompoundTag contentTag = new CompoundTag();
-			this.pattern.save(registries, contentTag);
-			nbt.put("pattern", contentTag);
+			nbt.put("pattern", this.pattern.save(registries, new CompoundTag()));
 		}
 	}
 

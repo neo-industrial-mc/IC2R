@@ -199,16 +199,12 @@ public class TileEntityScanner extends TileEntityElectricMachine implements IHas
 		nbt.putInt("progress", this.progress);
 		if (!StackUtil.isEmpty(this.currentStack))
 		{
-			CompoundTag contentTag = new CompoundTag();
-			this.currentStack.save(registries, contentTag);
-			nbt.put("currentStack", contentTag);
+			nbt.put("currentStack", this.currentStack.save(registries, new CompoundTag()));
 		}
 
 		if (!StackUtil.isEmpty(this.pattern))
 		{
-			CompoundTag contentTag = new CompoundTag();
-			this.pattern.save(registries, contentTag);
-			nbt.put("pattern", contentTag);
+			nbt.put("pattern", this.pattern.save(registries, new CompoundTag()));
 		}
 
 		nbt.putInt("state", this.state.ordinal());
