@@ -1,0 +1,109 @@
+name: Test and build
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gametests:
+    name: Game tests and mod jar
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+
+      - name: Cache Minecraft and NeoForge downloads
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches/neoformruntime
+            ~/.gradle/caches/net.neoforged
+            ~/.gradle/caches/forge_gradle
+            build/tmp/neoformruntime
+            build/tmp/downloadAssets
+          key: minecraft-${{ runner.os }}-${{ hashFiles('gradle.properties', 'settings.gradle', 'build.gradle', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            minecraft-${{ runner.os }}-
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Download Minecraft assets
+        run: ./gradlew --no-daemon --stacktrace downloadAssets
+
+      - name: Run game tests
+        run: ./gradlew --no-daemon --stacktrace runGameTestServer
+
+      - name: Prepare game test failure report
+        if: failure()
+        shell: bash
+        run: |
+          mkdir -p run
+          report="run/gametest-failure-report.md"
+          {
+            echo "# Game Test Failure Report"
+            echo
+            echo "Workflow: ${GITHUB_WORKFLOW}"
+            echo "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "Commit: ${GITHUB_SHA}"
+            echo
+            if [[ -f run/logs/latest.log ]]; then
+              echo "## Summary"
+              awk '/GAME TESTS COMPLETE/{flag=1} flag && /====|required tests failed|   - /{print}' run/logs/latest.log
+              echo
+              echo "## Recent Log"
+              tail -n 200 run/logs/latest.log
+            else
+              echo "No run/logs/latest.log file was produced."
+            fi
+          } > "$report"
+          cat "$report" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload game test failure report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gametest-failure-report
+          if-no-files-found: ignore
+          retention-days: 14
+          path: |
+            run/gametest-failure-report.md
+            build/reports/**
+            build/test-results/**
+            run/logs/**
+            run/crash-reports/**
+            run/gametest-report*.txt
+            run/debug.log
+            hs_err_pid*.log
+
+      - name: Build mod jar
+        if: success()
+        run: ./gradlew --no-daemon --stacktrace jar
+
+      - name: Upload mod jar
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mod-jar
+          if-no-files-found: error
+          path: build/libs/*.jar
