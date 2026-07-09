@@ -123,6 +123,7 @@ public final class EventHandler
 	public static void onInitLate()
 	{
 		long startTime = System.nanoTime();
+		TileEntityRecycler.initLate();
 		UuIndex.instance.init();
 		UuIndex.instance.refresh(true);
 		IC2.sideProxy.onPostInit();

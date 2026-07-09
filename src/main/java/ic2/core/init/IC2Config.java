@@ -146,7 +146,7 @@ public class IC2Config
 				"Format: <name>[@metadata], metadata * matches any.",
 				"Ore dictionary entries can be specified with OreDict:<ore dict name> as the name."
 			);
-			recyclerBlacklist = b.define("recyclerBlacklist", "minecraft:glass_pane, minecraft:stick, minecraft:snowball, minecraft:snow_layer, minecraft:snow");
+			recyclerBlacklist = b.define("recyclerBlacklist", "minecraft:glass_pane, minecraft:stick, minecraft:snowball, minecraft:snow, minecraft:snow_block");
 			b.comment(
 				"Whitelist for blocks/items allowed to be recycled.",
 				"The whitelist will be used instead of the blacklist approach if it's non-empty, disallowing everything else.",
