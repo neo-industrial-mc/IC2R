@@ -293,18 +293,20 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 	public boolean damagePainter(ItemStack stack, Player player, InteractionHand hand, Ic2Color color)
 	{
 		assert color != null;
+		// capture these up front: breaking the stack in hurtAndBreak empties it, dropping its item and NBT
+		Item paintedItem = stack.getItem();
+		boolean autoRefill = StackUtil.getOrCreateNbtData(stack).getBoolean("autoRefill");
 		// 1.21: ItemStack#hurt(int, RandomSource, ServerPlayer) is gone; damage via hurtAndBreak.
 		stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
-		if (stack.getDamageValue() >= stack.getMaxDamage())
+		if (stack.isEmpty() || stack.getDamageValue() >= stack.getMaxDamage())
 		{
-			CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);
-			if (!nbtData.getBoolean("autoRefill"))
+			if (!autoRefill)
 			{
 				player.setItemInHand(hand, new ItemStack(Ic2Items.PAINTER, 1));
 				return false;
 			}
 
-			ItemStack consumedStack = StackUtil.consumeFromPlayerInventoryAndGet(player, StackUtil.sameItem(stack.getItem()), 1, true);
+			ItemStack consumedStack = StackUtil.consumeFromPlayerInventoryAndGet(player, StackUtil.sameItem(paintedItem), 1, true);
 			if (consumedStack.isEmpty())
 			{
 				player.setItemInHand(hand, new ItemStack(Ic2Items.PAINTER, 1));
