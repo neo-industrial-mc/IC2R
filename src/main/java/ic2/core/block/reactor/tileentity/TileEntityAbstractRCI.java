@@ -76,7 +76,8 @@ public abstract class TileEntityAbstractRCI extends TileEntityElectricMachine im
 		{
 			for (ItemStack comp : this.reactor.reactorSlot)
 			{
-				if (comp != null && StackUtil.checkItemEquality(comp, this.target))
+				// compare by item: a condensator worth recharging always carries "use" NBT, which stack equality would reject
+				if (comp != null && StackUtil.checkItemEquality(comp, this.target.getItem()))
 				{
 					ItemReactorCondensator cond = (ItemReactorCondensator) comp.getItem();
 					if (cond.getUseFraction(comp) > 0.85 && this.inputSlot.consume(1) != null && this.energy.useEnergy(1000.0))
