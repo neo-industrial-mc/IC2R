@@ -195,6 +195,9 @@ public class LiquidUtil
 				fs.setAmountMb(amount);
 			}
 
+			// the fluid handler may replace the container instead of mutating the stack (e.g. bucket
+			// wrappers), so the post-drain emptiness test has to run on the resulting stack
+			singleStack = (ItemStack) newStack.getValue();
 			if (StackUtil.isEmpty(singleStack))
 			{
 				inPlace = StackUtil.decSize(inPlace);
