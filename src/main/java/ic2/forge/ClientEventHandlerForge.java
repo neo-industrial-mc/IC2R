@@ -14,7 +14,6 @@ import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
-import net.neoforged.neoforge.client.event.sound.SoundEngineLoadEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -37,12 +36,6 @@ public final class ClientEventHandlerForge
 	public void onClientTickPost(ClientTickEvent.Post event)
 	{
 		DeferredSoundOps.flush();
-	}
-
-	@SubscribeEvent
-	public void onSoundSetup(SoundEngineLoadEvent event)
-	{
-		EventHandlerClient.onSoundSetup();
 	}
 
 	@SubscribeEvent

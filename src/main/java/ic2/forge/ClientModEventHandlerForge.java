@@ -16,6 +16,7 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.sound.SoundEngineLoadEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -109,6 +110,12 @@ public final class ClientModEventHandlerForge
 		{
 			event.register(keybinding);
 		}
+	}
+
+	@SubscribeEvent
+	public void onSoundSetup(SoundEngineLoadEvent event)
+	{
+		EventHandlerClient.onSoundSetup();
 	}
 
 	@SubscribeEvent
