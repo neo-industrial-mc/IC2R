@@ -92,7 +92,11 @@ public class LeanItemStack
 		}
 
 		ItemStack ret = new ItemStack(this.item, this.size);
-		ret.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(this.nbt));
+		if (this.nbt != null)
+		{
+			ret.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(this.nbt));
+		}
+
 		return ret;
 	}
 
