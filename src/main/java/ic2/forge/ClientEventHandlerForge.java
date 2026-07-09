@@ -102,7 +102,7 @@ public final class ClientEventHandlerForge
 	}
 
 	@SubscribeEvent
-	public void onGuiCreate(ScreenEvent.Init event)
+	public void onGuiCreate(ScreenEvent.Init.Post event)
 	{
 		EventHandlerClient.onGuiCreate(event.getScreen(), event.getListenersList(), event::addListener);
 	}
