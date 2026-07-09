@@ -1,5 +1,6 @@
 package ic2.core.entity;
 
+import ic2.api.event.LaserEvent;
 import ic2.core.IC2;
 import ic2.core.Ic2Explosion;
 import ic2.core.Ic2Player;
@@ -13,14 +14,12 @@ import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -37,8 +36,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.util.RandomSource;
 import net.minecraft.network.syncher.SynchedEntityData;
 
 public class LaserBulletEntity extends ThrowableProjectile
@@ -50,6 +50,7 @@ public class LaserBulletEntity extends ThrowableProjectile
 	public float power = 0.0F;
 	public int blockBreaks = 0;
 	public boolean isExplosiveMode = false;
+	private boolean hitThisTick = false;
 
 	public LaserBulletEntity(Level world)
 	{
@@ -88,7 +89,6 @@ public class LaserBulletEntity extends ThrowableProjectile
 
 	public void tick()
 	{
-		super.tick();
 		if (IC2.sideProxy.isSimulating() && (this.range < 1.0F || this.power <= 0.0F || this.blockBreaks <= 0))
 		{
 			if (this.isExplosiveMode)
@@ -97,9 +97,28 @@ public class LaserBulletEntity extends ThrowableProjectile
 			}
 
 			this.remove(RemovalReason.DISCARDED);
-		} else
+			return;
+		}
+
+		double oldX = this.getX();
+		double oldY = this.getY();
+		double oldZ = this.getZ();
+		this.hitThisTick = false;
+		super.tick();
+
+		if (!this.isRemoved())
 		{
-			this.power -= 0.5F;
+			double distance = this.position().distanceTo(new net.minecraft.world.phys.Vec3(oldX, oldY, oldZ));
+			this.range = (float) (this.range - distance);
+			if (!this.hitThisTick)
+			{
+				this.power -= 0.5F;
+			}
+
+			if (this.isInWater())
+			{
+				this.remove(RemovalReason.DISCARDED);
+			}
 		}
 	}
 
@@ -117,16 +136,10 @@ public class LaserBulletEntity extends ThrowableProjectile
 
 	protected void handleHit(HitResult hitResult)
 	{
+		this.hitThisTick = true;
 		if (this.isExplosiveMode)
 		{
-			if (hitResult instanceof EntityHitResult entityHit && this.isBossEntity(entityHit.getEntity()))
-			{
-				this.hitEntity(entityHit.getEntity());
-			} else
-			{
-				this.explode();
-			}
-
+			this.explode();
 			this.remove(RemovalReason.DISCARDED);
 		} else
 		{
@@ -135,10 +148,10 @@ public class LaserBulletEntity extends ThrowableProjectile
 				case ENTITY:
 					if (this.hitEntity(((EntityHitResult) hitResult).getEntity()))
 					{
-						this.power -= 0.5F;
+						this.remove(RemovalReason.DISCARDED);
 					} else
 					{
-						this.remove(RemovalReason.DISCARDED);
+						this.power -= 0.5F;
 					}
 					break;
 				case BLOCK:
@@ -147,9 +160,6 @@ public class LaserBulletEntity extends ThrowableProjectile
 					if (!this.hitBlock(blockHitResult.getBlockPos(), blockHitResult.getDirection()))
 					{
 						this.power -= 0.5F;
-					} else
-					{
-						this.remove(RemovalReason.DISCARDED);
 					}
 					break;
 				default:
@@ -161,12 +171,27 @@ public class LaserBulletEntity extends ThrowableProjectile
 	private void explode()
 	{
 		Level world = this.getCommandSenderWorld();
-		Ic2Explosion explosion = new Ic2Explosion(world, this, this.getX(), this.getY(), this.getZ(), 5.0F, 0.85F);
+		LaserEvent.LaserExplodesEvent event = NeoForge.EVENT_BUS.post(new LaserEvent.LaserExplodesEvent(world, this, this.owner, this.range, this.power, this.blockBreaks, this.isExplosiveMode, this.isSmeltMode, 5.0F, 0.85F, 0.55F));
+		if (event.isCanceled())
+		{
+			return;
+		}
+
+		this.copyDataFromEvent(event);
+		Ic2Explosion explosion = new Ic2Explosion(world, this, this.getX(), this.getY(), this.getZ(), event.explosionPower, event.explosionDropRate);
 		explosion.doExplosion();
 	}
 
 	private boolean hitEntity(Entity entity)
 	{
+		LaserEvent.LaserHitsEntityEvent event = NeoForge.EVENT_BUS.post(new LaserEvent.LaserHitsEntityEvent(this.level(), this, this.owner, this.range, this.power, this.blockBreaks, this.isExplosiveMode, this.isSmeltMode, entity));
+		if (event.isCanceled())
+		{
+			return !event.passThrough;
+		}
+
+		this.copyDataFromEvent(event);
+		entity = event.hitEntity;
 		int damage = (int) this.power;
 		if (this.isBossEntity(entity))
 		{
@@ -190,8 +215,16 @@ public class LaserBulletEntity extends ThrowableProjectile
 
 	private boolean hitBlock(BlockPos pos, Direction side)
 	{
-     RandomSource rng = RandomSource.create();
 		Level world = this.getCommandSenderWorld();
+		LaserEvent.LaserHitsBlockEvent event = NeoForge.EVENT_BUS.post(new LaserEvent.LaserHitsBlockEvent(world, this, this.owner, this.range, this.power, this.blockBreaks, this.isExplosiveMode, this.isSmeltMode, pos, side, 0.9F, true, true));
+		if (event.isCanceled())
+		{
+			this.remove(RemovalReason.DISCARDED);
+			return true;
+		}
+
+		this.copyDataFromEvent(event);
+		pos = event.pos;
 		Player playerOwner = this.owner instanceof Player ? (Player) this.owner : Ic2Player.get(world);
 		if (playerOwner == null)
 		{
@@ -205,7 +238,12 @@ public class LaserBulletEntity extends ThrowableProjectile
 
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
-		boolean dropBlock = true;
+		if (NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(world, pos, state, playerOwner)).isCanceled())
+		{
+			this.remove(RemovalReason.DISCARDED);
+			return true;
+		}
+
 		if (world.getBlockState(pos).isAir() || block == Blocks.GLASS || block == Blocks.GLASS_PANE || block instanceof StainedGlassPaneBlock || block instanceof StainedGlassBlock)
 		{
 			return false;
@@ -237,7 +275,7 @@ public class LaserBulletEntity extends ThrowableProjectile
 		{
 			if (state.isFlammable(world, pos, side))
 			{
-				dropBlock = false;
+				event.dropBlock = false;
 			} else
 			{
 				for (ItemStack isa : StackUtil.getDrops(world, pos, state, block, 0))
@@ -245,15 +283,15 @@ public class LaserBulletEntity extends ThrowableProjectile
 					this.appendSmeltItemStack(block, isa, replacements);
 				}
 
-				dropBlock = replacements.isEmpty();
+				event.dropBlock = replacements.isEmpty();
 			}
 		}
 
-		if (this.removeBlock)
+		if (event.removeBlock)
 		{
-			if (dropBlock)
+			if (event.dropBlock)
 			{
-				Block.dropResources(state, world, pos);
+				this.dropBlockWithChance(world, pos, state, block, event.dropChance);
 			}
 
 			world.removeBlock(pos, false);
@@ -268,7 +306,7 @@ public class LaserBulletEntity extends ThrowableProjectile
 				this.power = 0.0F;
 			}
 
-			if (rng.nextInt(10) == 0 && state.isFlammable(world, pos, Direction.UP))
+			if (world.random.nextInt(10) == 0 && state.isFlammable(world, pos, Direction.UP))
 			{
 				world.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
 			}
@@ -276,6 +314,17 @@ public class LaserBulletEntity extends ThrowableProjectile
 
 		this.blockBreaks--;
 		return true;
+	}
+
+	private void dropBlockWithChance(Level world, BlockPos pos, BlockState state, Block block, float dropChance)
+	{
+		for (ItemStack drop : StackUtil.getDrops(world, pos, state, block, 0))
+		{
+			if (world.random.nextFloat() <= dropChance)
+			{
+				StackUtil.dropAsEntity(world, pos, drop);
+			}
+		}
 	}
 
 	private void appendSmeltItemStack(Block targetBlock, ItemStack inputItemStack, List<ItemStack> replacementList)
@@ -305,5 +354,15 @@ public class LaserBulletEntity extends ThrowableProjectile
 		this.removeBlock = removeBlock;
 		this.isExplosiveMode = explosive;
 		this.isSmeltMode = smelt;
+	}
+
+	public void copyDataFromEvent(LaserEvent event)
+	{
+		this.owner = event.owner;
+		this.range = event.range;
+		this.power = event.power;
+		this.blockBreaks = event.blockBreaks;
+		this.isExplosiveMode = event.explosive;
+		this.isSmeltMode = event.smelt;
 	}
 }

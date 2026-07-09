@@ -1,5 +1,6 @@
 package ic2.core.item.tool;
 
+import ic2.api.event.LaserEvent;
 import ic2.api.network.INetworkItemEventListener;
 import ic2.core.IC2;
 import ic2.core.entity.LaserBulletEntity;
@@ -37,6 +38,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemToolMiningLaser extends ItemElectricTool implements INetworkItemEventListener, PriorityUsableItem
@@ -172,6 +174,7 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 					break;
 				case 3:
 				case 7:
+					break;
 				case 4:
 					if (this.shootLaser(world, player, Float.POSITIVE_INFINITY, 8.0F, Integer.MAX_VALUE, false, true))
 					{
@@ -246,7 +249,7 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 					dir.normalize();
 					Vector3 start = Util.getEyePosition(player);
 					start.y = pos.getY() + 0.5;
-					adjustStartPos(start, dir);
+					start = adjustStartPos(start, dir);
 					if (nbtData.getInt("laser_setting") == 3)
 					{
 						if (this.shootLaser(world, start, dir, player, Float.POSITIVE_INFINITY, 5.0F, Integer.MAX_VALUE, false, false))
@@ -290,7 +293,7 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 					Vector3 start = Util.getEyePosition(player);
 					start.x = pos.getX() + 0.5;
 					start.z = pos.getZ() + 0.5;
-					adjustStartPos(start, dir);
+					start = adjustStartPos(start, dir);
 					if (this.shootLaser(world, start, dir, player, Float.POSITIVE_INFINITY, 5.0F, Integer.MAX_VALUE, false, false))
 					{
 						this.shootLaser(world, new Vector3(start.x + 1.0, start.y, start.z), dir, player, Float.POSITIVE_INFINITY, 5.0F, Integer.MAX_VALUE, false, false);
@@ -315,7 +318,7 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 
 	private void setLaserVelocity(Projectile laser, Entity shooter, Vector3 direction)
 	{
-		laser.shoot(direction.x, direction.y, direction.z, (float) 3.0, (float) 1.0);
+		laser.shoot(direction.x, direction.y, direction.z, 1.0F, 0.0F);
 		Vec3 vec3d = shooter.getDeltaMovement();
 		laser.setDeltaMovement(laser.getDeltaMovement().add(vec3d.x, shooter.onGround() ? 0.0 : vec3d.y, vec3d.z));
 	}
@@ -335,7 +338,15 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 	public boolean shootLaser(Level world, Vector3 start, Vector3 dir, LivingEntity owner, float range, float power, int blockBreaks, boolean explosive, boolean smelt)
 	{
 		LaserBulletEntity entity = new LaserBulletEntity(world, start, owner, range, power, blockBreaks, explosive);
-		entity.init(owner, range, power, blockBreaks, explosive, smelt, true);
+		ItemStack laserStack = owner instanceof Player player ? StackUtil.get(player, owner.getUsedItemHand()) : ItemStack.EMPTY;
+		LaserEvent.LaserShootEvent event = NeoForge.EVENT_BUS.post(new LaserEvent.LaserShootEvent(world, entity, owner, range, power, blockBreaks, explosive, smelt, laserStack));
+		if (event.isCanceled())
+		{
+			return false;
+		}
+
+		entity.copyDataFromEvent(event);
+		entity.removeBlock = true;
 		this.setLaserVelocity(entity, owner, dir);
 		world.addFreshEntity(entity);
 		return true;
