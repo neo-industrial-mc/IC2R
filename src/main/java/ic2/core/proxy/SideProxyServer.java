@@ -223,7 +223,7 @@ public final class SideProxyServer implements SideProxy
 			Component msg;
 			if (args.length > 0)
 			{
-				msg = Component.translatable(translatable, (Object) getMessageComponents(args));
+				msg = Component.translatable(translatable, (Object[]) getMessageComponents(args));
 			} else
 			{
 				msg = Component.translatable(translatable);
