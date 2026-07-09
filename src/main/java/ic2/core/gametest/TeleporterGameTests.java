@@ -56,6 +56,7 @@ public class TeleporterGameTests
 	{
 		setupTeleporterPair(helper);
 		Pig pig = helper.spawn(EntityType.PIG, new BlockPos(0, 2, 1));
+		pig.setNoAi(true);
 		BlockPos start = helper.absolutePos(SOURCE_POS);
 
 		helper.runAtTickTime(40, () ->
