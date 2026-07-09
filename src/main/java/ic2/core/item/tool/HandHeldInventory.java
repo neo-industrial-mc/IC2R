@@ -244,8 +244,8 @@ public abstract class HandHeldInventory implements IHasGui
 					{
 						CompoundTag nbt = new CompoundTag();
 						nbt.putByte("Slot", (byte) i);
-						this.inventory[i].save(this.player.level().registryAccess(), nbt);
-						contentList.add(nbt);
+						// 1.21: ItemStack.save no longer writes into the passed tag, it returns the merged result
+						contentList.add(this.inventory[i].save(this.player.level().registryAccess(), nbt));
 					}
 				}
 
@@ -312,8 +312,8 @@ public abstract class HandHeldInventory implements IHasGui
 			{
 				CompoundTag nbt = new CompoundTag();
 				nbt.putByte("Slot", (byte) i);
-				this.inventory[i].save(this.player.level().registryAccess(), nbt);
-				contentList.add(nbt);
+				// 1.21: ItemStack.save no longer writes into the passed tag, it returns the merged result
+				contentList.add(this.inventory[i].save(this.player.level().registryAccess(), nbt));
 			}
 		}
 
