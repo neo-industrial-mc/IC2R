@@ -10,6 +10,7 @@ import ic2.core.block.machine.tileentity.TileEntityCompressor;
 import ic2.core.block.machine.tileentity.TileEntityElectrolyzer;
 import ic2.core.block.machine.tileentity.TileEntityExtractor;
 import ic2.core.block.machine.tileentity.TileEntityFermenter;
+import ic2.core.block.machine.tileentity.TileEntityIronFurnace;
 import ic2.core.block.machine.tileentity.TileEntityMetalFormer;
 import ic2.core.block.machine.tileentity.TileEntityOreWashing;
 import ic2.core.block.machine.tileentity.TileEntityRecycler;
@@ -280,6 +281,84 @@ public class ProcessingMachineGameTests
 		});
 	}
 
+	// iron furnace: no EU, burns furnace fuel to run vanilla smelting recipes over 160 ticks
+	@GameTest(template = EMPTY, timeoutTicks = 300)
+	public static void ironFurnaceSmeltsRawIronWithCoal(GameTestHelper helper)
+	{
+		helper.setBlock(MACHINE_POS, Ic2Blocks.IRON_FURNACE);
+		TileEntityIronFurnace te = getMachine(helper, TileEntityIronFurnace.class);
+		te.fuelSlot.put(0, new ItemStack(Items.COAL));
+		te.inputSlot.put(0, new ItemStack(Items.RAW_IRON));
+
+		helper.succeedWhen(() ->
+		{
+			ItemStack output = te.outputSlot.get(0);
+			helper.assertTrue(output.getItem() == Items.IRON_INGOT && output.getCount() == 1, "iron furnace should produce 1 iron ingot, has " + output);
+			helper.assertTrue(te.inputSlot.get(0).isEmpty(), "iron furnace input should be consumed");
+			helper.assertTrue(te.fuel > 0, "iron furnace should still be burning the consumed coal");
+		});
+	}
+
+	// canner, bottle solid mode: an empty fuel rod is filled with uranium
+	@GameTest(template = EMPTY, timeoutTicks = 300)
+	public static void cannerBottlesUraniumIntoFuelRod(GameTestHelper helper)
+	{
+		helper.setBlock(MACHINE_POS, Ic2Blocks.CANNER);
+		TileEntityCanner te = getMachine(helper, TileEntityCanner.class);
+		te.setMode(TileEntityCanner.Mode.BottleSolid);
+		te.dischargeSlot.put(0, ElectricItemManager.getCharged(Ic2Items.RE_BATTERY, Double.POSITIVE_INFINITY));
+		te.canInputSlot.put(0, new ItemStack(Ic2Items.FUEL_ROD));
+		te.inputSlot.put(0, new ItemStack(Ic2Items.URANIUM));
+
+		helper.succeedWhen(() ->
+		{
+			ItemStack output = te.outputSlot.get(0);
+			helper.assertTrue(output.getItem() == Ic2Items.URANIUM_FUEL_ROD && output.getCount() == 1, "canner should produce 1 uranium fuel rod, has " + output);
+			helper.assertTrue(te.inputSlot.get(0).isEmpty(), "canner uranium should be consumed");
+			helper.assertTrue(te.canInputSlot.get(0).isEmpty(), "canner fuel rod should be consumed");
+		});
+	}
+
+	// canner, bottle liquid mode: an empty cell is filled with 1000 mB water from the input tank
+	@GameTest(template = EMPTY, timeoutTicks = 300)
+	public static void cannerFillsEmptyCellFromInputTank(GameTestHelper helper)
+	{
+		helper.setBlock(MACHINE_POS, Ic2Blocks.CANNER);
+		TileEntityCanner te = getMachine(helper, TileEntityCanner.class);
+		te.setMode(TileEntityCanner.Mode.BottleLiquid);
+		te.dischargeSlot.put(0, ElectricItemManager.getCharged(Ic2Items.RE_BATTERY, Double.POSITIVE_INFINITY));
+		int filled = te.inputTank.fillMb(Ic2FluidStack.create(net.minecraft.world.level.material.Fluids.WATER, 1000), false);
+		helper.assertValueEqual(filled, 1000, "water accepted by the canner input tank");
+		te.canInputSlot.put(0, new ItemStack(Ic2Items.EMPTY_CELL));
+
+		helper.succeedWhen(() ->
+		{
+			ItemStack output = te.outputSlot.get(0);
+			helper.assertTrue(output.getItem() == Ic2Items.WATER_CELL && output.getCount() == 1, "canner should produce 1 water cell, has " + output);
+			helper.assertTrue(te.canInputSlot.get(0).isEmpty(), "canner empty cell should be consumed");
+			helper.assertTrue(te.inputTank.isEmpty(), "canner water should be consumed");
+		});
+	}
+
+	// canner, empty liquid mode: a water cell is drained into the output tank, leaving an empty cell
+	@GameTest(template = EMPTY, timeoutTicks = 300)
+	public static void cannerDrainsWaterCellIntoOutputTank(GameTestHelper helper)
+	{
+		helper.setBlock(MACHINE_POS, Ic2Blocks.CANNER);
+		TileEntityCanner te = getMachine(helper, TileEntityCanner.class);
+		te.setMode(TileEntityCanner.Mode.EmptyLiquid);
+		te.dischargeSlot.put(0, ElectricItemManager.getCharged(Ic2Items.RE_BATTERY, Double.POSITIVE_INFINITY));
+		te.canInputSlot.put(0, new ItemStack(Ic2Items.WATER_CELL));
+
+		helper.succeedWhen(() ->
+		{
+			assertTankContains(helper, te.outputTank, net.minecraft.world.level.material.Fluids.WATER, 1000, "canner output tank");
+			ItemStack output = te.outputSlot.get(0);
+			helper.assertTrue(output.getItem() == Ic2Items.EMPTY_CELL && output.getCount() == 1, "canner should return 1 empty cell, has " + output);
+			helper.assertTrue(te.canInputSlot.get(0).isEmpty(), "canner water cell should be consumed");
+		});
+	}
+
 	// canner, enrich mode: 1000 mB water + 8 lapis dust -> 1000 mB coolant in the output tank
 	@GameTest(template = EMPTY, timeoutTicks = 300)
 	public static void cannerEnrichesWaterWithLapisIntoCoolant(GameTestHelper helper)
@@ -349,6 +428,33 @@ public class ProcessingMachineGameTests
 		{
 			assertTankContains(helper, te.getOutputTank(), Ic2Fluids.BIOGAS.still(), 400, "fermenter output tank");
 			helper.assertTrue(te.getInputTank().isEmpty(), "fermenter biomass should be consumed");
+		});
+	}
+
+	// fermenter balance across runs: every run turns exactly 20 mB biomass into 400 mB biogas,
+	// so 40 mB biomass yields exactly 800 mB biogas over 2 runs.
+	@GameTest(template = EMPTY, timeoutTicks = 900)
+	public static void fermenterBiomassBiogasBalanceOverMultipleRuns(GameTestHelper helper)
+	{
+		BlockPos heaterPos = MACHINE_POS.east();
+		helper.setBlock(MACHINE_POS, Ic2Blocks.FERMENTER.defaultBlockState().setValue(Ic2TileEntityBlock.anyFacingProperty, Direction.EAST));
+		helper.setBlock(heaterPos, Ic2Blocks.ELECTRIC_HEAT_GENERATOR.defaultBlockState().setValue(Ic2TileEntityBlock.anyFacingProperty, Direction.WEST));
+		TileEntityFermenter te = getMachine(helper, TileEntityFermenter.class);
+		TileEntityElectricHeatGenerator heater = (TileEntityElectricHeatGenerator) helper.getBlockEntity(heaterPos);
+		heater.dischargeSlot.put(0, ElectricItemManager.getCharged(Ic2Items.RE_BATTERY, Double.POSITIVE_INFINITY));
+		for (int i = 0; i < heater.coilSlot.size(); i++)
+		{
+			heater.coilSlot.put(i, new ItemStack(Ic2Items.COIL));
+		}
+
+		int filled = te.getInputTank().fillMb(Ic2FluidStack.create(Ic2Fluids.BIOMASS.still(), 40), false);
+		helper.assertValueEqual(filled, 40, "biomass accepted by the fermenter input tank");
+
+		helper.succeedWhen(() ->
+		{
+			assertTankContains(helper, te.getOutputTank(), Ic2Fluids.BIOGAS.still(), 800, "fermenter output tank");
+			helper.assertValueEqual(te.getOutputTank().getFluidAmount(), 800, "biogas from 40 mB biomass");
+			helper.assertTrue(te.getInputTank().isEmpty(), "fermenter biomass should be fully consumed");
 		});
 	}
 
