@@ -33,6 +33,7 @@ import ic2.core.item.armor.jetpack.JetpackAttachmentRecipe;
 import ic2.core.item.armor.jetpack.JetpackHandler;
 import ic2.core.item.armor.ItemArmorNanoSuit;
 import ic2.core.item.armor.ItemArmorQuantumSuit;
+import ic2.core.item.tfbp.Tfbp;
 import ic2.core.recipe.input.RecipeInputFactory;
 import ic2.core.ref.Ic2BlockTags;
 import ic2.core.ref.Ic2BoatTypes;
@@ -118,6 +119,7 @@ public final class EventHandler
 		TileEntityFermenter.init();
 		JetpackHandler.init();
 		JetpackAttachmentRecipe.init();
+		Tfbp.init();
 	}
 
 	public static void onInitLate()
