@@ -169,6 +169,7 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 					{
 						IC2.network.get(true).initiateItemEvent(player, stack, 2, true);
 					}
+					break;
 				case 3:
 				case 7:
 				case 4:
