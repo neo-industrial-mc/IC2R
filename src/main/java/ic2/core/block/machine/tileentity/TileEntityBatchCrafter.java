@@ -176,8 +176,8 @@ public class TileEntityBatchCrafter
 			{
 				CompoundTag contentTag = new CompoundTag();
 				contentTag.putByte("index", i);
-				content.save(registries, contentTag);
-				grid.add(contentTag);
+				// save() returns the merged tag instead of mutating the prefix
+				grid.add(content.save(registries, contentTag));
 			}
 		}
 

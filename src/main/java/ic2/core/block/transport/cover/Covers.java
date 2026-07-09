@@ -113,8 +113,8 @@ public class Covers extends TileEntityComponent
 			{
 				CompoundTag coverTag = new CompoundTag();
 				coverTag.putByte("facing", (byte) facing.ordinal());
-				cover.save(RegistryAccess.EMPTY, coverTag);
-				coversTag.add(coverTag);
+				// save() returns the merged tag instead of mutating the prefix
+				coversTag.add(cover.save(RegistryAccess.EMPTY, coverTag));
 			}
 		}
 

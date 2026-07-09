@@ -130,8 +130,8 @@ public class InvSlot implements Iterable<ItemStack>
 			{
 				CompoundTag contentTag = new CompoundTag();
 				contentTag.putByte("Index", (byte) i);
-				content.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
-				contentsTag.add(contentTag);
+				// save() returns the merged tag instead of mutating the prefix
+				contentsTag.add(content.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag));
 			}
 		}
 

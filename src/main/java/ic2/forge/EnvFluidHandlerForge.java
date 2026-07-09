@@ -306,9 +306,8 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
     @Override
     public CompoundTag getFluidStackNbt(Ic2FluidStack fs) {
         if (fs instanceof Ic2FluidStackImpl impl && !impl.parent().getComponentsPatch().isEmpty()) {
-            CompoundTag tag = new CompoundTag();
-            impl.parent().save(net.minecraft.core.RegistryAccess.EMPTY, tag);
-            return tag;
+            // save() returns the merged tag instead of mutating the prefix
+            return (CompoundTag) impl.parent().save(net.minecraft.core.RegistryAccess.EMPTY, new CompoundTag());
         }
         return null;
     }

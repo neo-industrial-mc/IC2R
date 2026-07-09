@@ -81,8 +81,8 @@ public class TileEntitySortingMachine extends TileEntityElectricMachine implemen
 			{
 				CompoundTag contentTag = new CompoundTag();
 				contentTag.putByte("index", (byte) i);
-				stack.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
-				filtersTag.add(contentTag);
+				// save() returns the merged tag instead of mutating the prefix
+				filtersTag.add(stack.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag));
 			}
 		}
 
