@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   gametests:
-    name: Game tests and mod jar
+    name: Game tests
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -96,14 +96,49 @@ jobs:
             run/debug.log
             hs_err_pid*.log
 
-      - name: Build mod jar
-        if: success()
+  build:
+    name: Build result JAR
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: gametests
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+
+      - name: Cache Minecraft and NeoForge downloads
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches/neoformruntime
+            ~/.gradle/caches/net.neoforged
+            ~/.gradle/caches/forge_gradle
+            build/tmp/neoformruntime
+            build/tmp/downloadAssets
+          key: minecraft-${{ runner.os }}-${{ hashFiles('gradle.properties', 'settings.gradle', 'build.gradle', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            minecraft-${{ runner.os }}-
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Build result JAR
         run: ./gradlew --no-daemon --stacktrace jar
 
-      - name: Upload mod jar
-        if: success()
+      - name: Upload result JAR
         uses: actions/upload-artifact@v4
         with:
-          name: mod-jar
+          name: result-jar
           if-no-files-found: error
           path: build/libs/*.jar
