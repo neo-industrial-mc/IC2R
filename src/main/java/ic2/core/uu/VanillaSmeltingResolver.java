@@ -6,9 +6,9 @@ import ic2.core.util.LogCategory;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
-import net.minecraft.core.RegistryAccess;
 
 public class VanillaSmeltingResolver implements IRecipeResolver
 {
@@ -18,6 +18,12 @@ public class VanillaSmeltingResolver implements IRecipeResolver
 	public List<RecipeTransformation> getTransformations()
 	{
 		List<RecipeTransformation> ret = new ArrayList<>();
+		if (IC2.envProxy.getServer() == null)
+		{
+			return ret;
+		}
+
+		HolderLookup.Provider registries = IC2.envProxy.getServer().registryAccess();
 
 		for (var wrapper : IC2.sideProxy.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING))
 		{
@@ -25,7 +31,7 @@ public class VanillaSmeltingResolver implements IRecipeResolver
 			{
 				SmeltingRecipe recipe = wrapper.value();
 				List<List<LeanItemStack>> inputs = RecipeUtil.convertIngredients(recipe.getIngredients());
-				LeanItemStack output = new LeanItemStack(recipe.getResultItem((net.minecraft.core.HolderLookup.Provider) null));
+				LeanItemStack output = new LeanItemStack(recipe.getResultItem(registries));
 				ret.add(new RecipeTransformation(14.0, inputs, output));
 			} catch (IllegalArgumentException e)
 			{

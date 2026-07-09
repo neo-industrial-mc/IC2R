@@ -3,6 +3,7 @@ package ic2.core.uu;
 import ic2.api.recipe.IMachineRecipeManager;
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.MachineRecipe;
+import ic2.api.recipe.Recipes;
 import ic2.core.IC2;
 import ic2.core.util.LogCategory;
 
@@ -17,23 +18,32 @@ public class MachineRecipeResolver implements IRecipeResolver
 {
 	private static final double transformCost = 14.0;
 	private final IMachineRecipeManager<IRecipeInput, Collection<ItemStack>, ?> manager;
+	private final Recipes.IGetter<? extends IMachineRecipeManager<IRecipeInput, Collection<ItemStack>, ?>> managerGetter;
 
 	public MachineRecipeResolver(IMachineRecipeManager<IRecipeInput, Collection<ItemStack>, ?> manager)
 	{
 		this.manager = manager;
+		this.managerGetter = null;
+	}
+
+	public MachineRecipeResolver(Recipes.IGetter<? extends IMachineRecipeManager<IRecipeInput, Collection<ItemStack>, ?>> managerGetter)
+	{
+		this.manager = null;
+		this.managerGetter = managerGetter;
 	}
 
 	@Override
 	public List<RecipeTransformation> getTransformations()
 	{
-		if (!this.manager.isIterable())
+		IMachineRecipeManager<IRecipeInput, Collection<ItemStack>, ?> manager = this.getManager();
+		if (manager == null || !manager.isIterable())
 		{
 			return Collections.emptyList();
 		}
 
 		List<RecipeTransformation> ret = new ArrayList<>();
 
-		for (MachineRecipe<IRecipeInput, Collection<ItemStack>> recipe : this.manager.getRecipes())
+		for (MachineRecipe<IRecipeInput, Collection<ItemStack>> recipe : manager.getRecipes())
 		{
 			try
 			{
@@ -47,5 +57,20 @@ public class MachineRecipeResolver implements IRecipeResolver
 		}
 
 		return ret;
+	}
+
+	private IMachineRecipeManager<IRecipeInput, Collection<ItemStack>, ?> getManager()
+	{
+		if (this.manager != null)
+		{
+			return this.manager;
+		}
+
+		if (this.managerGetter == null || IC2.envProxy.getServer() == null)
+		{
+			return null;
+		}
+
+		return this.managerGetter.get(IC2.envProxy.getServer().overworld());
 	}
 }

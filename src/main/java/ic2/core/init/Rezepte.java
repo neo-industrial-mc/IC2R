@@ -12,6 +12,7 @@ import ic2.core.block.machine.FillFluidContainerRecipeManager;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.recipe.BasicMachineRecipeManager;
 import ic2.core.recipe.MatterAmplifierRecipeManager;
+import ic2.core.recipe.ScrapboxRecipeManager;
 import ic2.core.recipe.SmeltingRecipeManager;
 import ic2.core.recipe.v2.RecipeHolder;
 import ic2.core.recipe.v2.RecipeManagerGetter;
@@ -27,6 +28,8 @@ public class Rezepte
 	static void loadRecipes()
 	{
 		Recipes.furnace = new SmeltingRecipeManager();
+		ScrapboxRecipeManager.setup();
+		ScrapboxRecipeManager.load();
 		Recipes.emptyFluidContainer = new EmptyFluidContainerRecipeManager();
 		Recipes.fillFluidContainer = new FillFluidContainerRecipeManager();
 		Recipes.macerator = basicRecipe(Ic2RecipeTypes.MACERATOR);

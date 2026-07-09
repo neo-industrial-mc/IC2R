@@ -127,7 +127,6 @@ public final class EventHandler
 		long startTime = System.nanoTime();
 		TileEntityRecycler.initLate();
 		UuIndex.instance.init();
-		UuIndex.instance.refresh(true);
 		IC2.sideProxy.onPostInit();
 		IC2.sideProxy.requestTick(!IC2.envProxy.isClientEnv(), ChunkLoadAwareBlockHandler::init);
 		IC2.log.debug(LogCategory.General, "Finished post-init after %d ms.", (System.nanoTime() - startTime) / 1000000L);
@@ -151,6 +150,7 @@ public final class EventHandler
 	public static void onServerStart(MinecraftServer server)
 	{
 		IC2.sideProxy.onServerAvailable(server);
+		UuIndex.instance.refresh(true);
 	}
 
 	public static void onPlayerLogout(Player player)

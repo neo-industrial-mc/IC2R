@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.core.RegistryAccess;
 
 public class RecipeResolver implements IRecipeResolver
 {
@@ -40,12 +40,18 @@ public class RecipeResolver implements IRecipeResolver
 	public List<RecipeTransformation> getTransformations()
 	{
 		List<RecipeTransformation> ret = new ArrayList<>();
+		if (IC2.envProxy.getServer() == null)
+		{
+			return ret;
+		}
+
+		HolderLookup.Provider registries = IC2.envProxy.getServer().registryAccess();
 
 		for (var wrapper : IC2.sideProxy.getRecipeManager().getRecipes())
 		{
 			Recipe<?> irecipe = wrapper.value();
 			NonNullList<Ingredient> inputs = irecipe.getIngredients();
-			ItemStack output = irecipe.getResultItem((net.minecraft.core.HolderLookup.Provider) null);
+			ItemStack output = irecipe.getResultItem(registries);
 			if (!StackUtil.isEmpty(output) && !inputs.isEmpty())
 			{
 				ret.add(new RecipeTransformation(1.0, toDoubleStackList(inputs), new LeanItemStack(output)));

@@ -1,5 +1,6 @@
 package ic2.core.uu;
 
+import ic2.api.recipe.Recipes;
 import ic2.core.IC2;
 import ic2.core.init.IC2Config;
 import ic2.core.util.ConfigUtil;
@@ -58,6 +59,27 @@ public class UuIndex
 
 	public void init()
 	{
+		if (!this.resolvers.isEmpty() || !this.lateResolvers.isEmpty())
+		{
+			return;
+		}
+
+		this.addResolver(new VanillaSmeltingResolver());
+		this.addResolver(new RecipeResolver());
+		this.addResolver(new MachineRecipeResolver(Recipes.macerator));
+		this.addResolver(new MachineRecipeResolver(Recipes.extractor));
+		this.addResolver(new MachineRecipeResolver(Recipes.compressor));
+		this.addResolver(new MachineRecipeResolver(Recipes.centrifuge));
+		this.addResolver(new MachineRecipeResolver(Recipes.block_cutter));
+		this.addResolver(new MachineRecipeResolver(Recipes.blast_furnace));
+		this.addResolver(new MachineRecipeResolver(Recipes.metalformerExtruding));
+		this.addResolver(new MachineRecipeResolver(Recipes.metalformerCutting));
+		this.addResolver(new MachineRecipeResolver(Recipes.metalformerRolling));
+		this.addResolver(new MachineRecipeResolver(Recipes.oreWashing));
+		this.addResolver(new CannerBottleSolidResolver());
+		this.addResolver(new ScrapBoxResolver());
+		this.addResolver(new ManualRecipeResolver());
+		this.addResolver(new RecyclerResolver());
 	}
 
 	public void refresh(boolean reset)
