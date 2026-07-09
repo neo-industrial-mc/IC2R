@@ -115,7 +115,11 @@ public class ItemComparableItemStack
 		}
 
 		ItemStack ret = new ItemStack(this.item, size);
-		ret.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(this.nbt));
+		if (this.nbt != null)
+		{
+			ret.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(this.nbt));
+		}
+
 		return ret;
 	}
 }
