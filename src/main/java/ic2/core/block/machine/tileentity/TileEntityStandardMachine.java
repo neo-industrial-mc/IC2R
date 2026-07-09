@@ -148,12 +148,8 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		super.updateEntityServer();
 		boolean needsInvUpdate = false;
 		MachineRecipeResult<RI, RO, I> result;
-		if (this.inputSlot == null)
-		{
-			return;
-		}
 		if (this.recipeResult == null
-			|| (result = this.inputSlot.process()) == null
+			|| (result = this.processInput()) == null
 			|| !isSameRecipeInput(result.recipe().getInput(), this.recipeResult.recipe().getInput()))
 		{
 			this.recipeResult = this.getRecipeResult();
@@ -218,9 +214,15 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		return this.recipeResult != null && this.energy.useEnergy(this.energyConsume);
 	}
 
+	// machines without an input slot (e.g. the fluid bottler) take their work from getRecipeResult() instead
+	protected MachineRecipeResult<RI, RO, I> processInput()
+	{
+		return this.inputSlot != null ? this.inputSlot.process() : this.getRecipeResult();
+	}
+
 	private void operate()
 	{
-		MachineRecipeResult<RI, RO, I> result = this.inputSlot.process();
+		MachineRecipeResult<RI, RO, I> result = this.processInput();
 
 		for (int i = 0; i < this.operationsPerTick; i++)
 		{
