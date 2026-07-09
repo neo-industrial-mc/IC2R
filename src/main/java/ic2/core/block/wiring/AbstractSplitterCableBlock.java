@@ -43,19 +43,20 @@ public abstract class AbstractSplitterCableBlock extends AbstractCableBlock
 				world.setBlockAndUpdate(pos, state);
 				if (newActive)
 				{
-					this.addToEnet(state, world, pos, true);
+					this.removeFromEnet(state, world, pos);
 				} else
 				{
-					this.removeFromEnet(state, world, pos);
+					this.addToEnet(state, world, pos, true);
 				}
 			}
 		}
 	}
 
+	// a redstone signal (active) takes the splitter out of the enet, cutting the current
 	@Override
 	protected void addToEnet(BlockState state, Level world, BlockPos pos, boolean checkConflicting)
 	{
-		if ((Boolean) state.getValue(active))
+		if (!(Boolean) state.getValue(active))
 		{
 			super.addToEnet(state, world, pos, checkConflicting);
 		}
