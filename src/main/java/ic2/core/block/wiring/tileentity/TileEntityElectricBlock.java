@@ -209,6 +209,7 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 	@Override
 	public void setStored(int energy)
 	{
+		this.energy.forceAddEnergy(energy - this.energy.getEnergy());
 	}
 
 	@Override
