@@ -36,7 +36,7 @@ public class QuantumSuitGameTests
 		helmet.getItem().inventoryTick(helmet, helper.getLevel(), player, 0, false);
 
 		helper.assertValueEqual(player.getAirSupply(), 200, "air supply after tick");
-		NanoSuitGameTests.assertNear(helper, ElectricItem.manager.getCharge(helmet), MAX_CHARGE - 1000.0, "charge after air refill");
+		Ic2GameTestAssertions.assertNear(helper, ElectricItem.manager.getCharge(helmet), MAX_CHARGE - 1000.0, "charge after air refill");
 
 		helper.succeed();
 	}
@@ -53,7 +53,7 @@ public class QuantumSuitGameTests
 		helmet.getItem().inventoryTick(helmet, helper.getLevel(), player, 0, false);
 
 		helper.assertFalse(player.hasEffect(MobEffects.POISON), "poison should be cured");
-		NanoSuitGameTests.assertNear(helper, ElectricItem.manager.getCharge(helmet), MAX_CHARGE - 10000.0, "charge after curing poison");
+		Ic2GameTestAssertions.assertNear(helper, ElectricItem.manager.getCharge(helmet), MAX_CHARGE - 10000.0, "charge after curing poison");
 
 		helper.succeed();
 	}
@@ -81,12 +81,12 @@ public class QuantumSuitGameTests
 
 		// 12 blocks -> 2 points beyond the 10 block grace, 2 * 20000 EU
 		helper.assertTrue(item.absorbFall(boots, 12.0F), "charged quantum boots should absorb a 12 block fall");
-		NanoSuitGameTests.assertNear(helper, ElectricItem.manager.getCharge(boots), MAX_CHARGE - 40000.0, "charge after absorbed fall");
+		Ic2GameTestAssertions.assertNear(helper, ElectricItem.manager.getCharge(boots), MAX_CHARGE - 40000.0, "charge after absorbed fall");
 
 		// unlike nano boots there is no damage cutoff, only the energy limit
 		ItemStack lowBoots = ElectricItemManager.getCharged(Ic2Items.QUANTUM_BOOTS, 10000.0);
 		helper.assertFalse(item.absorbFall(lowBoots, 12.0F), "boots without enough charge must not absorb the fall");
-		NanoSuitGameTests.assertNear(helper, ElectricItem.manager.getCharge(lowBoots), 10000.0, "failed absorption must not drain charge");
+		Ic2GameTestAssertions.assertNear(helper, ElectricItem.manager.getCharge(lowBoots), 10000.0, "failed absorption must not drain charge");
 
 		helper.succeed();
 	}
@@ -95,10 +95,10 @@ public class QuantumSuitGameTests
 	public static void quantumArmorBonusRequiresCharge(GameTestHelper helper)
 	{
 		ItemStack uncharged = new ItemStack(Ic2Items.QUANTUM_LEGGINGS);
-		NanoSuitGameTests.assertNear(helper, NanoSuitGameTests.getArmorBonus(uncharged, EquipmentSlotGroup.LEGS), 0.0, "uncharged leggings armor");
+		Ic2GameTestAssertions.assertNear(helper, NanoSuitGameTests.getArmorBonus(uncharged, EquipmentSlotGroup.LEGS), 0.0, "uncharged leggings armor");
 
 		ItemStack charged = ElectricItemManager.getCharged(Ic2Items.QUANTUM_LEGGINGS, Double.POSITIVE_INFINITY);
-		NanoSuitGameTests.assertNear(helper, NanoSuitGameTests.getArmorBonus(charged, EquipmentSlotGroup.LEGS), ItemArmorQuantumSuit.CHARGED_PROTECTION[EquipmentSlot.LEGS.getIndex()], "charged leggings armor");
+		Ic2GameTestAssertions.assertNear(helper, NanoSuitGameTests.getArmorBonus(charged, EquipmentSlotGroup.LEGS), ItemArmorQuantumSuit.CHARGED_PROTECTION[EquipmentSlot.LEGS.getIndex()], "charged leggings armor");
 
 		helper.succeed();
 	}

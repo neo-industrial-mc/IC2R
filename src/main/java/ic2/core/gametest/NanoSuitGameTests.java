@@ -43,8 +43,8 @@ public class NanoSuitGameTests
 		// chest absorbs baseRatio 0.4 * nano ratio 0.9 = 36% of incoming damage
 		float remaining = ItemArmorElectric.damageArmor(player, source, 10.0F);
 
-		assertNear(helper, remaining, 10.0 - 10.0 * 0.4 * 0.9, "damage left after absorption");
-		assertNear(helper, ElectricItem.manager.getCharge(chest), MAX_CHARGE - 10.0 * 0.4 * 0.9 * ENERGY_PER_DAMAGE, "charge after absorption");
+		Ic2GameTestAssertions.assertNear(helper, remaining, 10.0 - 10.0 * 0.4 * 0.9, "damage left after absorption");
+		Ic2GameTestAssertions.assertNear(helper, ElectricItem.manager.getCharge(chest), MAX_CHARGE - 10.0 * 0.4 * 0.9 * ENERGY_PER_DAMAGE, "charge after absorption");
 
 		helper.succeed();
 	}
@@ -62,8 +62,8 @@ public class NanoSuitGameTests
 
 		float remaining = ItemArmorElectric.damageArmor(player, source, 10.0F);
 
-		assertNear(helper, remaining, 9.0, "damage left with nearly empty suit");
-		assertNear(helper, ElectricItem.manager.getCharge(chest), 0.0, "charge after absorption");
+		Ic2GameTestAssertions.assertNear(helper, remaining, 9.0, "damage left with nearly empty suit");
+		Ic2GameTestAssertions.assertNear(helper, ElectricItem.manager.getCharge(chest), 0.0, "charge after absorption");
 
 		helper.succeed();
 	}
@@ -76,11 +76,11 @@ public class NanoSuitGameTests
 
 		// 6 blocks -> 3 points of fall damage, absorbed for 3 * 5000 EU
 		helper.assertTrue(item.absorbFall(boots, 6.0F), "nano boots should absorb a 6 block fall");
-		assertNear(helper, ElectricItem.manager.getCharge(boots), MAX_CHARGE - 3 * ENERGY_PER_DAMAGE, "charge after absorbed fall");
+		Ic2GameTestAssertions.assertNear(helper, ElectricItem.manager.getCharge(boots), MAX_CHARGE - 3 * ENERGY_PER_DAMAGE, "charge after absorbed fall");
 
 		// 12 blocks -> 9 points, at or above the 8 point cutoff
 		helper.assertFalse(item.absorbFall(boots, 12.0F), "nano boots must not absorb a 12 block fall");
-		assertNear(helper, ElectricItem.manager.getCharge(boots), MAX_CHARGE - 3 * ENERGY_PER_DAMAGE, "unabsorbed fall must not drain charge");
+		Ic2GameTestAssertions.assertNear(helper, ElectricItem.manager.getCharge(boots), MAX_CHARGE - 3 * ENERGY_PER_DAMAGE, "unabsorbed fall must not drain charge");
 
 		helper.succeed();
 	}
@@ -89,10 +89,10 @@ public class NanoSuitGameTests
 	public static void nanochestArmorBonusRequiresCharge(GameTestHelper helper)
 	{
 		ItemStack uncharged = new ItemStack(Ic2Items.NANO_CHESTPLATE);
-		assertNear(helper, getArmorBonus(uncharged, EquipmentSlotGroup.CHEST), 0.0, "uncharged chest armor");
+		Ic2GameTestAssertions.assertNear(helper, getArmorBonus(uncharged, EquipmentSlotGroup.CHEST), 0.0, "uncharged chest armor");
 
 		ItemStack charged = ElectricItemManager.getCharged(Ic2Items.NANO_CHESTPLATE, Double.POSITIVE_INFINITY);
-		assertNear(helper, getArmorBonus(charged, EquipmentSlotGroup.CHEST), ItemArmorNanoSuit.CHARGED_PROTECTION[EquipmentSlot.CHEST.getIndex()], "charged chest armor");
+		Ic2GameTestAssertions.assertNear(helper, getArmorBonus(charged, EquipmentSlotGroup.CHEST), ItemArmorNanoSuit.CHARGED_PROTECTION[EquipmentSlot.CHEST.getIndex()], "charged chest armor");
 
 		helper.succeed();
 	}
@@ -109,10 +109,5 @@ public class NanoSuitGameTests
 		});
 
 		return total[0];
-	}
-
-	static void assertNear(GameTestHelper helper, double actual, double expected, String name)
-	{
-		helper.assertTrue(Math.abs(actual - expected) < 1.0E-6, name + ": expected " + expected + ", got " + actual);
 	}
 }
