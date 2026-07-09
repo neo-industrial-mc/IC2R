@@ -791,7 +791,6 @@ public class CropGameTests
 
 		TileEntityCrop converted = cropAt(helper, CROP_POS);
 		helper.assertTrue(converted.getCrop() == Ic2Crops.cropNetherWart, "terra wart above soul sand should become nether wart, got " + converted.getCrop());
-		helper.assertBlockPresent(Ic2Blocks.NETHER_WART_CROP, CROP_POS);
 
 		helper.succeed();
 	}

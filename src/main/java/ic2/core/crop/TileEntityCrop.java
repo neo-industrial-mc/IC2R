@@ -656,7 +656,7 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile
 	@Override
 	public void setCrop(CropCard crop)
 	{
-		TileEntityCrop tileEntityCrop = this.transformCropBlock(crop.getCropBlock());
+		TileEntityCrop tileEntityCrop = this.transformCropBlock(crop, this.currentAge);
 		tileEntityCrop.updateTerrainHumidity();
 		tileEntityCrop.updateTerrainNutrients();
 		tileEntityCrop.updateTerrainAirQuality();
@@ -665,7 +665,13 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile
 	@Override
 	public int getCurrentAge()
 	{
-		return this.crop == null ? 0 : this.getBlockState().getValue(this.getBlockType().getAgeProperty());
+		if (this.crop == null)
+		{
+			return 0;
+		}
+
+		Ic2TileEntityBlock block = this.getBlockType();
+		return block.getCropMaxAge() <= 0 ? this.currentAge : this.getBlockState().getValue(block.getAgeProperty());
 	}
 
 	@Override
@@ -1100,7 +1106,12 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile
 			}
 
 			this.level.setBlockAndUpdate(this.worldPosition, newState);
-			return (TileEntityCrop) this.level.getBlockEntity(this.worldPosition);
+			TileEntityCrop tileEntityCrop = (TileEntityCrop) this.level.getBlockEntity(this.worldPosition);
+			if (tileEntityCrop != null)
+			{
+				tileEntityCrop.crop = crop;
+			}
+			return tileEntityCrop;
 		} else
 		{
 			return null;
