@@ -66,7 +66,10 @@ record Ic2FluidStackImpl(FluidStack parent) implements Ic2FluidStack
 	@Override
 	public void toNbt(CompoundTag nbt)
 	{
-		this.parent.save(net.minecraft.core.RegistryAccess.EMPTY, nbt);
+		// FluidStack.save(provider, prefix) returns the encoded tag without mutating the prefix,
+		// so write the legacy FluidName/Amount format readFluidStack expects instead.
+		nbt.putString("FluidName", String.valueOf(BuiltInRegistries.FLUID.getKey(this.parent.getFluid())));
+		nbt.putInt("Amount", this.parent.getAmount());
 	}
 
 	@Override
