@@ -2,6 +2,7 @@ package ic2.core.item;
 
 import ic2.core.ref.Ic2Items;
 import ic2.core.util.StackUtil;
+import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResultHolder;
@@ -93,7 +94,7 @@ public class ItemMug extends Item implements ItemLike
 		}
 	}
 
-	private int amplifyEffect(Player player, MobEffect potion, int maxAmplifier, int extraDuration)
+	private int amplifyEffect(Player player, Holder<MobEffect> potion, int maxAmplifier, int extraDuration)
 	{
 		MobEffectInstance eff = player.getEffect(potion);
 		if (eff != null)

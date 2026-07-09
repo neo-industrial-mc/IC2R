@@ -1,0 +1,24 @@
+{
+  "type": "ic2:shaped",
+  "pattern": [
+    "UIU",
+    "CIC",
+    "UIU"
+  ],
+  "key": {
+    "U": {
+      "item": "ic2:mox_fuel_rod",
+      "data": {"use": 0}
+    },
+    "I": {
+      "tag": "c:plates/iron"
+    },
+    "C": {
+      "tag": "c:plates/copper"
+    }
+  },
+  "group": "quad_mox_fuel_rod",
+  "result": {
+    "item": "ic2:quad_mox_fuel_rod"
+  }
+}

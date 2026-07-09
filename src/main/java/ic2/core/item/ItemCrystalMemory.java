@@ -42,14 +42,14 @@ public class ItemCrystalMemory extends Item
 	{
 		CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
 		CompoundTag contentTag = nbt.getCompound("Pattern");
-		return ItemStack.of(contentTag);
+		return ItemStack.parseOptional(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
 	}
 
 	public void writeContentsTag(ItemStack stack, ItemStack recorded)
 	{
 		CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
 		CompoundTag contentTag = new CompoundTag();
-		recorded.save(contentTag);
+		recorded.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
 		nbt.put("Pattern", contentTag);
 	}
 }

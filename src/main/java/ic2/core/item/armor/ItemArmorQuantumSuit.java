@@ -28,6 +28,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -46,20 +47,29 @@ import net.minecraft.core.Holder;
 public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack, IHazmatLike, IItemHudProvider
 {
 	public static final int[] CHARGED_PROTECTION = new int[] { 3, 6, 8, 3 };
-	protected static final Map<MobEffect, Integer> potionRemovalCost = new IdentityHashMap<>();
+	protected static final Map<Holder<MobEffect>, Integer> potionRemovalCost = new IdentityHashMap<>();
+	private static boolean potionRemovalCostInit = false;
 
-	static
+	// Populated lazily: the radiation Holder is only resolvable once the mob-effect
+	// registry has been populated, which is guaranteed by the time this runs at tick time.
+	private static Map<Holder<MobEffect>, Integer> potionRemovalCost()
 	{
-		potionRemovalCost.put(MobEffects.POISON, 10000);
-		potionRemovalCost.put(Ic2Potion.radiation, 10000);
-		potionRemovalCost.put(MobEffects.WITHER, 25000);
+		if (!potionRemovalCostInit)
+		{
+			potionRemovalCostInit = true;
+			potionRemovalCost.put(MobEffects.POISON, 10000);
+			potionRemovalCost.put(Ic2Potion.radiationHolder(), 10000);
+			potionRemovalCost.put(MobEffects.WITHER, 25000);
+		}
+
+		return potionRemovalCost;
 	}
 
 	private float jumpCharge;
 
-	public ItemArmorQuantumSuit(ArmorMaterial material, EquipmentSlot armorType, Properties settings)
+	public ItemArmorQuantumSuit(Holder<ArmorMaterial> material, EquipmentSlot armorType, Properties settings)
 	{
-		super(material, armorType, settings, 1.0E7, 12000.0, 4);
+		super(material, armorType, settings.rarity(Rarity.RARE), 1.0E7, 12000.0, 4);
 	}
 
 	@Override
@@ -81,15 +91,22 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 
 	public void clearColor(@NotNull ItemStack stack)
 	{
-		CompoundTag nbt = this.getDisplayNbt(stack, false);
-		if (nbt != null && nbt.contains("color", 3))
+		CompoundTag rootNbt = StackUtil.getTag(stack);
+		if (rootNbt == null || !rootNbt.contains("display", 10))
+		{
+			return;
+		}
+
+		CompoundTag nbt = rootNbt.getCompound("display");
+		if (nbt.contains("color", 3))
 		{
 			nbt.remove("color");
 			if (nbt.isEmpty())
 			{
-				assert stack.getTag() != null;
-				stack.getTag().remove("display");
+				rootNbt.remove("display");
 			}
+
+			StackUtil.setTag(stack, rootNbt);
 		}
 	}
 
@@ -108,16 +125,10 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 
 	private CompoundTag getDisplayNbt(ItemStack stack, boolean create)
 	{
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = create ? StackUtil.getOrCreateNbtData(stack) : StackUtil.getTag(stack);
 		if (nbt == null)
 		{
-			if (!create)
-			{
-				return null;
-			}
-
-			nbt = new CompoundTag();
-			stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
+			return null;
 		}
 
 		CompoundTag ret;
@@ -155,12 +166,6 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 
 		ElectricItem.manager.discharge(stack, energyCost, Integer.MAX_VALUE, true, false, false);
 		return true;
-	}
-
-	@Override
-	public @NotNull Rarity getRarity(@NotNull ItemStack stack)
-	{
-		return Rarity.RARE;
 	}
 
 	@Override
@@ -259,7 +264,7 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 			for (MobEffectInstance effect : new LinkedList<>(player.getActiveEffects()))
 			{
 				Holder<MobEffect> potion = effect.getEffect();
-				Integer cost = potionRemovalCost.get(potion);
+				Integer cost = potionRemovalCost().get(potion);
 				if (cost != null)
 				{
 					cost = cost * (effect.getAmplifier() + 1);

@@ -206,7 +206,7 @@ public class Ic2JeiPlugin implements IModPlugin
 		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
 		BiConsumer<RecipeType<IORecipeWrapper>, net.minecraft.world.item.crafting.RecipeType<RecipeHolder<IRecipeInput, Collection<ItemStack>>>> registerBasic = (id, type) ->
 		{
-			List<IORecipeWrapper> recipeList = recipeManager.getAllRecipesFor(type).stream().map(r -> new IORecipeWrapper(r.recipe())).toList();
+			List<IORecipeWrapper> recipeList = recipeManager.getAllRecipesFor(type).stream().map(r -> new IORecipeWrapper(r.value().recipe())).toList();
 			registration.addRecipes(id, recipeList);
 		};
 		registerBasic.accept(this.BLAST_FURNACE, Ic2RecipeTypes.BLAST_FURNACE);
@@ -220,10 +220,10 @@ public class Ic2JeiPlugin implements IModPlugin
 		registerBasic.accept(this.METAL_FORMER_ROLLING, Ic2RecipeTypes.METAL_FORMER_ROLLING);
 		registerBasic.accept(this.ORE_WASHER, Ic2RecipeTypes.ORE_WASHER);
 
-		List<CannerBottleRecipeWrapper> cannerBottleRecipes = recipeManager.getAllRecipesFor(Ic2RecipeTypes.CANNER_BOTTLE).stream().map(r -> new CannerBottleRecipeWrapper(r.recipe())).toList();
+		List<CannerBottleRecipeWrapper> cannerBottleRecipes = recipeManager.getAllRecipesFor(Ic2RecipeTypes.CANNER_BOTTLE).stream().map(r -> new CannerBottleRecipeWrapper(r.value().recipe())).toList();
 		registration.addRecipes(this.CANNER_BOTTLE, cannerBottleRecipes);
 
-		List<CannerEnrichRecipeWrapper> cannerEnrichRecipes = recipeManager.getAllRecipesFor(Ic2RecipeTypes.CANNER_ENRICH).stream().map(r -> new CannerEnrichRecipeWrapper(r.recipe())).toList();
+		List<CannerEnrichRecipeWrapper> cannerEnrichRecipes = recipeManager.getAllRecipesFor(Ic2RecipeTypes.CANNER_ENRICH).stream().map(r -> new CannerEnrichRecipeWrapper(r.value().recipe())).toList();
 		registration.addRecipes(this.CANNER_ENRICH, cannerEnrichRecipes);
 
 		List<CannerEmptyLiquidRecipeWrapper> emptyLiquidRecipes = new ArrayList<>();
@@ -239,7 +239,7 @@ public class Ic2JeiPlugin implements IModPlugin
 		MenuType<C> menuType,
 		int outputSlot,
 		int inputStart,
-		int inputEnd) implements IRecipeTransferInfo<C, CraftingRecipe>
+		int inputEnd) implements IRecipeTransferInfo<C, net.minecraft.world.item.crafting.RecipeHolder<CraftingRecipe>>
 		{
 
 			@Override
@@ -247,27 +247,27 @@ public class Ic2JeiPlugin implements IModPlugin
 			{
 				return this.containerClass;
 			}
-	
+
 			@Override
 			public @NotNull Optional<MenuType<C>> getMenuType()
 			{
 				return Optional.of(this.menuType);
 			}
-	
+
 			@Override
-			public @NotNull RecipeType<CraftingRecipe> getRecipeType()
+			public @NotNull RecipeType<net.minecraft.world.item.crafting.RecipeHolder<CraftingRecipe>> getRecipeType()
 			{
 				return RecipeTypes.CRAFTING;
 			}
-	
+
 			@Override
-			public boolean canHandle(@NotNull C container, @NotNull CraftingRecipe recipe)
+			public boolean canHandle(@NotNull C container, @NotNull net.minecraft.world.item.crafting.RecipeHolder<CraftingRecipe> recipe)
 			{
 				return true;
 			}
-	
+
 			@Override
-			public @NotNull List<Slot> getRecipeSlots(C container, @NotNull CraftingRecipe recipe)
+			public @NotNull List<Slot> getRecipeSlots(C container, @NotNull net.minecraft.world.item.crafting.RecipeHolder<CraftingRecipe> recipe)
 			{
 				List<Slot> slots = new ArrayList<>(10);
 				slots.add(container.getSlot(this.outputSlot));
@@ -279,7 +279,7 @@ public class Ic2JeiPlugin implements IModPlugin
 			}
 	
 			@Override
-			public @NotNull List<Slot> getInventorySlots(@NotNull C container, @NotNull CraftingRecipe recipe)
+			public @NotNull List<Slot> getInventorySlots(@NotNull C container, @NotNull net.minecraft.world.item.crafting.RecipeHolder<CraftingRecipe> recipe)
 			{
 				List<Slot> slots = new ArrayList<>(36);
 				for (int i = 0; i < 36; i++)
@@ -443,7 +443,7 @@ public class Ic2JeiPlugin implements IModPlugin
 				if (tankFluid != null && tankFluid.getFluid() != neededFluid.getFluid())
 				{
 					return this.transferHelper.createUserErrorWithTooltip(
-						Component.translatable("ic2.jei.transfer.error.fluid_mismatch", neededFluid.getDisplayName())
+						Component.translatable("ic2.jei.transfer.error.fluid_mismatch", neededFluid.getHoverName())
 					);
 				}
 			}

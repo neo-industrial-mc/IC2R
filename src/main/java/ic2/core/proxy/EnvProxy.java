@@ -105,7 +105,7 @@ public interface EnvProxy
 
 	void registerPlacementModifierType(ResourceLocation var1, PlacementModifierType<?> var2);
 
-	<T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation var1, Codec<T> var2);
+	<T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation var1, com.mojang.serialization.MapCodec<T> var2);
 
 	<T extends Recipe<?>> RecipeType<T> registerRecipeType(ResourceLocation var1);
 

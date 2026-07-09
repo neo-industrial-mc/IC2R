@@ -37,9 +37,12 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 {
 	private static final ModelProperty<List<List<BakedQuad>>> MESH_DATA = new ModelProperty<>();
 
+	private final ResourceLocation modelId;
+
 	DynamicBeModelForge(ResourceLocation id)
 	{
 		super(id);
+		this.modelId = id;
 	}
 
 	private static int getIdx(Direction dir)
@@ -154,17 +157,24 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 		return new BakedQuad(newData, quad.getTintIndex(), quad.getDirection(), quad.getSprite(), quad.isShade());
 	}
 
+	// UnbakedModel.bake (3-arg) — inherited via DynamicBeModel/UnbakedModel.
+	@Override
+	public BakedModel bake(ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform)
+	{
+		return super.bake(bakery, spriteGetter, modelTransform, this.modelId);
+	}
+
+	// IUnbakedGeometry.bake (5-arg) — inherited via Ic2Model.
 	@Override
 	public BakedModel bake(
 		IGeometryBakingContext owner,
 		ModelBaker bakery,
 		Function<Material, TextureAtlasSprite> spriteGetter,
 		ModelState modelTransform,
-		ItemOverrides overrides,
-		ResourceLocation modelLocation
+		ItemOverrides overrides
 	)
 	{
-		return super.bake(bakery, spriteGetter, modelTransform, modelLocation);
+		return super.bake(bakery, spriteGetter, modelTransform, this.modelId);
 	}
 
 	public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull ModelData tileData)

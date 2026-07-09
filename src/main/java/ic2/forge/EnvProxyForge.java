@@ -2,6 +2,7 @@ package ic2.forge;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import ic2.api.crops.Crops;
 import ic2.api.crops.CropCard;
 import ic2.api.energy.ProfileEvent;
@@ -150,7 +151,7 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public void registerBlock(ResourceLocation id, Block block)
 	{
-		BuiltInRegistries.BLOCK.register(id, block);
+		Registry.register(BuiltInRegistries.BLOCK, id, block);
 	}
 
 	@Override
@@ -182,7 +183,7 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public void registerItem(ResourceLocation id, Item item)
 	{
-		BuiltInRegistries.ITEM.register(id, item);
+		Registry.register(BuiltInRegistries.ITEM, id, item);
 	}
 
 	@Override
@@ -200,7 +201,7 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public void registerStatusEffect(ResourceLocation id, MobEffect effect)
 	{
-		statusEffectRegistry.register(id.getPath(), () -> effect);
+		Registry.register(BuiltInRegistries.MOB_EFFECT, id, effect);
 	}
 
 	@Override
@@ -213,7 +214,7 @@ public final class EnvProxyForge implements EnvProxy
 	{
 		ResourceLocation identifier = IC2.getIdentifier(id);
 		SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(identifier);
-		BuiltInRegistries.SOUND_EVENT.register(identifier, soundEvent);
+		Registry.register(BuiltInRegistries.SOUND_EVENT, identifier, soundEvent);
 		return soundEvent;
 	}
 
@@ -221,7 +222,7 @@ public final class EnvProxyForge implements EnvProxy
 	public GameEvent registerGameEvent(String id, int range)
 	{
 		ResourceLocation identifier = IC2.getIdentifier(id);
-		return Registry.register(BuiltInRegistries.GAME_EVENT, identifier, new GameEvent(identifier.toString(), range));
+		return Registry.register(BuiltInRegistries.GAME_EVENT, identifier, new GameEvent(range));
 	}
 
 	@Override
@@ -254,7 +255,7 @@ public final class EnvProxyForge implements EnvProxy
 	}
 
 	@Override
-	public <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation id, Codec<T> codec)
+	public <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation id, MapCodec<T> codec)
 	{
 		FoliagePlacerType<T> type = new FoliagePlacerType<>(codec);
 		foliagePlacerRegistry.register(id.getPath(), () -> type);
@@ -457,7 +458,8 @@ public final class EnvProxyForge implements EnvProxy
 	public boolean announceExplosion(Level world, Entity entity, Vec3 pos, double power, LivingEntity igniter, int radiationRange, double rangeLimit)
 	{
 		ExplosionEvent event = new ExplosionEvent(world, entity, pos, power, igniter, radiationRange, rangeLimit);
-		return !NeoForge.EVENT_BUS.post(event);
+		NeoForge.EVENT_BUS.post(event);
+		return !event.isCanceled();
 	}
 
 	record TabRegistration(ResourceLocation id, Supplier<ItemStack> icon, Ic2ItemGroupType groupType)

@@ -244,7 +244,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		if (state.getBlock() instanceof IWrenchAble wrenchAble && wrenchAble.wrenchCanRemove(world, pos, player))
 		{
 			removeBlockWithWrench(world, pos, state, player, wrenchAble);
-			player.getMainHandItem().hurtAndBreak(10, player, p -> p.onEquippedItemBroken(p.getUsedItemHand()));
+			player.getMainHandItem().hurtAndBreak(10, player, EquipmentSlot.MAINHAND);
 			return false;
 		}
 
@@ -303,7 +303,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 
 	public void damage(ItemStack is, int damage, Player player, InteractionHand hand)
 	{
-		is.hurtAndBreak(damage, player, p -> p.onEquippedItemBroken(hand));
+		is.hurtAndBreak(damage, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
 	}
 
 	@Override

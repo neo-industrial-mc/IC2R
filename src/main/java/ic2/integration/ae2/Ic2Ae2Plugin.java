@@ -205,8 +205,6 @@ public final class Ic2Ae2Plugin {
 
         @SubscribeEvent
         public void onWorldTick(LevelTickEvent.Post event) {
-            if (event.phase != TickEvent.Phase.START)
-                return;
             if (event.getLevel().isClientSide())
                 return;
             if (!(event.getLevel() instanceof ServerLevel serverLevel))
@@ -226,11 +224,15 @@ public final class Ic2Ae2Plugin {
 
         @Nullable
         private static IEnergyStorage getFeStorage(BlockEntity be) {
-            IEnergyStorage storage = be.getCapability(Capabilities.ENERGY, null).orElse(null);
+            Level level = be.getLevel();
+            if (level == null)
+                return null;
+            BlockPos bePos = be.getBlockPos();
+            IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, bePos, null);
             if (storage != null && storage.canReceive())
                 return storage;
             for (Direction dir : Direction.values()) {
-                storage = be.getCapability(Capabilities.ENERGY, dir).orElse(null);
+                storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, bePos, dir);
                 if (storage != null && storage.canReceive())
                     return storage;
             }

@@ -25,8 +25,10 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -74,7 +76,7 @@ public class TileEntityTradeOMat
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("ownerGameProfile"))
 		{
-			this.owner = NbtUtils.readGameProfile(nbt.getCompound("ownerGameProfile"));
+			this.owner = ExtraCodecs.GAME_PROFILE.parse(NbtOps.INSTANCE, nbt.get("ownerGameProfile")).result().orElse(null);
 		}
 
 		this.totalTradeCount = nbt.getInt("totalTradeCount");
@@ -90,8 +92,7 @@ public class TileEntityTradeOMat
 		super.saveAdditional(nbt, registries);
 		if (this.owner != null)
 		{
-			CompoundTag ownerNbt = new CompoundTag();
-			NbtUtils.writeGameProfile(ownerNbt, this.owner);
+			Tag ownerNbt = ExtraCodecs.GAME_PROFILE.encodeStart(NbtOps.INSTANCE, this.owner).getOrThrow();
 			nbt.put("ownerGameProfile", ownerNbt);
 		}
 

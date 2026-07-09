@@ -633,7 +633,7 @@ public final class Util
 	{
 		if (!(match instanceof ItemStack))
 		{
-			if (!(match instanceof TagKey<?> tagKey && tagKey.isFor(BuiltInRegistries.ITEM.getRegistryKey())))
+			if (!(match instanceof TagKey<?> tagKey && tagKey.isFor(BuiltInRegistries.ITEM.key())))
 			{
 				return stack == match;
 			} else
@@ -643,7 +643,7 @@ public final class Util
 					return false;
 				}
 
-				Optional<TagKey<Item>> itemTagKeyOpt = tagKey.cast(BuiltInRegistries.ITEM.getRegistryKey());
+				Optional<TagKey<Item>> itemTagKeyOpt = tagKey.cast(BuiltInRegistries.ITEM.key());
 				if (itemTagKeyOpt.isEmpty())
 				{
 					return false;

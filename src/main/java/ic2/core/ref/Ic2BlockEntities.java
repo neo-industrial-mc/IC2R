@@ -196,6 +196,11 @@ public final class Ic2BlockEntities
 	public static BlockEntityType<?> get(ResourceLocation identifier)
 	{
 		return blockEntityTypeMap.get(identifier.toString());
+	}
+
+	public static java.util.Collection<BlockEntityType<?>> allTypes()
+	{
+		return blockEntityTypeMap.values();
 	}	public static final BlockEntityType<TileEntityOreWashing> ORE_WASHING_PLANT = register("ore_washing_plant", TileEntityOreWashing::new, Ic2Blocks.ORE_WASHING_PLANT);
 	public static final BlockEntityType<TileEntityAdvMiner> ADVANCED_MINER = register("advanced_miner", TileEntityAdvMiner::new, Ic2Blocks.ADVANCED_MINER);
 	public static final BlockEntityType<TileEntityCropHarvester> CROP_HARVESTER = register("crop_harvester", TileEntityCropHarvester::new, Ic2Blocks.CROP_HARVESTER);

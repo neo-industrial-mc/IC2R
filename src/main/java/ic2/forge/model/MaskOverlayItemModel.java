@@ -2,6 +2,7 @@ package ic2.forge.model;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import ic2.core.item.tool.ItemObscurator;
+import ic2.core.util.StackUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public final class MaskOverlayItemModel implements Ic2Model, BakedModel
 			int seed
 		)
 		{
-			CompoundTag nbt = stack.getTag();
+			CompoundTag nbt = StackUtil.getTag(stack);
 			if (nbt == null)
 			{
 				return MaskOverlayItemModel.this.baseModel;
@@ -252,8 +253,7 @@ public final class MaskOverlayItemModel implements Ic2Model, BakedModel
 		ModelBaker bakery,
 		Function<Material, TextureAtlasSprite> spriteGetter,
 		ModelState modelTransform,
-		ItemOverrides overrides,
-		ResourceLocation modelLocation
+		ItemOverrides overrides
 	)
 	{
 		this.baseModel = bakery.bake(this.baseModelLocation, modelTransform, spriteGetter);

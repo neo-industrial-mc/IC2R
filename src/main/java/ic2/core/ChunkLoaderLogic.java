@@ -26,6 +26,9 @@ import net.minecraft.core.HolderLookup;
 public final class ChunkLoaderLogic
 {
 	private static final String savedStateId = IC2.getIdentifier("loaded_chunks").toString().replace(':', '_');
+	private static final SavedData.Factory<ChunkLoaderLogic.SavedState> savedStateFactory = new SavedData.Factory<>(
+		ChunkLoaderLogic.SavedState::new, (tag, registries) -> new ChunkLoaderLogic.SavedState(tag)
+	);
 	private static final TicketType<ChunkPos> ticketType = TicketType.create(
 		IC2.getIdentifier("chunk_loader").toString(), Comparator.comparingLong(ChunkPos::toLong)
 	);
@@ -39,7 +42,7 @@ public final class ChunkLoaderLogic
 		}
 
 		ChunkLoaderLogic.SavedState state = (ChunkLoaderLogic.SavedState) world.getDataStorage()
-			.computeIfAbsent(ChunkLoaderLogic.SavedState::new, ChunkLoaderLogic.SavedState::new, savedStateId);
+			.computeIfAbsent(savedStateFactory, savedStateId);
 		((Set) state.chunksToChunkLoaders.computeIfAbsent(loaderChunk, ignore -> new ObjectOpenHashSet<>(1))).add(pos);
 		WorldData worldData = WorldData.get(world);
 
@@ -59,7 +62,7 @@ public final class ChunkLoaderLogic
 
 	public static void removeChunkLoader(ServerLevel world, BlockPos pos)
 	{
-		ChunkLoaderLogic.SavedState state = (ChunkLoaderLogic.SavedState) world.getDataStorage().get(ChunkLoaderLogic.SavedState::new, savedStateId);
+		ChunkLoaderLogic.SavedState state = (ChunkLoaderLogic.SavedState) world.getDataStorage().get(savedStateFactory, savedStateId);
 		if (state != null)
 		{
 			long chunkPos = ChunkPos.asLong(pos);
@@ -149,7 +152,7 @@ public final class ChunkLoaderLogic
 
 	public static void onWorldLoad(ServerLevel world)
 	{
-		ChunkLoaderLogic.SavedState state = (ChunkLoaderLogic.SavedState) world.getDataStorage().get(ChunkLoaderLogic.SavedState::new, savedStateId);
+		ChunkLoaderLogic.SavedState state = (ChunkLoaderLogic.SavedState) world.getDataStorage().get(savedStateFactory, savedStateId);
 		if (state != null && !state.chunksToChunkLoaders.isEmpty())
 		{
 			WorldData worldData = WorldData.get(world);
@@ -174,7 +177,7 @@ public final class ChunkLoaderLogic
 	{
 		assert !chunk.getLevel().isClientSide;
 		ServerLevel world = (ServerLevel) chunk.getLevel();
-		ChunkLoaderLogic.SavedState state = (ChunkLoaderLogic.SavedState) world.getDataStorage().get(ChunkLoaderLogic.SavedState::new, savedStateId);
+		ChunkLoaderLogic.SavedState state = (ChunkLoaderLogic.SavedState) world.getDataStorage().get(savedStateFactory, savedStateId);
 		if (state != null && !state.chunksToChunkLoaders.isEmpty())
 		{
 			Set<BlockPos> loaders = (Set<BlockPos>) state.chunksToChunkLoaders.get(chunk.getPos().toLong());

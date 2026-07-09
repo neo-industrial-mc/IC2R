@@ -94,7 +94,7 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("ownerGameProfile"))
 		{
-			this.owner = NbtUtils.readGameProfile(nbt.getCompound("ownerGameProfile"));
+			this.owner = net.minecraft.util.ExtraCodecs.GAME_PROFILE.parse(net.minecraft.nbt.NbtOps.INSTANCE, nbt.get("ownerGameProfile")).result().orElse(null);
 		}
 	}
 
@@ -104,9 +104,7 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 		super.saveAdditional(nbt, registries);
 		if (this.owner != null)
 		{
-			CompoundTag ownerNbt = new CompoundTag();
-			NbtUtils.writeGameProfile(ownerNbt, this.owner);
-			nbt.put("ownerGameProfile", ownerNbt);
+			nbt.put("ownerGameProfile", net.minecraft.util.ExtraCodecs.GAME_PROFILE.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, this.owner).getOrThrow());
 		}
 	}
 

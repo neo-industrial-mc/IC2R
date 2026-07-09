@@ -76,17 +76,26 @@ final class DynamicCableModelForge extends DynamicCableModel<List<BakedQuad>[], 
 		return dir == null ? 6 : dir.ordinal();
 	}
 
+	private static final ResourceLocation MODEL_ID = ResourceLocation.fromNamespaceAndPath("ic2", "cable");
+
+	// UnbakedModel.bake (3-arg) — inherited via DynamicCableModel/UnbakedModel.
+	@Override
+	public BakedModel bake(ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform)
+	{
+		return super.bake(bakery, spriteGetter, modelTransform, MODEL_ID);
+	}
+
+	// IUnbakedGeometry.bake (5-arg) — inherited via Ic2Model.
 	@Override
 	public BakedModel bake(
 		IGeometryBakingContext owner,
 		ModelBaker bakery,
 		Function<Material, TextureAtlasSprite> spriteGetter,
 		ModelState modelTransform,
-		ItemOverrides overrides,
-		ResourceLocation modelLocation
+		ItemOverrides overrides
 	)
 	{
-		return super.bake(bakery, spriteGetter, modelTransform, modelLocation);
+		return super.bake(bakery, spriteGetter, modelTransform, MODEL_ID);
 	}
 
 	public ModelData getModelData(BlockAndTintGetter world, BlockPos pos, BlockState state, ModelData tileData)

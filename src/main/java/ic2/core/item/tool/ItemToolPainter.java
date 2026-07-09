@@ -26,6 +26,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -229,10 +230,10 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 					return false;
 				}
 
-				CompoundTag shulkerNbt = shulkerBlockEntity.saveWithId();
+				CompoundTag shulkerNbt = shulkerBlockEntity.saveWithId(world.registryAccess());
 				BlockState newShulkerBoxState = ShulkerBoxBlock.getBlockByColor(color.dyeColor).withPropertiesOf(state);
 				world.setBlockAndUpdate(pos, newShulkerBoxState);
-				BlockEntity newShulkerBlockEntity = BlockEntity.loadStatic(pos, newShulkerBoxState, shulkerNbt);
+				BlockEntity newShulkerBlockEntity = BlockEntity.loadStatic(pos, newShulkerBoxState, shulkerNbt, world.registryAccess());
 				world.setBlockEntity(newShulkerBlockEntity);
 				return true;
 			} else
@@ -292,7 +293,8 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 	public boolean damagePainter(ItemStack stack, Player player, InteractionHand hand, Ic2Color color)
 	{
 		assert color != null;
-		stack.hurt(1, player.getRandom(), player instanceof ServerPlayer ? (ServerPlayer) player : null);
+		// 1.21: ItemStack#hurt(int, RandomSource, ServerPlayer) is gone; damage via hurtAndBreak.
+		stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
 		if (stack.getDamageValue() >= stack.getMaxDamage())
 		{
 			CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);

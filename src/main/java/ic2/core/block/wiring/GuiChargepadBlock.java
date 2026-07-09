@@ -1,6 +1,5 @@
 package ic2.core.block.wiring;
 
-import com.google.common.base.Supplier;
 import ic2.core.Ic2Gui;
 import ic2.core.gui.EnergyGauge;
 import ic2.core.gui.TextLabel;

@@ -3,46 +3,40 @@ package ic2.core.recipe.v2;
 import ic2.api.recipe.MachineRecipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.core.RegistryAccess;
 
 public record RecipeHolder<I, O>(MachineRecipe<I, O> recipe, ResourceLocation id, RecipeSerializer<?> serializer,
                                  RecipeType<?> type)
-	implements Recipe<Container>
+	implements Recipe<RecipeInput>
 {
-	public boolean matches(Container inventory, Level world)
+	public boolean matches(RecipeInput inventory, Level world)
 	{
-		throw new UnsupportedOperationException("Not supported for IC2 machine recipes.");
+		return false;
 	}
 
-	public ItemStack assemble(Container inventory)
+	public ItemStack assemble(RecipeInput inventory, HolderLookup.Provider registryAccess)
 	{
-		throw new UnsupportedOperationException("Not supported for IC2 machine recipes.");
-	}
-
-	public ItemStack assemble(Container inventory, HolderLookup.Provider registryAccess)
-	{
-		throw new UnsupportedOperationException("Not supported for IC2 machine recipes.");
+		return ItemStack.EMPTY;
 	}
 
 	public boolean canCraftInDimensions(int width, int height)
 	{
-		throw new UnsupportedOperationException("Not supported for IC2 machine recipes.");
+		return false;
 	}
 
-	public ItemStack getResultItem()
+	public ItemStack getResultItem(HolderLookup.Provider registryAccess)
 	{
 		return ItemStack.EMPTY;
 	}
 
-	public ItemStack getResultItem(RegistryAccess registryAccess)
+	public boolean isSpecial()
 	{
-		return ItemStack.EMPTY;
+		return true;
 	}
 
 	public ResourceLocation getId()

@@ -28,15 +28,15 @@ import net.neoforged.bus.api.SubscribeEvent;
 public final class ClientEventHandlerForge
 {
 	@SubscribeEvent
-	public void onClientTick(ClientTickEvent.Post event)
+	public void onClientTickPre(ClientTickEvent.Pre event)
 	{
-		if (event.phase == TickEvent.Phase.START)
-		{
-			TickHandler.onClientTick();
-		} else if (event.phase == TickEvent.Phase.END)
-		{
-			DeferredSoundOps.flush();
-		}
+		TickHandler.onClientTick();
+	}
+
+	@SubscribeEvent
+	public void onClientTickPost(ClientTickEvent.Post event)
+	{
+		DeferredSoundOps.flush();
 	}
 
 	@SubscribeEvent
@@ -86,7 +86,7 @@ public final class ClientEventHandlerForge
 	public void onDrawBlockHighlight(RenderHighlightEvent.Block event)
 	{
 		EventHandlerClient.onDrawBlockHighlight(
-			SideProxyClient.mc.player, event.getTarget(), event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource()
+			SideProxyClient.mc.player, event.getTarget(), event.getDeltaTracker().getGameTimeDeltaPartialTick(false), event.getPoseStack(), event.getMultiBufferSource()
 		);
 	}
 
@@ -94,7 +94,7 @@ public final class ClientEventHandlerForge
 	public void onDrawBlockHighlightLast(RenderHighlightEvent.Block event)
 	{
 		if (EventHandlerClient.onDrawBlockHighlightLast(
-			SideProxyClient.mc.player, event.getTarget(), event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource()
+			SideProxyClient.mc.player, event.getTarget(), event.getDeltaTracker().getGameTimeDeltaPartialTick(false), event.getPoseStack(), event.getMultiBufferSource()
 		))
 		{
 			event.setCanceled(true);
@@ -110,7 +110,7 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent
 	public void onRenderHotBar(RenderGuiLayerEvent.Post event)
 	{
-		if (event.getOverlay() == VanillaGuiOverlay.HOTBAR.type())
+		if (event.getName().equals(VanillaGuiLayers.HOTBAR))
 		{
 			EventHandlerClient.onRenderHotBar(event.getGuiGraphics());
 		}

@@ -273,7 +273,7 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 			ItemStack cardStack = this.cardSlot.get();
 			if (!StackUtil.isEmpty(cardStack) && cardStack.getItem() instanceof ItemMiningFilterCard)
 			{
-				CompoundTag nbt = cardStack.getTag();
+				CompoundTag nbt = StackUtil.getTag(cardStack);
 				if (nbt != null)
 				{
 					boolean cardBlacklist = !nbt.contains("blacklist") || nbt.getBoolean("blacklist");
@@ -281,7 +281,7 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 					ListTag items = nbt.getList("Items", 10);
 					for (int i = 0; i < items.size(); i++)
 					{
-						cardFilter.add(ItemStack.parseOptional(player.registryAccess(), items.getCompound(i)));
+						cardFilter.add(ItemStack.parseOptional(this.getLevel().registryAccess(), items.getCompound(i)));
 					}
 					return evaluateFilter(drops, cardFilter, cardBlacklist);
 				}

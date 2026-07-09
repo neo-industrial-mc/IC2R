@@ -2,16 +2,20 @@ package ic2.core.ref;
 
 import com.google.common.base.Suppliers;
 
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.jetbrains.annotations.NotNull;
 
-public enum Ic2ArmorMaterials implements ArmorMaterial
+public enum Ic2ArmorMaterials
 {
 	BRONZE("ic2:ic2_bronze", 15, new int[] { 2, 5, 6, 2 }, 9, 0.0F, () -> Ingredient.of(Ic2Items.BRONZE_INGOT)),
 	ALLOY("ic2:ic2_alloy", 50, new int[] { 4, 7, 9, 4 }, 12, 2.0F, () -> Ingredient.of(Ic2Items.ALLOY)),
@@ -32,10 +36,11 @@ public enum Ic2ArmorMaterials implements ArmorMaterial
 	private final int durabilityMultiplier;
 	private final int[] protectionAmounts;
 	private final int enchantAbility;
-	private final SoundEvent equipSound;
+	private final Holder<SoundEvent> equipSound;
 	private final float toughness;
 	private final float knockbackResistance;
 	private final Supplier<Ingredient> repairIngredientSupplier;
+	private final Supplier<Holder<ArmorMaterial>> holder;
 
 	Ic2ArmorMaterials(String name, int durabilityMultiplier, int[] protectionAmounts, int enchantAbility, float toughness, Supplier<Ingredient> repairIngredientSupplier)
 	{
@@ -45,16 +50,17 @@ public enum Ic2ArmorMaterials implements ArmorMaterial
 		this.enchantAbility = enchantAbility;
 		this.equipSound = SoundEvents.ARMOR_EQUIP_IRON;
 		this.toughness = toughness;
-		this.knockbackResistance = (float) 0.0;
+		this.knockbackResistance = 0.0F;
 		this.repairIngredientSupplier = repairIngredientSupplier;
+		this.holder = Suppliers.memoize(this::build);
 	}
 
-	Ic2ArmorMaterials(String name, SoundEvent equipSound)
+	Ic2ArmorMaterials(String name, Holder<SoundEvent> equipSound)
 	{
 		this(name, equipSound, new int[] { 0, 0, 0, 0 }, 0.0F);
 	}
 
-	Ic2ArmorMaterials(String name, SoundEvent equipSound, int[] protectionAmounts, float toughness)
+	Ic2ArmorMaterials(String name, Holder<SoundEvent> equipSound, int[] protectionAmounts, float toughness)
 	{
 		this.name = name;
 		this.durabilityMultiplier = 0;
@@ -64,6 +70,28 @@ public enum Ic2ArmorMaterials implements ArmorMaterial
 		this.protectionAmounts = protectionAmounts;
 		this.toughness = toughness;
 		this.repairIngredientSupplier = Suppliers.memoize(Ingredient::of);
+		this.holder = Suppliers.memoize(this::build);
+	}
+
+	private Holder<ArmorMaterial> build()
+	{
+		Map<ArmorItem.Type, Integer> defense = new EnumMap<>(ArmorItem.Type.class);
+		for (ArmorItem.Type type : ArmorItem.Type.values())
+		{
+			int index = type.getSlot().getIndex();
+			if (index >= 0 && index < this.protectionAmounts.length)
+			{
+				defense.put(type, this.protectionAmounts[index]);
+			}
+		}
+
+		List<ArmorMaterial.Layer> layers = List.of(new ArmorMaterial.Layer(ResourceLocation.parse(this.name)));
+		return Holder.direct(new ArmorMaterial(defense, this.enchantAbility, this.equipSound, this.repairIngredientSupplier, layers, this.toughness, this.knockbackResistance));
+	}
+
+	public Holder<ArmorMaterial> holder()
+	{
+		return this.holder.get();
 	}
 
 	public int getDurabilityForType(ArmorItem.Type type)
@@ -71,38 +99,8 @@ public enum Ic2ArmorMaterials implements ArmorMaterial
 		return BASE_DURABILITY[type.getSlot().getIndex()] * this.durabilityMultiplier;
 	}
 
-	public int getDefenseForType(ArmorItem.Type type)
-	{
-		return this.protectionAmounts[type.getSlot().getIndex()];
-	}
-
-	public int getEnchantmentValue()
-	{
-		return this.enchantAbility;
-	}
-
-	public @NotNull SoundEvent getEquipSound()
-	{
-		return this.equipSound;
-	}
-
-	public @NotNull Ingredient getRepairIngredient()
-	{
-		return this.repairIngredientSupplier.get();
-	}
-
-	public @NotNull String getName()
+	public String getName()
 	{
 		return this.name;
-	}
-
-	public float getToughness()
-	{
-		return this.toughness;
-	}
-
-	public float getKnockbackResistance()
-	{
-		return this.knockbackResistance;
 	}
 }

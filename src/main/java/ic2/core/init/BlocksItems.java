@@ -13,7 +13,6 @@ public class BlocksItems
 {
 	public static void init()
 	{
-		initPotions();
 		Ic2Fluids.init();
 		Ic2Blocks.init();
 		Ic2BlockEntities.init();
@@ -22,7 +21,8 @@ public class BlocksItems
 		initMigration();
 	}
 
-	private static void initPotions()
+	// Registered during the MOB_EFFECT RegisterEvent, which fires before BLOCK — see FmlMod.
+	public static void initPotions()
 	{
 		Ic2Potion.radiation = new Ic2Potion(MobEffectCategory.HARMFUL, 5149489);
 		IC2.envProxy.registerStatusEffect(IC2.getIdentifier("radiation"), Ic2Potion.radiation);

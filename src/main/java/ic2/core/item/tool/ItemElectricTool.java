@@ -32,6 +32,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
@@ -66,7 +67,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 
 	private ItemElectricTool(Properties settings, float attackDamage, int operationEnergyCost, Tier material, Collection<TagKey<Block>> effectiveBlocks)
 	{
-		super(attackDamage, (float) -3.0, material, effectiveBlocks.isEmpty() ? Ic2BlockTags.EMPTY : effectiveBlocks.iterator().next(), settings);
+		super(material, effectiveBlocks.isEmpty() ? Ic2BlockTags.EMPTY : effectiveBlocks.iterator().next(), settings.attributes(DiggerItem.createAttributes(material, attackDamage, -3.0F)));
 		this.operationEnergyCost = operationEnergyCost;
 		this.effectiveBlocks = effectiveBlocks;
 	}
@@ -134,13 +135,13 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 
 	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
-		return this.isEffective(state) && ElectricItem.manager.canUse(stack, this.operationEnergyCost) ? this.speed : 1.0F;
+		return this.isEffective(state) && ElectricItem.manager.canUse(stack, this.operationEnergyCost) ? this.getTier().getSpeed() : 1.0F;
 	}
 
 	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
-		int level = this.getTier().getLevel();
-		return (level >= 3 || !state.is(BlockTags.NEEDS_DIAMOND_TOOL)) && (level >= 2 || !state.is(BlockTags.NEEDS_IRON_TOOL)) && (level >= 1 || !state.is(BlockTags.NEEDS_STONE_TOOL)) && this.isEffective(state);
+		// 1.21: Tier#getLevel() is gone; harvestability is expressed via the tier's "incorrect blocks" tag.
+		return !state.is(this.getTier().getIncorrectBlocksForDrops()) && this.isEffective(state);
 	}
 
 	private boolean isEffective(BlockState state)

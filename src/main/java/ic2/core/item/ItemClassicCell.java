@@ -138,7 +138,7 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 			return 0;
 		}
 
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		return nbt != null ? nbt.getInt("uses") : 0;
 	}
 
@@ -146,10 +146,10 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 	{
 		if (uses <= 0)
 		{
-			stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
+			StackUtil.setTag(stack, null);
 		} else
 		{
-			stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag().putInt("uses", uses);
+			StackUtil.getOrCreateNbtData(stack).putInt("uses", uses);
 		}
 	}
 

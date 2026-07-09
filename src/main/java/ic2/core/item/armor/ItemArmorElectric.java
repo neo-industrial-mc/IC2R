@@ -24,6 +24,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -45,7 +46,7 @@ public abstract class ItemArmorElectric extends ItemArmorIC2 implements IElectri
 	protected final double transferLimit;
 	protected final int tier;
 
-	public ItemArmorElectric(ArmorMaterial material, EquipmentSlot slot, Properties settings, double maxCharge, double transferLimit, int tier)
+	public ItemArmorElectric(Holder<ArmorMaterial> material, EquipmentSlot slot, Properties settings, double maxCharge, double transferLimit, int tier)
 	{
 		super(material, slot, settings);
 		this.maxCharge = maxCharge;
@@ -64,7 +65,7 @@ public abstract class ItemArmorElectric extends ItemArmorIC2 implements IElectri
 
 		for (EquipmentSlot slot : EquipmentSlot.values())
 		{
-			if (slot.getType() != EquipmentSlot.Type.ARMOR)
+			if (slot.getType() != EquipmentSlot.Type.HUMANOID_ARMOR)
 			{
 				continue;
 			}
@@ -178,64 +179,7 @@ public abstract class ItemArmorElectric extends ItemArmorIC2 implements IElectri
 		return Mth.hsvToRgb((float) (ElectricItem.manager.getChargeLevel(stack) / 3.0), 1.0F, 1.0F);
 	}
 
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot)
-	{
-		if (slot != this.getEquipmentSlot())
-		{
-			return this.getDefaultAttributeModifiers(slot);
-		}
-
-		boolean hasCharge = ElectricItem.manager.getCharge(stack) >= ((ItemArmorElectric) stack.getItem()).getEnergyPerDamage();
-		if (!hasCharge)
-		{
-			return this.getDefaultAttributeModifiers(slot);
-		}
-
-		Item armor = stack.getItem();
-		int protection;
-		if (armor instanceof ItemArmorNanoSuit)
-		{
-			protection = ItemArmorNanoSuit.CHARGED_PROTECTION[slot.getIndex()];
-		} else
-		{
-			if (!(armor instanceof ItemArmorQuantumSuit))
-			{
-				return this.getDefaultAttributeModifiers(slot);
-			}
-
-			protection = ItemArmorQuantumSuit.CHARGED_PROTECTION[slot.getIndex()];
-		}
-
-		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		Multimap<Attribute, AttributeModifier> defaults = this.getDefaultAttributeModifiers(slot);
-		for (Attribute attribute : defaults.keySet())
-		{
-			if (attribute != Attributes.ARMOR)
-			{
-				builder.putAll(attribute, defaults.get(attribute));
-			}
-		}
-
-		Attribute attr = Attributes.ARMOR;
-		UUID uuid = MODIFIERS[slot.getIndex()];
-		Collection<AttributeModifier> plain = defaults.get(attr);
-		if (plain != null)
-		{
-			for (AttributeModifier modifier : plain)
-			{
-				if (!modifier.getId().equals(uuid))
-				{
-					builder.put(attr, modifier);
-				}
-			}
-		}
-
-		builder.put(attr, new AttributeModifier(uuid, "Armor modifier", protection, Operation.ADDITION));
-		return builder.build();
-	}
-
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack)
-	{
-		return this.getAttributeModifiers(stack, slot);
-	}
+	// The charged-armor protection bonus is applied dynamically via
+	// ic2.forge.EventHandlerForge#onItemAttributeModifiers (NeoForge's
+	// ItemAttributeModifierEvent replaces the removed Forge getAttributeModifiers hook).
 }

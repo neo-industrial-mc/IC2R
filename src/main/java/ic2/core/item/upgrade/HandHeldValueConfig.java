@@ -1,7 +1,6 @@
 package ic2.core.item.upgrade;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
 import ic2.api.network.ClientModifiable;
 import ic2.core.ContainerBase;
 import ic2.core.IC2;

@@ -28,7 +28,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.neoforged.neoforge.registries.tags.ITag;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 
 import java.util.Objects;
 import net.minecraft.core.HolderLookup;
@@ -61,11 +62,14 @@ public class TileEntitySteamRepressurizer extends TileEntityInventory implements
 		Fluid ret = detectedSteamFluid;
 		if (ret == null)
 		{
-			ITag<Fluid> tag = Objects.requireNonNull(BuiltInRegistries.FLUID.tags()).getTag(Ic2FluidTags.STEAM);
-			for (Fluid entry : tag)
+			HolderSet.Named<Fluid> tag = BuiltInRegistries.FLUID.getTag(Ic2FluidTags.STEAM).orElse(null);
+			if (tag != null)
 			{
-				detectedSteamFluid = ret = entry;
-				break;
+				for (Holder<Fluid> entry : tag)
+				{
+					detectedSteamFluid = ret = entry.value();
+					break;
+				}
 			}
 
 		}

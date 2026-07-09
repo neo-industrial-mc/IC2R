@@ -37,7 +37,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.common.CommonHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.util.RandomSource;
@@ -48,7 +48,7 @@ public abstract class Ic2BucketItem extends BucketItem
 
 	public Ic2BucketItem(Fluid fluid, Properties settings)
 	{
-		super(() -> fluid, settings);
+		super(fluid, settings);
 		this.fluid = fluid;
 		this.getDrainableFluidList();
 	}
@@ -57,11 +57,6 @@ public abstract class Ic2BucketItem extends BucketItem
 	{
 		ItemStack itemStack = user.getMainHandItem();
 		BlockHitResult blockHitResult = getPlayerPOVHitResult(world, user, this.fluid == Fluids.EMPTY ? net.minecraft.world.level.ClipContext.Fluid.SOURCE_ONLY : net.minecraft.world.level.ClipContext.Fluid.NONE);
-		InteractionResultHolder<ItemStack> ret = EventHooks.onBucketUse(user, world, itemStack, blockHitResult);
-		if (ret != null)
-		{
-			return ret;
-		}
 
 		if (blockHitResult.getType() == Type.MISS)
 		{
@@ -188,7 +183,7 @@ public abstract class Ic2BucketItem extends BucketItem
 		BlockState blockState = world.getBlockState(pos);
 		Block block = blockState.getBlock();
 		boolean bl = blockState.canBeReplaced(this.fluid);
-		boolean bl2 = blockState.isAir() || bl || block instanceof LiquidBlockContainer && ((LiquidBlockContainer) block).canPlaceLiquid(world, pos, blockState, this.fluid);
+		boolean bl2 = blockState.isAir() || bl || block instanceof LiquidBlockContainer && ((LiquidBlockContainer) block).canPlaceLiquid(null, world, pos, blockState, this.fluid);
 		if (!bl2)
 		{
 			return hitResult != null && this.emptyContents(player, world, hitResult.getBlockPos().relative(hitResult.getDirection()), null);
@@ -232,7 +227,7 @@ public abstract class Ic2BucketItem extends BucketItem
 
 	protected boolean canBlockContainFluid(@NotNull Level worldIn, @NotNull BlockPos posIn, BlockState blockstate)
 	{
-		return blockstate.getBlock() instanceof LiquidBlockContainer && ((LiquidBlockContainer) blockstate.getBlock()).canPlaceLiquid(worldIn, posIn, blockstate, this.fluid);
+		return blockstate.getBlock() instanceof LiquidBlockContainer && ((LiquidBlockContainer) blockstate.getBlock()).canPlaceLiquid(null, worldIn, posIn, blockstate, this.fluid);
 	}
 
 	protected void playEmptySound(@Nullable Player player, LevelAccessor world, @NotNull BlockPos pos)

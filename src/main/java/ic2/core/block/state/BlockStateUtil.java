@@ -1,8 +1,6 @@
 package ic2.core.block.state;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.UnmodifiableIterator;
-
+import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.world.level.block.Block;
@@ -13,7 +11,7 @@ public class BlockStateUtil
 {
 	public static String getVariantString(BlockState state)
 	{
-		ImmutableMap<Property<?>, Comparable<?>> properties = state.getValues();
+		Map<Property<?>, Comparable<?>> properties = state.getValues();
 		if (properties.isEmpty())
 		{
 			return "normal";

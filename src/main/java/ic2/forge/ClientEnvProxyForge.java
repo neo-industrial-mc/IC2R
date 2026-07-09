@@ -11,7 +11,6 @@ import java.util.List;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -35,6 +34,7 @@ import net.neoforged.fml.loading.FMLPaths;
 
 public final class ClientEnvProxyForge implements ClientEnvProxy
 {
+	static List<ClientEnvProxyForge.ScreenRegistration<?>> screenRegistrations = new ArrayList<>();
 	static List<ClientEnvProxyForge.BlockColorProviderRegistration> blockColorProviderRegistrations = new ArrayList<>();
 	static List<ClientEnvProxyForge.ItemColorProviderRegistration> itemColorProviderRegistrations = new ArrayList<>();
 	static List<KeyMapping> keyBindingRegistrations = new ArrayList<>();
@@ -46,7 +46,7 @@ public final class ClientEnvProxyForge implements ClientEnvProxy
 	@Override
 	public <H extends AbstractContainerMenu> void registerScreen(MenuType<H> type, ClientEnvProxy.ScreenFactory<H> factory)
 	{
-		MenuScreens.register(type, factory::create);
+		screenRegistrations.add(new ClientEnvProxyForge.ScreenRegistration<>(type, factory));
 	}
 
 	@Override
@@ -131,6 +131,10 @@ public final class ClientEnvProxyForge implements ClientEnvProxy
 	public String getFluidName(Ic2FluidStack stack)
 	{
 		return Component.translatable(stack.getFluid().getFluidType().getDescriptionId(EnvFluidHandlerForge.getForgeFs(stack))).getString();
+	}
+
+	record ScreenRegistration<H extends AbstractContainerMenu>(MenuType<H> type, ClientEnvProxy.ScreenFactory<H> factory)
+	{
 	}
 
 	record BerRegistration<T extends BlockEntity>(BlockEntityType<? extends T> blockEntityType,

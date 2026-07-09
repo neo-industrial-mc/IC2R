@@ -8,6 +8,7 @@ import ic2.core.util.KeyboardClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -19,7 +20,7 @@ public class ItemArmorJetpackElectric extends ItemArmorElectric implements IJetp
 {
 	public ItemArmorJetpackElectric()
 	{
-		super(Ic2ArmorMaterials.JET_PACK_ELECTRIC, EquipmentSlot.CHEST, new Properties(), 30000.0, 60.0, 1);
+		super(Ic2ArmorMaterials.JET_PACK_ELECTRIC.holder(), EquipmentSlot.CHEST, new Properties(), 30000.0, 60.0, 1);
 	}
 
 	@Override

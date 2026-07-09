@@ -2,6 +2,12 @@ package ic2.core.recipe.v2;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.MapLike;
+import com.mojang.serialization.RecordBuilder;
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.MachineRecipe;
 import ic2.api.recipe.MachineRecipeWeighted;
@@ -9,10 +15,11 @@ import ic2.api.recipe.RecipeOutputWeighted;
 
 import java.util.Collection;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -24,6 +31,40 @@ public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeH
 	private final RecipeType<?> recipeType;
 	@Nullable
 	private final Function<JsonObject, CompoundTag> metaProcessor;
+	private final MapCodec<RecipeHolder<IRecipeInput, Collection<ItemStack>>> codec = new MapCodec<>()
+	{
+		@Override
+		public <T> Stream<T> keys(DynamicOps<T> ops)
+		{
+			return Stream.of("ingredient", "result", "weighted").map(ops::createString);
+		}
+
+		@Override
+		public <T> DataResult<RecipeHolder<IRecipeInput, Collection<ItemStack>>> decode(DynamicOps<T> ops, MapLike<T> input)
+		{
+			try
+			{
+				JsonObject json = new JsonObject();
+				input.entries().forEach(entry ->
+				{
+					JsonElement key = ops.convertTo(JsonOps.INSTANCE, entry.getFirst());
+					json.add(key.getAsString(), ops.convertTo(JsonOps.INSTANCE, entry.getSecond()));
+				});
+				return DataResult.success(fromJson(json));
+			} catch (RuntimeException e)
+			{
+				return DataResult.error(() -> "Failed to parse IC2 weighted machine recipe: " + e.getMessage());
+			}
+		}
+
+		@Override
+		public <T> RecordBuilder<T> encode(RecipeHolder<IRecipeInput, Collection<ItemStack>> recipe, DynamicOps<T> ops, RecordBuilder<T> prefix)
+		{
+			return prefix.withErrorsFrom(DataResult.error(() -> "IC2 weighted machine recipes cannot be encoded"));
+		}
+	};
+	private final StreamCodec<RegistryFriendlyByteBuf, RecipeHolder<IRecipeInput, Collection<ItemStack>>> streamCodec =
+		StreamCodec.of(this::toNetwork, this::fromNetwork);
 
 	public WeightedMachineRecipeSerializer(RecipeType<?> recipeType, @Nullable Function<JsonObject, CompoundTag> metaProcessor)
 	{
@@ -31,7 +72,7 @@ public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeH
 		this.metaProcessor = metaProcessor;
 	}
 
-	public RecipeHolder<IRecipeInput, Collection<ItemStack>> fromJson(ResourceLocation id, JsonObject json)
+	private RecipeHolder<IRecipeInput, Collection<ItemStack>> fromJson(JsonObject json)
 	{
 		IRecipeInput input = RecipeIo.parseInput(json.get("ingredient"));
 		RecipeOutputWeighted output = new RecipeOutputWeighted();
@@ -48,10 +89,10 @@ public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeH
 			machineRecipe = new MachineRecipe<>(input, RecipeIo.parseOutputs(resultJsonObj, "result"));
 		}
 
-		return new RecipeHolder<>(machineRecipe, id, this, this.recipeType);
+		return new RecipeHolder<>(machineRecipe, null, this, this.recipeType);
 	}
 
-	public RecipeHolder<IRecipeInput, Collection<ItemStack>> fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
+	private RecipeHolder<IRecipeInput, Collection<ItemStack>> fromNetwork(RegistryFriendlyByteBuf buf)
 	{
 		byte type = buf.readByte();
 		MachineRecipe<IRecipeInput, Collection<ItemStack>> machineRecipe;
@@ -63,10 +104,10 @@ public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeH
 			machineRecipe = new MachineRecipe<>(RecipeIo.readInput(buf), RecipeIo.readOutput(buf), buf.readNbt());
 		}
 
-		return new RecipeHolder<>(machineRecipe, id, this, this.recipeType);
+		return new RecipeHolder<>(machineRecipe, null, this, this.recipeType);
 	}
 
-	public void toNetwork(FriendlyByteBuf buf, RecipeHolder<IRecipeInput, Collection<ItemStack>> recipe)
+	private void toNetwork(RegistryFriendlyByteBuf buf, RecipeHolder<IRecipeInput, Collection<ItemStack>> recipe)
 	{
 		MachineRecipe<IRecipeInput, Collection<ItemStack>> machineRecipe = recipe.recipe();
 		if (machineRecipe instanceof MachineRecipeWeighted<?> machineRecipeWeighted)
@@ -82,5 +123,17 @@ public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeH
 		}
 
 		buf.writeNbt(machineRecipe.getMetaData());
+	}
+
+	@Override
+	public MapCodec<RecipeHolder<IRecipeInput, Collection<ItemStack>>> codec()
+	{
+		return this.codec;
+	}
+
+	@Override
+	public StreamCodec<RegistryFriendlyByteBuf, RecipeHolder<IRecipeInput, Collection<ItemStack>>> streamCodec()
+	{
+		return this.streamCodec;
 	}
 }

@@ -1,6 +1,5 @@
 package ic2.core.block.machine.gui;
 
-import com.google.common.base.Supplier;
 import ic2.core.IC2;
 import ic2.core.Ic2Gui;
 import ic2.core.block.machine.container.ContainerSteamGenerator;

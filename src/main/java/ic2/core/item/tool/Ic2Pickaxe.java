@@ -8,6 +8,6 @@ public class Ic2Pickaxe extends PickaxeItem
 {
 	public Ic2Pickaxe(Tier material, int attackDamage, float attackSpeed, Properties settings)
 	{
-		super(material, attackDamage, attackSpeed, settings);
+		super(material, settings.attributes(PickaxeItem.createAttributes(material, attackDamage, attackSpeed)));
 	}
 }

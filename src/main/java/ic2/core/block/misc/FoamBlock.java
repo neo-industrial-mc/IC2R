@@ -89,15 +89,16 @@ public class FoamBlock extends Block
 		}
 	}
 
-	public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+	@Override
+	public net.minecraft.world.ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack usedStack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
 	{
 		if (StackUtil.consume(player, hand, StackUtil.sameItem(Blocks.SAND), 1))
 		{
 			world.setBlockAndUpdate(pos, state.getValue(typeProperty).getResult());
-			return InteractionResult.SUCCESS;
+			return net.minecraft.world.ItemInteractionResult.SUCCESS;
 		} else
 		{
-			return InteractionResult.FAIL;
+			return net.minecraft.world.ItemInteractionResult.FAIL;
 		}
 	}
 

@@ -51,7 +51,7 @@ public class ItemMiningFilterCard extends Item implements IHandHeldInventory
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		if (nbt != null)
 		{
 			boolean isBlacklist = !nbt.contains("blacklist") || nbt.getBoolean("blacklist");

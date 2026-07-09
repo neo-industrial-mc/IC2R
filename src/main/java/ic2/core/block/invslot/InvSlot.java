@@ -69,7 +69,7 @@ public class InvSlot implements Iterable<ItemStack>
 		{
 			CompoundTag contentTag = contentsTag.getCompound(i);
 			int index = contentTag.getByte("Index") & 255;
-			if (index >= this.getContainerSize())
+			if (index >= this.size())
 			{
 				IC2.log
 					.error(
@@ -81,7 +81,7 @@ public class InvSlot implements Iterable<ItemStack>
 					);
 			} else
 			{
-				ItemStack stack = ItemStack.of(contentTag);
+				ItemStack stack = ItemStack.parseOptional(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
 				if (StackUtil.isEmpty(stack))
 				{
 					IC2.log
@@ -130,7 +130,7 @@ public class InvSlot implements Iterable<ItemStack>
 			{
 				CompoundTag contentTag = new CompoundTag();
 				contentTag.putByte("Index", (byte) i);
-				content.save(contentTag);
+				content.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
 				contentsTag.add(contentTag);
 			}
 		}

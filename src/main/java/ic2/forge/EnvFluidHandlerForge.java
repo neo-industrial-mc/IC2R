@@ -38,10 +38,10 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
-import net.neoforged.neoforge.fluids.IFluidBlock;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -59,7 +59,7 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
     private static final java.util.List<Runnable> pendingFluidRegistrations = new java.util.ArrayList<>();
 
     private static IFluidHandlerItem getFluidHandler(ItemStack stack) {
-        return stack.getCapability(Capabilities.FluidHandler.BLOCK_ITEM, null).orElse(null);
+        return stack.getCapability(Capabilities.FluidHandler.ITEM);
     }
 
     private static void updateResultStack(Mutable<ItemStack> out, IFluidHandlerItem handler) {
@@ -79,7 +79,11 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
                 return null;
             }
         }
-        return be.getCapability(Capabilities.FluidHandler.BLOCK, side).orElse(null);
+        Level level = world != null ? world : be.getLevel();
+        if (level == null) {
+            return null;
+        }
+        return level.getCapability(Capabilities.FluidHandler.BLOCK, be.getBlockPos(), state, be, side);
     }
 
     private static IFluidHandler.FluidAction getAction(boolean simulate) {
@@ -127,7 +131,7 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
             case "pahoehoe_lava" ->
                 new PahoehoeLavaBlock(fluid, properties);
             default ->
-                new LiquidBlock(() -> fluid, properties);
+                new LiquidBlock(fluid, properties);
         };
     }
 
@@ -160,7 +164,7 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
                     });
                 }
             };
-            NeoForgeRegistries.FLUID_TYPES.get().register(id, fluidType);
+            Registry.register(NeoForgeRegistries.FLUID_TYPES, id, fluidType);
             fluidTypeRef.set(fluidType);
         });
         AtomicReference<LiquidBlock> fluidBlockRef = new java.util.concurrent.atomic.AtomicReference<>();
@@ -169,19 +173,19 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
             properties.block(fluidBlockRef::get);
             Fluid still = new BaseFlowingFluid.Source(properties);
             Fluid flowing = new BaseFlowingFluid.Flowing(properties);
-            BuiltInRegistries.FLUID.register(id, still);
+            Registry.register(BuiltInRegistries.FLUID, id, still);
             ret.still(still);
             ret.flowing(flowing);
-            BuiltInRegistries.FLUID.register(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "flowing_" + id.getPath()), flowing);
+            Registry.register(BuiltInRegistries.FLUID, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "flowing_" + id.getPath()), flowing);
             Block.Properties fluidBlockProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).noLootTable().noCollission().randomTicks().pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY);
             LiquidBlock fluidBlock = createFluidBlock(id.getPath(), (FlowingFluid) ret.still(), fluidBlockProperties);
-            BuiltInRegistries.BLOCK.register(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "fluid_block_" + id.getPath()), fluidBlock);
+            Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "fluid_block_" + id.getPath()), fluidBlock);
             fluidBlockRef.set(fluidBlock);
         });
         ResourceLocation bucketId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + "_bucket");
         EnvProxyForge.pendingItemRegistrations.add(() -> {
-            BucketItem bucket = new BucketItem(ret::still, new Properties().craftRemainder(Items.BUCKET).stacksTo(1));
-            BuiltInRegistries.ITEM.register(bucketId, bucket);
+            BucketItem bucket = new BucketItem(ret.still(), new Properties().craftRemainder(Items.BUCKET).stacksTo(1));
+            Registry.register(BuiltInRegistries.ITEM, bucketId, bucket);
             ret.bucket(bucket);
         });
         return ret;
@@ -224,7 +228,17 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
 
     @Override
     public Ic2FluidStack createFluidStackMb(Fluid fluid, int amount, CompoundTag nbt) {
-        return new Ic2FluidStackImpl(new FluidStack(fluid, amount, nbt));
+        // 1.21 FluidStack stores extra data as components. getFluidStackNbt() serialises the whole
+        // stack (fluid + components), so when present we reconstruct it and just re-apply the amount;
+        // IC2's own fluids carry no components, so nbt is null and we build a plain stack.
+        if (nbt != null && !nbt.isEmpty()) {
+            FluidStack parsed = FluidStack.parseOptional(net.minecraft.core.RegistryAccess.EMPTY, nbt);
+            if (!parsed.isEmpty()) {
+                parsed.setAmount(amount);
+                return new Ic2FluidStackImpl(parsed);
+            }
+        }
+        return new Ic2FluidStackImpl(new FluidStack(fluid, amount));
     }
 
     @Override
@@ -281,7 +295,7 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
     @Override
     public Ic2FluidStack readFluidStack(CompoundTag nbt) {
         if (nbt.contains("Tag", 10)) {
-            return new Ic2FluidStackImpl(FluidStack.loadFluidStackFromNBT(nbt));
+            return new Ic2FluidStackImpl(FluidStack.parseOptional(net.minecraft.core.RegistryAccess.EMPTY, nbt));
         }
         String id = nbt.getString("FluidName");
         int amount = nbt.getInt("Amount");
@@ -291,7 +305,12 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
 
     @Override
     public CompoundTag getFluidStackNbt(Ic2FluidStack fs) {
-        return fs instanceof Ic2FluidStackImpl ? ((Ic2FluidStackImpl) fs).parent().getTag() : null;
+        if (fs instanceof Ic2FluidStackImpl impl && !impl.parent().getComponentsPatch().isEmpty()) {
+            CompoundTag tag = new CompoundTag();
+            impl.parent().save(net.minecraft.core.RegistryAccess.EMPTY, tag);
+            return tag;
+        }
+        return null;
     }
 
     @Override
@@ -438,9 +457,6 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
     @Override
     public Fluid getWorldFluid(BlockState state, Level world, BlockPos pos) {
         Block block = state.getBlock();
-        if (block instanceof IFluidBlock) {
-            return ((IFluidBlock) block).getFluid();
-        }
         if (block instanceof LiquidBlock) {
             return state.getFluidState().getType();
         }
@@ -450,10 +466,6 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
     @Override
     public int getWorldFluidLevel(BlockState state, Level world, BlockPos pos) {
         Block block = state.getBlock();
-        if (block instanceof IFluidBlock) {
-            float fillPct = Math.abs(((IFluidBlock) block).getFilledPercentage(world, pos));
-            return 7 - Util.limit(Math.round(6.0F * fillPct), 0, 6);
-        }
         if (block instanceof LiquidBlock) {
             FluidState fluidState = state.getFluidState();
             if (fluidState.isSource()) {
@@ -469,13 +481,6 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
     @Override
     public Ic2FluidStack drainWorldFluid(BlockState state, Level world, BlockPos pos, boolean simulate) {
         Block block = state.getBlock();
-        if (block instanceof IFluidBlock fluidBlock) {
-            if (!fluidBlock.canDrain(world, pos)) {
-                return null;
-            }
-            FluidStack drained = fluidBlock.drain(world, pos, getAction(simulate));
-            return !drained.isEmpty() ? new Ic2FluidStackImpl(drained) : Ic2FluidStack.EMPTY;
-        }
         if (block instanceof LiquidBlock) {
             FluidState fluidState = state.getFluidState();
             if (!fluidState.isSource()) {

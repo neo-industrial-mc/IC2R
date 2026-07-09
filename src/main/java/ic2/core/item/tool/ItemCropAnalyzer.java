@@ -20,22 +20,14 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemCropAnalyzer extends BaseElectricItem implements IHandHeldInventory
 {
 	public ItemCropAnalyzer(Properties settings)
 	{
-		super(settings, 100000.0, 128.0, 2);
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public @NotNull Rarity getRarity(@NotNull ItemStack stack)
-	{
-		return Rarity.UNCOMMON;
+		// 1.21: Item#getRarity(ItemStack) is gone; rarity is now a data component set at construction.
+		super(settings.rarity(Rarity.UNCOMMON), 100000.0, 128.0, 2);
 	}
 
 	@Override

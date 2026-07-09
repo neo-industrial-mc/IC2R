@@ -2,8 +2,11 @@ package ic2.core.ref;
 
 import java.util.function.Supplier;
 
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 public enum Ic2ToolMaterials implements Tier
@@ -46,6 +49,21 @@ public enum Ic2ToolMaterials implements Tier
 	public int getLevel()
 	{
 		return this.miningLevel;
+	}
+
+	@Override
+	public @NotNull TagKey<Block> getIncorrectBlocksForDrops()
+	{
+		if (this.miningLevel >= 3)
+		{
+			return BlockTags.INCORRECT_FOR_DIAMOND_TOOL;
+		} else if (this.miningLevel >= 2)
+		{
+			return BlockTags.INCORRECT_FOR_IRON_TOOL;
+		} else
+		{
+			return BlockTags.INCORRECT_FOR_STONE_TOOL;
+		}
 	}
 
 	public int getEnchantmentValue()

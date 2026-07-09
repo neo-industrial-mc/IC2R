@@ -40,10 +40,10 @@ public class RecipeInputItemStack extends RecipeInputBase
 	{
 		if (this.input.getItem() != subject.getItem()) return false;
 
-		CompoundTag requiredNbt = this.input.getTag();
+		CompoundTag requiredNbt = StackUtil.getTag(this.input);
 		if (requiredNbt == null || requiredNbt.isEmpty()) return true;
 
-		CompoundTag subjectNbt = subject.getTag();
+		CompoundTag subjectNbt = StackUtil.getTag(subject);
 		if (subjectNbt == null)
 		{
 			// Subject has no NBT — check that all required keys map to default values (0 for numbers, etc.)
@@ -138,7 +138,7 @@ public class RecipeInputItemStack extends RecipeInputBase
 	{
 		JsonObject obj = new JsonObject();
 		obj.addProperty("item", BuiltInRegistries.ITEM.getKey(this.input.getItem()).toString());
-		obj.add("data", (JsonElement) NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, this.input.getTag()));
+		obj.add("data", (JsonElement) NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, StackUtil.getTag(this.input)));
 		if (this.input.getCount() != 1)
 		{
 			obj.addProperty("count", this.input.getCount());

@@ -16,7 +16,7 @@ public final class Ic2FluidTags
 
 	private static TagKey<Fluid> create()
 	{
-		ResourceLocation id = ResourceLocation.parse(IC2.envProxy.isFabricEnv() ? "c:steam" : "forge:steam");
+		ResourceLocation id = ResourceLocation.parse(IC2.envProxy.isFabricEnv() ? "c:steam" : Ic2ItemTags.toCommon("forge:steam"));
 		return TagKey.create(Registries.FLUID, id);
 	}
 }

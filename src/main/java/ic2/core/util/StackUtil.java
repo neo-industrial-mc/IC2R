@@ -261,16 +261,43 @@ public final class StackUtil
 		return ret;
 	}
 
+	// 1.21 no longer stores arbitrary NBT on ItemStack; IC2's legacy tag maps onto the CUSTOM_DATA component.
+	// Pre-1.21 callers mutate the returned tag in place and expect the write to stick, so both accessors
+	// must hand out the component's live tag (getUnsafe) — CustomData.of/copyTag would detach it.
+	public static CompoundTag getTag(ItemStack stack)
+	{
+		net.minecraft.world.item.component.CustomData data = stack.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+		return data == null ? null : data.getUnsafe();
+	}
+
 	public static CompoundTag getOrCreateNbtData(ItemStack stack)
 	{
-		CompoundTag ret = stack.getTag();
-		if (ret == null)
+		net.minecraft.world.item.component.CustomData data = stack.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+		if (data == null)
 		{
-			ret = new CompoundTag();
-			stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(ret));
+			stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(new CompoundTag()));
+			data = stack.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
 		}
 
-		return ret;
+		return data.getUnsafe();
+	}
+
+	// 1.21 made Mob.getEquipmentSlotForItem an instance method; use the item's Equipable to resolve the slot statically.
+	public static EquipmentSlot getEquipmentSlotForItem(ItemStack stack)
+	{
+		net.minecraft.world.item.Equipable equipable = net.minecraft.world.item.Equipable.get(stack);
+		return equipable != null ? equipable.getEquipmentSlot() : EquipmentSlot.MAINHAND;
+	}
+
+	public static void setTag(ItemStack stack, CompoundTag tag)
+	{
+		if (tag == null || tag.isEmpty())
+		{
+			stack.remove(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+		} else
+		{
+			stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(tag));
+		}
 	}
 
 	public static boolean checkItemEquality(ItemStack a, ItemStack b)
@@ -290,7 +317,7 @@ public final class StackUtil
 
 	private static boolean checkNbtEquality(ItemStack a, ItemStack b)
 	{
-		return checkNbtEquality(a.getTag(), b.getTag());
+		return checkNbtEquality(getTag(a), getTag(b));
 	}
 
 	public static boolean checkNbtEquality(CompoundTag a, CompoundTag b)
@@ -343,8 +370,8 @@ public final class StackUtil
 
 	public static boolean checkNbtEqualityStrict(ItemStack a, ItemStack b)
 	{
-		CompoundTag nbtA = a.getTag();
-		CompoundTag nbtB = b.getTag();
+		CompoundTag nbtA = getTag(a);
+		CompoundTag nbtB = getTag(b);
 		return nbtA == nbtB ? true : nbtA != null && nbtB != null && nbtA.equals(nbtB);
 	}
 
@@ -647,7 +674,7 @@ public final class StackUtil
 
 		if (!player.getAbilities().instabuild && stack.isDamageableItem())
 		{
-			stack.hurtAndBreak(amount, player, p -> p.onEquippedItemBroken(hand));
+			stack.hurtAndBreak(amount, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
 			ItemStack ret;
 			if (isEmpty(stack))
 			{
@@ -785,7 +812,7 @@ public final class StackUtil
 
 		for (ItemStack stack : stacks)
 		{
-			dropAsEntity(source.level(), source.getBlockPos(), stack);
+			dropAsEntity(source.getLevel(), source.getBlockPos(), stack);
 		}
 
 		stacks.clear();
@@ -851,12 +878,14 @@ public final class StackUtil
 		}
 
 		ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
+		net.minecraft.core.HolderLookup.RegistryLookup<net.minecraft.world.item.enchantment.Enchantment> enchants =
+			((ServerLevel) world).registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
 		if (silkTouch)
 		{
-			EnchantmentHelper.setEnchantments(Collections.singletonMap(Enchantments.SILK_TOUCH, 1), stack);
+			stack.enchant(enchants.getOrThrow(Enchantments.SILK_TOUCH), 1);
 		} else if (fortune > 0)
 		{
-			EnchantmentHelper.setEnchantments(Collections.singletonMap(Enchantments.BLOCK_FORTUNE, fortune), stack);
+			stack.enchant(enchants.getOrThrow(Enchantments.FORTUNE), fortune);
 		}
 
 		return Block.getDrops(state, (ServerLevel) world, pos, world.getBlockEntity(pos), player, stack);

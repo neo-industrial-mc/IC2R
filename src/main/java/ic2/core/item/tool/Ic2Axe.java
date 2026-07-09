@@ -8,6 +8,6 @@ public class Ic2Axe extends AxeItem
 {
 	public Ic2Axe(Tier material, float attackDamage, float attackSpeed, Properties settings)
 	{
-		super(material, attackDamage, attackSpeed, settings);
+		super(material, settings.attributes(AxeItem.createAttributes(material, attackDamage, attackSpeed)));
 	}
 }

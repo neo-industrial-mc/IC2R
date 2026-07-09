@@ -25,7 +25,7 @@ record Ic2FluidStackImpl(FluidStack parent) implements Ic2FluidStack
 	@Override
 	public Ic2FluidStack copy()
 	{
-		return this.parent.getTag() == null ? Ic2FluidStack.create(this.parent.getFluid(), this.parent.getAmount()) : new Ic2FluidStackImpl(this.parent.copy());
+		return this.parent.getComponentsPatch().isEmpty() ? Ic2FluidStack.create(this.parent.getFluid(), this.parent.getAmount()) : new Ic2FluidStackImpl(this.parent.copy());
 	}
 
 	@Override
@@ -37,13 +37,13 @@ record Ic2FluidStackImpl(FluidStack parent) implements Ic2FluidStack
 	@Override
 	public boolean hasExactFluid(Fluid fluid)
 	{
-		return this.parent.getTag() == null && fluid == this.parent.getFluid();
+		return this.parent.getComponentsPatch().isEmpty() && fluid == this.parent.getFluid();
 	}
 
 	@Override
 	public boolean hasExactFluid(Ic2FluidStack fs)
 	{
-		return fs instanceof Ic2FluidStackImpl ? this.parent.isFluidEqual(((Ic2FluidStackImpl) fs).parent) : this.hasExactFluid(fs.getFluid());
+		return fs instanceof Ic2FluidStackImpl ? FluidStack.isSameFluidSameComponents(this.parent, ((Ic2FluidStackImpl) fs).parent) : this.hasExactFluid(fs.getFluid());
 	}
 
 	@Override
@@ -66,7 +66,7 @@ record Ic2FluidStackImpl(FluidStack parent) implements Ic2FluidStack
 	@Override
 	public void toNbt(CompoundTag nbt)
 	{
-		this.parent.writeToNBT(net.minecraft.core.RegistryAccess.EMPTY, nbt);
+		this.parent.save(net.minecraft.core.RegistryAccess.EMPTY, nbt);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ record Ic2FluidStackImpl(FluidStack parent) implements Ic2FluidStack
 				return false;
 			} else
 			{
-				return o instanceof Ic2FluidStackImpl ? Objects.equals(this.parent.getTag(), ((Ic2FluidStackImpl) o).parent.getTag()) : this.parent.getTag() == null;
+				return o instanceof Ic2FluidStackImpl ? FluidStack.isSameFluidSameComponents(this.parent, ((Ic2FluidStackImpl) o).parent) : this.parent.getComponentsPatch().isEmpty();
 			}
 		}
 	}
@@ -102,7 +102,7 @@ record Ic2FluidStackImpl(FluidStack parent) implements Ic2FluidStack
 			"%dx%s@%s",
 			this.parent.getAmount(),
 			fluid != null ? BuiltInRegistries.FLUID.getKey(fluid) : "(null)",
-			this.parent.getTag() != null ? this.parent.getTag().toString() : "(-)"
+			this.parent.getComponentsPatch().isEmpty() ? "(-)" : this.parent.getComponentsPatch().toString()
 		);
 	}
 }

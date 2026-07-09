@@ -68,8 +68,32 @@ public final class Ic2ItemTags
 
 	private static TagKey<Item> create(String fabricName, String forgeName)
 	{
-		ResourceLocation id = ResourceLocation.parse(IC2.envProxy.isFabricEnv() ? fabricName : forgeName);
+		ResourceLocation id = ResourceLocation.parse(IC2.envProxy.isFabricEnv() ? fabricName : toCommon(forgeName));
 		return TagKey.create(Registries.ITEM, id);
+	}
+
+	// NeoForge 1.21 uses the 'c' common-tag namespace with the forge-style path structure
+	// (a few forge paths were renamed in the c convention).
+	static String toCommon(String forgeName)
+	{
+		if (!forgeName.startsWith("forge:"))
+		{
+			return forgeName;
+		}
+
+		String path = forgeName.substring("forge:".length());
+		if (path.startsWith("blocks/"))
+		{
+			path = "storage_blocks/" + path.substring("blocks/".length());
+		} else if (path.equals("glass"))
+		{
+			path = "glass_blocks";
+		} else if (path.equals("stone"))
+		{
+			path = "stones";
+		}
+
+		return "c:" + path;
 	}
 
 	private static TagKey<Item> createResource(String material, String form)

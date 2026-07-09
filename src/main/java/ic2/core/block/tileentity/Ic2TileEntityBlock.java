@@ -453,7 +453,8 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 	}
 
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+	@Override
+	public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit)
 	{
 		if (player.isShiftKeyDown())
 		{
@@ -461,7 +462,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		}
 
 		Ic2TileEntity te = getTe(world, pos);
-		return te == null ? InteractionResult.PASS : te.onActivated(player, hand, hit.getDirection(), hit.getLocation());
+		return te == null ? InteractionResult.PASS : te.onActivated(player, InteractionHand.MAIN_HAND, hit.getDirection(), hit.getLocation());
 	}
 
 	@Override

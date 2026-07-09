@@ -14,8 +14,10 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -29,7 +31,7 @@ public class ItemArmorNanoSuit extends ItemArmorElectric implements IItemHudProv
 {
 	public static final int[] CHARGED_PROTECTION = new int[] { 3, 6, 8, 3 };
 
-	public ItemArmorNanoSuit(ArmorMaterial material, EquipmentSlot slot, Properties settings)
+	public ItemArmorNanoSuit(Holder<ArmorMaterial> material, EquipmentSlot slot, Properties settings)
 	{
 		super(material, slot, settings, 1000000.0, 1600.0, 3);
 	}

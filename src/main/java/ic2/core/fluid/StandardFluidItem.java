@@ -1,5 +1,6 @@
 package ic2.core.fluid;
 
+import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +11,7 @@ public interface StandardFluidItem extends Ic2FluidItem
 {
 	static Ic2FluidStack getFs(ItemStack stack)
 	{
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		if (nbt == null)
 		{
 			return null;
@@ -22,13 +23,7 @@ public interface StandardFluidItem extends Ic2FluidItem
 
 	static void setFs(ItemStack stack, Ic2FluidStack fs)
 	{
-		CompoundTag nbt = stack.getTag();
-		if (nbt == null)
-		{
-			nbt = new CompoundTag();
-			stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
-		}
-
+		CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
 		if (fs != null && !fs.isEmpty())
 		{
 			CompoundTag fsNbt = new CompoundTag();
@@ -38,6 +33,8 @@ public interface StandardFluidItem extends Ic2FluidItem
 		{
 			nbt.remove("Fluid");
 		}
+
+		StackUtil.setTag(stack, nbt);
 	}
 
 	default boolean canDrain(ItemStack stack)

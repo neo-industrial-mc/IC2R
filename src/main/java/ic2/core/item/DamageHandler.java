@@ -1,6 +1,7 @@
 package ic2.core.item;
 
 import ic2.core.IC2;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -50,17 +51,29 @@ public class DamageHandler
 			return false;
 		} else if (src != null)
 		{
-			stack.hurtAndBreak(damage, src, player ->
+			if (src.level() instanceof ServerLevel serverLevel)
 			{
-				if (hand != null)
+				stack.hurtAndBreak(damage, serverLevel, src instanceof ServerPlayer ? (ServerPlayer) src : null, brokenItem ->
 				{
-					player.onEquippedItemBroken(hand);
-				}
-			});
+					if (hand != null)
+					{
+						EquipmentSlot slot = hand == InteractionHand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
+						src.onEquippedItemBroken(brokenItem, slot);
+					}
+				});
+			}
 			return true;
 		} else
 		{
-			return stack.hurt(damage, IC2.random, src instanceof ServerPlayer ? (ServerPlayer) src : null);
+			int newDamage = stack.getDamageValue() + damage;
+			if (newDamage >= stack.getMaxDamage())
+			{
+				stack.shrink(1);
+				return true;
+			}
+
+			stack.setDamageValue(newDamage);
+			return false;
 		}
 	}
 }

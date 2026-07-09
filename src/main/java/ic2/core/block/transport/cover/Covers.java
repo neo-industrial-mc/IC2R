@@ -7,6 +7,7 @@ import ic2.core.util.LogCategory;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +36,7 @@ public class Covers extends TileEntityComponent
 	public ItemStack removeCover(Direction side)
 	{
 		ItemStack ret = this.covers[side.ordinal()];
-		ret.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
+		StackUtil.setTag(ret, null);
 		this.covers[side.ordinal()] = null;
 		return ret;
 	}
@@ -65,7 +66,7 @@ public class Covers extends TileEntityComponent
 				IC2.log.error(LogCategory.Block, "Can't load cover for %s, index %d is out of bounds.", Util.toString(this.parent), index);
 			} else
 			{
-				ItemStack cover = ItemStack.of(coverTag);
+				ItemStack cover = ItemStack.parseOptional(RegistryAccess.EMPTY, coverTag);
 				if (StackUtil.isEmpty(cover))
 				{
 					IC2.log
@@ -112,7 +113,7 @@ public class Covers extends TileEntityComponent
 			{
 				CompoundTag coverTag = new CompoundTag();
 				coverTag.putByte("facing", (byte) facing.ordinal());
-				cover.save(coverTag);
+				cover.save(RegistryAccess.EMPTY, coverTag);
 				coversTag.add(coverTag);
 			}
 		}

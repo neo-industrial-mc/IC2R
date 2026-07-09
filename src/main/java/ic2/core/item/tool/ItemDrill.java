@@ -18,10 +18,10 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -80,7 +80,9 @@ public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSou
 		Player player = getPlayerHoldingItem(stack);
 		if (player != null)
 		{
-			if (player.isEyeInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player))
+			// 1.21: EnchantmentHelper.hasAquaAffinity is gone; aqua affinity now raises the
+			// SUBMERGED_MINING_SPEED attribute from its default 0.2 up to 1.0.
+			if (player.isEyeInFluid(FluidTags.WATER) && player.getAttributeValue(Attributes.SUBMERGED_MINING_SPEED) < 1.0)
 			{
 				speed *= 3.0F;
 			}

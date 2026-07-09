@@ -98,7 +98,8 @@ public class ItemTreetap extends Item implements IBoxable
 	{
 		player.playNotifySound(getToolUseSound(isElectric), SoundSource.PLAYERS, 1.0F, 1.0F);
 		world.gameEvent(GameEvent.BLOCK_CHANGE, pos, Context.of(player, state));
-		world.gameEvent(Ic2GameEvents.TOOL_USE, pos, Context.of(player, null));
+		// 1.21: gameEvent takes Holder<GameEvent>; wrap the raw custom event via its registry.
+		world.gameEvent(net.minecraft.core.registries.BuiltInRegistries.GAME_EVENT.wrapAsHolder(Ic2GameEvents.TOOL_USE), pos, Context.of(player, null));
 	}
 
 	private static void ejectResin(Level world, BlockPos pos, Direction side, int quantity)

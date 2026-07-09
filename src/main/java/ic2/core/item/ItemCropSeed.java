@@ -126,7 +126,7 @@ public class ItemCropSeed extends Item implements ICropSeed
 	@Override
 	public CropCard getCropFromStack(ItemStack is)
 	{
-		CompoundTag nbt = is.getTag();
+		CompoundTag nbt = StackUtil.getTag(is);
 		if (nbt != null && nbt.contains("owner", 8) && nbt.contains("id", 8))
 		{
 			String owner = nbt.getString("owner");
@@ -141,89 +141,95 @@ public class ItemCropSeed extends Item implements ICropSeed
 	@Override
 	public void setCropFromStack(ItemStack is, CropCard crop)
 	{
-		CompoundTag nbt = is.getTag();
+		CompoundTag nbt = StackUtil.getTag(is);
 		if (nbt != null)
 		{
 			nbt.putString("owner", crop.getOwner());
 			nbt.putString("id", crop.getId());
+			StackUtil.setTag(is, nbt);
 		}
 	}
 
 	@Override
 	public int getGrowthFromStack(ItemStack is)
 	{
-		CompoundTag nbt = is.getTag();
+		CompoundTag nbt = StackUtil.getTag(is);
 		return nbt == null ? -1 : nbt.getByte("growth");
 	}
 
 	@Override
 	public void setGrowthFromStack(ItemStack is, int value)
 	{
-		CompoundTag nbt = is.getTag();
+		CompoundTag nbt = StackUtil.getTag(is);
 		if (nbt != null)
 		{
 			nbt.putByte("growth", (byte) value);
+			StackUtil.setTag(is, nbt);
 		}
 	}
 
 	@Override
 	public int getGainFromStack(ItemStack is)
 	{
-		CompoundTag nbt = is.getTag();
+		CompoundTag nbt = StackUtil.getTag(is);
 		return nbt == null ? -1 : nbt.getByte("gain");
 	}
 
 	@Override
 	public void setGainFromStack(ItemStack is, int value)
 	{
-		CompoundTag nbt = is.getTag();
+		CompoundTag nbt = StackUtil.getTag(is);
 		if (nbt != null)
 		{
 			nbt.putByte("gain", (byte) value);
+			StackUtil.setTag(is, nbt);
 		}
 	}
 
 	@Override
 	public int getResistanceFromStack(ItemStack is)
 	{
-		CompoundTag nbt = is.getTag();
+		CompoundTag nbt = StackUtil.getTag(is);
 		return nbt == null ? -1 : nbt.getByte("resistance");
 	}
 
 	@Override
 	public void setResistanceFromStack(ItemStack is, int value)
 	{
-		CompoundTag nbt = is.getTag();
+		CompoundTag nbt = StackUtil.getTag(is);
 		if (nbt != null)
 		{
 			nbt.putByte("resistance", (byte) value);
+			StackUtil.setTag(is, nbt);
 		}
 	}
 
 	@Override
 	public int getScannedFromStack(ItemStack is)
 	{
-		CompoundTag nbt = is.getTag();
+		CompoundTag nbt = StackUtil.getTag(is);
 		return nbt == null ? -1 : nbt.getByte("scan");
 	}
 
 	@Override
 	public void setScannedFromStack(ItemStack is, int value)
 	{
-		CompoundTag nbt = is.getTag();
+		CompoundTag nbt = StackUtil.getTag(is);
 		if (nbt != null)
 		{
 			nbt.putByte("scan", (byte) value);
+			StackUtil.setTag(is, nbt);
 		}
 	}
 
 	@Override
 	public void incrementScannedFromStack(ItemStack is)
 	{
-		CompoundTag nbt = is.getTag();
+		CompoundTag nbt = StackUtil.getTag(is);
 		if (nbt != null)
 		{
 			nbt.putByte("scan", (byte) (this.getScannedFromStack(is) + 1));
+			StackUtil.setTag(is, nbt);
 		}
 	}
 }

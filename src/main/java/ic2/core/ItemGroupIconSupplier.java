@@ -4,6 +4,7 @@ import ic2.core.ref.Ic2Items;
 
 import java.util.function.Supplier;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -57,7 +58,11 @@ final class ItemGroupIconSupplier implements Supplier<ItemStack>
 			case MACHINES -> new ItemStack(Ic2Items.MACERATOR);
 			case GENERATORS_AND_WIRING -> new ItemStack(Ic2Items.GENERATOR);
 			case TOOLS_AND_UTILITIES -> new ItemStack(Ic2Items.WRENCH);
-			case COMBAT -> new ItemStack(Ic2Items.NANO_SABER).setHoverName(Component.nullToEmpty("ic2:tab_icon"));
+			case COMBAT -> {
+				ItemStack saber = new ItemStack(Ic2Items.NANO_SABER);
+				saber.set(DataComponents.CUSTOM_NAME, Component.nullToEmpty("ic2:tab_icon"));
+				yield saber;
+			}
 			case MATERIALS -> new ItemStack(Ic2Items.RUBBER);
 			case FARMING -> new ItemStack(Ic2Items.CROP_SEED_BACK);
 		};

@@ -75,6 +75,15 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	final int insulation;
 	private final boolean hasColor;
 
+	// IC2 cable blocks are created programmatically, not from datapack codecs.
+	private static final com.mojang.serialization.MapCodec<AbstractCableBlock> CABLE_CODEC = com.mojang.serialization.MapCodec.unit((AbstractCableBlock) null);
+
+	@Override
+	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.PipeBlock> codec()
+	{
+		return CABLE_CODEC;
+	}
+
 	protected AbstractCableBlock(Properties settings, CableType type, int insulation)
 	{
 		super(type.getThickness(insulation) / 2.0F, settings);
@@ -405,7 +414,7 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	}
 
 	@Override
-	public @NotNull ItemStack getCloneItemStack(@NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull BlockState state)
+	public @NotNull ItemStack getCloneItemStack(@NotNull net.minecraft.world.level.LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state)
 	{
 		if (this.isFoam())
 		{

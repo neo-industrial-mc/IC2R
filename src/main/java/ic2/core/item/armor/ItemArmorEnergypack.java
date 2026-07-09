@@ -8,7 +8,7 @@ public class ItemArmorEnergypack extends ItemArmorElectric
 {
 	public ItemArmorEnergypack()
 	{
-		super(Ic2ArmorMaterials.ENERGY_PACK, EquipmentSlot.CHEST, new Properties(), 2000000.0, 1000.0, 3);
+		super(Ic2ArmorMaterials.ENERGY_PACK.holder(), EquipmentSlot.CHEST, new Properties(), 2000000.0, 1000.0, 3);
 	}
 
 	@Override

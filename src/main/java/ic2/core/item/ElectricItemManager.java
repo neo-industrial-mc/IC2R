@@ -73,11 +73,9 @@ public class ElectricItemManager implements IElectricItemManager
 				} else
 				{
 					tNBT.remove("charge");
-					if (tNBT.isEmpty())
-					{
-						stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
-					}
 				}
+
+				StackUtil.setTag(stack, tNBT);
 
 				if (stack.getItem() instanceof IElectricItem)
 				{
@@ -129,11 +127,9 @@ public class ElectricItemManager implements IElectricItemManager
 			} else
 			{
 				tNBT.remove("charge");
-				if (tNBT.isEmpty())
-				{
-					stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
-				}
 			}
+
+			StackUtil.setTag(stack, tNBT);
 
 			if (stack.getItem() instanceof IElectricItem)
 			{

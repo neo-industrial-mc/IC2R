@@ -14,7 +14,7 @@ public class ItemComparableItemStack
 	public ItemComparableItemStack(ItemStack stack, boolean copyNbt)
 	{
 		this.item = stack.getItem();
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		if (nbt != null)
 		{
 			if (nbt.isEmpty())

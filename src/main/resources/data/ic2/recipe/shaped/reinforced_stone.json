@@ -1,0 +1,19 @@
+{
+  "type": "ic2:shaped",
+  "pattern": [
+    "SSS",
+    "SAS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "tag": "c:stones"
+    },
+    "A": {
+      "item": "ic2:alloy"
+    }
+  },
+  "result": {
+    "item": "ic2:reinforced_stone"
+  }
+}

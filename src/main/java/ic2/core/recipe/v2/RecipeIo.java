@@ -13,6 +13,7 @@ import ic2.core.recipe.input.RecipeInputFluidContainer;
 import ic2.core.recipe.input.RecipeInputIngredient;
 import ic2.core.recipe.input.RecipeInputItemStack;
 import ic2.core.recipe.input.RecipeInputMultiple;
+import ic2.core.util.StackUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +23,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -58,9 +59,9 @@ public class RecipeIo
 
 			if (object.has("data"))
 			{
-				Item item = GsonHelper.getAsItem(object, "item");
+				Item item = GsonHelper.getAsItem(object, "item").value();
 				ItemStack stack = new ItemStack(item, count);
-				stack.setTag(asNbt(object.get("data"), "data"));
+				StackUtil.setTag(stack, asNbt(object.get("data"), "data"));
 				return new RecipeInputItemStack(stack);
 			}
 
@@ -76,7 +77,7 @@ public class RecipeIo
 			}
 		}
 
-		return new RecipeInputIngredient(Ingredient.fromJson(json), count);
+		return new RecipeInputIngredient(Ingredient.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(), count);
 	}
 
 	private static RecipeInputMultiple parseMultiple(JsonArray array, int count)
@@ -146,22 +147,22 @@ public class RecipeIo
 
 	public static ItemStack parseOutput(JsonObject json)
 	{
-		Item item = GsonHelper.getAsItem(json, "item");
+		Item item = GsonHelper.getAsItem(json, "item").value();
 		int count = GsonHelper.getAsInt(json, "count", 1);
 		CompoundTag nbt = getNbt(json);
 		ItemStack stack = new ItemStack(item, count);
-		stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
+		StackUtil.setTag(stack, nbt);
 		return stack;
 	}
 
 	public static void parseWeightedOutput(JsonObject json, RecipeOutputWeighted randomOutput)
 	{
-		Item item = GsonHelper.getAsItem(json, "item");
+		Item item = GsonHelper.getAsItem(json, "item").value();
 		int count = GsonHelper.getAsInt(json, "count", 1);
 		int weight = GsonHelper.getAsInt(json, "weight", 1);
 		CompoundTag nbt = getNbt(json);
 		ItemStack stack = new ItemStack(item, count);
-		stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
+		StackUtil.setTag(stack, nbt);
 		randomOutput.addOutput(stack, weight);
 	}
 
@@ -198,7 +199,7 @@ public class RecipeIo
 		return json;
 	}
 
-	public static void writeInput(FriendlyByteBuf buf, IRecipeInput input)
+	public static void writeInput(RegistryFriendlyByteBuf buf, IRecipeInput input)
 	{
 		if (input instanceof RecipeInputFluidContainer fluidContainer)
 		{
@@ -208,12 +209,12 @@ public class RecipeIo
 		} else if (input instanceof RecipeInputIngredient ingredient)
 		{
 			buf.writeByte(1);
-			ingredient.getIngredient().toNetwork(buf);
+			Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient.getIngredient());
 			buf.writeVarInt(ingredient.getAmount());
 		} else if (input instanceof RecipeInputItemStack stack)
 		{
 			buf.writeByte(2);
-			buf.writeItem(stack.input);
+			ItemStack.STREAM_CODEC.encode(buf, stack.input);
 		} else
 		{
 			if (!(input instanceof RecipeInputMultiple mult))
@@ -233,13 +234,13 @@ public class RecipeIo
 		}
 	}
 
-	public static IRecipeInput readInput(FriendlyByteBuf buf)
+	public static IRecipeInput readInput(RegistryFriendlyByteBuf buf)
 	{
 		return switch (buf.readByte())
 		{
 			case 0 -> new RecipeInputFluidContainer(BuiltInRegistries.FLUID.byId(buf.readVarInt()), buf.readVarInt());
-			case 1 -> new RecipeInputIngredient(Ingredient.fromNetwork(buf), buf.readVarInt());
-			case 2 -> new RecipeInputItemStack(buf.readItem());
+			case 1 -> new RecipeInputIngredient(Ingredient.CONTENTS_STREAM_CODEC.decode(buf), buf.readVarInt());
+			case 2 -> new RecipeInputItemStack(ItemStack.STREAM_CODEC.decode(buf));
 			case 3 ->
 			{
 				IRecipeInput[] inputs = new IRecipeInput[buf.readVarInt()];
@@ -255,68 +256,68 @@ public class RecipeIo
 		};
 	}
 
-	public static void writeOutput(FriendlyByteBuf buf, Collection<ItemStack> output)
+	public static void writeOutput(RegistryFriendlyByteBuf buf, Collection<ItemStack> output)
 	{
 		buf.writeVarInt(output.size());
 
 		for (ItemStack stack : output)
 		{
-			buf.writeItem(stack);
+			ItemStack.STREAM_CODEC.encode(buf, stack);
 		}
 	}
 
-	public static void writeIntegerOutput(FriendlyByteBuf buf, int output)
+	public static void writeIntegerOutput(RegistryFriendlyByteBuf buf, int output)
 	{
 		buf.writeInt(output);
 	}
 
-	public static void writeWeightedOutput(FriendlyByteBuf buf, RecipeOutputWeighted outputs)
+	public static void writeWeightedOutput(RegistryFriendlyByteBuf buf, RecipeOutputWeighted outputs)
 	{
 		buf.writeVarInt(outputs.getOutputs().size());
 		outputs.forEach((stack, weight) ->
 		{
-			buf.writeItem(stack);
+			ItemStack.STREAM_CODEC.encode(buf, stack);
 			buf.writeInt(weight);
 		});
 	}
 
-	public static Collection<ItemStack> readOutput(FriendlyByteBuf buf)
+	public static Collection<ItemStack> readOutput(RegistryFriendlyByteBuf buf)
 	{
 		int amount = buf.readVarInt();
 		List<ItemStack> stacks = new ArrayList<>(amount);
 
 		for (int i = 0; i < amount; i++)
 		{
-			stacks.add(buf.readItem());
+			stacks.add(ItemStack.STREAM_CODEC.decode(buf));
 		}
 
 		return stacks;
 	}
 
-	public static Integer readIntegerOutput(FriendlyByteBuf buf)
+	public static Integer readIntegerOutput(RegistryFriendlyByteBuf buf)
 	{
 		return buf.readInt();
 	}
 
-	public static RecipeOutputWeighted readWeightedOutput(FriendlyByteBuf buf, RecipeOutputWeighted outputs)
+	public static RecipeOutputWeighted readWeightedOutput(RegistryFriendlyByteBuf buf, RecipeOutputWeighted outputs)
 	{
 		int amount = buf.readVarInt();
 
 		for (int i = 0; i < amount; i++)
 		{
-			outputs.addOutput(buf.readItem(), buf.readInt());
+			outputs.addOutput(ItemStack.STREAM_CODEC.decode(buf), buf.readInt());
 		}
 
 		return outputs;
 	}
 
-	public static void writeFluidStack(FriendlyByteBuf buf, Ic2FluidStack stack)
+	public static void writeFluidStack(RegistryFriendlyByteBuf buf, Ic2FluidStack stack)
 	{
 		buf.writeVarInt(BuiltInRegistries.FLUID.getId(stack.getFluid()));
 		buf.writeVarInt(stack.getAmountMb());
 	}
 
-	public static Ic2FluidStack readFluidStack(FriendlyByteBuf buf)
+	public static Ic2FluidStack readFluidStack(RegistryFriendlyByteBuf buf)
 	{
 		return FluidHandler.createFluidStackMb(BuiltInRegistries.FLUID.byId(buf.readVarInt()), buf.readVarInt(), null);
 	}

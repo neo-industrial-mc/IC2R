@@ -2,6 +2,8 @@ package ic2.core.item;
 
 import ic2.core.ContainerBase;
 import ic2.core.item.tool.HandHeldInventory;
+import ic2.core.util.StackUtil;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetCarriedItemPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -81,7 +83,12 @@ public class ContainerHandHeldInventory<T extends HandHeldInventory> extends Con
 			ItemStack held = this.getCarried();
 			if (this.base.isThisContainer(held))
 			{
-				held.getTag().remove("uid");
+				CompoundTag nbt = StackUtil.getTag(held);
+				if (nbt != null)
+				{
+					nbt.remove("uid");
+					StackUtil.setTag(held, nbt);
+				}
 			}
 		}
 	}

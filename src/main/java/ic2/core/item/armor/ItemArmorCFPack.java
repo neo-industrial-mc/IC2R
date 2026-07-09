@@ -10,7 +10,7 @@ public class ItemArmorCFPack extends ItemArmorFluidTank
 {
 	public ItemArmorCFPack(Properties settings)
 	{
-		super(Ic2ArmorMaterials.CF_PACK, settings, Ic2Fluids.CONSTRUCTION_FOAM.still(), 80000);
+		super(Ic2ArmorMaterials.CF_PACK.holder(), settings, Ic2Fluids.CONSTRUCTION_FOAM.still(), 80000);
 	}
 
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> subItems)

@@ -1,7 +1,6 @@
 package ic2.core.block.comp;
 
 import com.google.common.base.Predicates;
-import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import ic2.api.recipe.ILiquidAcceptManager;
 import ic2.core.block.invslot.InvSlot;

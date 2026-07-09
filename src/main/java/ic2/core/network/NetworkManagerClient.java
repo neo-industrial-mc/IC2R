@@ -31,7 +31,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -301,7 +301,7 @@ final Object teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
 								switch (type)
 								{
 									case Normal:
-										world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (RandomSource.create().nextFloat() - RandomSource.create().nextFloat()) * 0.2F) * 0.7F, true);
+										world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0F, (1.0F + (RandomSource.create().nextFloat() - RandomSource.create().nextFloat()) * 0.2F) * 0.7F, true);
 										world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 0.0, 0.0, 0.0);
 										break;
 									case Electrical:
@@ -381,7 +381,10 @@ final Object teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
 		ClientPacketListener handler = SideProxyClient.mc.getConnection();
 		if (handler != null)
 		{
-			handler.getConnection().send(new ServerboundCustomPayloadPacket(channelId, new FriendlyByteBuf(makePacket(buffer, true))));
+			ByteBuf data = makePacket(buffer, true);
+			byte[] bytes = new byte[data.readableBytes()];
+			data.getBytes(data.readerIndex(), bytes);
+			handler.getConnection().send(new ServerboundCustomPayloadPacket(new Ic2Payload(bytes)));
 		}
 	}
 }

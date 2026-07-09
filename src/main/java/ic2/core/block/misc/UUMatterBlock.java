@@ -14,7 +14,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -43,14 +44,14 @@ public class UUMatterBlock extends LiquidBlock
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+	public net.minecraft.world.ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
 	{
-		ItemStack heldItem = player.getMainHandItem();
 		if (heldItem.is(Items.GLASS_BOTTLE) && state.getValue(LiquidBlock.LEVEL) == 0)
 		{
 			if (!world.isClientSide)
 			{
-				ItemStack waterBottle = PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER);
+				ItemStack waterBottle = new ItemStack(Items.POTION);
+				waterBottle.set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.WATER));
 				if (!player.getAbilities().instabuild)
 				{
 					heldItem.shrink(1);
@@ -64,9 +65,9 @@ public class UUMatterBlock extends LiquidBlock
 				}
 			}
 			world.playSound(player, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-			return InteractionResult.sidedSuccess(world.isClientSide);
+			return net.minecraft.world.ItemInteractionResult.sidedSuccess(world.isClientSide);
 		}
-		return InteractionResult.PASS;
+		return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override
@@ -77,7 +78,7 @@ public class UUMatterBlock extends LiquidBlock
 		FluidState neighborFluidState = world.getFluidState(neighborPos);
 		Fluid neighborFluid = neighborFluidState.getType();
 
-		if (!neighborFluidState.isEmpty() && neighborFluid != getFluid())
+		if (!neighborFluidState.isEmpty() && neighborFluid != this.getFluidState(this.defaultBlockState()).getType())
 		{
 			if (neighborFluidState.is(FluidTags.LAVA))
 			{

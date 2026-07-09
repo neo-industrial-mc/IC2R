@@ -239,8 +239,8 @@ public final class DataEncoder
 				}
 				break;
 			case Enchantment:
-				encode(os, BuiltInRegistries.ENCHANTMENT.getKey((Enchantment) o), false);
-				break;
+				// 1.21 moved enchantments to the dynamic registry; IC2's registry-free network path can't resolve keys here.
+				throw new UnsupportedOperationException("IC2: enchantment network encoding not ported to 1.21");
 			case Enum:
 				os.writeVarInt(((Enum<?>) o).ordinal());
 				break;
@@ -292,7 +292,7 @@ public final class DataEncoder
 				{
 					os.writeByte(StackUtil.getSize(stack));
 					encode(os, stack.getItem(), false);
-					encode(os, stack.getTag(), true);
+					encode(os, StackUtil.getTag(stack), true);
 				}
 				break;
 			case Long:
@@ -547,7 +547,7 @@ public final class DataEncoder
 
 				return new IElectrolyzerRecipeManager.ElectrolyzerRecipe(inputAmount, EUaTick, ticksNeeded, outputs);
 			case Enchantment:
-				return BuiltInRegistries.ENCHANTMENT.get((ResourceLocation) decode(is, DataEncoder.EncodedType.ResourceLocation));
+				throw new UnsupportedOperationException("IC2: enchantment network decoding not ported to 1.21");
 			case Enum:
 				return is.readVarInt();
 			case Float:
@@ -597,13 +597,13 @@ public final class DataEncoder
 				Item item = decode(is, Item.class);
 				CompoundTag nbt = (CompoundTag) decode(is);
 				ItemStack ret = new ItemStack(item, size);
-				ret.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
+				StackUtil.setTag(ret, nbt);
 				return ret;
 			}
 			case Long:
 				return is.readLong();
 			case NBTTagCompound:
-				return NbtIo.read(is, NbtAccounter.UNLIMITED);
+				return NbtIo.read(is, NbtAccounter.unlimitedHeap());
 			case Null:
 				return null;
 			case Object:
@@ -659,7 +659,7 @@ public final class DataEncoder
 			if (srcT.getItem() == dstT.getItem())
 			{
 				dstT.setCount(srcT.getCount());
-				dstT.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(srcT.getTag()));
+				StackUtil.setTag(dstT, StackUtil.getTag(srcT));
 				return true;
 			} else
 			{

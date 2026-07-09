@@ -1,6 +1,5 @@
 package ic2.core.block.machine.gui;
 
-import com.google.common.base.Supplier;
 import ic2.core.Ic2Gui;
 import ic2.core.block.machine.container.ContainerSortingMachine;
 import ic2.core.gui.CustomButton;

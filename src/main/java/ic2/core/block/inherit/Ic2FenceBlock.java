@@ -37,11 +37,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class Ic2FenceBlock extends FenceBlock
 {
-    @Override
-    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec() {
-        return simpleCodec(properties -> new Ic2FenceBlock(properties, this.canBoost));
-    }
-
 	public static final Map<Direction, BooleanProperty> connectProperties = getConnectProperties();
 	public final boolean canBoost;
 

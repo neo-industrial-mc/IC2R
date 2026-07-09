@@ -85,8 +85,7 @@ public class TileEntityReactorChamberElectric extends Ic2TileEntity implements C
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
 		if (reactor != null)
 		{
-			Level world = this.getLevel();
-			return reactor.getBlockType().use(reactor.getBlockState(), world, reactor.getBlockPos(), player, hand, new BlockHitResult(hit, side, reactor.getBlockPos(), false));
+			return reactor.onActivated(player, hand, side, hit);
 		} else
 		{
 			return InteractionResult.PASS;

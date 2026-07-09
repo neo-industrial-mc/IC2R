@@ -13,7 +13,7 @@ public class Ic2WallSignBlock extends WallSignBlock
 {
 	public Ic2WallSignBlock(Properties settings, WoodType signType)
 	{
-		super(settings, signType);
+		super(signType, settings);
 	}
 
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)

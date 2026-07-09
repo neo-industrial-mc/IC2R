@@ -25,7 +25,7 @@ public final class RubberTreeFoliagePlacer extends FoliagePlacer
 			IntProvider.CODEC.fieldOf("offset").forGetter(placer -> placer.offset)
 		).apply(instance, RubberTreeFoliagePlacer::new)
 	);
-	public static final FoliagePlacerType<?> TYPE = registerFoliagePlacer();
+	public static final FoliagePlacerType<RubberTreeFoliagePlacer> TYPE = IC2.envProxy.registerFoliagePlacer(IC2.getIdentifier("rubber_tree"), CODEC);
 
 	RubberTreeFoliagePlacer(IntProvider radius, IntProvider offset)
 	{
@@ -34,11 +34,6 @@ public final class RubberTreeFoliagePlacer extends FoliagePlacer
 
 	public static void init()
 	{
-	}
-
-	private static <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer()
-	{
-		return IC2.envProxy.registerFoliagePlacer(IC2.getIdentifier("rubber_tree"), (Codec<T>) RubberTreeFoliagePlacer.CODEC);
 	}
 
 	protected @NotNull FoliagePlacerType<?> type()

@@ -13,8 +13,17 @@ import ic2.core.item.armor.jetpack.JetpackHandler;
 import ic2.core.fluid.FluidBeBridge;
 import ic2.core.fluid.Ic2FluidBlock;
 import ic2.core.fluid.Ic2FluidItem;
+import ic2.api.item.ElectricItem;
 import ic2.core.item.tool.AbstractItemNanoSaber;
+import ic2.core.item.armor.ItemArmorElectric;
+import ic2.core.item.armor.ItemArmorNanoSuit;
+import ic2.core.item.armor.ItemArmorQuantumSuit;
 import ic2.core.util.LogCategory;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import ic2.core.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,17 +38,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.neoforged.neoforge.capabilities.Capability;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.event.AttachCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
@@ -61,12 +65,6 @@ import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public final class EventHandlerForge {
-
-    private static final ResourceLocation fluidCapId = IC2.getIdentifier("fluid");
-
-    private static final ResourceLocation itemCapId = IC2.getIdentifier("item");
-
-    private static final ResourceLocation nanoSaberCapId = IC2.getIdentifier("nano_saber_state");
 
     @SubscribeEvent
     public void serverStart(ServerStartingEvent event) {
@@ -121,27 +119,23 @@ public final class EventHandlerForge {
     }
 
     @SubscribeEvent
-    public void onWorldTick(LevelTickEvent.Post event) {
-        Level world = event.getLevel();
-        if (event.phase == TickEvent.Phase.START) {
-            TickHandler.onWorldTickStart(world);
-        } else {
-            TickHandler.onWorldTickEnd(world);
-        }
+    public void onWorldTickStart(LevelTickEvent.Pre event) {
+        TickHandler.onWorldTickStart(event.getLevel());
     }
 
     @SubscribeEvent
-    public void onServerTick(ServerTickEvent.Post event) {
-        if (event.phase == TickEvent.Phase.START) {
-            TickHandler.onServerTick();
-        }
+    public void onWorldTickEnd(LevelTickEvent.Post event) {
+        TickHandler.onWorldTickEnd(event.getLevel());
     }
 
     @SubscribeEvent
-    public void onPlayerTick(PlayerTickEvent.Post event) {
-        if (event.phase == TickEvent.Phase.START) {
-            EventHandler.onPlayerTick(event.getEntity());
-        }
+    public void onServerTick(ServerTickEvent.Pre event) {
+        TickHandler.onServerTick();
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(PlayerTickEvent.Pre event) {
+        EventHandler.onPlayerTick(event.getEntity());
     }
 
     @SubscribeEvent
@@ -165,9 +159,8 @@ public final class EventHandlerForge {
 
     @SubscribeEvent
     public void onPlayerLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
-        if (EventHandler.onEntitySwingHand(event.getEntity(), event.getHand())) {
-            event.setCanceled(true);
-        }
+        // LeftClickEmpty is not cancelable in NeoForge 1.21.1; invoke for side effects only.
+        EventHandler.onEntitySwingHand(event.getEntity(), event.getHand());
     }
 
     @SubscribeEvent
@@ -185,7 +178,7 @@ public final class EventHandlerForge {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onEntityAttacked(LivingDamageEvent event) {
+    public void onEntityAttacked(LivingIncomingDamageEvent event) {
         float remaining = EventHandler.onEntityAttacked(event.getEntity(), event.getSource(), event.getAmount());
         if (remaining <= 0.0F) {
             event.setCanceled(true);
@@ -229,7 +222,7 @@ public final class EventHandlerForge {
     @SubscribeEvent
     public void onRetexture(RetextureEvent event) {
         Block block = event.state.getBlock();
-        if (block instanceof RetexturableBlock && ((RetexturableBlock) block).retexture(event.state, (Level) event.getLevel(), event.pos, event.side, event.getEntity(), event.refState, event.refVariant, event.refSide, event.refColorMultipliers)) {
+        if (block instanceof RetexturableBlock && ((RetexturableBlock) block).retexture(event.state, (Level) event.getLevel(), event.pos, event.side, event.player, event.refState, event.refVariant, event.refSide, event.refColorMultipliers)) {
             event.applied = true;
             event.setCanceled(true);
         }
@@ -253,52 +246,35 @@ public final class EventHandlerForge {
         }
     }
 
+    private static final ResourceLocation NANO_SABER_DAMAGE = ResourceLocation.fromNamespaceAndPath("ic2", "nano_saber_damage");
+    private static final ResourceLocation NANO_SABER_SPEED = ResourceLocation.fromNamespaceAndPath("ic2", "nano_saber_speed");
+    private static final ResourceLocation CHARGED_ARMOR = ResourceLocation.fromNamespaceAndPath("ic2", "charged_armor");
+
+    // Dynamic per-stack attribute modifiers (1.21 replacement for the removed Forge getAttributeModifiers hook).
     @SubscribeEvent
-    public void onAttachBlockEntityCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {
-        final BlockEntity be = event.getObject();
-        if (be instanceof Ic2TileEntity) {
-            if (be instanceof FluidBeBridge bridge) {
-                Ic2FluidBlock fb = bridge.getFluidBlock();
-                if (fb != null && fb.isFluidBlock(null, null, null, be)) {
-                    event.addCapability(fluidCapId, new BlockFluidCapImpl(fb, be));
-                }
-            } else {
-                event.addCapability(fluidCapId, new LazyBlockFluidCapImpl(be));
-            }
-            if (be instanceof WorldlyContainer) {
-                event.addCapability(itemCapId, new ICapabilityProvider() {
-
-                    private final LazyOptional<IItemHandlerModifiable>[] caps = SidedInvWrapper.create((WorldlyContainer) be, Util.ALL_DIRS);
-
-                    @Override
-                    @NotNull
-                    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing) {
-                        return (LazyOptional<T>) (facing != null && capability == Capabilities.ItemHandler.BLOCK ? this.caps[facing.ordinal()] : LazyOptional.empty());
-                    }
-                });
-            } else if (be instanceof Container) {
-                event.addCapability(itemCapId, new ICapabilityProvider() {
-
-                    private final LazyOptional<IItemHandler> cap = LazyOptional.of(() -> new InvWrapper((Container) be));
-
-                    @Override
-                    @NotNull
-                    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing) {
-                        return (LazyOptional<T>) (capability == Capabilities.ItemHandler.BLOCK ? this.cap : LazyOptional.empty());
-                    }
-                });
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onAttachItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
-        ItemStack stack = event.getObject();
+    public void onItemAttributeModifiers(ItemAttributeModifierEvent event) {
+        ItemStack stack = event.getItemStack();
         Item item = stack.getItem();
-        if (item instanceof Ic2FluidItem) {
-            event.addCapability(fluidCapId, new ItemFluidCapImpl(stack));
-        } else if (item instanceof AbstractItemNanoSaber) {
-            event.addCapability(nanoSaberCapId, new ItemNanoSaberCapImpl(stack));
+        if (item instanceof AbstractItemNanoSaber) {
+            int dmg = 4;
+            float speed = -3.0F;
+            if (ElectricItem.manager.canUse(stack, 400.0) && AbstractItemNanoSaber.isActive(stack)) {
+                dmg = 20;
+                speed = 0.0F;
+            }
+            event.removeAllModifiersFor(Attributes.ATTACK_DAMAGE);
+            event.removeAllModifiersFor(Attributes.ATTACK_SPEED);
+            event.addModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(NANO_SABER_DAMAGE, dmg, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+            event.addModifier(Attributes.ATTACK_SPEED, new AttributeModifier(NANO_SABER_SPEED, speed, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+        } else if (item instanceof ItemArmorElectric electric) {
+            int[] protection = item instanceof ItemArmorNanoSuit ? ItemArmorNanoSuit.CHARGED_PROTECTION
+                : item instanceof ItemArmorQuantumSuit ? ItemArmorQuantumSuit.CHARGED_PROTECTION : null;
+            if (protection != null && ElectricItem.manager.getCharge(stack) >= electric.getEnergyPerDamage()) {
+                EquipmentSlot slot = electric.getEquipmentSlot();
+                event.removeAllModifiersFor(Attributes.ARMOR);
+                event.addModifier(Attributes.ARMOR, new AttributeModifier(CHARGED_ARMOR, protection[slot.getIndex()], AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.bySlot(slot));
+            }
         }
     }
+
 }

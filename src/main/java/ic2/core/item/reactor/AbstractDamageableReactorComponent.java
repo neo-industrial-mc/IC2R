@@ -3,6 +3,7 @@ package ic2.core.item.reactor;
 import ic2.api.reactor.IReactor;
 import ic2.api.reactor.IReactorComponent;
 import ic2.core.util.Ic2Tooltip;
+import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
 
 import java.util.List;
@@ -83,18 +84,18 @@ public abstract class AbstractDamageableReactorComponent extends Item implements
 
 	protected int getUse(ItemStack stack)
 	{
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		return nbt != null ? nbt.getInt("use") : 0;
 	}
 
 	public void setUse(ItemStack stack, int use)
 	{
-		stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag().putInt("use", use);
+		StackUtil.getOrCreateNbtData(stack).putInt("use", use);
 	}
 
 	protected void incrementUse(ItemStack stack)
 	{
-		stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag().putInt("use", Math.min(this.getUse(stack) + 1, this.maxUse));
+		StackUtil.getOrCreateNbtData(stack).putInt("use", Math.min(this.getUse(stack) + 1, this.maxUse));
 	}
 
 	protected int getMaxUse()

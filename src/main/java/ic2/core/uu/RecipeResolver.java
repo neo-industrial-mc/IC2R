@@ -41,10 +41,11 @@ public class RecipeResolver implements IRecipeResolver
 	{
 		List<RecipeTransformation> ret = new ArrayList<>();
 
-		for (Recipe<?> irecipe : IC2.sideProxy.getRecipeManager().getRecipes())
+		for (var wrapper : IC2.sideProxy.getRecipeManager().getRecipes())
 		{
+			Recipe<?> irecipe = wrapper.value();
 			NonNullList<Ingredient> inputs = irecipe.getIngredients();
-			ItemStack output = irecipe.getResultItem((net.minecraft.core.RegistryAccess) null);
+			ItemStack output = irecipe.getResultItem((net.minecraft.core.HolderLookup.Provider) null);
 			if (!StackUtil.isEmpty(output) && !inputs.isEmpty())
 			{
 				ret.add(new RecipeTransformation(1.0, toDoubleStackList(inputs), new LeanItemStack(output)));

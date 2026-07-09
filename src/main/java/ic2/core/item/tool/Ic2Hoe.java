@@ -8,6 +8,6 @@ public class Ic2Hoe extends HoeItem
 {
 	public Ic2Hoe(Tier material, int attackDamage, float attackSpeed, Properties settings)
 	{
-		super(material, attackDamage, attackSpeed, settings);
+		super(material, settings.attributes(HoeItem.createAttributes(material, attackDamage, attackSpeed)));
 	}
 }

@@ -100,14 +100,14 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 		super.save();
 		if (IC2.sideProxy.isSimulating())
 		{
-			CompoundTag nbt = this.containerStack.getTag();
-			assert nbt != null;
+			CompoundTag nbt = StackUtil.getOrCreateNbtData(this.containerStack);
 			writeTag(nbt, "meta", this.meta);
 			CompoundTag tag = getTag(nbt, "nbt");
 			tag.putBoolean("active", this.nbt.enabled());
 			tag.putByte("type", this.nbt.getForNBT());
 			nbt.put("nbtSettings", tag);
 			writeTag(nbt, "energy", this.energy);
+			StackUtil.setTag(this.containerStack, nbt);
 		}
 	}
 

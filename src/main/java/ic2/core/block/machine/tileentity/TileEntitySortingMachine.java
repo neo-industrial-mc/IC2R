@@ -57,7 +57,7 @@ public class TileEntitySortingMachine extends TileEntityElectricMachine implemen
 		{
 			CompoundTag filterTag = filtersTag.getCompound(i);
 			int index = filterTag.getByte("index") & 255;
-			ItemStack stack = ItemStack.of(filterTag);
+			ItemStack stack = ItemStack.parseOptional(registries, filterTag);
 			this.filters[index / 7][index % 7] = stack;
 		}
 

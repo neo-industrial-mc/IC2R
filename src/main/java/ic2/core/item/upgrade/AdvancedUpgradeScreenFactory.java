@@ -1,6 +1,5 @@
 package ic2.core.item.upgrade;
 
-import com.google.common.base.Supplier;
 import ic2.core.IC2;
 import ic2.core.gui.EnumCycleHandler;
 import ic2.core.gui.MouseButton;

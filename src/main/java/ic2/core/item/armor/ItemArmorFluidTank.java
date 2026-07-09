@@ -11,7 +11,9 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -23,7 +25,7 @@ public abstract class ItemArmorFluidTank extends ItemArmorUtility implements Sta
 	protected final int capacity;
 	protected final Fluid allowfluid;
 
-	public ItemArmorFluidTank(ArmorMaterial material, Properties settings, Fluid allowfluid, int capacity)
+	public ItemArmorFluidTank(Holder<ArmorMaterial> material, Properties settings, Fluid allowfluid, int capacity)
 	{
 		super(material, settings, EquipmentSlot.CHEST);
 		this.capacity = capacity;

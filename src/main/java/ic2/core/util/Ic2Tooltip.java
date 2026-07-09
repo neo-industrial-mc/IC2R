@@ -3,7 +3,7 @@ package ic2.core.util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public final class Ic2Tooltip
 			return true;
 		}
 
-		if (component.getContents() instanceof LiteralContents literal && literal.text().indexOf('\u00a7') >= 0)
+		if (component.getContents() instanceof PlainTextContents.LiteralContents literal && literal.text().indexOf('\u00a7') >= 0)
 		{
 			return true;
 		}

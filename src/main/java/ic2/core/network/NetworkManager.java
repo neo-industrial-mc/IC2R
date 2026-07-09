@@ -30,7 +30,7 @@ import java.util.zip.DeflaterOutputStream;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -778,9 +778,17 @@ public class NetworkManager implements INetworkManager
 	protected final void sendS2CPacket(ServerPlayer player, GrowingBuffer buffer, boolean advancePos)
 	{
 		assert !this.isClient();
-		ByteBuf data = makePacket(buffer, advancePos);
 		ServerGamePacketListenerImpl handler = player.connection;
-		Packet<?> packet = new ClientboundCustomPayloadPacket(channelId, new FriendlyByteBuf(data));
+		// fake players (other mods' automation, gametest mocks) never negotiate the channel
+		if (handler == null || !handler.hasChannel(Ic2Payload.TYPE))
+		{
+			return;
+		}
+
+		ByteBuf data = makePacket(buffer, advancePos);
+		byte[] bytes = new byte[data.readableBytes()];
+		data.getBytes(data.readerIndex(), bytes);
+		Packet<?> packet = new ClientboundCustomPayloadPacket(new Ic2Payload(bytes));
 		handler.send(packet);
 	}
 }

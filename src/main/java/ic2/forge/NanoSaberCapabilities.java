@@ -4,33 +4,18 @@ import ic2.api.item.INanoSaberState;
 import ic2.core.item.tool.AbstractItemNanoSaber;
 import ic2.core.util.StackUtil;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capability;
-import net.neoforged.neoforge.capabilities.CapabilityManager;
-import net.neoforged.neoforge.capabilities.CapabilityToken;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 public final class NanoSaberCapabilities {
 
-    public static final Capability<INanoSaberState> NANO_SABER_STATE = CapabilityManager.get(new CapabilityToken<>() {
-    });
-
     private NanoSaberCapabilities() {
-    }
-
-    public static void register(RegisterCapabilitiesEvent event) {
-        event.register(INanoSaberState.class);
     }
 
     public static INanoSaberState getState(ItemStack stack) {
         if (StackUtil.isEmpty(stack) || !(stack.getItem() instanceof AbstractItemNanoSaber)) {
             return InactiveNanoSaberState.INSTANCE;
         }
-        LazyOptional<INanoSaberState> optional = stack.getCapability(NANO_SABER_STATE, null);
-        if (!optional.isPresent()) {
-            return InactiveNanoSaberState.INSTANCE;
-        }
-        return optional.orElse(InactiveNanoSaberState.INSTANCE);
+        INanoSaberState state = stack.getCapability(Ic2Capabilities.NANO_SABER_STATE);
+        return state != null ? state : InactiveNanoSaberState.INSTANCE;
     }
 
     public static boolean isActive(ItemStack stack) {

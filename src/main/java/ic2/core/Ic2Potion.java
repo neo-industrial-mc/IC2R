@@ -1,5 +1,7 @@
 package ic2.core;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,6 +16,16 @@ public class Ic2Potion extends MobEffect
 		super(type, liquidColor);
 	}
 
+	/**
+	 * Returns the registry Holder for the radiation effect. In 1.21 the mob-effect
+	 * system is Holder-based, so effect look-ups/additions require the Holder rather
+	 * than the raw {@link MobEffect} instance.
+	 */
+	public static Holder<MobEffect> radiationHolder()
+	{
+		return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(radiation);
+	}
+
 	public boolean applyEffectTick(LivingEntity entity, int amplifier)
 	{
 		if (this == radiation)
@@ -24,6 +36,8 @@ public class Ic2Potion extends MobEffect
 			}
 			entity.hurt(Ic2DamageSource.radiation, (float) amplifier / 100 + 0.5F);
 		}
+
+		return true;
 	}
 
 	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier)
@@ -40,7 +54,7 @@ public class Ic2Potion extends MobEffect
 
 	public void applyTo(LivingEntity entity, int duration, int amplifier)
 	{
-		MobEffectInstance effect = new MobEffectInstance(radiation, duration, amplifier);
+		MobEffectInstance effect = new MobEffectInstance(radiationHolder(), duration, amplifier);
 		entity.addEffect(effect);
 	}
 }

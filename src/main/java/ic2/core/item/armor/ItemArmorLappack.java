@@ -9,7 +9,7 @@ public class ItemArmorLappack extends ItemArmorElectric
 {
 	public ItemArmorLappack()
 	{
-		super(Ic2ArmorMaterials.LAP_PACK, EquipmentSlot.CHEST, new Properties().rarity(Rarity.UNCOMMON), 2.0E7, 2500.0, 4);
+		super(Ic2ArmorMaterials.LAP_PACK.holder(), EquipmentSlot.CHEST, new Properties().rarity(Rarity.UNCOMMON), 2.0E7, 2500.0, 4);
 	}
 
 	@Override

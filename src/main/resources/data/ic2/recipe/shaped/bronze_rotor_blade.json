@@ -1,0 +1,19 @@
+{
+  "type": "ic2:shaped",
+  "pattern": [
+    "PSP",
+    "PSP",
+    "PSP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/bronze"
+    },
+    "S": {
+      "tag": "c:ingots/bronze"
+    }
+  },
+  "result": {
+    "item": "ic2:bronze_rotor_blade"
+  }
+}

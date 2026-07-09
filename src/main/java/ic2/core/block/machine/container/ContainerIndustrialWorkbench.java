@@ -24,7 +24,9 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -118,6 +120,11 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 		this.slotsChanged(this.craftMatrix);
 	}
 
+	private static CraftingInput toCraftingInput(CraftingContainer inventory)
+	{
+		return CraftingInput.of(inventory.getWidth(), inventory.getHeight(), inventory.getItems());
+	}
+
 	private CraftingRecipe getRecipe(CraftingContainer inventory)
 	{
 		Level world = this.base.getLevel();
@@ -127,7 +134,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 		}
 
 		MinecraftServer server = world.getServer();
-		return server == null ? null : (CraftingRecipe) server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, inventory, world).orElse(null);
+		return server == null ? null : server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, toCraftingInput(inventory), world).map(RecipeHolder::value).orElse(null);
 	}
 
 	@Override
@@ -157,7 +164,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 			if (world.getServer() != null)
 			{
 				CraftingRecipe recipe = this.getRecipe(this.craftMatrix);
-				ItemStack output = recipe == null ? ItemStack.EMPTY : recipe.assemble(this.craftMatrix, world.registryAccess());
+				ItemStack output = recipe == null ? ItemStack.EMPTY : recipe.assemble(toCraftingInput(this.craftMatrix), world.registryAccess());
 				this.craftResult.setItem(0, output);
 			}
 		}
@@ -242,7 +249,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 							Ic2CraftingResultSlot outputSlot = (Ic2CraftingResultSlot) craftingSlot;
 							CraftingContainer inputInv = outputSlot.getInput();
 							CraftingRecipe recipe = this.getRecipe(inputInv);
-							if (recipe != null && StackUtil.checkItemEquality(recipe.assemble(inputInv, this.base.getLevel().registryAccess()), start))
+							if (recipe != null && StackUtil.checkItemEquality(recipe.assemble(toCraftingInput(inputInv), this.base.getLevel().registryAccess()), start))
 							{
 								sourceItemStack = craftingSlot.getItem();
 								start = sourceItemStack.copy();

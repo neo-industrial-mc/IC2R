@@ -26,15 +26,15 @@ public class ItemTerraWart extends Item
 		player.removeEffect(MobEffects.BLINDNESS);
 		player.removeEffect(MobEffects.POISON);
 		player.removeEffect(MobEffects.WITHER);
-		MobEffectInstance effect = player.getEffect(Ic2Potion.radiation);
+		MobEffectInstance effect = player.getEffect(Ic2Potion.radiationHolder());
 		if (effect != null)
 		{
 			if (effect.getDuration() <= 600)
 			{
-				player.removeEffect(Ic2Potion.radiation);
+				player.removeEffect(Ic2Potion.radiationHolder());
 			} else
 			{
-				player.removeEffect(Ic2Potion.radiation);
+				player.removeEffect(Ic2Potion.radiationHolder());
 				Ic2Potion.radiation.applyTo(player, effect.getDuration() - 600, effect.getAmplifier());
 			}
 		}

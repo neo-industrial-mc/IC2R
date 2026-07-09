@@ -7,12 +7,15 @@ import ic2.forge.model.MaskOverlayItemLoader;
 import ic2.forge.model.WallModelLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -35,6 +38,22 @@ public final class ClientModEventHandlerForge
 	)
 	{
 		event.registerBlockEntityRenderer(reg.type(), reg.factory());
+	}
+
+	private static <H extends AbstractContainerMenu> void registerScreen(
+		ClientEnvProxyForge.ScreenRegistration<H> reg, RegisterMenuScreensEvent event
+	)
+	{
+		event.register(reg.type(), reg.factory()::create);
+	}
+
+	@SubscribeEvent
+	public void onRegisterMenuScreens(RegisterMenuScreensEvent event)
+	{
+		for (ClientEnvProxyForge.ScreenRegistration<?> reg : ClientEnvProxyForge.screenRegistrations)
+		{
+			registerScreen(reg, event);
+		}
 	}
 
 	@SubscribeEvent
@@ -77,10 +96,10 @@ public final class ClientModEventHandlerForge
 	@SubscribeEvent
 	public void onModelRegistry(ModelEvent.RegisterGeometryLoaders event)
 	{
-		event.register("be", new BeModelLoader());
-		event.register("cable", new CableModelLoader());
-		event.register("mask_overlay", new MaskOverlayItemLoader());
-		event.register("wall", new WallModelLoader());
+		event.register(ResourceLocation.fromNamespaceAndPath("ic2", "be"), new BeModelLoader());
+		event.register(ResourceLocation.fromNamespaceAndPath("ic2", "cable"), new CableModelLoader());
+		event.register(ResourceLocation.fromNamespaceAndPath("ic2", "mask_overlay"), new MaskOverlayItemLoader());
+		event.register(ResourceLocation.fromNamespaceAndPath("ic2", "wall"), new WallModelLoader());
 	}
 
 	@SubscribeEvent

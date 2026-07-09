@@ -30,16 +30,16 @@ public class RubberWoodBlock extends Block
 		super(settings);
 	}
 
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+	@Override
+	public net.minecraft.world.ItemInteractionResult useItemOn(ItemStack mainHandItem, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
 	{
-		ItemStack mainHandItem = player.getMainHandItem();
 		if (mainHandItem.getItem() instanceof AxeItem)
 		{
 			WorldUtil.strip(state, world, pos, player, mainHandItem, Ic2Blocks.STRIPPED_RUBBER_WOOD.defaultBlockState());
-			return InteractionResult.sidedSuccess(world.isClientSide);
+			return net.minecraft.world.ItemInteractionResult.sidedSuccess(world.isClientSide);
 		} else
 		{
-			return super.use(state, world, pos, player, hand, hit);
+			return super.useItemOn(mainHandItem, state, world, pos, player, hand, hit);
 		}
 	}
 }

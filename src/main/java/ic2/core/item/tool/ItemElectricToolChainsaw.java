@@ -30,6 +30,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -93,13 +94,13 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	@Override
 	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
-		return super.isCorrectToolForDrops(state) || state.is(Blocks.COBWEB) || Util.canShear(state);
+		return super.isCorrectToolForDrops(stack, state) || state.is(Blocks.COBWEB) || Util.canShear(state);
 	}
 
 	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
-		return !this.canUse(stack) || !state.is(BlockTags.MINEABLE_WITH_AXE) && !state.is(Blocks.COBWEB) && !Util.canShear(state) ? 1.0F : this.speed;
+		return !this.canUse(stack) || !state.is(BlockTags.MINEABLE_WITH_AXE) && !state.is(Blocks.COBWEB) && !Util.canShear(state) ? 1.0F : this.getTier().getSpeed();
 	}
 
 	@Override
@@ -155,11 +156,11 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 				Level level = entity.level();
 				BlockPos pos = entity.blockPosition();
 
-				if (shearable.isShearable(stack, level, pos))
+				if (shearable.isShearable(user, stack, level, pos))
 				{
 					if (this.consumeEnergy(stack, this.operationEnergyCost, user))
 					{
-						List<ItemStack> drops = shearable.onSheared(user, stack, level, pos, 0);
+						List<ItemStack> drops = shearable.onSheared(user, stack, level, pos);
 
 						for (ItemStack drop : drops)
 						{

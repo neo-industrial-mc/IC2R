@@ -28,21 +28,26 @@ import com.mojang.serialization.MapCodec;
 public class Ic2LootModifier extends LootModifier
 {
 	public static final MapCodec<Ic2LootModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> codecStart(instance).apply(instance, Ic2LootModifier::new));
-	public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> lootModifiersRegistry = DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, "ic2");
-	private static final Map<ResourceLocation, ResourceLocation> AllLootTables = Map.ofEntries(
-		Map.entry(BuiltInLootTables.ABANDONED_MINESHAFT, ResourceLocation.fromNamespaceAndPath("ic2", "chests/abandoned_mineshaft")),
-		Map.entry(BuiltInLootTables.DESERT_PYRAMID, ResourceLocation.fromNamespaceAndPath("ic2", "chests/desert_pyramid")),
-		Map.entry(BuiltInLootTables.END_CITY_TREASURE, ResourceLocation.fromNamespaceAndPath("ic2", "chests/end_city_treasure")),
-		Map.entry(BuiltInLootTables.IGLOO_CHEST, ResourceLocation.fromNamespaceAndPath("ic2", "chests/igloo_chest")),
-		Map.entry(BuiltInLootTables.JUNGLE_TEMPLE, ResourceLocation.fromNamespaceAndPath("ic2", "chests/jungle_temple")),
-		Map.entry(BuiltInLootTables.NETHER_BRIDGE, ResourceLocation.fromNamespaceAndPath("ic2", "chests/nether_bridge")),
-		Map.entry(BuiltInLootTables.SIMPLE_DUNGEON, ResourceLocation.fromNamespaceAndPath("ic2", "chests/simple_dungeon")),
-		Map.entry(BuiltInLootTables.SPAWN_BONUS_CHEST, ResourceLocation.fromNamespaceAndPath("ic2", "chests/spawn_bonus_chest")),
-		Map.entry(BuiltInLootTables.STRONGHOLD_CORRIDOR, ResourceLocation.fromNamespaceAndPath("ic2", "chests/stronghold_corridor")),
-		Map.entry(BuiltInLootTables.STRONGHOLD_CROSSING, ResourceLocation.fromNamespaceAndPath("ic2", "chests/stronghold_crossing")),
-		Map.entry(BuiltInLootTables.STRONGHOLD_LIBRARY, ResourceLocation.fromNamespaceAndPath("ic2", "chests/stronghold_library")),
-		Map.entry(BuiltInLootTables.VILLAGE_TOOLSMITH, ResourceLocation.fromNamespaceAndPath("ic2", "chests/village_toolsmith"))
+	public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> lootModifiersRegistry = DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, "ic2");
+	private static final Map<net.minecraft.resources.ResourceKey<LootTable>, net.minecraft.resources.ResourceKey<LootTable>> AllLootTables = Map.ofEntries(
+		Map.entry(BuiltInLootTables.ABANDONED_MINESHAFT, ic2Table("chests/abandoned_mineshaft")),
+		Map.entry(BuiltInLootTables.DESERT_PYRAMID, ic2Table("chests/desert_pyramid")),
+		Map.entry(BuiltInLootTables.END_CITY_TREASURE, ic2Table("chests/end_city_treasure")),
+		Map.entry(BuiltInLootTables.IGLOO_CHEST, ic2Table("chests/igloo_chest")),
+		Map.entry(BuiltInLootTables.JUNGLE_TEMPLE, ic2Table("chests/jungle_temple")),
+		Map.entry(BuiltInLootTables.NETHER_BRIDGE, ic2Table("chests/nether_bridge")),
+		Map.entry(BuiltInLootTables.SIMPLE_DUNGEON, ic2Table("chests/simple_dungeon")),
+		Map.entry(BuiltInLootTables.SPAWN_BONUS_CHEST, ic2Table("chests/spawn_bonus_chest")),
+		Map.entry(BuiltInLootTables.STRONGHOLD_CORRIDOR, ic2Table("chests/stronghold_corridor")),
+		Map.entry(BuiltInLootTables.STRONGHOLD_CROSSING, ic2Table("chests/stronghold_crossing")),
+		Map.entry(BuiltInLootTables.STRONGHOLD_LIBRARY, ic2Table("chests/stronghold_library")),
+		Map.entry(BuiltInLootTables.VILLAGE_TOOLSMITH, ic2Table("chests/village_toolsmith"))
 	);
+
+	private static net.minecraft.resources.ResourceKey<LootTable> ic2Table(String path)
+	{
+		return net.minecraft.resources.ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("ic2", path));
+	}
 
 	static
 	{
@@ -57,12 +62,12 @@ public class Ic2LootModifier extends LootModifier
 	@Override
 	protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context)
 	{
-		ResourceLocation iLootId = AllLootTables.get(context.getQueriedLootTableId());
+		net.minecraft.resources.ResourceKey<LootTable> iLootId = AllLootTables.get(context.getQueriedLootTableId());
 		if (iLootId == null)
 		{
 			return generatedLoot;
 		}
-		LootTable table = context.getLevel().getServer().getLootData().getLootTable(iLootId);
+		LootTable table = context.getLevel().getServer().reloadableRegistries().getLootTable(iLootId);
 		LootParams params = new LootParams.Builder(context.getLevel())
 			.withParameter(LootContextParams.ORIGIN, context.getParam(LootContextParams.ORIGIN))
 			.withOptionalParameter(LootContextParams.THIS_ENTITY, context.getParamOrNull(LootContextParams.THIS_ENTITY))
@@ -73,7 +78,7 @@ public class Ic2LootModifier extends LootModifier
 	}
 
 	@Override
-	public Codec<? extends IGlobalLootModifier> codec()
+	public MapCodec<? extends IGlobalLootModifier> codec()
 	{
 		return CODEC;
 	}

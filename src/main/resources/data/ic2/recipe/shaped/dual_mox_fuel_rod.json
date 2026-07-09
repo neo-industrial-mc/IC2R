@@ -1,0 +1,18 @@
+{
+  "type": "ic2:shaped",
+  "pattern": [
+    "UIU"
+  ],
+  "key": {
+    "U": {
+      "item": "ic2:mox_fuel_rod",
+      "data": {"use": 0}
+    },
+    "I": {
+      "tag": "c:plates/iron"
+    }
+  },
+  "result": {
+    "item": "ic2:dual_mox_fuel_rod"
+  }
+}

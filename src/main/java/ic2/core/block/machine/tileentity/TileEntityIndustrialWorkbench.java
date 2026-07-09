@@ -32,7 +32,9 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -107,7 +109,7 @@ public class TileEntityIndustrialWorkbench extends TileEntityInventory implement
 	public void onPlaced(ItemStack stack, LivingEntity placer, Direction facing)
 	{
 		super.onPlaced(stack, placer, facing);
-		if (!stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) || !stack.getTag().contains("PLACED"))
+		if (!stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) || !StackUtil.getTag(stack).contains("PLACED"))
 		{
 			this.leftCrafting.tool.put(new ItemStack(Ic2Items.FORGE_HAMMER));
 			this.rightCrafting.tool.put(new ItemStack(Ic2Items.CUTTER));
@@ -235,6 +237,11 @@ public class TileEntityIndustrialWorkbench extends TileEntityInventory implement
 		public final ResultContainer resultInv = new ResultContainer();
 		protected CraftingRecipe recipe;
 
+		private static CraftingInput toCraftingInput(CraftingContainer inv)
+		{
+			return CraftingInput.of(inv.getWidth(), inv.getHeight(), inv.getItems());
+		}
+
 		public InvSlotCraftingCombo(TileEntityInventory base, String name, TagKey<Item> tool)
 		{
 			this.input = new InvSlotConsumable(base, name + "Input", InvSlot.Access.I, 1, InvSlot.InvSide.ANY)
@@ -294,12 +301,12 @@ public class TileEntityIndustrialWorkbench extends TileEntityInventory implement
 					return false;
 				}
 
-				if (this.recipe != null && this.recipe.matches(this.crafting, world))
+				if (this.recipe != null && this.recipe.matches(toCraftingInput(this.crafting), world))
 				{
 					return true;
 				}
 
-				this.recipe = (CraftingRecipe) world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this.crafting, world).orElse(null);
+				this.recipe = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, toCraftingInput(this.crafting), world).map(RecipeHolder::value).orElse(null);
 				return this.recipe != null;
 			} else
 			{
@@ -314,7 +321,7 @@ public class TileEntityIndustrialWorkbench extends TileEntityInventory implement
 				return StackUtil.emptyStack;
 			}
 			Level world = this.tool.base.getParent().getLevel();
-			return this.recipe.assemble(this.crafting, world.registryAccess());
+			return this.recipe.assemble(toCraftingInput(this.crafting), world.registryAccess());
 		}
 	}
 }

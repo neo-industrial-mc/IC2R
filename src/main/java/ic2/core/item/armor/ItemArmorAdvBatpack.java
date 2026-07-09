@@ -8,7 +8,7 @@ public class ItemArmorAdvBatpack extends ItemArmorElectric
 {
 	public ItemArmorAdvBatpack()
 	{
-		super(Ic2ArmorMaterials.ADVANCED_BAT_PACK, EquipmentSlot.CHEST, new Properties(), 600000.0, 1000.0, 2);
+		super(Ic2ArmorMaterials.ADVANCED_BAT_PACK.holder(), EquipmentSlot.CHEST, new Properties(), 600000.0, 1000.0, 2);
 	}
 
 	@Override

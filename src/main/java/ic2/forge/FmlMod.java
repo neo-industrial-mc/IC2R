@@ -15,10 +15,8 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.IExtensionPoint.DisplayTest;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -36,14 +34,13 @@ public final class FmlMod {
 
     public static FmlMod instance;
 
-    private final FMLJavaModLoadingContext ctx;
+    private final ModContainer modContainer;
 
     private List<Runnable> toRunAfterRegistryInit = new ArrayList<>();
 
-    public FmlMod(FMLJavaModLoadingContext ctx, ModContainer modContainer) {
+    public FmlMod(IEventBus modEventBus, ModContainer modContainer) {
         instance = this;
-        this.ctx = ctx;
-        IEventBus modEventBus = this.ctx.getModEventBus();
+        this.modContainer = modContainer;
         modEventBus.register(this);
         EnvProxyForge.blockEntityRegistry.register(modEventBus);
         EnvProxyForge.creativeTabRegistry.register(modEventBus);
@@ -58,11 +55,12 @@ public final class FmlMod {
         Ic2LootModifier.lootModifiersRegistry.register(modEventBus);
         if (FMLEnvironment.dist.isClient()) {
             modEventBus.register(new ClientModEventHandlerForge());
-            this.ctx.registerConfig(ModConfig.Type.CLIENT, IC2ClientConfig.SPEC);
+            this.modContainer.registerConfig(ModConfig.Type.CLIENT, IC2ClientConfig.SPEC);
         }
         Ic2Fluids.init();
-        this.ctx.registerConfig(ModConfig.Type.COMMON, IC2Config.SPEC);
-        modEventBus.addListener(NanoSaberCapabilities::register);
+        this.modContainer.registerConfig(ModConfig.Type.COMMON, IC2Config.SPEC);
+        modEventBus.addListener(Ic2Capabilities::register);
+        modEventBus.addListener(Ic2Network::register);
     }
 
     @SubscribeEvent
@@ -72,8 +70,6 @@ public final class FmlMod {
         if (FMLEnvironment.dist.isClient()) {
             NeoForge.EVENT_BUS.register(new ClientEventHandlerForge());
         }
-        NetworkRegistry.newEventChannel(NetworkManager.channelId, () -> "0", v -> true, v -> true).registerObject(new ForgeNetworkHandler());
-        this.ctx.registerExtensionPoint(DisplayTest.class, () -> new DisplayTest(() -> "OH, NO!", (in, net) -> true));
         if (!loadState.compareAndSet(1, 2)) {
             throw new IllegalStateException();
         }
@@ -84,6 +80,12 @@ public final class FmlMod {
     public void init(FMLLoadCompleteEvent event) {
         if (!loadState.compareAndSet(2, 3)) {
             throw new IllegalStateException();
+        }
+        if (this.toRunAfterRegistryInit != null) {
+            for (Runnable runnable : this.toRunAfterRegistryInit) {
+                runnable.run();
+            }
+            this.toRunAfterRegistryInit = null;
         }
         EventHandler.onInitLate();
     }
@@ -117,6 +119,14 @@ public final class FmlMod {
     }
 
     @SubscribeEvent
+    public void registerStatusEffects(RegisterEvent event) {
+        // MOB_EFFECT registers before BLOCK, so potions must be created here rather than in onInitEarly.
+        if (event.getRegistryKey() == Registries.MOB_EFFECT) {
+            ic2.core.init.BlocksItems.initPotions();
+        }
+    }
+
+    @SubscribeEvent
     public void registerBlocks(RegisterEvent event) {
         if (event.getRegistryKey() == Registries.BLOCK) {
             if (!loadState.compareAndSet(0, 1)) {
@@ -130,16 +140,6 @@ public final class FmlMod {
     public void registerGameEvents(RegisterEvent event) {
         if (event.getRegistryKey() == Registries.SOUND_EVENT) {
             EventHandler.onInitGameEvents();
-        }
-    }
-
-    @SubscribeEvent
-    public void registerLate(RegisterEvent event) {
-        if (event.getRegistryKey() == ForgeRegistries.Keys.HOLDER_SET_TYPES) {
-            for (Runnable runnable : this.toRunAfterRegistryInit) {
-                runnable.run();
-            }
-            this.toRunAfterRegistryInit = null;
         }
     }
 

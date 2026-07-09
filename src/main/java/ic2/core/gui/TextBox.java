@@ -5,10 +5,12 @@ import com.google.common.base.Predicates;
 import com.mojang.blaze3d.platform.GlStateManager.LogicOp;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.gui.GuiGraphics;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import net.minecraft.util.StringUtil;
 import ic2.core.Ic2Gui;
 import ic2.core.proxy.SideProxyClient;
 import ic2.core.util.Util;
@@ -241,18 +243,16 @@ public class TextBox extends GuiElement<TextBox>
 			startX = this.x + this.width;
 		}
 
-		Tesselator tessellator = Tesselator.getInstance();
-		BufferBuilder buffer = tessellator.getBuilder();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(LogicOp.OR_REVERSE);
-		buffer = Tesselator.getInstance().begin(Mode.QUADS, DefaultVertexFormat.POSITION);
-		buffer.vertex(startX, endY, 0.0);
-		buffer.vertex(endX, endY, 0.0);
-		buffer.vertex(endX, startY, 0.0);
-		buffer.vertex(startX, startY, 0.0);
-		tessellator.end();
+		BufferBuilder buffer = Tesselator.getInstance().begin(Mode.QUADS, DefaultVertexFormat.POSITION);
+		buffer.addVertex((float) startX, (float) endY, 0.0F);
+		buffer.addVertex((float) endX, (float) endY, 0.0F);
+		buffer.addVertex((float) endX, (float) startY, 0.0F);
+		buffer.addVertex((float) startX, (float) startY, 0.0F);
+		BufferUploader.drawWithShader(buffer.buildOrThrow());
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.disableColorLogicOp();
 	}
@@ -326,7 +326,7 @@ public class TextBox extends GuiElement<TextBox>
 				case 266:
 				case 267:
 				default:
-					if (!SharedConstants.isAllowedChatCharacter(typedChar) || !this.willDraw())
+					if (!StringUtil.isAllowedChatCharacter(typedChar) || !this.willDraw())
 					{
 						return super.onKeyTyped(typedChar, keyCode);
 					}
@@ -407,7 +407,7 @@ public class TextBox extends GuiElement<TextBox>
 	public void writeText(String textToWrite)
 	{
 		StringBuilder newText = new StringBuilder();
-		String cleanString = SharedConstants.filterText(textToWrite);
+		String cleanString = StringUtil.filterText(textToWrite);
 		int start = Math.min(this.cursor, this.selectionEnd);
 		int end = Math.max(this.cursor, this.selectionEnd);
 		int insertionPoint = this.maxTextLength - this.text.length() - (start - end);

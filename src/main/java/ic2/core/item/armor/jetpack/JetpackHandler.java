@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -86,12 +87,13 @@ public class JetpackHandler implements IBackupElectricItemManager
 				return;
 			}
 
-			stack.getTag().remove("hasIC2Jetpack");
-			if (stack.getTag().isEmpty())
+			CompoundTag nbt = StackUtil.getTag(stack);
+			if (nbt != null)
 			{
-				stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
+				nbt.remove("hasIC2Jetpack");
+				StackUtil.setTag(stack, nbt);
 			}
-		} else if (Mob.getEquipmentSlotForItem(stack) == EquipmentSlot.CHEST)
+		} else if (StackUtil.getEquipmentSlotForItem(stack) == EquipmentSlot.CHEST)
 		{
 			StackUtil.getOrCreateNbtData(stack).putBoolean("hasIC2Jetpack", true);
 		}
@@ -99,7 +101,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 
 	public static boolean hasJetpackAttached(ItemStack stack)
 	{
-		return !StackUtil.isEmpty(stack) && Mob.getEquipmentSlotForItem(stack) == EquipmentSlot.CHEST && stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) && stack.getTag().getBoolean("hasIC2Jetpack");
+		return !StackUtil.isEmpty(stack) && StackUtil.getEquipmentSlotForItem(stack) == EquipmentSlot.CHEST && stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) && StackUtil.getTag(stack).getBoolean("hasIC2Jetpack");
 	}
 
 	public static boolean hasJetpack(ItemStack stack)
@@ -131,7 +133,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 			amount = Math.min(amount, getTransferLimit());
 		}
 
-		double charge = stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) ? stack.getTag().getDouble("charge") : 0.0;
+		double charge = stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) ? StackUtil.getTag(stack).getDouble("charge") : 0.0;
 		amount = Math.min(amount, this.getMaxCharge(stack) - charge);
 		if (!simulate)
 		{
@@ -151,22 +153,21 @@ public class JetpackHandler implements IBackupElectricItemManager
 				amount = Math.min(amount, getTransferLimit());
 			}
 
-			double charge = stack.getTag().getDouble("charge");
+			CompoundTag nbt = StackUtil.getTag(stack);
+			double charge = nbt.getDouble("charge");
 			amount = Math.min(amount, charge);
 			if (!simulate)
 			{
 				charge -= amount;
 				if (charge == 0.0)
 				{
-					stack.getTag().remove("charge");
-					if (stack.getTag().isEmpty())
-					{
-						stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
-					}
+					nbt.remove("charge");
 				} else
 				{
-					stack.getTag().putDouble("charge", charge);
+					nbt.putDouble("charge", charge);
 				}
+
+				StackUtil.setTag(stack, nbt);
 			}
 
 			return amount;
@@ -240,22 +241,19 @@ public class JetpackHandler implements IBackupElectricItemManager
 	@SubscribeEvent
 	public void tick(PlayerTickEvent.Post event)
 	{
-		if (event.phase == TickEvent.Phase.START)
+		if (playerArmorBuffer.containsKey(event.getEntity()))
 		{
-			if (playerArmorBuffer.containsKey(event.getEntity()))
+			ItemStack stack = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
+			ItemStack lastStack = playerArmorBuffer.get(event.getEntity());
+			if (!StackUtil.isEmpty(lastStack) && hasJetpackAttached(lastStack) && StackUtil.isEmpty(stack))
 			{
-				ItemStack stack = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
-				ItemStack lastStack = playerArmorBuffer.get(event.getEntity());
-				if (!StackUtil.isEmpty(lastStack) && hasJetpackAttached(lastStack) && StackUtil.isEmpty(stack))
-				{
-					ItemStack newJetpack = jetpack.copy();
-					double oldCharge = ElectricItem.manager.getCharge(lastStack);
-					ElectricItem.manager.charge(newJetpack, oldCharge, Integer.MAX_VALUE, true, false);
-					event.getEntity().setItemSlot(EquipmentSlot.CHEST, newJetpack);
-				}
-
-				playerArmorBuffer.remove(event.getEntity());
+				ItemStack newJetpack = jetpack.copy();
+				double oldCharge = ElectricItem.manager.getCharge(lastStack);
+				ElectricItem.manager.charge(newJetpack, oldCharge, Integer.MAX_VALUE, true, false);
+				event.getEntity().setItemSlot(EquipmentSlot.CHEST, newJetpack);
 			}
+
+			playerArmorBuffer.remove(event.getEntity());
 		}
 	}
 

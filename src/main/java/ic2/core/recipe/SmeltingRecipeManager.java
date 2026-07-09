@@ -11,11 +11,11 @@ import ic2.core.util.StackUtil;
 import java.util.Collection;
 import java.util.Collections;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.core.RegistryAccess;
 
@@ -23,9 +23,10 @@ public class SmeltingRecipeManager implements IMachineRecipeManager<ItemStack, I
 {
 	public MachineRecipeResult<ItemStack, ItemStack, ItemStack> apply(ItemStack input, boolean acceptTest)
 	{
-		SmeltingRecipe recipe = (SmeltingRecipe) IC2.sideProxy
+		SmeltingRecipe recipe = IC2.sideProxy
 			.getRecipeManager()
-			.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(new ItemStack[] { input }), null)
+			.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(input), null)
+			.map(RecipeHolder::value)
 			.orElse(null);
 		if (recipe == null)
 		{

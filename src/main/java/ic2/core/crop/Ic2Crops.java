@@ -33,6 +33,7 @@ import ic2.core.proxy.EnvProxy;
 import ic2.core.ref.Ic2BlockTags;
 import ic2.core.ref.Ic2Blocks;
 import ic2.core.ref.Ic2Items;
+import ic2.core.util.StackUtil;
 
 import java.util.AbstractCollection;
 import java.util.Arrays;
@@ -287,7 +288,7 @@ public class Ic2Crops extends Crops
 			return this.getCropCard("ic2", identifier.getPath());
 		} else
 		{
-			CompoundTag nbt = stack.getTag();
+			CompoundTag nbt = StackUtil.getTag(stack);
 			if (nbt == null)
 			{
 				return null;

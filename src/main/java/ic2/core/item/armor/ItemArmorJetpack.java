@@ -12,7 +12,7 @@ public class ItemArmorJetpack extends ItemArmorFluidTank implements IJetpack
 {
 	public ItemArmorJetpack(Properties settings)
 	{
-		super(Ic2ArmorMaterials.JET_PACK, settings, Ic2Fluids.BIOGAS.still(), 30000);
+		super(Ic2ArmorMaterials.JET_PACK.holder(), settings, Ic2Fluids.BIOGAS.still(), 30000);
 	}
 
 	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> stacks)

@@ -43,9 +43,9 @@ public class Rezepte
 		{
 			MatterAmplifierRecipeManager manager = new MatterAmplifierRecipeManager();
 
-			for (RecipeHolder<IRecipeInput, Integer> holder : recipeManager.getAllRecipesFor(Ic2RecipeTypes.MATTER_FABRICATOR))
+			for (var holder : recipeManager.getAllRecipesFor(Ic2RecipeTypes.MATTER_FABRICATOR))
 			{
-				manager.addRecipe(holder.recipe().getInput(), holder.recipe().getOutput(), null, false);
+				manager.addRecipe(holder.value().recipe().getInput(), holder.value().recipe().getOutput(), null, false);
 			}
 
 			return manager;
@@ -54,9 +54,9 @@ public class Rezepte
 		{
 			CannerBottleRecipeManager manager = new CannerBottleRecipeManager();
 
-			for (RecipeHolder<ICannerBottleRecipeManager.Input, ItemStack> holder : recipeManager.getAllRecipesFor(Ic2RecipeTypes.CANNER_BOTTLE))
+			for (var holder : recipeManager.getAllRecipesFor(Ic2RecipeTypes.CANNER_BOTTLE))
 			{
-				manager.addRecipe(holder.recipe().getInput(), holder.recipe().getOutput(), null, false);
+				manager.addRecipe(holder.value().recipe().getInput(), holder.value().recipe().getOutput(), null, false);
 			}
 
 			return manager;
@@ -65,9 +65,9 @@ public class Rezepte
 		{
 			CannerEnrichRecipeManager manager = new CannerEnrichRecipeManager();
 
-			for (RecipeHolder<ICannerEnrichRecipeManager.Input, Ic2FluidStack> holder : recipeManager.getAllRecipesFor(Ic2RecipeTypes.CANNER_ENRICH))
+			for (var holder : recipeManager.getAllRecipesFor(Ic2RecipeTypes.CANNER_ENRICH))
 			{
-				manager.addRecipe(holder.recipe().getInput(), holder.recipe().getOutput(), null, false);
+				manager.addRecipe(holder.value().recipe().getInput(), holder.value().recipe().getOutput(), null, false);
 			}
 
 			return manager;
@@ -85,9 +85,9 @@ public class Rezepte
 		{
 			BasicMachineRecipeManager manager = new BasicMachineRecipeManager();
 
-			for (RecipeHolder<IRecipeInput, Collection<ItemStack>> holder : recipeManager.getAllRecipesFor(recipeType))
+			for (var holder : recipeManager.getAllRecipesFor(recipeType))
 			{
-				manager.addRecipe(holder.recipe(), false);
+				manager.addRecipe(holder.value().recipe(), false);
 			}
 
 			return manager;

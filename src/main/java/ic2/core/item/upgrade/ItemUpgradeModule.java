@@ -107,7 +107,7 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 					int slot = slotNbt.getByte("Slot");
 					if (slot >= 0 && slot < 9)
 					{
-						ItemStack filter = ItemStack.of(slotNbt);
+						ItemStack filter = ItemStack.parseOptional(net.minecraft.core.RegistryAccess.EMPTY, slotNbt);
 						if (!StackUtil.isEmpty(filter))
 						{
 							ret.add(filter);
@@ -123,7 +123,7 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 				return switch (this.nbt)
 				{
 					case IGNORED -> true;
-					case FUZZY -> StackUtil.checkNbtEquality(stack.getTag(), filter.getTag());
+					case FUZZY -> StackUtil.checkNbtEquality(StackUtil.getTag(stack), StackUtil.getTag(filter));
 					case EXACT -> StackUtil.checkNbtEqualityStrict(stack, filter);
 				};
 			}
