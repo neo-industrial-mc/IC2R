@@ -48,6 +48,7 @@
 
 ### 大特性
 
-- IC2 电网目前支持 [Applied Energetics 2](https://modrinth.com/mod/ae2) 的能源接收器！
-- 您可以安装 [Configured](https://modrinth.com/mod/configured) 来使用 GUI 调整 IC2 的配置文件！
-- 高级采矿机现在支持采矿过滤卡来自定义更多的矿石名单！
+- IC2R 电网目前支持 [Applied Energetics 2](https://modrinth.com/mod/ae2) 的能源接收器。
+- 您可以安装 [Configured](https://modrinth.com/mod/configured) 来使用 GUI 调整 IC2 的配置文件。
+- 高级采矿机现在支持采矿过滤卡来自定义更多的矿石名单。
+- IC2R 现在已采用 GTEU 的电力显示方式！您可以在 `config/ic2-common.toml` 中设置字段 `misc.energyNet.mode` 为 `IC2`（默认，经典 IC 电网）或 `GT`（GT 电网）来切换电力计算方式。

@@ -3,10 +3,13 @@ package ic2.core.block.wiring.tileentity;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.profile.VoltageTier;
 import ic2.api.network.INetworkClientTileEntityEventListener;
+import ic2.api.network.NetworkHelper;
+import ic2.core.energy.EnergyNetMode;
 import ic2.core.energy.profile.ElectricalDisplay;
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
 import ic2.core.block.comp.Energy;
+import ic2.core.init.IC2Config;
 import ic2.core.block.tileentity.TileEntityInventory;
 import ic2.core.block.wiring.ContainerTransformer;
 import ic2.core.network.GrowingBuffer;
@@ -120,7 +123,13 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 		this.energy.setEnabled(true);
 		if (force || this.transformMode != newMode)
 		{
+			TileEntityTransformer.Mode previousMode = this.transformMode;
 			this.transformMode = newMode;
+			if (previousMode != newMode)
+			{
+				NetworkHelper.updateTileEntityField(this, "transformMode");
+			}
+
 			this.setActive(this.isStepUp());
 			if (this.isStepUp())
 			{
@@ -155,11 +164,13 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 	@Override
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		super.appendItemTooltip(stack, tooltip, advanced);
-		VoltageTier lowTier = VoltageTier.fromIcTier(this.defaultTier);
-		VoltageTier highTier = VoltageTier.fromIcTier(this.defaultTier + 1);
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.high", ElectricalDisplay.formatPowerCompact(highTier.getVoltage(), highTier, 1)));
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.low", ElectricalDisplay.formatPowerCompact(lowTier.getVoltage() * 4, lowTier, 4)));
+		if (EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get()) != EnergyNetMode.GT)
+		{
+			super.appendItemTooltip(stack, tooltip, advanced);
+		}
+
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.high", this.formatRatedPower(true)));
+		Ic2Tooltip.add(tooltip, Component.translatable("ic2.Transformer.tooltip.low", this.formatRatedPower(false)));
 	}
 
 	public Component getInputFlowDisplay()
@@ -175,21 +186,36 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 	private Component getFlowDisplay(boolean input)
 	{
 		boolean stepUp = this.isStepUp();
-		VoltageTier lowTier = VoltageTier.fromIcTier(this.defaultTier);
-		VoltageTier highTier = VoltageTier.fromIcTier(this.defaultTier + 1);
 		int amps;
 		VoltageTier tier;
 		if (input)
 		{
 			amps = stepUp ? 4 : 1;
-			tier = stepUp ? lowTier : highTier;
+			tier = stepUp ? this.getLowTier() : this.getHighTier();
 		} else
 		{
 			amps = stepUp ? 1 : 4;
-			tier = stepUp ? highTier : lowTier;
+			tier = stepUp ? this.getHighTier() : this.getLowTier();
 		}
 
 		return ElectricalDisplay.formatPower(tier.getVoltage() * amps, tier, amps);
+	}
+
+	private Component formatRatedPower(boolean high)
+	{
+		VoltageTier tier = high ? this.getHighTier() : this.getLowTier();
+		int amps = high ? 1 : 4;
+		return ElectricalDisplay.formatPowerCompact(tier.getVoltage() * amps, tier, amps);
+	}
+
+	private VoltageTier getLowTier()
+	{
+		return VoltageTier.fromIcTier(this.defaultTier);
+	}
+
+	private VoltageTier getHighTier()
+	{
+		return VoltageTier.fromIcTier(this.defaultTier + 1);
 	}
 
 	@Override

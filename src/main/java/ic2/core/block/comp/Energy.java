@@ -366,6 +366,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		}
 
 		this.profile.clearMaxSinkAmperageOverride();
+		this.profile.clearSinkWorkingVoltage();
 		this.profile.setRecipePower(recipePowerEuPerTick);
 		this.profile.setWorkingVoltage(voltage);
 	}
@@ -385,6 +386,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 	public void configureStorageBlock()
 	{
 		VoltageTier tier = VoltageTier.fromIcTier(this.sinkTier);
+		this.profile.clearSinkWorkingVoltage();
 		this.profile.setWorkingVoltage(tier);
 		this.profile.setRecipePower(0);
 		this.profile.setMaxSinkAmperageOverride(2);
@@ -392,6 +394,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 
 	public void configureFixedSource(int productionEuPerTick)
 	{
+		this.profile.clearSinkWorkingVoltage();
 		this.profile.setWorkingVoltage(VoltageTier.LV);
 		this.profile.setRecipePower(productionEuPerTick);
 		this.setSourceTier(VoltageTier.LV.getIcTier());
@@ -400,6 +403,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 	public void configureDynamicSource(double outputEuPerTick)
 	{
 		VoltageTier tier = VoltageTier.fromPower(outputEuPerTick);
+		this.profile.clearSinkWorkingVoltage();
 		this.profile.setWorkingVoltage(tier);
 		this.profile.setRecipePower((int) Math.round(outputEuPerTick));
 		if (this.sinkDirections.isEmpty())
@@ -413,6 +417,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		this.profile.clearMaxSinkAmperageOverride();
 		this.profile.setRecipePower(0);
 		this.profile.setWorkingVoltage(VoltageTier.fromIcTier(this.sourceTier));
+		this.profile.setSinkWorkingVoltage(VoltageTier.fromIcTier(this.sinkTier));
 		this.profile.setMaxSinkAmperageOverride(stepUp ? 4 : 1);
 	}
 
@@ -421,7 +426,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 	{
 		if (!this.sinkDirections.isEmpty() && !this.sourceDirections.isEmpty())
 		{
-			return VoltageTier.fromIcTier(this.sinkTier);
+			return this.profile.getSinkWorkingVoltage();
 		}
 
 		return this.profile.getWorkingVoltage();

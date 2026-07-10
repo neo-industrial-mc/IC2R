@@ -5,6 +5,7 @@ import ic2.api.energy.profile.VoltageTier;
 public class ElectricalProfile
 {
 	private VoltageTier workingVoltage;
+	private VoltageTier sinkWorkingVoltage;
 	private int recipePower;
 	private int maxSinkAmperageOverride = -1;
 
@@ -21,6 +22,21 @@ public class ElectricalProfile
 	public void setWorkingVoltage(VoltageTier workingVoltage)
 	{
 		this.workingVoltage = workingVoltage;
+	}
+
+	public VoltageTier getSinkWorkingVoltage()
+	{
+		return this.sinkWorkingVoltage != null ? this.sinkWorkingVoltage : this.workingVoltage;
+	}
+
+	public void setSinkWorkingVoltage(VoltageTier sinkWorkingVoltage)
+	{
+		this.sinkWorkingVoltage = sinkWorkingVoltage;
+	}
+
+	public void clearSinkWorkingVoltage()
+	{
+		this.sinkWorkingVoltage = null;
 	}
 
 	public int getRecipePower()

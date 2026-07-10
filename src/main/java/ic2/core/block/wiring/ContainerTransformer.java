@@ -20,6 +20,7 @@ public class ContainerTransformer extends ContainerFullInv<TileEntityTransformer
 	{
 		List<String> ret = super.getNetworkedFields();
 		ret.add("configuredMode");
+		ret.add("transformMode");
 		ret.add("inputFlow");
 		ret.add("outputFlow");
 		return ret;
