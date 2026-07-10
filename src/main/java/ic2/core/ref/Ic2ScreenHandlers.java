@@ -51,6 +51,7 @@ import ic2.core.block.wiring.ContainerTransformer;
 import ic2.core.gui.dynamic.DynamicContainer;
 import ic2.core.item.IHandHeldInventory;
 import ic2.core.item.IHandHeldSubInventory;
+import ic2.core.item.tool.ContainerContainmentbox;
 import ic2.core.item.tool.ContainerMeter;
 import ic2.core.item.tool.ContainerMiningFilter;
 import ic2.core.item.tool.ContainerToolScanner;
@@ -133,6 +134,7 @@ public final class Ic2ScreenHandlers
 	public static final MenuType<ContainerToolScanner> SCANNER = registerManagedItem("scanner");
 	public static final MenuType<ContainerMeter> METER = registerManagedItem("meter");
 	public static final MenuType<ContainerToolbox> TOOL_BOX = registerManagedItem("tool_box");
+	public static final MenuType<ContainerContainmentbox> CONTAINMENT_BOX = registerManagedItem("containment_box");
 	public static final MenuType<ContainerAnalyzer> CROP_ANALYZER = registerManagedItem("crop_analyzer");
 	public static final MenuType<ContainerMiningFilter> MINING_FILTER = registerManagedItem("mining_filter");
 

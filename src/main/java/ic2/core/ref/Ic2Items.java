@@ -69,6 +69,7 @@ import ic2.core.item.tool.ItemToolPainter;
 import ic2.core.item.tool.ItemToolWrench;
 import ic2.core.item.tool.ItemToolWrenchElectric;
 import ic2.core.item.tool.ItemWeedingTrowel;
+import ic2.core.item.tool.ItemContainmentbox;
 import ic2.core.item.tool.ItemToolbox;
 import ic2.core.item.tool.ItemTreetap;
 import ic2.core.item.tool.ItemTreetapElectric;
@@ -485,6 +486,7 @@ public final class Ic2Items
 	public static final Item DEBUG_ITEM = register("debug_item", new ItemDebug(new Properties().stacksTo(1)));
 	public static final Item FORGE_HAMMER = register("forge_hammer", new ItemToolCrafting(new Properties().durability(80)));
 	public static final Item TOOL_BOX = register("tool_box", new ItemToolbox(new Properties().stacksTo(1)));
+	public static final Item CONTAINMENT_BOX = register("containment_box", new ItemContainmentbox(new Properties().stacksTo(1)));
 	public static final Item METER = register("meter", new ItemToolMeter(new Properties().stacksTo(1)));
 	public static final Item TREETAP = register("treetap", new ItemTreetap(new Properties().durability(16)));
 	public static final Item WRENCH = register("wrench", new ItemToolWrench(new Properties().durability(120)));
@@ -1101,6 +1103,7 @@ public final class Ic2Items
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> CHARGING_LAPOTRON_CRYSTAL);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> STEEL_ROTOR);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> TOOL_BOX);
+		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> CONTAINMENT_BOX);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> TRANSFORMER_UPGRADE);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> TREETAP);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> WATER_CELL);

@@ -51,6 +51,7 @@ import ic2.core.entity.render.BoatEntityRenderer;
 import ic2.core.entity.render.ExplosiveBlockRenderer;
 import ic2.core.entity.render.LaserBulletEntityRenderer;
 import ic2.core.gui.dynamic.DynamicGui;
+import ic2.core.item.tool.GuiContainmentbox;
 import ic2.core.item.tool.GuiMiningFilter;
 import ic2.core.item.tool.GuiToolMeter;
 import ic2.core.item.tool.GuiToolScanner;
@@ -154,6 +155,7 @@ public final class SideProxyClient implements SideProxy
 		envProxy.registerScreen(Ic2ScreenHandlers.SCANNER, GuiToolScanner::new);
 		envProxy.registerScreen(Ic2ScreenHandlers.MINING_FILTER, GuiMiningFilter::new);
 		envProxy.registerScreen(Ic2ScreenHandlers.TOOL_BOX, GuiToolbox::new);
+		envProxy.registerScreen(Ic2ScreenHandlers.CONTAINMENT_BOX, GuiContainmentbox::new);
 		envProxy.registerScreen(Ic2ScreenHandlers.METER, GuiToolMeter::new);
 		envProxy.registerScreen(Ic2ScreenHandlers.CROP_ANALYZER, GuiCropAnalyzer::new);
 		envProxy.registerScreen(Ic2ScreenHandlers.SOLAR_GENERATOR, GuiSolarGenerator::new);

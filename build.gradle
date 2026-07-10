@@ -46,7 +46,7 @@ resolvedDevAddons.each { addon ->
     evaluationDependsOn(":$addon")
 }
 
-def resolveAddonModId(addonProject) {
+static def resolveAddonModId(addonProject) {
     def propsFile = addonProject.file('gradle.properties')
     if (!propsFile.isFile()) {
         throw new GradleException("Cannot determine mod id for dev addon '${addonProject.name}': gradle.properties not found.")
