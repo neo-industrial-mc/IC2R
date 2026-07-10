@@ -55,7 +55,11 @@ public abstract class ItemArmorElectric extends ItemArmorIC2 implements IElectri
 
 	public static float damageArmor(Player entity, DamageSource source, float amount)
 	{
-		if (source == null || amount <= 0.0F || source.is(DamageTypeTags.BYPASSES_ENCHANTMENTS))
+		// Void (/out_of_world) and /kill use BYPASSES_INVULNERABILITY; do not spend EU on them.
+		if (source == null
+			|| amount <= 0.0F
+			|| source.is(DamageTypeTags.BYPASSES_ENCHANTMENTS)
+			|| source.is(DamageTypeTags.BYPASSES_INVULNERABILITY))
 		{
 			return amount;
 		}
