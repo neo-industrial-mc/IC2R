@@ -37,6 +37,12 @@
 - [Compact Solar Arrays](https://www.mcmod.cn/class/112.html)
 - [AFSU](https://www.mcmod.cn/class/852.html)
 
+### 联动 Mod
+
+- Applied Energetics 2
+- JEI (WIP: REI, EMI, etc.)
+- Jade (WIP)
+
 ## 与原版的区别
 
 ### 小巧思
