@@ -1,6 +1,7 @@
 package ic2.core.gametest;
 
 import ic2.api.item.ElectricItem;
+import ic2.core.Ic2Potion;
 import ic2.core.item.ElectricItemManager;
 import ic2.core.item.armor.ItemArmorQuantumSuit;
 import ic2.core.ref.Ic2Items;
@@ -54,6 +55,25 @@ public class QuantumSuitGameTests
 
 		helper.assertFalse(player.hasEffect(MobEffects.POISON), "poison should be cured");
 		Ic2GameTestAssertions.assertNear(helper, ElectricItem.manager.getCharge(helmet), MAX_CHARGE - 10000.0, "charge after curing poison");
+
+		helper.succeed();
+	}
+
+	@GameTest(template = EMPTY)
+	public static void quantumHelmetCuresRadiationAtFlatCost(GameTestHelper helper)
+	{
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+		ItemStack helmet = ElectricItemManager.getCharged(Ic2Items.QUANTUM_HELMET, Double.POSITIVE_INFINITY);
+		player.setItemSlot(EquipmentSlot.HEAD, helmet);
+		player.addEffect(new MobEffectInstance(Ic2Potion.radiationHolder(), 200, 200));
+		helper.assertTrue(player.hasEffect(Ic2Potion.radiationHolder()), "player should be irradiated before the tick");
+
+		helmet.getItem().inventoryTick(helmet, helper.getLevel(), player, 0, false);
+
+		helper.assertFalse(player.hasEffect(Ic2Potion.radiationHolder()), "radiation should be cured");
+		// radiation amplifiers encode damage scaling, so the cost is base 10000 EU + amplifier * 100
+		// rather than base * (amplifier + 1), which would drain 2010000 EU here
+		Ic2GameTestAssertions.assertNear(helper, ElectricItem.manager.getCharge(helmet), MAX_CHARGE - (10000.0 + 200 * 100), "charge after curing radiation");
 
 		helper.succeed();
 	}
