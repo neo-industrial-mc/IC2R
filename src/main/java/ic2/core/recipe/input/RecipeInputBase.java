@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import ic2.api.recipe.IRecipeInput;
 import ic2.core.util.StackUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public abstract class RecipeInputBase implements IRecipeInput
 	{
 		if (this.inputs == null)
 		{
-			this.inputs = this.listStacks();
+			this.inputs = new ArrayList<>(this.listStacks());
 			this.inputs.replaceAll(stack -> StackUtil.setImmutableSize(stack, this.getAmount()));
 			this.inputs = Collections.unmodifiableList(this.inputs);
 		}
