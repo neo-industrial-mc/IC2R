@@ -1,6 +1,7 @@
 package ic2.core;
 
 import ic2.api.tile.ExplosionWhitelist;
+import ic2.core.block.machine.tileentity.TileEntityExplosive;
 import ic2.core.item.armor.ItemArmorHazmat;
 import ic2.core.util.ItemComparableItemStack;
 import ic2.core.util.StackUtil;
@@ -335,8 +336,15 @@ public class Ic2Explosion extends Explosion
 								}
 							}
 
-							this.worldObj.setBlock(tmpPos, Blocks.AIR.defaultBlockState(), 3);
-							block.wasExploded(this.worldObj, tmpPos, this);
+							BlockEntity blockEntity = state.hasBlockEntity() ? this.worldObj.getBlockEntity(tmpPos) : null;
+							if (blockEntity instanceof TileEntityExplosive explosive)
+							{
+								explosive.onExploded(this);
+							} else
+							{
+								this.worldObj.setBlock(tmpPos, Blocks.AIR.defaultBlockState(), 3);
+								block.wasExploded(this.worldObj, tmpPos, this);
+							}
 						}
 					}
 				}

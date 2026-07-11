@@ -8,6 +8,7 @@ import ic2.api.tile.RetexturableBlock;
 import ic2.core.block.comp.ComparatorEmitter;
 import ic2.core.block.comp.Obscuration;
 import ic2.core.block.comp.RedstoneEmitter;
+import ic2.core.block.machine.tileentity.TileEntityExplosive;
 import ic2.core.block.wiring.tileentity.TileEntityLuminator;
 import ic2.core.crop.Ic2CropType;
 import ic2.core.crop.TileEntityCrop;
@@ -32,6 +33,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -48,6 +50,8 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -71,6 +75,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 	private final boolean allowWrenchRotating;
 	private final Set<Direction> supportedFacings;
 	private final Supplier<Ic2TileEntity> dummyTe;
+	private final boolean explosive;
 	private int cropMaxAge = -1;
 	private Ic2CropType cropType;
 
@@ -95,6 +100,7 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		this.supportedFacings = data.supportedFacings;
 		this.facingProperty = this.supportedFacings.size() > 1 ? (Property<Direction>) this.stateDefinition.getProperty("facing") : null;
 		this.dummyTe = Suppliers.memoize(() -> this.newBlockEntity(BlockPos.ZERO, this.defaultBlockState()));
+		this.explosive = TileEntityExplosive.class.isAssignableFrom(teClass);
 	}
 
 	public static Ic2TileEntityBlock create(Properties settings, Class<? extends Ic2TileEntity> teClass, boolean canActive, Ic2TileEntityBlock.DefaultDrop defaultDrop, Set<Direction> supportedFacings, boolean allowWrenchRotating)
@@ -471,6 +477,21 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 		return world.getBlockEntity(pos) instanceof Ic2TileEntity ic2TileEntity ? ic2TileEntity.onClicked(player) : InteractionResult.PASS;
 	}
 
+	@Override
+	protected List<ItemStack> getDrops(BlockState state, LootParams.Builder builder)
+	{
+		if (this.teClass == TileEntityWall.class)
+		{
+			BlockEntity blockEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+			if (blockEntity instanceof TileEntityWall wall)
+			{
+				return List.of(wall.getPickBlock());
+			}
+		}
+
+		return super.getDrops(state, builder);
+	}
+
 	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved)
 	{
 		if (!state.is(newState.getBlock()) && !moved)
@@ -540,6 +561,34 @@ public final class Ic2TileEntityBlock extends Block implements EntityBlock, IWre
 	public Ic2TileEntity getDummyTe()
 	{
 		return this.dummyTe.get();
+	}
+
+	@Override
+	public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion)
+	{
+		if (!level.isClientSide)
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			if (blockEntity instanceof TileEntityExplosive explosive)
+			{
+				explosive.onExploded(explosion);
+				return;
+			}
+		}
+
+		super.onBlockExploded(state, level, pos, explosion);
+	}
+
+	@Override
+	public boolean canDropFromExplosion(BlockState state, BlockGetter level, BlockPos pos, Explosion explosion)
+	{
+		return !this.explosive && super.canDropFromExplosion(state, level, pos, explosion);
+	}
+
+	@Override
+	public boolean dropFromExplosion(Explosion explosion)
+	{
+		return !this.explosive && super.dropFromExplosion(explosion);
 	}
 
 	public enum DefaultDrop
