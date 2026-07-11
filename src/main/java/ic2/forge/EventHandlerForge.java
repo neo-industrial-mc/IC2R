@@ -134,7 +134,12 @@ public final class EventHandlerForge {
     }
 
     @SubscribeEvent
-    public void onPlayerTick(PlayerTickEvent.Pre event) {
+    public void onPlayerTickStart(PlayerTickEvent.Pre event) {
+        EventHandler.onPlayerTickStart(event.getEntity());
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(PlayerTickEvent.Post event) {
         EventHandler.onPlayerTick(event.getEntity());
     }
 

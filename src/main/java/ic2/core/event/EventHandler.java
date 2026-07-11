@@ -14,6 +14,7 @@ import ic2.core.block.ChunkLoadAwareBlockHandler;
 import ic2.core.block.comp.Components;
 import ic2.core.block.generator.tileentity.TileEntitySemifluidGenerator;
 import ic2.core.block.heatgenerator.tileentity.TileEntityFluidHeatGenerator;
+import ic2.core.block.inherit.Ic2FenceBlock;
 import ic2.core.block.machine.tileentity.TileEntityElectrolyzer;
 import ic2.core.block.machine.tileentity.TileEntityFermenter;
 import ic2.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
@@ -227,6 +228,11 @@ public final class EventHandler
 		{
 			((BlockBreakableItem) item).afterBlockBreak(world, player, pos, state, blockEntity);
 		}
+	}
+
+	public static void onPlayerTickStart(Player player)
+	{
+		Ic2FenceBlock.onPlayerTick(player);
 	}
 
 	public static void onPlayerTick(Player player)
