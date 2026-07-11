@@ -108,19 +108,29 @@ public class TileEntityPump extends TileEntityElectricMachine implements IHasGui
 		super.updateEntityServer();
 		this.cachedFluidSource = null;
 		boolean needsInvUpdate = false;
-		if (this.canOperate() && this.energy.getEnergy() >= this.energyConsume * this.operationLength)
+		// Require only the per-tick cost while working (same as standard machines).
+		// Requiring energyConsume * operationLength every tick is wrong: progress already paid
+		// for earlier ticks, and under the GT packet model (e.g. LV = 32 EU) a 40 EU buffer
+		// often sits at ~19 EU mid-cycle — enough for another tick but below the full 20 EU gate.
+		if (this.canOperate())
 		{
 			if (this.progress < this.operationLength)
 			{
-				this.progress++;
-				this.energy.useEnergy(this.energyConsume);
+				if (this.energy.useEnergy(this.energyConsume))
+				{
+					this.progress++;
+					this.activate(false);
+				} else
+				{
+					this.shutdown(false);
+				}
 			} else
 			{
+				// Operation energy was already spent while advancing progress.
 				this.progress = 0;
 				this.operate(false);
+				this.activate(false);
 			}
-
-			this.activate(false);
 		} else
 		{
 			this.shutdown(false);
