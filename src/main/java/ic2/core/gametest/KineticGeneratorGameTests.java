@@ -23,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -223,6 +224,43 @@ public class KineticGeneratorGameTests
 			helper.assertTrue(wind.rotorSlot.isEmpty(), "worn out rotor should break");
 			helper.assertFalse(wind.getActive(), "turbine should stop once the rotor is gone");
 			level.removeBlock(pos, false);
+		});
+	}
+
+	// regression: a spinning rotor must keep its rotation speed and active state across an NBT
+	// save/load round trip (world re-entry), instead of reporting a stopped rotor until the next
+	// wind update happens to change the speed. The client-side half of the fix (the rotor render
+	// angle advancing per client tick instead of per wall-clock and freezing while the game is
+	// paused) is pure rendering and cannot be covered by a server-side gametest.
+	@GameTest(template = EMPTY, timeoutTicks = 200)
+	public static void windKineticGeneratorSpinSurvivesSaveAndLoad(GameTestHelper helper)
+	{
+		ServerLevel level = helper.getLevel();
+		// offset from the peak so simultaneously running wind tests cannot obstruct each other
+		BlockPos pos = helper.absolutePos(new BlockPos(1, 1, 1)).atY(windPeakY(level) + 24);
+		level.setBlockAndUpdate(pos, Ic2Blocks.WIND_KINETIC_GENERATOR.defaultBlockState());
+		TileEntityWindKineticGenerator wind = getTeAt(level, pos, TileEntityWindKineticGenerator.class);
+		wind.rotorSlot.put(0, new ItemStack(Ic2Items.WOODEN_ROTOR));
+
+		// the turbine updates every 32 ticks, so it has spun up by tick 70: even the weakest wind
+		// (base strength 5, an effective strength of ~12 here) exceeds the wooden rotor minimum of 10
+		helper.runAtTickTime(70, () ->
+		{
+			helper.assertTrue(wind.getActive(), "turbine at y=" + pos.getY() + " should be active before the reload");
+			float speed = wind.getRotorAnimationSpeed();
+			helper.assertTrue(speed > 0.0F, "turbine should be spinning before the reload, speed " + speed);
+
+			CompoundTag nbt = wind.saveWithFullMetadata(level.registryAccess());
+			level.removeBlock(pos, false);
+			level.setBlockAndUpdate(pos, Ic2Blocks.WIND_KINETIC_GENERATOR.defaultBlockState());
+			TileEntityWindKineticGenerator restored = getTeAt(level, pos, TileEntityWindKineticGenerator.class);
+			restored.loadWithComponents(nbt, level.registryAccess());
+
+			helper.assertValueEqual(restored.getRotorAnimationSpeed(), speed, "rotation speed after the reload");
+			helper.assertTrue(restored.getActive(), "restored turbine should still be active");
+			helper.assertFalse(restored.rotorSlot.isEmpty(), "restored turbine should keep its rotor");
+			level.removeBlock(pos, false);
+			helper.succeed();
 		});
 	}
 
