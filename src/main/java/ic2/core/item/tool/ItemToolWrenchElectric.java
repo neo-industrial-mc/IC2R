@@ -13,8 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
 
 public class ItemToolWrenchElectric extends ItemElectricTool implements PriorityUsableItem, IBoxable, IEnhancedOverlayProvider
 {
@@ -40,7 +38,7 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 			return InteractionResult.PASS;
 		}
 
-		int useResult = ItemToolWrench.onWrenchUse(player, context, this.canTakeDamage(stack, 10.0));
+		int useResult = ItemToolWrench.onWrenchUse(player, context);
 		return switch (useResult)
 		{
 			case -2 -> InteractionResult.PASS;
@@ -76,13 +74,6 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 	public boolean providesEnhancedOverlay(Level world, BlockPos pos, Direction side, Player player, ItemStack stack)
 	{
 		// Still show the grid with empty charge so the player can plan the click.
-		BlockState state = world.getBlockState(pos);
-		if (state.getBlock() instanceof IWrenchAble)
-		{
-			return true;
-		}
-
-		Property<?> property = state.getBlock().getStateDefinition().getProperty("facing");
-		return property != null && property.getValueClass() == Direction.class;
+		return world.getBlockState(pos).getBlock() instanceof IWrenchAble;
 	}
 }

@@ -30,10 +30,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -46,14 +44,20 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		super(settings);
 	}
 
-	public static int onWrenchUse(Player player, UseOnContext context, boolean removeBlock)
+	/**
+	 * Right-click use: rotate {@link IWrenchAble} blocks only.
+	 * Removal is left-click mining via {@link #beforeBlockBreak}.
+	 *
+	 * @return damage amount on success (server), -2 client success (sound played), -1 no-op
+	 */
+	public static int onWrenchUse(Player player, UseOnContext context)
 	{
-		WrenchResult result = wrenchBlock(context, player, removeBlock);
+		WrenchResult result = wrenchBlock(context, player);
 		if (result != WrenchResult.Nothing)
 		{
 			if (!context.getLevel().isClientSide)
 			{
-				return result == WrenchResult.Rotated ? 1 : 10;
+				return 1;
 			}
 
 			player.playSound(Ic2SoundEvents.ITEM_WRENCH_USE, 1.0F, 1.0F);
@@ -63,7 +67,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return -1;
 	}
 
-	public static WrenchResult wrenchBlock(UseOnContext context, Player player, boolean remove)
+	public static WrenchResult wrenchBlock(UseOnContext context, Player player)
 	{
 		Level world = context.getLevel();
 		BlockPos pos = context.getClickedPos();
@@ -77,10 +81,10 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		Block block = state.getBlock();
 		if (block instanceof IWrenchAble wrenchAble)
 		{
-			return wrenchAbleBlock(world, pos, side, player, remove, state, wrenchAble, context.getClickLocation());
+			return wrenchAbleBlock(world, pos, side, player, wrenchAble, context.getClickLocation());
 		}
 
-		return wrenchVanillaBlock(world, pos, side, player, state, context.getClickLocation());
+		return WrenchResult.Nothing;
 	}
 
 	/**
@@ -105,78 +109,19 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	}
 
 	private static WrenchResult wrenchAbleBlock(
-		Level world, BlockPos pos, Direction side, Player player, boolean remove,
-		BlockState state, IWrenchAble wrenchAble, Vec3 hitLocation
+		Level world, BlockPos pos, Direction side, Player player,
+		IWrenchAble wrenchAble, Vec3 hitLocation
 	)
 	{
 		Direction currentFacing = wrenchAble.getFacing(world, pos);
 		Direction newFacing = resolveNewFacing(side, player, hitLocation, pos, currentFacing);
 
-		// If the facing would change, try to rotate
 		if (newFacing != currentFacing && wrenchAble.setFacing(world, pos, newFacing, player))
 		{
 			return WrenchResult.Rotated;
 		}
 
-		// Rotation didn't happen (same facing or rejected) — try to remove instead
-		if (remove && wrenchAble.wrenchCanRemove(world, pos, player))
-		{
-			return removeBlockWithWrench(world, pos, state, player, wrenchAble);
-		}
-
 		return WrenchResult.Nothing;
-	}
-
-	private static WrenchResult wrenchVanillaBlock(Level world, BlockPos pos, Direction side, Player player, BlockState state, Vec3 hitLocation)
-	{
-		// Alt key: rotate around the clicked side's axis
-		if (IC2.keyboard.isAltKeyDown(player))
-		{
-			Rotation rotation = isAltRotationClockwise(side, player) ? Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90;
-			BlockState newState = IC2.envProxy.rotate(state, world, pos, rotation);
-			if (newState != state)
-			{
-				world.setBlockAndUpdate(pos, newState);
-				return WrenchResult.Rotated;
-			}
-
-			return WrenchResult.Nothing;
-		}
-
-		Property<?> property = state.getBlock().getStateDefinition().getProperty("facing");
-		if (property != null && property.getValueClass() == Direction.class)
-		{
-			@SuppressWarnings("unchecked")
-			Property<Direction> facingProperty = (Property<Direction>) property;
-			Direction facing = state.getValue(facingProperty);
-			Direction newFacing = resolveNewFacing(side, player, hitLocation, pos, facing);
-			if (facing != newFacing && facingProperty.getPossibleValues().contains(newFacing))
-			{
-				// Prefer rotate helper for horizontal-only blocks; fall back to setValue for full 6-way facing.
-				if (facing.getAxis().isHorizontal() && newFacing.getAxis().isHorizontal())
-				{
-					Rotation rotation = getHorizontalRotation(facing, newFacing);
-					BlockState newState = IC2.envProxy.rotate(state, world, pos, rotation);
-					if (newState != state)
-					{
-						world.setBlockAndUpdate(pos, newState);
-						return WrenchResult.Rotated;
-					}
-				}
-
-				world.setBlockAndUpdate(pos, state.setValue(facingProperty, newFacing));
-				return WrenchResult.Rotated;
-			}
-		}
-
-		return WrenchResult.Nothing;
-	}
-
-	private static Rotation getHorizontalRotation(Direction from, Direction to)
-	{
-		if (from.getOpposite() == to) return Rotation.CLOCKWISE_180;
-		if (from.getClockWise(Axis.Y) == to) return Rotation.CLOCKWISE_90;
-		return Rotation.COUNTERCLOCKWISE_90;
 	}
 
 	private static boolean isAltRotationClockwise(Direction sideHit, Player player)
@@ -189,16 +134,16 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return te != null ? ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(te.getType()).toString() : "none";
 	}
 
-	private static WrenchResult removeBlockWithWrench(Level world, BlockPos pos, BlockState state, Player player, IWrenchAble wrenchAble)
+	private static void removeBlockWithWrench(Level world, BlockPos pos, BlockState state, Player player, IWrenchAble wrenchAble)
 	{
 		if (world.isClientSide)
 		{
-			return WrenchResult.Removed;
+			return;
 		}
 
 		if (player.blockActionRestricted(world, pos, ((ServerPlayer) player).gameMode.getGameModeForPlayer()))
 		{
-			return WrenchResult.Nothing;
+			return;
 		}
 
 		Block block = state.getBlock();
@@ -236,8 +181,6 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		{
 			state.spawnAfterBreak((ServerLevel) world, pos, player.getUseItem(), false);
 		}
-
-		return WrenchResult.Removed;
 	}
 
 	// === Left-click (mining) behavior ===
@@ -308,7 +251,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 			return InteractionResult.PASS;
 		}
 
-		int useResult = onWrenchUse(player, context, this.canTakeDamage());
+		int useResult = onWrenchUse(player, context);
 		return switch (useResult)
 		{
 			case -2 -> InteractionResult.PASS;
@@ -340,20 +283,12 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	@Override
 	public boolean providesEnhancedOverlay(Level world, BlockPos pos, Direction side, Player player, ItemStack stack)
 	{
-		BlockState state = world.getBlockState(pos);
-		if (state.getBlock() instanceof IWrenchAble)
-		{
-			return true;
-		}
-
-		Property<?> property = state.getBlock().getStateDefinition().getProperty("facing");
-		return property != null && property.getValueClass() == Direction.class;
+		return world.getBlockState(pos).getBlock() instanceof IWrenchAble;
 	}
 
 	public enum WrenchResult
 	{
 		Rotated,
-		Removed,
 		Nothing
 	}
 }
