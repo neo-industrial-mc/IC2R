@@ -124,6 +124,7 @@ neoForge.ideSyncTask generateModMetadata
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
+            artifactId = 'ic2r'
             from components.java
         }
     }
