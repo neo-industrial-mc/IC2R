@@ -18,6 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -64,6 +65,22 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 		{
 			EnergyNet.instance.addBlockEntityTile(this);
 			this.registeredToEnet = true;
+		}
+	}
+
+	@Override
+	protected void setFacing(Level world, Direction facing)
+	{
+		super.setFacing(world, facing);
+		this.refreshEnergyNet();
+	}
+
+	protected void refreshEnergyNet()
+	{
+		if (this.registeredToEnet && !this.level.isClientSide)
+		{
+			EnergyNet.instance.removeTile(this);
+			EnergyNet.instance.addBlockEntityTile(this);
 		}
 	}
 
