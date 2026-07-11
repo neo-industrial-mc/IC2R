@@ -1,5 +1,6 @@
 package ic2.core.block.steam;
 
+import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
 import ic2.core.block.comp.Fluids;
@@ -8,17 +9,17 @@ import ic2.core.block.tileentity.TileEntityInventory;
 import ic2.core.gui.dynamic.DynamicContainer;
 import ic2.core.network.GuiSynced;
 import ic2.core.ref.Ic2BlockEntities;
-
-import java.util.Collections;
+import ic2.core.util.LiquidUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
-public class TileEntityCokeKilnGrate extends TileEntityInventory implements IHasGui
+public class TileEntityCokeKilnGrate extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener
 {
 	protected final Fluids fluidsComponent = this.addComponent(new Fluids(this));
 	@GuiSynced
@@ -27,14 +28,28 @@ public class TileEntityCokeKilnGrate extends TileEntityInventory implements IHas
 	public TileEntityCokeKilnGrate(BlockPos pos, BlockState state)
 	{
 		super(Ic2BlockEntities.COKE_KILN_GRATE, pos, state);
-		this.fluidTank = this.fluidsComponent.addTank("fluidTank", 64000, InvSlot.Access.O, InvSlot.InvSide.ANY);
+		this.fluidTank = this.fluidsComponent.addTankExtract("fluidTank", 64000, InvSlot.InvSide.ANY);
 	}
 
 	@Override
-	protected void setFacing(Level world, Direction facing)
+	protected InteractionResult onActivated(Player player, InteractionHand hand, Direction side, Vec3 hit)
 	{
-		super.setFacing(world, facing);
-		this.fluidsComponent.changeConnectivity(this.fluidTank, Collections.emptyList(), Collections.singleton(this.getFacing()));
+		if (LiquidUtil.transferFluidFromHandClick(player, hand, this.fluidTank, player.isShiftKeyDown()))
+		{
+			this.setChanged();
+			return InteractionResult.SUCCESS;
+		}
+
+		return super.onActivated(player, hand, side, hit);
+	}
+
+	@Override
+	public void onNetworkEvent(Player player, int event)
+	{
+		if (event == 0 || event == 1)
+		{
+			LiquidUtil.transferFluidFromGuiClick(player, this.fluidTank, event == 1);
+		}
 	}
 
 	@Override
