@@ -1,6 +1,9 @@
 package ic2.core.gametest;
 
 import ic2.api.energy.EnergyNet;
+import ic2.api.energy.tile.IEnergyEmitter;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.info.ILocatable;
 import ic2.core.block.machine.tileentity.TileEntityMacerator;
 import ic2.core.block.tileentity.Ic2TileEntityBlock;
 import ic2.core.block.wiring.AbstractDetectorCableBlock;
@@ -13,12 +16,18 @@ import ic2.core.block.wiring.tileentity.TileEntityLuminator;
 import ic2.core.block.wiring.tileentity.TileEntityTransformer;
 import ic2.core.ref.Ic2Blocks;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -451,6 +460,104 @@ public class EnergyNetGameTests
 			helper.assertFalse(luminator.getActive(), "luminator without redstone must go dark");
 			helper.succeed();
 		});
+	}
+
+	// each grid is calculated exactly once per tick and only on the server thread; the
+	// old async re-run injected a second round of energy off-thread (upstream f516c24f)
+	@GameTest(template = EMPTY)
+	public static void energyTransferRunsOncePerTickOnServerThread(GameTestHelper helper)
+	{
+		helper.setBlock(new BlockPos(1, 2, 1), Ic2Blocks.BATBOX);
+		TileEntityElectricBatBox batbox = getTe(helper, new BlockPos(1, 2, 1), TileEntityElectricBatBox.class);
+		// a bare enet sink below the batbox, demanding 1 EU per calculation so a
+		// duplicate calculation leaves the source with energy for a second packet
+		RecordingSink sink = new RecordingSink(helper.getLevel(), helper.absolutePos(new BlockPos(1, 1, 1)));
+		EnergyNet.instance.addLocatableTile(sink);
+
+		batbox.energy.addEnergy(400.0);
+
+		// the tick right after a topology change runs a transfer calc at both tick start
+		// and tick end, so only record once the freshly built grid has settled
+		helper.runAtTickTime(20, () -> sink.armed = true);
+		helper.runAtTickTime(60, () ->
+		{
+			try
+			{
+				helper.assertFalse(sink.offThreadInjection.get(), "injectEnergy must only be called on the server thread");
+				helper.assertTrue(sink.injectionsByTick.size() >= 10, "sink should have been powered for several ticks, got " + sink.injectionsByTick.size());
+
+				for (Map.Entry<Long, Double> entry : sink.injectionsByTick.entrySet())
+				{
+					Ic2GameTestAssertions.assertNear(helper, entry.getValue(), 1.0, "energy injected during tick " + entry.getKey());
+				}
+			} finally
+			{
+				EnergyNet.instance.removeTile(sink);
+			}
+
+			helper.succeed();
+		});
+	}
+
+	private static final class RecordingSink implements ILocatable, IEnergySink
+	{
+		final Map<Long, Double> injectionsByTick = new ConcurrentHashMap<>();
+		final AtomicBoolean offThreadInjection = new AtomicBoolean();
+		volatile boolean armed;
+		private final ServerLevel world;
+		private final BlockPos pos;
+
+		RecordingSink(ServerLevel world, BlockPos pos)
+		{
+			this.world = world;
+			this.pos = pos;
+		}
+
+		@Override
+		public BlockPos getPosition()
+		{
+			return this.pos;
+		}
+
+		@Override
+		public Level getWorldObj()
+		{
+			return this.world;
+		}
+
+		@Override
+		public boolean acceptsEnergyFrom(IEnergyEmitter emitter, Direction dir)
+		{
+			return true;
+		}
+
+		@Override
+		public double getDemandedEnergy()
+		{
+			return 1.0;
+		}
+
+		@Override
+		public int getSinkTier()
+		{
+			return 1;
+		}
+
+		@Override
+		public double injectEnergy(Direction directionFrom, double amount, double voltage)
+		{
+			if (!this.world.getServer().isSameThread())
+			{
+				this.offThreadInjection.set(true);
+			}
+
+			if (this.armed)
+			{
+				this.injectionsByTick.merge(this.world.getGameTime(), amount, Double::sum);
+			}
+
+			return 0.0;
+		}
 	}
 
 	private static <T extends BlockEntity> T getTe(GameTestHelper helper, BlockPos pos, Class<T> type)
