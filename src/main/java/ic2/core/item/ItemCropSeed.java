@@ -102,7 +102,7 @@ public class ItemCropSeed extends Item implements ICropSeed
 				Player player = context.getPlayer();
 				if (!player.getAbilities().instabuild)
 				{
-					player.getInventory().items.set(player.getInventory().selected, StackUtil.emptyStack);
+					stack.shrink(1);
 				}
 
 				return InteractionResult.SUCCESS;

@@ -210,6 +210,33 @@ public class CropGameTests
 		helper.succeed();
 	}
 
+	// a seed bag used from the off hand must be consumed from the off hand (dupe regression: the
+	// consumption cleared getInventory().selected - the main-hand hotbar slot - regardless of which
+	// hand held the bag, so an off-hand bag was never consumed = infinite planting, and any unrelated
+	// main-hand stack was destroyed instead)
+	@GameTest(template = EMPTY)
+	public static void offHandSeedBagIsConsumedFromTheOffHand(GameTestHelper helper)
+	{
+		placeCropStick(helper, CROP_POS);
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+		ItemStack seed = ItemCropSeed.generateItemStackFromValues(Ic2Crops.cropTerraWart, 5, 6, 7, 4);
+		player.setItemInHand(InteractionHand.OFF_HAND, seed);
+		// a distinct stack in the selected main-hand slot: the old code wiped this instead of the bag
+		player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND, 5));
+
+		BlockPos absolute = helper.absolutePos(CROP_POS);
+		UseOnContext context = new UseOnContext(player, InteractionHand.OFF_HAND, new BlockHitResult(Vec3.atCenterOf(absolute), Direction.UP, absolute, false));
+		InteractionResult result = seed.getItem().useOn(context);
+		helper.assertTrue(result == InteractionResult.SUCCESS, "planting a seed bag from the off hand should succeed, got " + result);
+
+		helper.assertTrue(cropAt(helper, CROP_POS).getCrop() == Ic2Crops.cropTerraWart, "off-hand seed bag should plant terra wart");
+		helper.assertTrue(player.getItemInHand(InteractionHand.OFF_HAND).isEmpty(), "the off-hand seed bag must be consumed");
+		ItemStack mainHand = player.getItemInHand(InteractionHand.MAIN_HAND);
+		helper.assertTrue(mainHand.getItem() == Items.DIAMOND && mainHand.getCount() == 5, "the selected main-hand stack must be left untouched, has " + mainHand);
+
+		helper.succeed();
+	}
+
 	// picking a mature crop destroys it and drops seeds; resistance 31 pushes the first seed roll
 	// above 100%, so at least one seed bag is guaranteed
 	@GameTest(template = EMPTY)
