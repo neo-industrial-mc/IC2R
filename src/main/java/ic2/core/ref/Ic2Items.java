@@ -6,7 +6,9 @@ import ic2.core.crop.ItemCrop;
 import ic2.core.entity.boat.CarbonBoatEntity;
 import ic2.core.entity.boat.ElectricBoatEntity;
 import ic2.core.entity.boat.RubberBoatEntity;
+import ic2.core.block.BehaviorDynamiteDispense;
 import ic2.core.item.*;
+import ic2.core.item.block.ItemDynamite;
 import ic2.core.util.Ic2Tooltip;
 import ic2.core.item.armor.ItemArmorCFPack;
 import ic2.core.item.armor.ItemArmorAdvBatpack;
@@ -54,6 +56,7 @@ import ic2.core.item.tool.ItemDrill;
 import ic2.core.item.tool.ItemDrillIridium;
 import ic2.core.item.tool.ItemElectricToolChainsaw;
 import ic2.core.item.tool.ItemFrequencyTransmitter;
+import ic2.core.item.tool.ItemRemote;
 import ic2.core.item.tool.ItemMiningFilterCard;
 import ic2.core.item.tool.ItemNanoSaber;
 import ic2.core.item.tool.ItemObscurator;
@@ -158,6 +161,8 @@ public final class Ic2Items
 	public static final Item BLACK_WALL = register("black_wall", new ItemBlockIc2(Ic2Blocks.BLACK_WALL, new Properties()));
 	public static final Item ITNT = register("itnt", new ItemBlockIc2(Ic2Blocks.ITNT, new Properties()));
 	public static final Item NUKE = register("nuke", new ItemBlockIc2(Ic2Blocks.NUKE, new Properties().rarity(Rarity.UNCOMMON)));
+	public static final Item DYNAMITE = register("dynamite", new ItemDynamite(new Properties(), false));
+	public static final Item DYNAMITE_STICKY = register("dynamite_sticky", new ItemDynamite(new Properties(), true));
 	public static final Item COPPER_CABLE = register("copper_cable", new ItemCable(Ic2Blocks.COPPER_CABLE, new Properties()));
 	public static final Item INSULATED_COPPER_CABLE = register("insulated_copper_cable", new ItemCable(Ic2Blocks.INSULATED_COPPER_CABLE, new Properties()));
 	public static final Item GLASS_FIBRE_CABLE = register("glass_fibre_cable", new ItemCable(Ic2Blocks.GLASS_FIBRE_CABLE, new Properties()));
@@ -496,6 +501,7 @@ public final class Ic2Items
 	public static final Item BRONZE_SHOVEL = register("bronze_shovel", new ShovelItem(Ic2ToolMaterials.BRONZE, 1.5F, -3.0F, new Properties()));
 	public static final Item BRONZE_PICKAXE = register("bronze_pickaxe", new Ic2Pickaxe(Ic2ToolMaterials.BRONZE, 1, -2.8F, new Properties()));
 	public static final Item FREQUENCY_TRANSMITTER = register("frequency_transmitter", new ItemFrequencyTransmitter(new Properties().stacksTo(1)));
+	public static final Item REMOTE = register("remote", new ItemRemote(new Properties()));
 	public static final Item MINING_FILTER_CARD = register("mining_filter_card", new ItemMiningFilterCard(new Properties().stacksTo(1)));
 	public static final Item CROWBAR = register("crowbar", new ItemToolCrowbar(Tiers.IRON, new Properties().durability(250)));
 	public static final Item ADVANCED_SCANNER = register("advanced_scanner", new ItemScannerAdv(new Properties().stacksTo(1)));
@@ -633,6 +639,9 @@ public final class Ic2Items
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> HAZMAT_HELMET);
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> HAZMAT_LEGGINGS);
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> ITNT);
+		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> DYNAMITE);
+		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> DYNAMITE_STICKY);
+		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> REMOTE);
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> JETPACK);
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> JETPACK_ELECTRIC);
 		addToCreativeTab(Ic2ItemGroupType.COMBAT, () -> BATPACK);
@@ -1124,6 +1133,7 @@ public final class Ic2Items
 		IC2.envProxy.registerBurnTime(WOODEN_ROTOR, 300);
 		IC2.envProxy.registerBurnTime(SCRAP, 350);
 		IC2.envProxy.registerBurnTime(SCRAP_BOX, 3150);
+		BehaviorDynamiteDispense.register(DYNAMITE, DYNAMITE_STICKY);
 	}
 
 	private static <T extends Item> T register(String name, T item)

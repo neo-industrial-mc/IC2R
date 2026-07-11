@@ -29,6 +29,12 @@
     ],
     "subtitle": "subtitle.ic2.item.battery.use"
   },
+  "item.remote.use": {
+    "sounds": [
+      "ic2:tools/dynamite_remote"
+    ],
+    "subtitle": "subtitle.ic2.item.remote.use"
+  },
   "item.chainsaw.idle": {
     "sounds": [
       "ic2:tools/chainsaw/idle"

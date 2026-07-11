@@ -1,7 +1,9 @@
 package ic2.core.ref;
 
 import ic2.core.IC2;
+import ic2.core.entity.DynamiteEntity;
 import ic2.core.entity.LaserBulletEntity;
+import ic2.core.entity.StickyDynamiteEntity;
 import ic2.core.entity.block.ITntEntity;
 import ic2.core.entity.block.NukeEntity;
 import ic2.core.entity.boat.CarbonBoatEntity;
@@ -18,6 +20,8 @@ public final class Ic2Entities
 	public static final EntityType<RubberBoatEntity> RUBBER_BOAT = register("rubber_boat", Builder.<RubberBoatEntity>of(RubberBoatEntity::new, MobCategory.MISC).sized(1.375F, 0.5625F).clientTrackingRange(10));	public static final EntityType<NukeEntity> NUKE = register("nuke", Builder.<NukeEntity>of(NukeEntity::new, MobCategory.MISC).fireImmune().sized(0.98F, 0.98F).clientTrackingRange(10).updateInterval(10));
 	public static final EntityType<ElectricBoatEntity> ELECTRIC_BOAT = register("electric_boat", Builder.<ElectricBoatEntity>of(ElectricBoatEntity::new, MobCategory.MISC).sized(1.375F, 0.5625F).clientTrackingRange(10));
 	public static final EntityType<CarbonBoatEntity> CARBON_BOAT = register("carbon_boat", Builder.<CarbonBoatEntity>of(CarbonBoatEntity::new, MobCategory.MISC).sized(1.375F, 0.5625F).clientTrackingRange(10));
+	public static final EntityType<DynamiteEntity> DYNAMITE = register("dynamite", Builder.<DynamiteEntity>of(DynamiteEntity::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(8).updateInterval(5));
+	public static final EntityType<StickyDynamiteEntity> STICKY_DYNAMITE = register("sticky_dynamite", Builder.<StickyDynamiteEntity>of(StickyDynamiteEntity::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(8).updateInterval(5));
 
 	public static void init()
 	{

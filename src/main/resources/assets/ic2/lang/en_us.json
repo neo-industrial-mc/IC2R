@@ -1267,5 +1267,14 @@
   "subtitle.ic2.machine.terraformer.loop": "Terraformer: Loop",
   "subtitle.ic2.block.nuke.explode": "Nuke: Explode",
   "block.ic2.obscured_wall": "Obscured Wall",
-  "item.ic2.tank.tooltip": "Capacity: %s mB"
+  "item.ic2.tank.tooltip": "Capacity: %s mB",
+  "block.ic2.dynamite": "Dynamite",
+  "item.ic2.dynamite": "Dynamite",
+  "item.ic2.dynamite_sticky": "Sticky Dynamite",
+  "entity.ic2.dynamite": "Dynamite",
+  "entity.ic2.sticky_dynamite": "Sticky Dynamite",
+  "item.ic2.remote": "Dynamite-O-Mote",
+  "ic2.remote.tooltip.linked": "Linked to %s dynamite",
+  "ic2.remote.cannot_unlink": "This dynamite stick is not linked to this remote, cannot unlink.",
+  "subtitle.ic2.item.remote.use": "Dynamite-O-Mote: Use"
 }

@@ -1267,5 +1267,14 @@
   "subtitle.ic2.machine.terraformer.loop": "地形转换机：工作",
   "subtitle.ic2.block.nuke.explode": "核弹：爆炸",
   "block.ic2.obscured_wall": "拟态墙",
-  "item.ic2.tank.tooltip": "容量：%s mB"
+  "item.ic2.tank.tooltip": "容量：%s mB",
+  "block.ic2.dynamite": "炸药",
+  "item.ic2.dynamite": "炸药",
+  "item.ic2.dynamite_sticky": "粘性炸药",
+  "entity.ic2.dynamite": "炸药",
+  "entity.ic2.sticky_dynamite": "粘性炸药",
+  "item.ic2.remote": "炸药引爆器",
+  "ic2.remote.tooltip.linked": "已连接 %s 根炸药",
+  "ic2.remote.cannot_unlink": "该炸药未连接到此引爆器，无法解除连接。",
+  "subtitle.ic2.item.remote.use": "炸药引爆器：使用"
 }

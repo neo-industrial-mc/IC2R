@@ -30,6 +30,7 @@ import ic2.core.block.kineticgenerator.tileentity.TileEntitySteamKineticGenerato
 import ic2.core.block.kineticgenerator.tileentity.TileEntityStirlingKineticGenerator;
 import ic2.core.block.kineticgenerator.tileentity.TileEntityWaterKineticGenerator;
 import ic2.core.block.kineticgenerator.tileentity.TileEntityWindKineticGenerator;
+import ic2.core.block.BlockDynamite;
 import ic2.core.block.machine.MiningPipeBlock;
 import ic2.core.block.machine.tileentity.TileEntityAdvMiner;
 import ic2.core.block.machine.tileentity.TileEntityBatchCrafter;
@@ -219,6 +220,7 @@ public final class Ic2Blocks
 	});
 	public static final Block ITNT = register("itnt", Ic2TileEntityBlock.create(Properties.of().strength(0.0F, 0.0F).sound(SoundType.GRASS), TileEntityITnt.class, false, Ic2TileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
 	public static final Block NUKE = register("nuke", Ic2TileEntityBlock.create(Properties.of().strength(0.0F, 0.0F).sound(SoundType.GRASS), TileEntityNuke.class, false, Ic2TileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
+	public static final Block DYNAMITE = register("dynamite", new BlockDynamite());
 	public static final Block GENERATOR = register("generator", Ic2TileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityGenerator.class, true, Ic2TileEntityBlock.DefaultDrop.Self, Util.horizontalFacings, true));
 	public static final Block GEO_GENERATOR = register("geo_generator", Ic2TileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityGeoGenerator.class, true, Ic2TileEntityBlock.DefaultDrop.Generator, Util.horizontalFacings, true));
 	public static final Block KINETIC_GENERATOR = register("kinetic_generator", Ic2TileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityKineticGenerator.class, true, Ic2TileEntityBlock.DefaultDrop.Generator, Util.allFacings, true));

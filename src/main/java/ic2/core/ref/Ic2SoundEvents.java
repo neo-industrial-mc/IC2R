@@ -33,6 +33,7 @@ public class Ic2SoundEvents
 	public static final SoundEvent ITEM_NANOSABER_SWING2 = register("item.nanosaber.swing2");
 	public static final SoundEvent ITEM_NANOSABER_SWING3 = register("item.nanosaber.swing3");
 	public static final SoundEvent ITEM_SCANNER_USE = register("item.scanner.use");
+	public static final SoundEvent ITEM_REMOTE_USE = register("item.remote.use");
 	public static final SoundEvent GENERATOR_GENERATOR_LOOP = register("generator.generator.loop");
 	public static final SoundEvent GENERATOR_GEOTHERMAL_LOOP = register("generator.geothermal.loop");
 	public static final SoundEvent GENERATOR_WATER_LOOP = register("generator.water.loop");

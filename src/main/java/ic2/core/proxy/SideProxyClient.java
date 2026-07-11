@@ -169,6 +169,7 @@ public final class SideProxyClient implements SideProxy
 			Ic2Items.HYDROGEN_CELL,
 			Ic2Items.OXYGEN_CELL
 		);
+		envProxy.registerBlockLayer(RenderType.cutout(), Ic2Blocks.DYNAMITE);
 		envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.FOAM);
 		envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.REINFORCED_GLASS);
 		envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.REINFORCED_DOOR);
@@ -245,6 +246,8 @@ public final class SideProxyClient implements SideProxy
 		this.registerRotorProvider(Ic2BlockEntities.WATER_GENERATOR);
 		envProxy.registerEntityRenderer(Ic2Entities.ITNT, ExplosiveBlockRenderer::new);
 		envProxy.registerEntityRenderer(Ic2Entities.NUKE, ExplosiveBlockRenderer::new);
+		envProxy.registerEntityRenderer(Ic2Entities.DYNAMITE, context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context));
+		envProxy.registerEntityRenderer(Ic2Entities.STICKY_DYNAMITE, context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context));
 		envProxy.registerEntityRenderer(Ic2Entities.LASER_BULLET, LaserBulletEntityRenderer::new);
 		envProxy.registerEntityRenderer(Ic2Entities.RUBBER_BOAT, context -> new BoatEntityRenderer(context, false, "ic2"));
 		envProxy.registerEntityRenderer(Ic2Entities.ELECTRIC_BOAT, context -> new BoatEntityRenderer(context, false, "ic2"));
