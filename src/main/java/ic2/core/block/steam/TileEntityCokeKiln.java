@@ -16,6 +16,7 @@ import ic2.core.ref.Ic2Fluids;
 import ic2.core.ref.Ic2Items;
 import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.ParticleUtil;
+import ic2.core.util.StackUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -279,11 +280,13 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 		BlockEntity hatch = this.level.getBlockEntity(hatchPos);
 		if (hatch instanceof TileEntityCokeKilnHatch)
 		{
-			InvSlot inventory = ((TileEntityCokeKilnHatch) hatch).inventory;
+			TileEntityCokeKilnHatch hatchTe = (TileEntityCokeKilnHatch) hatch;
+			InvSlot inventory = hatchTe.inventory;
 			if (!inventory.get().isEmpty())
 			{
 				// Consume one input item
-				inventory.get().shrink(1);
+				inventory.put(0, StackUtil.decSize(inventory.get()));
+				hatchTe.setChanged();
 
 				// Produce solid output
 				if (this.currentRecipe.outputItem != null)

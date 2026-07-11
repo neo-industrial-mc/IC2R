@@ -83,6 +83,28 @@ public class CokeKilnGameTests
 		helper.succeed();
 	}
 
+	// coke kiln, hatch consumption (sibling of the 851f0084 grate fix): finishing an operation must
+	// consume one input from the hatch and produce coke + creosote. The consumption now runs through
+	// the slot and marks the hatch changed so it is persisted - otherwise a hatch in a different chunk
+	// from the controller reverts on reload while the coke was already produced (reload dupe). A
+	// single-chunk gametest cannot observe the cross-chunk persistence, but it locks the consumption
+	// and production themselves.
+	@GameTest(template = EMPTY_LARGE, timeoutTicks = 2200)
+	public static void cokeKilnConsumesHatchInputAndProducesOutputsOnFinish(GameTestHelper helper)
+	{
+		buildKiln(helper);
+		TileEntityCokeKilnHatch hatch = getTe(helper, CENTER_POS.above(), TileEntityCokeKilnHatch.class);
+		Ic2FluidTank grateTank = getGrateTank(helper, CENTER_POS.below());
+		// a single coal runs exactly one operation, so a correct consumption leaves the hatch empty
+		hatch.setItem(0, new ItemStack(Items.COAL, 1));
+
+		helper.succeedWhen(() ->
+		{
+			helper.assertTrue(!grateTank.isEmpty(), "the finished operation should have produced creosote in the grate");
+			helper.assertTrue(hatch.getItem(0).isEmpty(), "the single coal should be consumed once the operation finishes");
+		});
+	}
+
 	private static void buildKiln(GameTestHelper helper)
 	{
 		// facing north means the structure's center column is one block south of the controller
