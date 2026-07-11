@@ -156,7 +156,8 @@ public class GenericCropCard extends Ic2CropCard
 	@Override
 	public boolean canBeHarvested(ICropTile cropTile)
 	{
-		return cropTile.getCurrentAge() >= this.harvestSize;
+		int effectiveHarvestSize = this.harvestSize >= 2 ? this.harvestSize : this.maxSize - 1;
+		return cropTile.getCurrentAge() >= effectiveHarvestSize;
 	}
 
 	@Override
@@ -214,7 +215,7 @@ public class GenericCropCard extends Ic2CropCard
 
 		if (this.harvestSize < 2)
 		{
-			this.harvestSize = this.maxSize;
+			this.harvestSize = this.maxSize - 1;
 		}
 
 		if (this.optimalHarvestSize < 2)
