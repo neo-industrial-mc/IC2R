@@ -226,6 +226,38 @@ public class CropGameTests
 		helper.succeed();
 	}
 
+	// right-click harvesting a mature slime plant drops slimeballs and resets the crop below the
+	// harvest threshold, so an immediate second harvest must fail (dupe regression, upstream
+	// 9d2dc383: afterHarvestSize 3 left the crop harvestable for infinite slimeball drops)
+	@GameTest(template = EMPTY)
+	public static void harvestedSlimePlantResetsToNonHarvestableStage(GameTestHelper helper)
+	{
+		TileEntityCrop crop = plant(helper, CROP_POS, Ic2Crops.cropSlimePlant, 3, 0, 31, 0);
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+		helper.assertTrue(Ic2Crops.cropSlimePlant.canBeHarvested(crop), "a slime plant at max age should be harvestable");
+
+		// a single harvest may roll zero drops, so re-mature and retry until one drops
+		boolean harvested = false;
+		for (int i = 0; i < RNG_ATTEMPTS && !harvested; i++)
+		{
+			cropAt(helper, CROP_POS).setCurrentAge(3);
+			harvested = cropAt(helper, CROP_POS).rightClick(player, InteractionHand.MAIN_HAND);
+		}
+
+		helper.assertTrue(harvested, "right-clicking a mature slime plant should drop slimeballs");
+		helper.assertItemEntityPresent(Items.SLIME_BALL, CROP_POS, 2.0);
+
+		TileEntityCrop remainder = cropAt(helper, CROP_POS);
+		helper.assertTrue(remainder.getCrop() == Ic2Crops.cropSlimePlant, "harvesting must not destroy the slime plant");
+		helper.assertValueEqual(remainder.getCurrentAge(), 2, "slime plant age after harvest");
+		helper.assertFalse(Ic2Crops.cropSlimePlant.canBeHarvested(remainder), "a freshly harvested slime plant must not be harvestable again");
+		helper.assertFalse(remainder.rightClick(player, InteractionHand.MAIN_HAND), "an immediate second harvest must not succeed");
+		helper.assertValueEqual(cropAt(helper, CROP_POS).getCurrentAge(), 2, "slime plant age after the rejected second harvest");
+
+		helper.succeed();
+	}
+
 	// an unattended empty crop stick has a 1% chance per crop tick to grow weed
 	@GameTest(template = EMPTY)
 	public static void emptyCropStickEventuallyGrowsWeed(GameTestHelper helper)
