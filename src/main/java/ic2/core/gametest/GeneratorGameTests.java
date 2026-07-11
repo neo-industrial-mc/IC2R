@@ -17,6 +17,8 @@ import ic2.core.block.wiring.tileentity.TileEntityElectricBatBox;
 import ic2.core.block.wiring.tileentity.TileEntityElectricCESU;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.fluid.Ic2FluidTank;
+import ic2.core.item.ElectricItemManager;
+import ic2.core.item.tool.ItemToolWrenchElectric;
 import ic2.core.ref.Ic2Blocks;
 import ic2.core.ref.Ic2Fluids;
 import ic2.core.ref.Ic2Items;
@@ -26,8 +28,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -217,6 +223,37 @@ public class GeneratorGameTests
 		heatSource.fuelSlot.put(0, new ItemStack(Items.COAL));
 
 		helper.succeedWhen(() -> helper.assertTrue(cesu.energy.getEnergy() >= 100.0, "CESU should receive stirling energy, has " + cesu.energy.getEnergy()));
+	}
+
+	// stirling generator placed with the wrong facing and wrench-rotated towards its heat source:
+	// the generator must re-register with the energy net so the cable on the previously
+	// non-emitting side starts transmitting, and rescan its cached source (upstream 284f7317)
+	@GameTest(template = EMPTY, timeoutTicks = 200)
+	public static void stirlingGeneratorTransmitsAfterWrenchRotation(GameTestHelper helper)
+	{
+		helper.setBlock(new BlockPos(0, 1, 1), Ic2Blocks.SOLID_HEAT_GENERATOR.defaultBlockState().setValue(Ic2TileEntityBlock.anyFacingProperty, Direction.EAST));
+		// facing the cable instead of the heat source: no heat input, no emission towards the cable
+		helper.setBlock(new BlockPos(1, 1, 1), Ic2Blocks.STIRLING_GENERATOR.defaultBlockState().setValue(Ic2TileEntityBlock.anyFacingProperty, Direction.EAST));
+		helper.setBlock(new BlockPos(2, 1, 1), Ic2Blocks.GOLD_CABLE);
+		helper.setBlock(new BlockPos(2, 1, 0), Ic2Blocks.CESU);
+		TileEntitySolidHeatGenerator heatSource = getTe(helper, new BlockPos(0, 1, 1), TileEntitySolidHeatGenerator.class);
+		TileEntityElectricCESU cesu = getTe(helper, new BlockPos(2, 1, 0), TileEntityElectricCESU.class);
+		heatSource.fuelSlot.put(0, new ItemStack(Items.COAL));
+
+		// let the energy net build the grid around the wrong facing before correcting it
+		helper.runAtTickTime(20, () ->
+		{
+			Ic2GameTestAssertions.assertNear(helper, cesu.energy.getEnergy(), 0.0, "CESU before the rotation");
+			ServerPlayer player = helper.makeMockServerPlayerInLevel();
+			player.setGameMode(GameType.SURVIVAL);
+			ItemStack stack = ElectricItemManager.getCharged(Ic2Items.ELECTRIC_WRENCH, Double.POSITIVE_INFINITY);
+			player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+
+			InteractionResult result = ((ItemToolWrenchElectric) Ic2Items.ELECTRIC_WRENCH).onItemUseFirst(stack, Ic2GameTestUtil.useOn(helper, player, new BlockPos(1, 1, 1), Direction.WEST));
+			helper.assertValueEqual(result, InteractionResult.SUCCESS, "wrench use result");
+		});
+
+		helper.succeedWhen(() -> helper.assertTrue(cesu.energy.getEnergy() >= 100.0, "CESU should receive stirling energy through the cable after the rotation, has " + cesu.energy.getEnergy()));
 	}
 
 	// kinetic generator: an electric kinetic generator makes KU from EU, the kinetic generator turns it back at 4 KU per EU
