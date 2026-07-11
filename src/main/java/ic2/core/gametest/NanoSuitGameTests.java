@@ -69,6 +69,29 @@ public class NanoSuitGameTests
 	}
 
 	@GameTest(template = EMPTY)
+	public static void nanosuitIgnoresInvulnerabilityBypassingDamage(GameTestHelper helper)
+	{
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+		ItemStack chest = ElectricItemManager.getCharged(Ic2Items.NANO_CHESTPLATE, Double.POSITIVE_INFINITY);
+		player.setItemSlot(EquipmentSlot.CHEST, chest);
+
+		// /kill and void damage are in BYPASSES_INVULNERABILITY: nothing absorbed, no EU spent
+		DamageSource[] sources = {
+			helper.getLevel().damageSources().genericKill(),
+			helper.getLevel().damageSources().fellOutOfWorld()
+		};
+		for (DamageSource source : sources)
+		{
+			float remaining = ItemArmorElectric.damageArmor(player, source, 10.0F);
+
+			Ic2GameTestAssertions.assertNear(helper, remaining, 10.0, "damage left after " + source.getMsgId());
+			Ic2GameTestAssertions.assertNear(helper, ElectricItem.manager.getCharge(chest), MAX_CHARGE, "charge after " + source.getMsgId());
+		}
+
+		helper.succeed();
+	}
+
+	@GameTest(template = EMPTY)
 	public static void nanobootsAbsorbShortFallsOnly(GameTestHelper helper)
 	{
 		ItemStack boots = ElectricItemManager.getCharged(Ic2Items.NANO_BOOTS, Double.POSITIVE_INFINITY);
