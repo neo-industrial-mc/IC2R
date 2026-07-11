@@ -29,6 +29,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.bus.api.EventPriority;
@@ -270,6 +271,22 @@ public class JetpackHandler implements IBackupElectricItemManager
 				Ic2Tooltip.add(event.getToolTip(), Component.literal(energyTooltip));
 			}
 		}
+	}
+
+	@SubscribeEvent
+	public void onEquipmentChange(LivingEquipmentChangeEvent event)
+	{
+		if (event.getSlot() != EquipmentSlot.CHEST || !(event.getEntity() instanceof Player player))
+		{
+			return;
+		}
+
+		if (!hasJetpack(event.getTo()) && !hasJetpack(event.getFrom()))
+		{
+			return;
+		}
+
+		JetpackLogic.stopJetpackSound(player);
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
