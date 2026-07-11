@@ -25,6 +25,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public class MagnetizerGameTests
 {
 	private static final String EMPTY = "gametest/empty3x3x3";
+	private static final String TALL = "gametest/empty3x9x3";
 
 	private static final BlockPos FENCE_POS = new BlockPos(1, 1, 1);
 	private static final BlockPos MAGNETIZER_POS = new BlockPos(2, 1, 1);
@@ -60,7 +61,9 @@ public class MagnetizerGameTests
 		helper.succeed();
 	}
 
-	@GameTest(template = EMPTY)
+	// the gametest framework encases the structure bounds in barrier blocks, so the tall
+	// template is needed to keep the player and the scanned air column inside the structure
+	@GameTest(template = TALL)
 	public static void magnetizerBoostReachesPlayerAboveFence(GameTestHelper helper)
 	{
 		TileEntityMagnetizer te = setupMagnetizedFence(helper);
