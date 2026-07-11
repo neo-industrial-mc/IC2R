@@ -10,8 +10,10 @@ import ic2.core.ref.Ic2Items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -105,6 +107,44 @@ public class MachineGameTests
 		{
 			helper.assertTrue(te.heat > 0, "induction furnace should build up heat while working, heat=" + te.heat);
 			helper.succeed();
+		});
+	}
+
+	// regression: work progress must survive save/load (chunk unload) instead of restarting.
+	// run a macerator ~200 of its 300 ticks, snapshot its NBT, replace it with a fresh block
+	// entity restored from that NBT and verify the operation resumes instead of starting over.
+	@GameTest(template = EMPTY, timeoutTicks = 400)
+	public static void maceratorProgressSurvivesSaveAndLoad(GameTestHelper helper)
+	{
+		helper.setBlock(MACHINE_POS, Ic2Blocks.MACERATOR);
+		TileEntityMacerator te = getMachine(helper, TileEntityMacerator.class);
+		te.dischargeSlot.put(0, ElectricItemManager.getCharged(Ic2Items.RE_BATTERY, Double.POSITIVE_INFINITY));
+		te.inputSlot.put(0, new ItemStack(Items.COBBLESTONE));
+
+		helper.runAtTickTime(200, () ->
+		{
+			helper.assertTrue(te.getProgress() > 0.5F, "macerator should be over half done before the reload, progress " + te.getProgress());
+			CompoundTag nbt = te.saveWithFullMetadata(helper.getLevel().registryAccess());
+			helper.setBlock(MACHINE_POS, Blocks.AIR);
+			helper.setBlock(MACHINE_POS, Ic2Blocks.MACERATOR);
+			getMachine(helper, TileEntityMacerator.class).loadWithComponents(nbt, helper.getLevel().registryAccess());
+		});
+
+		// 30 ticks after the reload the restored machine must still be past the halfway mark;
+		// if progress had been reset it would only be at ~30/300 by now.
+		helper.runAtTickTime(230, () ->
+		{
+			TileEntityMacerator restored = getMachine(helper, TileEntityMacerator.class);
+			helper.assertTrue(restored.getProgress() > 0.5F, "macerator lost its progress on reload, progress " + restored.getProgress());
+		});
+
+		// with ~200 ticks of saved progress retained, the remaining ~100 ticks finish well within the timeout
+		helper.succeedWhen(() ->
+		{
+			TileEntityMacerator restored = getMachine(helper, TileEntityMacerator.class);
+			ItemStack output = restored.outputSlot.get(0);
+			helper.assertTrue(output.getItem() == Items.SAND && output.getCount() == 1, "macerator should produce 1 sand after the reload, has " + output);
+			helper.assertTrue(restored.inputSlot.get(0).isEmpty(), "macerator input should be consumed after the reload");
 		});
 	}
 
