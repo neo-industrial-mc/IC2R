@@ -115,7 +115,21 @@ publishing {
     }
     repositories {
         maven {
+            name = 'local'
             url "file://${project.projectDir}/repo"
+        }
+
+        def githubRepository = providers.environmentVariable('GITHUB_REPOSITORY')
+        def githubToken = providers.environmentVariable('GITHUB_TOKEN')
+        if (githubRepository.isPresent() && githubToken.isPresent()) {
+            maven {
+                name = 'githubPackages'
+                url = uri("https://maven.pkg.github.com/${githubRepository.get()}")
+                credentials {
+                    username = providers.environmentVariable('GITHUB_ACTOR').getOrElse('github-actions')
+                    password = githubToken.get()
+                }
+            }
         }
     }
 }
