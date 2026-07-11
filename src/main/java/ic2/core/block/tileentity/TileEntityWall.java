@@ -1,5 +1,6 @@
 package ic2.core.block.tileentity;
 
+import ic2.api.network.NetworkHelper;
 import ic2.core.IC2;
 import ic2.core.block.comp.Obscuration;
 import ic2.core.block.misc.WallBlock;
@@ -71,8 +72,14 @@ public class TileEntityWall extends Ic2TileEntity
 		if (this.getLevel() != null && !this.getLevel().isClientSide)
 		{
 			this.setChanged();
-			IC2.network.get(true).updateTileEntityField(this, "color");
+			NetworkHelper.sendInitialData(this);
 		}
+	}
+
+	@Override
+	public ItemStack adjustDrop(ItemStack drop, boolean wrench)
+	{
+		return this.getPickBlock();
 	}
 
 	@Override
@@ -92,9 +99,9 @@ public class TileEntityWall extends Ic2TileEntity
 	protected void onLoaded()
 	{
 		super.onLoaded();
-		if (this.getLevel().isClientSide)
+		if (this.getLevel().isClientSide && this.updateRenderState())
 		{
-			this.updateRenderState();
+			this.rerender();
 		}
 	}
 
