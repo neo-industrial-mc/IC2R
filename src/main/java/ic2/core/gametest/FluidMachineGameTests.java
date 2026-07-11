@@ -10,6 +10,7 @@ import ic2.core.block.machine.tileentity.TileEntityFluidRegulator;
 import ic2.core.block.machine.tileentity.TileEntitySolarDistiller;
 import ic2.core.block.machine.tileentity.TileEntityTank;
 import ic2.core.block.tileentity.Ic2TileEntityBlock;
+import ic2.core.fluid.FluidHandler;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.fluid.Ic2FluidTank;
 import ic2.core.item.ElectricItemManager;
@@ -22,11 +23,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 @GameTestHolder("ic2")
 @PrefixGameTestTemplate(false)
@@ -169,6 +174,143 @@ public class FluidMachineGameTests
 		});
 	}
 
+	// tank GUI click, upstream 9817fc3c regression: a full 1000 mB cell must not be consumed
+	// (voiding the excess) while the tank has less than 1000 mB of free space
+	@GameTest(template = EMPTY, timeoutTicks = 100)
+	public static void tankGuiClickKeepsFullCellWhenTankAlmostFull(GameTestHelper helper)
+	{
+		helper.setBlock(MACHINE_POS, Ic2Blocks.TANK);
+		TileEntityTank te = getTe(helper, MACHINE_POS, TileEntityTank.class);
+		Ic2FluidTank tank = getTankBlockTank(helper, MACHINE_POS);
+		int filled = tank.fillMb(Ic2FluidStack.create(net.minecraft.world.level.material.Fluids.WATER, 23500), false);
+		helper.assertValueEqual(filled, 23500, "water accepted by the tank");
+
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+		player.containerMenu.setCarried(new ItemStack(Ic2Items.WATER_CELL));
+		te.onNetworkEvent(player, 0);
+
+		helper.assertValueEqual(tank.getFluidAmount(), 23500, "tank content after clicking with a cell that doesn't fit");
+		ItemStack carried = player.containerMenu.getCarried();
+		helper.assertTrue(
+			carried.getItem() == Ic2Items.WATER_CELL && carried.getCount() == 1,
+			"the water cell must not be consumed while less than 1000 mB fits, carried " + carried
+		);
+
+		// with exactly 1000 mB free the same click has to go through
+		Ic2FluidStack drained = tank.drainMb(500, false);
+		helper.assertTrue(drained != null && drained.getAmountMb() == 500, "tank should give up 500 mB, drained " + drained);
+		te.onNetworkEvent(player, 0);
+
+		helper.assertValueEqual(tank.getFluidAmount(), 24000, "tank content after clicking with a cell that fits exactly");
+		helper.assertTrue(player.containerMenu.getCarried().isEmpty(), "the water cell should be consumed once its content fits");
+		helper.assertValueEqual(countItems(player, Ic2Items.EMPTY_CELL), 1, "empty cells returned to the player");
+		helper.succeed();
+	}
+
+	// tank GUI click, upstream 55aead36: shift-click batches the whole carried stack, a plain click
+	// moves exactly one container, and no fluid is created or destroyed either way
+	@GameTest(template = EMPTY, timeoutTicks = 100)
+	public static void tankGuiClickConservesFluidWithCells(GameTestHelper helper)
+	{
+		helper.setBlock(MACHINE_POS, Ic2Blocks.TANK);
+		TileEntityTank te = getTe(helper, MACHINE_POS, TileEntityTank.class);
+		Ic2FluidTank tank = getTankBlockTank(helper, MACHINE_POS);
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+		// shift-click (event 1) empties all three carried water cells into the tank
+		player.containerMenu.setCarried(new ItemStack(Ic2Items.WATER_CELL, 3));
+		te.onNetworkEvent(player, 1);
+		assertTankContains(helper, tank, net.minecraft.world.level.material.Fluids.WATER, 3000, "tank after batch drain");
+		helper.assertValueEqual(tank.getFluidAmount(), 3000, "tank content after shift-clicking 3 water cells");
+		helper.assertTrue(player.containerMenu.getCarried().isEmpty(), "the whole carried stack should be processed");
+		helper.assertValueEqual(countItems(player, Ic2Items.EMPTY_CELL), 3, "empty cells returned to the player");
+
+		// plain click (event 0) fills exactly one empty cell back from the tank
+		player.containerMenu.setCarried(new ItemStack(Ic2Items.EMPTY_CELL));
+		te.onNetworkEvent(player, 0);
+		helper.assertValueEqual(tank.getFluidAmount(), 2000, "tank content after filling one cell");
+		helper.assertValueEqual(countItems(player, Ic2Items.WATER_CELL), 1, "water cells returned to the player");
+		helper.assertTrue(player.containerMenu.getCarried().isEmpty(), "the processed cell moves to the inventory");
+		helper.succeed();
+	}
+
+	// empty cell fluid storage, upstream b18d8430: fluids without a dedicated cell item are kept on
+	// the empty cell itself (custom data component) and given back in full on drain. Flowing water
+	// stands in for a fluid that is not in the ItemClassicCell instances map; every still fluid in
+	// the dev environment has its own cell item.
+	@GameTest(template = EMPTY, timeoutTicks = 100)
+	public static void emptyCellStoresFluidWithoutDedicatedCellItem(GameTestHelper helper)
+	{
+		Fluid fluid = net.minecraft.world.level.material.Fluids.FLOWING_WATER;
+		MutableObject<ItemStack> newStack = new MutableObject<>();
+
+		// a fluid with a dedicated cell item still converts to that item
+		int filled = FluidHandler.fillMb(new ItemStack(Ic2Items.EMPTY_CELL), Ic2FluidStack.create(net.minecraft.world.level.material.Fluids.WATER, 1000), false, newStack);
+		helper.assertValueEqual(filled, 1000, "water accepted by an empty cell");
+		helper.assertTrue(newStack.getValue().getItem() == Ic2Items.WATER_CELL, "water fills into a water cell, got " + newStack.getValue());
+
+		// a fluid without one is stored on the empty cell item itself
+		filled = FluidHandler.fillMb(new ItemStack(Ic2Items.EMPTY_CELL), Ic2FluidStack.create(fluid, 1000), false, newStack);
+		helper.assertValueEqual(filled, 1000, "fluid without a dedicated cell accepted by an empty cell");
+		ItemStack storedCell = newStack.getValue();
+		helper.assertTrue(storedCell.getItem() == Ic2Items.EMPTY_CELL, "cell keeps the empty cell item id, got " + storedCell);
+		Ic2FluidStack stored = Ic2FluidStack.get(storedCell);
+		helper.assertTrue(
+			stored != null && stored.getFluid() == fluid && stored.getAmountMb() == 1000,
+			"cell should report the stored fluid, got " + stored
+		);
+
+		// double-filling is rejected, draining gives everything back and empties the cell
+		filled = FluidHandler.fillMb(storedCell, Ic2FluidStack.create(fluid, 1000), false, null);
+		helper.assertValueEqual(filled, 0, "fluid accepted by an already filled cell");
+		Ic2FluidStack drained = FluidHandler.drainMb(storedCell, 1000, false, newStack);
+		helper.assertTrue(
+			drained != null && drained.getFluid() == fluid && drained.getAmountMb() == 1000,
+			"cell should give the stored fluid back, got " + drained
+		);
+		Ic2FluidStack afterDrain = Ic2FluidStack.get(newStack.getValue());
+		helper.assertTrue(afterDrain == null || afterDrain.isEmpty(), "drained cell should be empty again, has " + afterDrain);
+		helper.succeed();
+	}
+
+	// tank GUI click + empty cell fluid storage: a fluid without a dedicated cell item survives a
+	// full cell round trip through the tank slot without any loss
+	@GameTest(template = EMPTY, timeoutTicks = 100)
+	public static void tankGuiClickRoundTripsFluidWithoutDedicatedCellItem(GameTestHelper helper)
+	{
+		helper.setBlock(MACHINE_POS, Ic2Blocks.TANK);
+		TileEntityTank te = getTe(helper, MACHINE_POS, TileEntityTank.class);
+		Ic2FluidTank tank = getTankBlockTank(helper, MACHINE_POS);
+		Fluid fluid = net.minecraft.world.level.material.Fluids.FLOWING_WATER;
+		int filled = tank.fillMb(Ic2FluidStack.create(fluid, 5000), false);
+		helper.assertValueEqual(filled, 5000, "fluid accepted by the tank");
+
+		// fill an empty cell from the tank
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+		player.containerMenu.setCarried(new ItemStack(Ic2Items.EMPTY_CELL));
+		te.onNetworkEvent(player, 0);
+		helper.assertValueEqual(tank.getFluidAmount(), 4000, "tank content after filling a cell");
+		ItemStack storedCell = firstItem(player, Ic2Items.EMPTY_CELL);
+		Ic2FluidStack stored = storedCell != null ? Ic2FluidStack.get(storedCell) : null;
+		helper.assertTrue(
+			stored != null && stored.getFluid() == fluid && stored.getAmountMb() == 1000,
+			"the filled cell should hold 1000 mB of the tank fluid, got " + stored
+		);
+
+		// pour it back
+		player.getInventory().clearContent();
+		player.containerMenu.setCarried(storedCell.copy());
+		te.onNetworkEvent(player, 0);
+		helper.assertValueEqual(tank.getFluidAmount(), 5000, "tank content after draining the cell back");
+		ItemStack emptiedCell = firstItem(player, Ic2Items.EMPTY_CELL);
+		Ic2FluidStack afterDrain = emptiedCell != null ? Ic2FluidStack.get(emptiedCell) : null;
+		helper.assertTrue(
+			emptiedCell != null && (afterDrain == null || afterDrain.isEmpty()),
+			"the drained cell should be empty again, got " + emptiedCell + " with " + afterDrain
+		);
+		helper.succeed();
+	}
+
 	// fluid distributor, distribute mode (inactive): fluid is split evenly between all sides except the facing
 	@GameTest(template = EMPTY, timeoutTicks = 100)
 	public static void fluidDistributorSplitsEvenlyAcrossSides(GameTestHelper helper)
@@ -250,6 +392,33 @@ public class FluidMachineGameTests
 			stack != null && !stack.isEmpty() && stack.getFluid() == fluid && stack.getAmountMb() >= minAmountMb,
 			what + " should contain at least " + minAmountMb + " mB of " + fluid + ", has " + (stack == null ? "nothing" : stack.getAmountMb() + " mB of " + stack.getFluid())
 		);
+	}
+
+	private static int countItems(Player player, Item item)
+	{
+		int count = 0;
+		for (ItemStack stack : player.getInventory().items)
+		{
+			if (stack.getItem() == item)
+			{
+				count += stack.getCount();
+			}
+		}
+
+		return count;
+	}
+
+	private static ItemStack firstItem(Player player, Item item)
+	{
+		for (ItemStack stack : player.getInventory().items)
+		{
+			if (stack.getItem() == item)
+			{
+				return stack;
+			}
+		}
+
+		return null;
 	}
 
 	private static Ic2FluidTank getTankBlockTank(GameTestHelper helper, BlockPos pos)
