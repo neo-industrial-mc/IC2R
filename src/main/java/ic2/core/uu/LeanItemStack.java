@@ -5,133 +5,113 @@ import ic2.core.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.component.DataComponents;
 
-public class LeanItemStack
-{
-	private final Item item;
-	private final CompoundTag nbt;
-	private final int size;
-	private int hashCode;
+public class LeanItemStack {
+  private final Item item;
+  private final CompoundTag nbt;
+  private final int size;
+  private int hashCode;
 
-	public LeanItemStack(Item item)
-	{
-		this(item, 1);
-	}
+  public LeanItemStack(Item item) {
+    this(item, 1);
+  }
 
-	public LeanItemStack(Item item, int size)
-	{
-		this(item, null, size);
-	}
+  public LeanItemStack(Item item, int size) {
+    this(item, null, size);
+  }
 
-	public LeanItemStack(ItemStack stack)
-	{
-		this(stack.getItem(), StackUtil.getTag(stack), StackUtil.getSize(stack));
-	}
+  public LeanItemStack(ItemStack stack) {
+    this(stack.getItem(), StackUtil.getTag(stack), StackUtil.getSize(stack));
+  }
 
-	public LeanItemStack(ItemStack stack, int size)
-	{
-		this(stack.getItem(), StackUtil.getTag(stack), size);
-	}
+  public LeanItemStack(ItemStack stack, int size) {
+    this(stack.getItem(), StackUtil.getTag(stack), size);
+  }
 
-	public LeanItemStack(Item item, CompoundTag nbt, int size)
-	{
-		if (item == null)
-		{
-			throw new NullPointerException("null item");
-		}
+  public LeanItemStack(Item item, CompoundTag nbt, int size) {
+    if (item == null) {
+      throw new NullPointerException("null item");
+    }
 
-		this.item = item;
-		this.nbt = nbt;
-		this.size = size;
-	}
+    this.item = item;
+    this.nbt = nbt;
+    this.size = size;
+  }
 
-	public Item getItem()
-	{
-		return this.item;
-	}
+  public Item getItem() {
+    return this.item;
+  }
 
-	public CompoundTag getNbt()
-	{
-		return this.nbt;
-	}
+  public CompoundTag getNbt() {
+    return this.nbt;
+  }
 
-	public int getSize()
-	{
-		return this.size;
-	}
+  public int getSize() {
+    return this.size;
+  }
 
-	@Override
-	public String toString()
-	{
-		return String.format("%dx%s", this.size, Util.getName(this.item));
-	}
+  @Override
+  public String toString() {
+    return String.format("%dx%s", this.size, Util.getName(this.item));
+  }
 
-	public boolean hasSameItem(LeanItemStack o)
-	{
-		return this.item == o.item && StackUtil.checkNbtEquality(this.nbt, o.nbt);
-	}
+  public boolean hasSameItem(LeanItemStack o) {
+    return this.item == o.item && StackUtil.checkNbtEquality(this.nbt, o.nbt);
+  }
 
-	public LeanItemStack copy()
-	{
-		return this.copyWithSize(this.size);
-	}
+  public LeanItemStack copy() {
+    return this.copyWithSize(this.size);
+  }
 
-	public LeanItemStack copyWithSize(int newSize)
-	{
-		LeanItemStack ret = new LeanItemStack(this.item, this.nbt, newSize);
-		ret.hashCode = this.hashCode;
-		return ret;
-	}
+  public LeanItemStack copyWithSize(int newSize) {
+    LeanItemStack ret = new LeanItemStack(this.item, this.nbt, newSize);
+    ret.hashCode = this.hashCode;
+    return ret;
+  }
 
-	public ItemStack toMcStack()
-	{
-		if (this.size <= 0)
-		{
-			return StackUtil.emptyStack;
-		}
+  public ItemStack toMcStack() {
+    if (this.size <= 0) {
+      return StackUtil.emptyStack;
+    }
 
-		ItemStack ret = new ItemStack(this.item, this.size);
-		if (this.nbt != null)
-		{
-			ret.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(this.nbt));
-		}
+    ItemStack ret = new ItemStack(this.item, this.size);
+    if (this.nbt != null) {
+      ret.set(
+          net.minecraft.core.component.DataComponents.CUSTOM_DATA,
+          net.minecraft.world.item.component.CustomData.of(this.nbt));
+    }
 
-		return ret;
-	}
+    return ret;
+  }
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		return !(obj instanceof LeanItemStack o)
-			? false
-			: this.item == o.item && (this.nbt == null && o.nbt == null || this.nbt != null && o.nbt != null && this.nbt.equals(o.nbt));
-	}
+  @Override
+  public boolean equals(Object obj) {
+    return !(obj instanceof LeanItemStack o)
+        ? false
+        : this.item == o.item
+            && (this.nbt == null && o.nbt == null
+                || this.nbt != null && o.nbt != null && this.nbt.equals(o.nbt));
+  }
 
-	@Override
-	public int hashCode()
-	{
-		if (this.hashCode == 0)
-		{
-			this.hashCode = this.calculateHashCode();
-		}
+  @Override
+  public int hashCode() {
+    if (this.hashCode == 0) {
+      this.hashCode = this.calculateHashCode();
+    }
 
-		return this.hashCode;
-	}
+    return this.hashCode;
+  }
 
-	private int calculateHashCode()
-	{
-		int ret = System.identityHashCode(this.item);
-		if (this.nbt != null)
-		{
-			ret = ret * 31 + this.nbt.hashCode();
-		}
+  private int calculateHashCode() {
+    int ret = System.identityHashCode(this.item);
+    if (this.nbt != null) {
+      ret = ret * 31 + this.nbt.hashCode();
+    }
 
-		if (ret == 0)
-		{
-			ret = -1;
-		}
+    if (ret == 0) {
+      ret = -1;
+    }
 
-		return ret;
-	}
+    return ret;
+  }
 }

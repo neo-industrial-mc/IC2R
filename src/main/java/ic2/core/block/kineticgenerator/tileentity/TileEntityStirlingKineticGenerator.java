@@ -21,243 +21,234 @@ import ic2.core.network.GrowingBuffer;
 import ic2.core.profile.NotClassic;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.util.Util;
-
 import java.util.EnumSet;
 import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
 
 @NotClassic
-public class TileEntityStirlingKineticGenerator extends TileEntityAbstractKineticGenerator implements IUpgradableBlock, IHasGui
-{
-	protected final Fluids fluids = this.addComponent(new Fluids(this));
-	private final int maxHeatBuffer;
-	public Ic2FluidTank inputTank;
-	public Ic2FluidTank outputTank;
-	public InvSlotOutput hotOutputSlot;
-	public InvSlotOutput coolOutputSlot;
-	public InvSlotConsumableLiquidByTank hotFluidInputSlot;
-	public InvSlotConsumableLiquidByManager coolFluidInputSlot;
-	public InvSlotUpgrade upgradeSlot;
-	private int heatBuffer = 0;
-	private int liquidHeatStored;
+public class TileEntityStirlingKineticGenerator extends TileEntityAbstractKineticGenerator
+    implements IUpgradableBlock, IHasGui {
+  protected final Fluids fluids = this.addComponent(new Fluids(this));
+  private final int maxHeatBuffer;
+  public Ic2FluidTank inputTank;
+  public Ic2FluidTank outputTank;
+  public InvSlotOutput hotOutputSlot;
+  public InvSlotOutput coolOutputSlot;
+  public InvSlotConsumableLiquidByTank hotFluidInputSlot;
+  public InvSlotConsumableLiquidByManager coolFluidInputSlot;
+  public InvSlotUpgrade upgradeSlot;
+  private int heatBuffer = 0;
+  private int liquidHeatStored;
 
-	public TileEntityStirlingKineticGenerator(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.STIRLING_KINETIC_GENERATOR, pos, state);
-		this.inputTank = this.fluids.addTankInsert("inputTank", 2000, Fluids.fluidPredicate(Recipes.liquidHeatUpManager.getSingleDirectionLiquidManager()));
-		this.outputTank = this.fluids.addTankExtract("outputTank", 2000);
-		this.hotOutputSlot = new InvSlotOutput(this, "hotOutputSlot", 1);
-		this.coolOutputSlot = new InvSlotOutput(this, "outputSlot", 1);
-		this.coolFluidInputSlot = new InvSlotConsumableLiquidByManager(
-			this,
-			"coolfluidinputSlot",
-			InvSlot.Access.I,
-			1,
-			InvSlot.InvSide.TOP,
-			InvSlotConsumableLiquid.OpType.Drain,
-			Recipes.liquidHeatUpManager.getSingleDirectionLiquidManager()
-		);
-		this.hotFluidInputSlot = new InvSlotConsumableLiquidByTank(
-			this, "hotfluidoutputSlot", InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill, this.outputTank
-		);
-		this.upgradeSlot = new InvSlotUpgrade(this, "upgrade", 3);
-		this.maxHeatBuffer = 1000;
-		this.maxKuBuffer = 2000;
-	}
+  public TileEntityStirlingKineticGenerator(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.STIRLING_KINETIC_GENERATOR, pos, state);
+    this.inputTank =
+        this.fluids.addTankInsert(
+            "inputTank",
+            2000,
+            Fluids.fluidPredicate(Recipes.liquidHeatUpManager.getSingleDirectionLiquidManager()));
+    this.outputTank = this.fluids.addTankExtract("outputTank", 2000);
+    this.hotOutputSlot = new InvSlotOutput(this, "hotOutputSlot", 1);
+    this.coolOutputSlot = new InvSlotOutput(this, "outputSlot", 1);
+    this.coolFluidInputSlot =
+        new InvSlotConsumableLiquidByManager(
+            this,
+            "coolfluidinputSlot",
+            InvSlot.Access.I,
+            1,
+            InvSlot.InvSide.TOP,
+            InvSlotConsumableLiquid.OpType.Drain,
+            Recipes.liquidHeatUpManager.getSingleDirectionLiquidManager());
+    this.hotFluidInputSlot =
+        new InvSlotConsumableLiquidByTank(
+            this,
+            "hotfluidoutputSlot",
+            InvSlot.Access.I,
+            1,
+            InvSlot.InvSide.BOTTOM,
+            InvSlotConsumableLiquid.OpType.Fill,
+            this.outputTank);
+    this.upgradeSlot = new InvSlotUpgrade(this, "upgrade", 3);
+    this.maxHeatBuffer = 1000;
+    this.maxKuBuffer = 2000;
+  }
 
-	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
-		super.loadAdditional(nbt, registries);
-		this.inputTank.fromNbt(nbt.getCompound("inputTank"));
-		this.outputTank.fromNbt(nbt.getCompound("outputTank"));
-		this.heatBuffer = nbt.getInt("heatbuffer");
-		this.kuBuffer = nbt.getInt("kubuffer");
-		this.liquidHeatStored = nbt.getInt("liquidHeatStored");
-	}
+  @Override
+  protected void loadAdditional(
+      CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.loadAdditional(nbt, registries);
+    this.inputTank.fromNbt(nbt.getCompound("inputTank"));
+    this.outputTank.fromNbt(nbt.getCompound("outputTank"));
+    this.heatBuffer = nbt.getInt("heatbuffer");
+    this.kuBuffer = nbt.getInt("kubuffer");
+    this.liquidHeatStored = nbt.getInt("liquidHeatStored");
+  }
 
-	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
-	{
-		super.saveAdditional(nbt, registries);
-		CompoundTag inputTankTag = new CompoundTag();
-		this.inputTank.toNbt(inputTankTag);
-		nbt.put("inputTank", inputTankTag);
-		CompoundTag outputTankTag = new CompoundTag();
-		this.outputTank.toNbt(outputTankTag);
-		nbt.put("outputTank", outputTankTag);
-		nbt.putInt("heatbuffer", this.heatBuffer);
-		nbt.putInt("kUBuffer", this.kuBuffer);
-		nbt.putInt("liquidHeatStored", this.liquidHeatStored);
-	}
+  @Override
+  public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.saveAdditional(nbt, registries);
+    CompoundTag inputTankTag = new CompoundTag();
+    this.inputTank.toNbt(inputTankTag);
+    nbt.put("inputTank", inputTankTag);
+    CompoundTag outputTankTag = new CompoundTag();
+    this.outputTank.toNbt(outputTankTag);
+    nbt.put("outputTank", outputTankTag);
+    nbt.putInt("heatbuffer", this.heatBuffer);
+    nbt.putInt("kUBuffer", this.kuBuffer);
+    nbt.putInt("liquidHeatStored", this.liquidHeatStored);
+  }
 
-	@Override
-	protected void updateEntityServer()
-	{
-		super.updateEntityServer();
-		this.coolFluidInputSlot.processIntoTank(this.inputTank, this.coolOutputSlot);
-		this.hotFluidInputSlot.processFromTank(this.outputTank, this.hotOutputSlot);
-		if (this.heatBuffer < this.maxHeatBuffer)
-		{
-			this.heatBuffer = this.heatBuffer + this.drawHu(this.maxHeatBuffer - this.heatBuffer);
-		}
+  @Override
+  protected void updateEntityServer() {
+    super.updateEntityServer();
+    this.coolFluidInputSlot.processIntoTank(this.inputTank, this.coolOutputSlot);
+    this.hotFluidInputSlot.processFromTank(this.outputTank, this.hotOutputSlot);
+    if (this.heatBuffer < this.maxHeatBuffer) {
+      this.heatBuffer = this.heatBuffer + this.drawHu(this.maxHeatBuffer - this.heatBuffer);
+    }
 
-		boolean newActive = false;
-		if (this.inputTank.getFluidAmount() > 0
-			&& this.outputTank.getFluidAmount() < this.outputTank.getCapacity()
-			&& Recipes.liquidHeatUpManager.getSingleDirectionLiquidManager().acceptsFluid(this.inputTank.getFluidStack().getFluid())
-			&& this.kuBuffer < this.maxKuBuffer)
-		{
-			ILiquidHeatExchangerManager.HeatExchangeProperty property = Recipes.liquidHeatUpManager
-				.getHeatExchangeProperty(this.inputTank.getFluidStack().getFluid());
-			if (this.outputTank.isEmpty() || this.outputTank.hasExactFluid(property.outputFluid()))
-			{
-				int heatbufferToUse = this.heatBuffer / 4;
-				heatbufferToUse = Math.min(
-					heatbufferToUse,
-					(
-						Math.min(this.outputTank.getCapacity() - this.outputTank.getFluidAmount(), this.inputTank.getFluidAmount()) * property.huPerMB()
-							- this.liquidHeatStored
-					)
-				);
-				heatbufferToUse = Math.min(heatbufferToUse, (this.maxKuBuffer - this.kuBuffer) / 3);
-				if (heatbufferToUse > 0)
-				{
-					this.kuBuffer += heatbufferToUse * 3 * 4;
-					this.liquidHeatStored += heatbufferToUse;
-					this.heatBuffer -= heatbufferToUse * 4;
-					newActive = true;
-				}
+    boolean newActive = false;
+    if (this.inputTank.getFluidAmount() > 0
+        && this.outputTank.getFluidAmount() < this.outputTank.getCapacity()
+        && Recipes.liquidHeatUpManager
+            .getSingleDirectionLiquidManager()
+            .acceptsFluid(this.inputTank.getFluidStack().getFluid())
+        && this.kuBuffer < this.maxKuBuffer) {
+      ILiquidHeatExchangerManager.HeatExchangeProperty property =
+          Recipes.liquidHeatUpManager.getHeatExchangeProperty(
+              this.inputTank.getFluidStack().getFluid());
+      if (this.outputTank.isEmpty() || this.outputTank.hasExactFluid(property.outputFluid())) {
+        int heatbufferToUse = this.heatBuffer / 4;
+        heatbufferToUse =
+            Math.min(
+                heatbufferToUse,
+                (Math.min(
+                            this.outputTank.getCapacity() - this.outputTank.getFluidAmount(),
+                            this.inputTank.getFluidAmount())
+                        * property.huPerMB()
+                    - this.liquidHeatStored));
+        heatbufferToUse = Math.min(heatbufferToUse, (this.maxKuBuffer - this.kuBuffer) / 3);
+        if (heatbufferToUse > 0) {
+          this.kuBuffer += heatbufferToUse * 3 * 4;
+          this.liquidHeatStored += heatbufferToUse;
+          this.heatBuffer -= heatbufferToUse * 4;
+          newActive = true;
+        }
 
-				if (this.liquidHeatStored >= property.huPerMB())
-				{
-					int mbToConvert = this.liquidHeatStored / property.huPerMB();
-					mbToConvert = this.inputTank.drainMbUnchecked(mbToConvert, true).getAmountMb();
-					mbToConvert = this.outputTank.fillMbUnchecked(Ic2FluidStack.create(property.outputFluid(), mbToConvert), true);
-					this.liquidHeatStored = this.liquidHeatStored - mbToConvert * property.huPerMB();
-					this.inputTank.drainMbUnchecked(mbToConvert, false);
-					this.outputTank.fillMbUnchecked(Ic2FluidStack.create(property.outputFluid(), mbToConvert), false);
-				}
-			}
-		}
+        if (this.liquidHeatStored >= property.huPerMB()) {
+          int mbToConvert = this.liquidHeatStored / property.huPerMB();
+          mbToConvert = this.inputTank.drainMbUnchecked(mbToConvert, true).getAmountMb();
+          mbToConvert =
+              this.outputTank.fillMbUnchecked(
+                  Ic2FluidStack.create(property.outputFluid(), mbToConvert), true);
+          this.liquidHeatStored = this.liquidHeatStored - mbToConvert * property.huPerMB();
+          this.inputTank.drainMbUnchecked(mbToConvert, false);
+          this.outputTank.fillMbUnchecked(
+              Ic2FluidStack.create(property.outputFluid(), mbToConvert), false);
+        }
+      }
+    }
 
-		if (this.getActive() != newActive)
-		{
-			this.setActive(newActive);
-		}
+    if (this.getActive() != newActive) {
+      this.setActive(newActive);
+    }
 
-		this.upgradeSlot.tick();
-	}
+    this.upgradeSlot.tick();
+  }
 
-	private int drawHu(int amount)
-	{
-		if (amount <= 0)
-		{
-			return 0;
-		}
+  private int drawHu(int amount) {
+    if (amount <= 0) {
+      return 0;
+    }
 
-		Level world = this.getLevel();
-		int tmpAmount = amount;
+    Level world = this.getLevel();
+    int tmpAmount = amount;
 
-		for (Direction dir : Util.ALL_DIRS)
-		{
-			if (dir != this.getFacing() && world.getBlockEntity(this.worldPosition.relative(dir)) instanceof IHeatSource hs)
-			{
-				int request = hs.drawHeat(dir.getOpposite(), tmpAmount, true);
-				if (request > 0)
-				{
-					tmpAmount -= hs.drawHeat(dir.getOpposite(), request, false);
-					if (tmpAmount <= 0)
-					{
-						break;
-					}
-				}
-			}
-		}
+    for (Direction dir : Util.ALL_DIRS) {
+      if (dir != this.getFacing()
+          && world.getBlockEntity(this.worldPosition.relative(dir)) instanceof IHeatSource hs) {
+        int request = hs.drawHeat(dir.getOpposite(), tmpAmount, true);
+        if (request > 0) {
+          tmpAmount -= hs.drawHeat(dir.getOpposite(), request, false);
+          if (tmpAmount <= 0) {
+            break;
+          }
+        }
+      }
+    }
 
-		return amount - tmpAmount;
-	}
+    return amount - tmpAmount;
+  }
 
-	@Override
-	public int maxrequestkineticenergyTick(Direction directionFrom)
-	{
-		return Math.min(this.kuBuffer, this.getConnectionBandwidth(directionFrom));
-	}
+  @Override
+  public int maxrequestkineticenergyTick(Direction directionFrom) {
+    return Math.min(this.kuBuffer, this.getConnectionBandwidth(directionFrom));
+  }
 
-	@Override
-	public int getConnectionBandwidth(Direction side)
-	{
-		return side != this.getFacing() ? 0 : this.maxKuBuffer;
-	}
+  @Override
+  public int getConnectionBandwidth(Direction side) {
+    return side != this.getFacing() ? 0 : this.maxKuBuffer;
+  }
 
-	@Override
-	public int drawKineticEnergy(Direction side, int request, boolean simulate)
-	{
-		if (side != this.getFacing())
-		{
-			return 0;
-		}
+  @Override
+  public int drawKineticEnergy(Direction side, int request, boolean simulate) {
+    if (side != this.getFacing()) {
+      return 0;
+    }
 
-		if (request > this.kuBuffer)
-		{
-			request = this.kuBuffer;
-		}
+    if (request > this.kuBuffer) {
+      request = this.kuBuffer;
+    }
 
-		if (!simulate)
-		{
-			this.kuBuffer -= request;
-		}
+    if (!simulate) {
+      this.kuBuffer -= request;
+    }
 
-		return request;
-	}
+    return request;
+  }
 
-	@Override
-	public Set<UpgradableProperty> getUpgradableProperties()
-	{
-		return EnumSet.of(
-			UpgradableProperty.ItemConsuming, UpgradableProperty.ItemProducing, UpgradableProperty.FluidConsuming, UpgradableProperty.FluidProducing
-		);
-	}
+  @Override
+  public Set<UpgradableProperty> getUpgradableProperties() {
+    return EnumSet.of(
+        UpgradableProperty.ItemConsuming,
+        UpgradableProperty.ItemProducing,
+        UpgradableProperty.FluidConsuming,
+        UpgradableProperty.FluidProducing);
+  }
 
-	@Override
-	public double getEnergy()
-	{
-		return 40.0;
-	}
+  @Override
+  public double getEnergy() {
+    return 40.0;
+  }
 
-	@Override
-	public boolean useEnergy(double amount)
-	{
-		return true;
-	}
+  @Override
+  public boolean useEnergy(double amount) {
+    return true;
+  }
 
-	public Ic2FluidTank getInputTank()
-	{
-		return this.inputTank;
-	}
+  public Ic2FluidTank getInputTank() {
+    return this.inputTank;
+  }
 
-	public Ic2FluidTank getOutputTank()
-	{
-		return this.outputTank;
-	}
+  public Ic2FluidTank getOutputTank() {
+    return this.outputTank;
+  }
 
-	@Override
-	public ContainerBase<TileEntityStirlingKineticGenerator> createServerScreenHandler(int syncId, Player player)
-	{
-		return new ContainerStirlingKineticGenerator(syncId, player.getInventory(), this);
-	}
+  @Override
+  public ContainerBase<TileEntityStirlingKineticGenerator> createServerScreenHandler(
+      int syncId, Player player) {
+    return new ContainerStirlingKineticGenerator(syncId, player.getInventory(), this);
+  }
 
-	@Override
-	public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inventory, GrowingBuffer data)
-	{
-		return new ContainerStirlingKineticGenerator(syncId, inventory, this);
-	}
+  @Override
+  public ContainerBase<?> createClientScreenHandler(
+      int syncId, Inventory inventory, GrowingBuffer data) {
+    return new ContainerStirlingKineticGenerator(syncId, inventory, this);
+  }
 }

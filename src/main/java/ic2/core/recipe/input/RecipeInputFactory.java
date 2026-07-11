@@ -11,48 +11,41 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 
-public class RecipeInputFactory implements IRecipeInputFactory
-{
-	@Override
-	public IRecipeInput forItem(ItemLike item)
-	{
-		return new RecipeInputItemStack(new ItemStack(item));
-	}
+public class RecipeInputFactory implements IRecipeInputFactory {
+  @Override
+  public IRecipeInput forItem(ItemLike item) {
+    return new RecipeInputItemStack(new ItemStack(item));
+  }
 
-	@Override
-	public IRecipeInput forStack(ItemStack stack)
-	{
-		return new RecipeInputItemStack(stack);
-	}
+  @Override
+  public IRecipeInput forStack(ItemStack stack) {
+    return new RecipeInputItemStack(stack);
+  }
 
-	@Override
-	public IRecipeInput forStack(ItemStack stack, int amount)
-	{
-		return new RecipeInputItemStack(StackUtil.copyWithSize(stack, amount));
-	}
+  @Override
+  public IRecipeInput forStack(ItemStack stack, int amount) {
+    return new RecipeInputItemStack(StackUtil.copyWithSize(stack, amount));
+  }
 
-	@Override
-	public IRecipeInput forTag(String name, int amount)
-	{
-		// TODO
-		return this.forIngredient(Ingredient.of(TagKey.create(Registries.ITEM, ResourceLocation.parse(name))), amount);
-	}
+  @Override
+  public IRecipeInput forTag(String name, int amount) {
+    // TODO
+    return this.forIngredient(
+        Ingredient.of(TagKey.create(Registries.ITEM, ResourceLocation.parse(name))), amount);
+  }
 
-	@Override
-	public IRecipeInput forFluidContainer(Fluid fluid, int amount)
-	{
-		return new RecipeInputFluidContainer(fluid, amount);
-	}
+  @Override
+  public IRecipeInput forFluidContainer(Fluid fluid, int amount) {
+    return new RecipeInputFluidContainer(fluid, amount);
+  }
 
-	@Override
-	public Ingredient getIngredient(IRecipeInput input)
-	{
-		return input.getIngredient();
-	}
+  @Override
+  public Ingredient getIngredient(IRecipeInput input) {
+    return input.getIngredient();
+  }
 
-	@Override
-	public IRecipeInput forIngredient(Ingredient ingredient, int amount)
-	{
-		return new RecipeInputIngredient(ingredient, amount);
-	}
+  @Override
+  public IRecipeInput forIngredient(Ingredient ingredient, int amount) {
+    return new RecipeInputIngredient(ingredient, amount);
+  }
 }

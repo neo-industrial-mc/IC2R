@@ -7,11 +7,9 @@ import ic2.core.crop.TileEntityCrop;
 import ic2.core.item.BaseElectricItem;
 import ic2.core.item.IHandHeldInventory;
 import ic2.core.util.StackUtil;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -22,80 +20,87 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemCropAnalyzer extends BaseElectricItem implements IHandHeldInventory
-{
-	public ItemCropAnalyzer(Properties settings)
-	{
-		// 1.21: Item#getRarity(ItemStack) is gone; rarity is now a data component set at construction.
-		super(settings.rarity(Rarity.UNCOMMON), 100000.0, 128.0, 2);
-	}
+public class ItemCropAnalyzer extends BaseElectricItem implements IHandHeldInventory {
+  public ItemCropAnalyzer(Properties settings) {
+    // 1.21: Item#getRarity(ItemStack) is gone; rarity is now a data component set at construction.
+    super(settings.rarity(Rarity.UNCOMMON), 100000.0, 128.0, 2);
+  }
 
-	@Override
-	public @NotNull InteractionResultHolder<ItemStack> use(Level world, @NotNull Player player, @NotNull InteractionHand hand)
-	{
-		ItemStack stack = StackUtil.get(player, hand);
-		if (!world.isClientSide)
-		{
-			this.getInventory(player, hand, stack).openManagedItem(player, hand, null);
-		}
+  @Override
+  public @NotNull InteractionResultHolder<ItemStack> use(
+      Level world, @NotNull Player player, @NotNull InteractionHand hand) {
+    ItemStack stack = StackUtil.get(player, hand);
+    if (!world.isClientSide) {
+      this.getInventory(player, hand, stack).openManagedItem(player, hand, null);
+    }
 
-		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
-	}
+    return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+  }
 
-	@Override
-	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context)
-	{
-		Level world = context.getLevel();
-		BlockPos pos = context.getClickedPos();
-		Player player = context.getPlayer();
+  @Override
+  public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+    Level world = context.getLevel();
+    BlockPos pos = context.getClickedPos();
+    Player player = context.getPlayer();
 
-		if (!world.isClientSide && player != null && !player.isCrouching())
-		{
-			BlockEntity te = world.getBlockEntity(pos);
-			if (te instanceof TileEntityCrop crop)
-			{
-				if (crop.getCrop() == null)
-				{
-					return InteractionResult.PASS;
-				}
+    if (!world.isClientSide && player != null && !player.isCrouching()) {
+      BlockEntity te = world.getBlockEntity(pos);
+      if (te instanceof TileEntityCrop crop) {
+        if (crop.getCrop() == null) {
+          return InteractionResult.PASS;
+        }
 
-				if (ElectricItem.manager.use(StackUtil.get(player, context.getHand()), HandHeldCropAnalyzer.energyForLevel(2), player))
-				{
-					CropCard plant = crop.getCrop();
-					player.sendSystemMessage(Component.translatable("ic2.crop_analyzer.crop_name", Component.translatable(plant.getUnlocalizedName())));
-					player.sendSystemMessage(Component.translatable("ic2.crop.analyzer.crop_discovered_by", plant.getDiscoveredBy()));
-					player.sendSystemMessage(Component.translatable("ic2.crop_analyzer.crop_age", crop.getCurrentAge()));
-					player.sendSystemMessage(Component.translatable("ic2.crop_analyzer.crop_nutrients", crop.getStorageNutrients()));
-					player.sendSystemMessage(Component.translatable("ic2.crop_analyzer.crop_water", crop.getStorageWater()));
-					player.sendSystemMessage(Component.translatable("ic2.crop_analyzer.crop_weed_extra", crop.getStorageWeedEX()));
-					player.sendSystemMessage(Component.translatable("ic2.crop_analyzer.crop.growth_points", crop.getGrowthPoints(), plant.getGrowthDuration(crop)));
-					return InteractionResult.SUCCESS;
-				}
-			}
-		}
+        if (ElectricItem.manager.use(
+            StackUtil.get(player, context.getHand()),
+            HandHeldCropAnalyzer.energyForLevel(2),
+            player)) {
+          CropCard plant = crop.getCrop();
+          player.sendSystemMessage(
+              Component.translatable(
+                  "ic2.crop_analyzer.crop_name",
+                  Component.translatable(plant.getUnlocalizedName())));
+          player.sendSystemMessage(
+              Component.translatable(
+                  "ic2.crop.analyzer.crop_discovered_by", plant.getDiscoveredBy()));
+          player.sendSystemMessage(
+              Component.translatable("ic2.crop_analyzer.crop_age", crop.getCurrentAge()));
+          player.sendSystemMessage(
+              Component.translatable(
+                  "ic2.crop_analyzer.crop_nutrients", crop.getStorageNutrients()));
+          player.sendSystemMessage(
+              Component.translatable("ic2.crop_analyzer.crop_water", crop.getStorageWater()));
+          player.sendSystemMessage(
+              Component.translatable("ic2.crop_analyzer.crop_weed_extra", crop.getStorageWeedEX()));
+          player.sendSystemMessage(
+              Component.translatable(
+                  "ic2.crop_analyzer.crop.growth_points",
+                  crop.getGrowthPoints(),
+                  plant.getGrowthDuration(crop)));
+          return InteractionResult.SUCCESS;
+        }
+      }
+    }
 
-		return InteractionResult.PASS;
-	}
+    return InteractionResult.PASS;
+  }
 
-	@Override
-	public boolean onDroppedByPlayer(ItemStack stack, Player player)
-	{
-		if (!player.getCommandSenderWorld().isClientSide && !StackUtil.isEmpty(stack) && player.containerMenu instanceof ContainerAnalyzer)
-		{
-			HandHeldCropAnalyzer analyzer = ((ContainerAnalyzer) player.containerMenu).base;
-			if (analyzer.isThisContainer(stack))
-			{
-				analyzer.saveAsThrown(stack);
-				player.closeContainer();
-			}
-		}
+  @Override
+  public boolean onDroppedByPlayer(ItemStack stack, Player player) {
+    if (!player.getCommandSenderWorld().isClientSide
+        && !StackUtil.isEmpty(stack)
+        && player.containerMenu instanceof ContainerAnalyzer) {
+      HandHeldCropAnalyzer analyzer = ((ContainerAnalyzer) player.containerMenu).base;
+      if (analyzer.isThisContainer(stack)) {
+        analyzer.saveAsThrown(stack);
+        player.closeContainer();
+      }
+    }
 
-		return true;
-	}
+    return true;
+  }
 
-	@Override
-	public IHasGui getInventory(Player player, InteractionHand hand, ItemStack stack)
-	{
-		return new HandHeldCropAnalyzer(player, hand, stack);
-	}
+  @Override
+  public IHasGui getInventory(Player player, InteractionHand hand, ItemStack stack) {
+    return new HandHeldCropAnalyzer(player, hand, stack);
+  }
 }

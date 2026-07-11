@@ -6,22 +6,20 @@ import ic2.core.ref.Ic2ScreenHandlers;
 import ic2.core.slot.SlotInvSlot;
 import net.minecraft.world.entity.player.Inventory;
 
-public class ContainerElectricKineticGenerator extends ContainerFullInv<TileEntityElectricKineticGenerator>
-{
-	public ContainerElectricKineticGenerator(int syncId, Inventory playerInventory, TileEntityElectricKineticGenerator be)
-	{
-		super(Ic2ScreenHandlers.ELECTRIC_KINETIC_GENERATOR, syncId, playerInventory, be, 166);
+public class ContainerElectricKineticGenerator
+    extends ContainerFullInv<TileEntityElectricKineticGenerator> {
+  public ContainerElectricKineticGenerator(
+      int syncId, Inventory playerInventory, TileEntityElectricKineticGenerator be) {
+    super(Ic2ScreenHandlers.ELECTRIC_KINETIC_GENERATOR, syncId, playerInventory, be, 166);
 
-		for (int i = 0; i < 5; i++)
-		{
-			this.addSlot(new SlotInvSlot(be.slotMotor, i, 44 + i * 18, 27));
-		}
+    for (int i = 0; i < 5; i++) {
+      this.addSlot(new SlotInvSlot(be.slotMotor, i, 44 + i * 18, 27));
+    }
 
-		for (int i = 5; i < 10; i++)
-		{
-			this.addSlot(new SlotInvSlot(be.slotMotor, i, 44 + (i - 5) * 18, 45));
-		}
+    for (int i = 5; i < 10; i++) {
+      this.addSlot(new SlotInvSlot(be.slotMotor, i, 44 + (i - 5) * 18, 45));
+    }
 
-		this.addSlot(new SlotInvSlot(be.dischargeSlot, 0, 8, 62));
-	}
+    this.addSlot(new SlotInvSlot(be.dischargeSlot, 0, 8, 62));
+  }
 }

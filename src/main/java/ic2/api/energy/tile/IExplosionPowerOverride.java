@@ -1,8 +1,7 @@
 package ic2.api.energy.tile;
 
-public interface IExplosionPowerOverride
-{
-	boolean shouldExplode();
+public interface IExplosionPowerOverride {
+  boolean shouldExplode();
 
-	float getExplosionPower(int var1, float var2);
+  float getExplosionPower(int var1, float var2);
 }

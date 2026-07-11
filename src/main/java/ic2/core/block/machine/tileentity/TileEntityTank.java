@@ -16,77 +16,72 @@ import ic2.core.profile.NotClassic;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.util.LiquidUtil;
 import ic2.core.util.Util;
-
 import java.util.EnumSet;
 import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityTank extends TileEntityInventory implements IUpgradableBlock, IHasGui, INetworkClientTileEntityEventListener
-{
-	public final InvSlotUpgrade upgradeSlot = new InvSlotUpgrade(this, "upgrade", 4);
-	@GuiSynced
-	protected final Ic2FluidTank fluidTank;
-	protected final Fluids fluids = this.addComponent(new Fluids(this));
+public class TileEntityTank extends TileEntityInventory
+    implements IUpgradableBlock, IHasGui, INetworkClientTileEntityEventListener {
+  public final InvSlotUpgrade upgradeSlot = new InvSlotUpgrade(this, "upgrade", 4);
+  @GuiSynced protected final Ic2FluidTank fluidTank;
+  protected final Fluids fluids = this.addComponent(new Fluids(this));
 
-	public TileEntityTank(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.TANK, pos, state);
-		this.fluidTank = this.fluids.addTank("fluid", 24000);
-		this.comparator.setUpdate(() -> this.fluidTank.getFluidAmount() == 0 ? 0 : (int) Util.lerp(1.0F, 15.0F, (float) this.fluidTank.getFluidAmount() / this.fluidTank.getCapacity()));
-	}
+  public TileEntityTank(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.TANK, pos, state);
+    this.fluidTank = this.fluids.addTank("fluid", 24000);
+    this.comparator.setUpdate(
+        () ->
+            this.fluidTank.getFluidAmount() == 0
+                ? 0
+                : (int)
+                    Util.lerp(
+                        1.0F,
+                        15.0F,
+                        (float) this.fluidTank.getFluidAmount() / this.fluidTank.getCapacity()));
+  }
 
-	@Override
-	protected void updateEntityServer()
-	{
-		super.updateEntityServer();
-		this.upgradeSlot.tick();
-	}
+  @Override
+  protected void updateEntityServer() {
+    super.updateEntityServer();
+    this.upgradeSlot.tick();
+  }
 
-	@Override
-	public double getEnergy()
-	{
-		return 0.0;
-	}
+  @Override
+  public double getEnergy() {
+    return 0.0;
+  }
 
-	@Override
-	public boolean useEnergy(double amount)
-	{
-		return false;
-	}
+  @Override
+  public boolean useEnergy(double amount) {
+    return false;
+  }
 
-	@Override
-	public Set<UpgradableProperty> getUpgradableProperties()
-	{
-		return EnumSet.of(UpgradableProperty.FluidConsuming, UpgradableProperty.FluidProducing);
-	}
+  @Override
+  public Set<UpgradableProperty> getUpgradableProperties() {
+    return EnumSet.of(UpgradableProperty.FluidConsuming, UpgradableProperty.FluidProducing);
+  }
 
-	@Override
-	public ContainerBase<?> createServerScreenHandler(int syncId, Player player)
-	{
-		return DynamicContainer.create(syncId, player.getInventory(), this);
-	}
+  @Override
+  public ContainerBase<?> createServerScreenHandler(int syncId, Player player) {
+    return DynamicContainer.create(syncId, player.getInventory(), this);
+  }
 
-	@Override
-	public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inventory, GrowingBuffer data)
-	{
-		return DynamicContainer.create(syncId, inventory, this);
-	}
+  @Override
+  public ContainerBase<?> createClientScreenHandler(
+      int syncId, Inventory inventory, GrowingBuffer data) {
+    return DynamicContainer.create(syncId, inventory, this);
+  }
 
-	@Override
-	public void onNetworkEvent(Player player, int event)
-	{
-		if (event == 0 || event == 1)
-		{
-			if (LiquidUtil.transferFluidFromGuiClick(player, this.fluidTank, event == 1))
-			{
-				this.setChanged();
-			}
-		}
-	}
+  @Override
+  public void onNetworkEvent(Player player, int event) {
+    if (event == 0 || event == 1) {
+      if (LiquidUtil.transferFluidFromGuiClick(player, this.fluidTank, event == 1)) {
+        this.setChanged();
+      }
+    }
+  }
 }

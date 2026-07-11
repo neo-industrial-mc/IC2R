@@ -23,224 +23,193 @@ import ic2.core.network.GuiSynced;
 import ic2.core.profile.NotClassic;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.ref.Ic2Fluids;
-
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
 
 @NotClassic
-public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgradableBlock, IHasGui, IGuiValueProvider
-{
-	public static int maxHeat = 50000;
-	public final InvSlotProcessableGeneric inputSlot = new InvSlotProcessableGeneric(this, "input", 1, Recipes.blast_furnace);
-	public final InvSlotOutput outputSlot = new InvSlotOutput(this, "output", 2);
-	public final InvSlotConsumableLiquidByList tankInputSlot = new InvSlotConsumableLiquidByList(this, "cellInput", 1, Ic2Fluids.AIR.still());
-	public final InvSlotOutput tankOutputSlot = new InvSlotOutput(this, "cellOutput", 1);
-	public final InvSlotUpgrade upgradeSlot = new InvSlotUpgrade(this, "upgrade", 2);
-	@GuiSynced
-	public final Ic2FluidTank fluidTank;
-	protected final Redstone redstone;
-	protected final Fluids fluids;
-	public int heat = 0;
-	@GuiSynced
-	public float guiHeat;
-	protected int progress = 0;
-	protected int progressNeeded = 300;
-	@GuiSynced
-	protected float guiProgress;
+public class TileEntityBlastFurnace extends TileEntityInventory
+    implements IUpgradableBlock, IHasGui, IGuiValueProvider {
+  public static int maxHeat = 50000;
+  public final InvSlotProcessableGeneric inputSlot =
+      new InvSlotProcessableGeneric(this, "input", 1, Recipes.blast_furnace);
+  public final InvSlotOutput outputSlot = new InvSlotOutput(this, "output", 2);
+  public final InvSlotConsumableLiquidByList tankInputSlot =
+      new InvSlotConsumableLiquidByList(this, "cellInput", 1, Ic2Fluids.AIR.still());
+  public final InvSlotOutput tankOutputSlot = new InvSlotOutput(this, "cellOutput", 1);
+  public final InvSlotUpgrade upgradeSlot = new InvSlotUpgrade(this, "upgrade", 2);
+  @GuiSynced public final Ic2FluidTank fluidTank;
+  protected final Redstone redstone;
+  protected final Fluids fluids;
+  public int heat = 0;
+  @GuiSynced public float guiHeat;
+  protected int progress = 0;
+  protected int progressNeeded = 300;
+  @GuiSynced protected float guiProgress;
 
-	public TileEntityBlastFurnace(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.BLAST_FURNACE, pos, state);
-		this.redstone = this.addComponent(new Redstone(this));
-		this.fluids = this.addComponent(new Fluids(this));
-		this.fluidTank = this.fluids.addTankInsert("fluid", 8000, Fluids.fluidPredicate(Ic2Fluids.AIR.still()));
-	}
+  public TileEntityBlastFurnace(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.BLAST_FURNACE, pos, state);
+    this.redstone = this.addComponent(new Redstone(this));
+    this.fluids = this.addComponent(new Fluids(this));
+    this.fluidTank =
+        this.fluids.addTankInsert("fluid", 8000, Fluids.fluidPredicate(Ic2Fluids.AIR.still()));
+  }
 
-	@Override
-	public void updateEntityServer()
-	{
-		super.updateEntityServer();
-		boolean needsInvUpdate = false;
-		this.heatUp();
-		MachineRecipeResult<IRecipeInput, Collection<ItemStack>, ItemStack> result = this.getOutput();
-		if (result != null && this.isHot())
-		{
-			this.setActive(true);
-			if (result.recipe().getMetaData().getInt("fluid") <= this.fluidTank.getFluidAmount())
-			{
-				this.progress++;
-				this.fluidTank.drainMbUnchecked(result.recipe().getMetaData().getInt("fluid"), false);
-			}
+  @Override
+  public void updateEntityServer() {
+    super.updateEntityServer();
+    boolean needsInvUpdate = false;
+    this.heatUp();
+    MachineRecipeResult<IRecipeInput, Collection<ItemStack>, ItemStack> result = this.getOutput();
+    if (result != null && this.isHot()) {
+      this.setActive(true);
+      if (result.recipe().getMetaData().getInt("fluid") <= this.fluidTank.getFluidAmount()) {
+        this.progress++;
+        this.fluidTank.drainMbUnchecked(result.recipe().getMetaData().getInt("fluid"), false);
+      }
 
-			this.progressNeeded = result.recipe().getMetaData().getInt("duration");
-			if (this.progress >= result.recipe().getMetaData().getInt("duration"))
-			{
-				this.operateOnce(result, result.getOutput());
-				needsInvUpdate = true;
-				this.progress = 0;
-			}
-		} else
-		{
-			if (result == null)
-			{
-				this.progress = 0;
-			}
+      this.progressNeeded = result.recipe().getMetaData().getInt("duration");
+      if (this.progress >= result.recipe().getMetaData().getInt("duration")) {
+        this.operateOnce(result, result.getOutput());
+        needsInvUpdate = true;
+        this.progress = 0;
+      }
+    } else {
+      if (result == null) {
+        this.progress = 0;
+      }
 
-			this.setActive(false);
-		}
+      this.setActive(false);
+    }
 
-		if (this.fluidTank.getFluidAmount() < this.fluidTank.getCapacity())
-		{
-			this.gainFluid();
-		}
+    if (this.fluidTank.getFluidAmount() < this.fluidTank.getCapacity()) {
+      this.gainFluid();
+    }
 
-		needsInvUpdate |= this.upgradeSlot.tickNoMark();
-		this.guiProgress = (float) this.progress / this.progressNeeded;
-		this.guiHeat = (float) this.heat / maxHeat;
-		if (needsInvUpdate)
-		{
-			super.setChanged();
-		}
-	}
+    needsInvUpdate |= this.upgradeSlot.tickNoMark();
+    this.guiProgress = (float) this.progress / this.progressNeeded;
+    this.guiHeat = (float) this.heat / maxHeat;
+    if (needsInvUpdate) {
+      super.setChanged();
+    }
+  }
 
-	public void operateOnce(MachineRecipeResult<IRecipeInput, Collection<ItemStack>, ItemStack> result, Collection<ItemStack> processResult)
-	{
-		this.inputSlot.consume(result);
-		this.outputSlot.add(processResult);
-	}
+  public void operateOnce(
+      MachineRecipeResult<IRecipeInput, Collection<ItemStack>, ItemStack> result,
+      Collection<ItemStack> processResult) {
+    this.inputSlot.consume(result);
+    this.outputSlot.add(processResult);
+  }
 
-	public MachineRecipeResult<IRecipeInput, Collection<ItemStack>, ItemStack> getOutput()
-	{
-		if (this.inputSlot.isEmpty())
-		{
-			return null;
-		} else
-		{
-			MachineRecipeResult<IRecipeInput, Collection<ItemStack>, ItemStack> output = this.inputSlot.process();
-			if (output != null && output.recipe().getMetaData() != null)
-			{
-				return this.outputSlot.canAdd(output.getOutput()) ? output : null;
-			} else
-			{
-				return null;
-			}
-		}
-	}
+  public MachineRecipeResult<IRecipeInput, Collection<ItemStack>, ItemStack> getOutput() {
+    if (this.inputSlot.isEmpty()) {
+      return null;
+    } else {
+      MachineRecipeResult<IRecipeInput, Collection<ItemStack>, ItemStack> output =
+          this.inputSlot.process();
+      if (output != null && output.recipe().getMetaData() != null) {
+        return this.outputSlot.canAdd(output.getOutput()) ? output : null;
+      } else {
+        return null;
+      }
+    }
+  }
 
-	public boolean gainFluid()
-	{
-		return this.tankInputSlot.processIntoTank(this.fluidTank, this.tankOutputSlot);
-	}
+  public boolean gainFluid() {
+    return this.tankInputSlot.processIntoTank(this.fluidTank, this.tankOutputSlot);
+  }
 
-	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
-		super.loadAdditional(nbt, registries);
-		this.heat = nbt.getInt("heat");
-		this.progress = nbt.getInt("progress");
-	}
+  @Override
+  protected void loadAdditional(
+      CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.loadAdditional(nbt, registries);
+    this.heat = nbt.getInt("heat");
+    this.progress = nbt.getInt("progress");
+  }
 
-	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
-	{
-		super.saveAdditional(nbt, registries);
-		nbt.putInt("heat", this.heat);
-		nbt.putInt("progress", this.progress);
-	}
+  @Override
+  public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.saveAdditional(nbt, registries);
+    nbt.putInt("heat", this.heat);
+    nbt.putInt("progress", this.progress);
+  }
 
-	private void heatUp()
-	{
-		int coolingPerTick = 1;
-		int heatRequested = 0;
-		int gainhU = 0;
-		if ((!this.inputSlot.isEmpty() || this.progress >= 1) && this.heat <= maxHeat)
-		{
-			heatRequested = maxHeat - this.heat + 100;
-		} else if (this.redstone.hasRedstoneInput() && this.heat <= maxHeat)
-		{
-			heatRequested = maxHeat - this.heat + 100;
-		}
+  private void heatUp() {
+    int coolingPerTick = 1;
+    int heatRequested = 0;
+    int gainhU = 0;
+    if ((!this.inputSlot.isEmpty() || this.progress >= 1) && this.heat <= maxHeat) {
+      heatRequested = maxHeat - this.heat + 100;
+    } else if (this.redstone.hasRedstoneInput() && this.heat <= maxHeat) {
+      heatRequested = maxHeat - this.heat + 100;
+    }
 
-		if (heatRequested > 0)
-		{
-			Direction dir = this.getFacing();
-			BlockEntity te = this.getLevel().getBlockEntity(this.worldPosition.relative(dir));
-			if (te instanceof IHeatSource)
-			{
-				gainhU = ((IHeatSource) te).drawHeat(dir.getOpposite(), heatRequested, false);
-				this.heat += gainhU;
-			}
+    if (heatRequested > 0) {
+      Direction dir = this.getFacing();
+      BlockEntity te = this.getLevel().getBlockEntity(this.worldPosition.relative(dir));
+      if (te instanceof IHeatSource) {
+        gainhU = ((IHeatSource) te).drawHeat(dir.getOpposite(), heatRequested, false);
+        this.heat += gainhU;
+      }
 
-			if (gainhU == 0)
-			{
-				this.heat = this.heat - Math.min(this.heat, 1);
-			}
-		} else
-		{
-			this.heat = this.heat - Math.min(this.heat, 1);
-		}
-	}
+      if (gainhU == 0) {
+        this.heat = this.heat - Math.min(this.heat, 1);
+      }
+    } else {
+      this.heat = this.heat - Math.min(this.heat, 1);
+    }
+  }
 
-	public boolean isHot()
-	{
-		return this.heat >= maxHeat;
-	}
+  public boolean isHot() {
+    return this.heat >= maxHeat;
+  }
 
-	@Override
-	public ContainerBase<?> createServerScreenHandler(int syncId, Player player)
-	{
-		return DynamicContainer.create(syncId, player.getInventory(), this);
-	}
+  @Override
+  public ContainerBase<?> createServerScreenHandler(int syncId, Player player) {
+    return DynamicContainer.create(syncId, player.getInventory(), this);
+  }
 
-	@Override
-	public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inventory, GrowingBuffer data)
-	{
-		return DynamicContainer.create(syncId, inventory, this);
-	}
+  @Override
+  public ContainerBase<?> createClientScreenHandler(
+      int syncId, Inventory inventory, GrowingBuffer data) {
+    return DynamicContainer.create(syncId, inventory, this);
+  }
 
-	@Override
-	public double getGuiValue(String name)
-	{
-		if (name.equals("progress"))
-		{
-			return this.guiProgress;
-		} else if (name.equals("heat"))
-		{
-			return this.guiHeat;
-		} else
-		{
-			throw new IllegalArgumentException();
-		}
-	}
+  @Override
+  public double getGuiValue(String name) {
+    if (name.equals("progress")) {
+      return this.guiProgress;
+    } else if (name.equals("heat")) {
+      return this.guiHeat;
+    } else {
+      throw new IllegalArgumentException();
+    }
+  }
 
-	@Override
-	public double getEnergy()
-	{
-		return 0.0;
-	}
+  @Override
+  public double getEnergy() {
+    return 0.0;
+  }
 
-	@Override
-	public boolean useEnergy(double amount)
-	{
-		return false;
-	}
+  @Override
+  public boolean useEnergy(double amount) {
+    return false;
+  }
 
-	@Override
-	public Set<UpgradableProperty> getUpgradableProperties()
-	{
-		return EnumSet.of(
-			UpgradableProperty.RedstoneSensitive, UpgradableProperty.ItemConsuming, UpgradableProperty.ItemProducing, UpgradableProperty.FluidConsuming
-		);
-	}
+  @Override
+  public Set<UpgradableProperty> getUpgradableProperties() {
+    return EnumSet.of(
+        UpgradableProperty.RedstoneSensitive,
+        UpgradableProperty.ItemConsuming,
+        UpgradableProperty.ItemProducing,
+        UpgradableProperty.FluidConsuming);
+  }
 }

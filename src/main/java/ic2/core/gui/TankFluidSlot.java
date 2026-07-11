@@ -8,44 +8,38 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class TankFluidSlot extends AbstractFluidSlot
-{
-	final Ic2FluidTank tank;
+public class TankFluidSlot extends AbstractFluidSlot {
+  final Ic2FluidTank tank;
 
-	protected TankFluidSlot(Ic2Gui<?> gui, int x, int y, Ic2FluidTank tank)
-	{
-		super(gui, x, y, 18, 18);
-		if (tank == null)
-		{
-			throw new NullPointerException("Null FluidTank instance.");
-		}
+  protected TankFluidSlot(Ic2Gui<?> gui, int x, int y, Ic2FluidTank tank) {
+    super(gui, x, y, 18, 18);
+    if (tank == null) {
+      throw new NullPointerException("Null FluidTank instance.");
+    }
 
-		this.tank = tank;
-	}
+    this.tank = tank;
+  }
 
-	public static TankFluidSlot createFluidSlot(Ic2Gui<?> gui, int x, int y, Ic2FluidTank tank)
-	{
-		return new TankFluidSlot(gui, x, y, tank);
-	}
+  public static TankFluidSlot createFluidSlot(Ic2Gui<?> gui, int x, int y, Ic2FluidTank tank) {
+    return new TankFluidSlot(gui, x, y, tank);
+  }
 
-	@Override
-	protected Ic2FluidStack getFluidStack()
-	{
-		return this.tank.getFluidStack();
-	}
+  @Override
+  protected Ic2FluidStack getFluidStack() {
+    return this.tank.getFluidStack();
+  }
 
-	@Override
-	protected boolean onMouseClick(int mouseX, int mouseY, MouseButton button)
-	{
-		if (button == MouseButton.left)
-		{
-			Container base = this.getBase();
-			if (base instanceof BlockEntity)
-			{
-				IC2.network.get(false).initiateClientTileEntityEvent((BlockEntity) base, Screen.hasShiftDown() ? 1 : 0);
-				return true;
-			}
-		}
-		return false;
-	}
+  @Override
+  protected boolean onMouseClick(int mouseX, int mouseY, MouseButton button) {
+    if (button == MouseButton.left) {
+      Container base = this.getBase();
+      if (base instanceof BlockEntity) {
+        IC2.network
+            .get(false)
+            .initiateClientTileEntityEvent((BlockEntity) base, Screen.hasShiftDown() ? 1 : 0);
+        return true;
+      }
+    }
+    return false;
+  }
 }

@@ -1,36 +1,31 @@
 package ic2.core.item.armor;
 
 import ic2.api.item.IMetalArmor;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.ItemStack;
 
-public class ItemArmorIC2 extends ArmorItem implements IMetalArmor
-{
-	public ItemArmorIC2(Holder<ArmorMaterial> material, EquipmentSlot slot, Properties settings)
-	{
-		super(material, fromSlot(slot), settings);
-	}
+public class ItemArmorIC2 extends ArmorItem implements IMetalArmor {
+  public ItemArmorIC2(Holder<ArmorMaterial> material, EquipmentSlot slot, Properties settings) {
+    super(material, fromSlot(slot), settings);
+  }
 
-	private static ArmorItem.Type fromSlot(EquipmentSlot slot)
-	{
-		return switch (slot)
-		{
-			case HEAD -> ArmorItem.Type.HELMET;
-			case CHEST -> ArmorItem.Type.CHESTPLATE;
-			case LEGS -> ArmorItem.Type.LEGGINGS;
-			case FEET -> ArmorItem.Type.BOOTS;
-			default -> throw new IllegalArgumentException("Invalid slot: " + slot);
-		};
-	}
+  private static ArmorItem.Type fromSlot(EquipmentSlot slot) {
+    return switch (slot) {
+      case HEAD -> ArmorItem.Type.HELMET;
+      case CHEST -> ArmorItem.Type.CHESTPLATE;
+      case LEGS -> ArmorItem.Type.LEGGINGS;
+      case FEET -> ArmorItem.Type.BOOTS;
+      default -> throw new IllegalArgumentException("Invalid slot: " + slot);
+    };
+  }
 
-	@Override
-	public boolean isMetalArmor(ItemStack itemstack, Player player)
-	{
-		return true;
-	}
+  @Override
+  public boolean isMetalArmor(ItemStack itemstack, Player player) {
+    return true;
+  }
 }

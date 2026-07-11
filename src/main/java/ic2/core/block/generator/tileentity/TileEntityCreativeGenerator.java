@@ -11,66 +11,53 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityCreativeGenerator extends Ic2TileEntity implements IMultiEnergySource
-{
-	public TileEntityCreativeGenerator(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.CREATIVE_GENERATOR, pos, state);
-	}
+public class TileEntityCreativeGenerator extends Ic2TileEntity implements IMultiEnergySource {
+  public TileEntityCreativeGenerator(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.CREATIVE_GENERATOR, pos, state);
+  }
 
-	@Override
-	public double getOfferedEnergy()
-	{
-		return Double.POSITIVE_INFINITY;
-	}
+  @Override
+  public double getOfferedEnergy() {
+    return Double.POSITIVE_INFINITY;
+  }
 
-	@Override
-	public void drawEnergy(double amount)
-	{
-	}
+  @Override
+  public void drawEnergy(double amount) {}
 
-	@Override
-	public int getSourceTier()
-	{
-		return 1;
-	}
+  @Override
+  public int getSourceTier() {
+    return 1;
+  }
 
-	@Override
-	public boolean emitsEnergyTo(IEnergyAcceptor receiver, Direction side)
-	{
-		return true;
-	}
+  @Override
+  public boolean emitsEnergyTo(IEnergyAcceptor receiver, Direction side) {
+    return true;
+  }
 
-	@Override
-	public boolean sendMultipleEnergyPackets()
-	{
-		return true;
-	}
+  @Override
+  public boolean sendMultipleEnergyPackets() {
+    return true;
+  }
 
-	@Override
-	public int getMultipleEnergyPacketAmount()
-	{
-		return 10;
-	}
+  @Override
+  public int getMultipleEnergyPacketAmount() {
+    return 10;
+  }
 
-	@Override
-	protected void onLoaded()
-	{
-		super.onLoaded();
-		if (!this.getLevel().isClientSide)
-		{
-			EnergyNet.instance.addBlockEntityTile(this);
-		}
-	}
+  @Override
+  protected void onLoaded() {
+    super.onLoaded();
+    if (!this.getLevel().isClientSide) {
+      EnergyNet.instance.addBlockEntityTile(this);
+    }
+  }
 
-	@Override
-	protected void onUnloaded()
-	{
-		if (!this.getLevel().isClientSide)
-		{
-			EnergyNet.instance.removeTile(this);
-		}
+  @Override
+  protected void onUnloaded() {
+    if (!this.getLevel().isClientSide) {
+      EnergyNet.instance.removeTile(this);
+    }
 
-		super.onUnloaded();
-	}
+    super.onUnloaded();
+  }
 }

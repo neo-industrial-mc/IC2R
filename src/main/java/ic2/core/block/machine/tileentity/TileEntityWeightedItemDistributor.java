@@ -12,162 +12,137 @@ import ic2.core.network.GrowingBuffer;
 import ic2.core.profile.NotClassic;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.util.StackUtil;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
 
 @NotClassic
-public class TileEntityWeightedItemDistributor extends TileEntityInventory implements IHasGui, IWeightedDistributor
-{
-	public final InvSlot buffer = new InvSlot(this, "buffer", InvSlot.Access.I, 9);
-	@ClientModifiable
-	protected List<Direction> priority = new ArrayList<>(5);
+public class TileEntityWeightedItemDistributor extends TileEntityInventory
+    implements IHasGui, IWeightedDistributor {
+  public final InvSlot buffer = new InvSlot(this, "buffer", InvSlot.Access.I, 9);
+  @ClientModifiable protected List<Direction> priority = new ArrayList<>(5);
 
-	public TileEntityWeightedItemDistributor(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.WEIGHTED_ITEM_DISTRIBUTOR, pos, state);
-	}
+  public TileEntityWeightedItemDistributor(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.WEIGHTED_ITEM_DISTRIBUTOR, pos, state);
+  }
 
-	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
-		super.loadAdditional(nbt, registries);
-		int[] indexes = nbt.getIntArray("priority");
-		if (indexes.length > 0)
-		{
-			for (int index : indexes)
-			{
-				this.priority.add(Direction.from3DDataValue(index));
-			}
-		}
-	}
+  @Override
+  protected void loadAdditional(
+      CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.loadAdditional(nbt, registries);
+    int[] indexes = nbt.getIntArray("priority");
+    if (indexes.length > 0) {
+      for (int index : indexes) {
+        this.priority.add(Direction.from3DDataValue(index));
+      }
+    }
+  }
 
-	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
-	{
-		super.saveAdditional(nbt, registries);
-		if (!this.priority.isEmpty())
-		{
-			int[] indexes = new int[this.priority.size()];
+  @Override
+  public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.saveAdditional(nbt, registries);
+    if (!this.priority.isEmpty()) {
+      int[] indexes = new int[this.priority.size()];
 
-			for (int i = 0; i < indexes.length; i++)
-			{
-				indexes[i] = this.priority.get(i).get3DDataValue();
-			}
+      for (int i = 0; i < indexes.length; i++) {
+        indexes[i] = this.priority.get(i).get3DDataValue();
+      }
 
-			nbt.putIntArray("priority", indexes);
-		}
-	}
+      nbt.putIntArray("priority", indexes);
+    }
+  }
 
-	@Override
-	public List<String> getNetworkedFields()
-	{
-		List<String> ret = super.getNetworkedFields();
-		ret.add("priority");
-		return ret;
-	}
+  @Override
+  public List<String> getNetworkedFields() {
+    List<String> ret = super.getNetworkedFields();
+    ret.add("priority");
+    return ret;
+  }
 
-	@Override
-	protected void onLoaded()
-	{
-		super.onLoaded();
-		this.updateConnectivity();
-	}
+  @Override
+  protected void onLoaded() {
+    super.onLoaded();
+    this.updateConnectivity();
+  }
 
-	@Override
-	protected void setFacing(Level world, Direction facing)
-	{
-		super.setFacing(world, facing);
-		this.updateConnectivity();
-	}
+  @Override
+  protected void setFacing(Level world, Direction facing) {
+    super.setFacing(world, facing);
+    this.updateConnectivity();
+  }
 
-	protected void updateConnectivity()
-	{
-		if (!this.getLevel().isClientSide && !this.priority.isEmpty() && this.priority.remove(this.getFacing()))
-		{
-			this.updatePriority(true);
-		}
-	}
+  protected void updateConnectivity() {
+    if (!this.getLevel().isClientSide
+        && !this.priority.isEmpty()
+        && this.priority.remove(this.getFacing())) {
+      this.updatePriority(true);
+    }
+  }
 
-	@Override
-	protected void updateEntityServer()
-	{
-		super.updateEntityServer();
-		if (!this.priority.isEmpty() && !this.buffer.isEmpty())
-		{
-			Level world = this.getLevel();
-			boolean hasChanged = false;
+  @Override
+  protected void updateEntityServer() {
+    super.updateEntityServer();
+    if (!this.priority.isEmpty() && !this.buffer.isEmpty()) {
+      Level world = this.getLevel();
+      boolean hasChanged = false;
 
-			for (Direction facing : this.priority)
-			{
-				EnvItemHandler.AdjacentInventory inv = StackUtil.ENV.getAdjacentInventory(this, facing);
-				if (inv != null)
-				{
-					boolean empty = true;
+      for (Direction facing : this.priority) {
+        EnvItemHandler.AdjacentInventory inv = StackUtil.ENV.getAdjacentInventory(this, facing);
+        if (inv != null) {
+          boolean empty = true;
 
-					for (int index = 0; index < this.buffer.size(); index++)
-					{
-						if (!this.buffer.isEmpty(index))
-						{
-							ItemStack stack = this.buffer.get(index);
-							ItemStack transferStack = StackUtil.copy(stack);
-							int amount = StackUtil.ENV.deposit(inv, transferStack, true);
-							if (amount > 0)
-							{
-								amount = StackUtil.ENV.deposit(inv, transferStack, false);
-								stack = StackUtil.decSize(stack, amount);
-								this.buffer.put(index, stack);
-								hasChanged = true;
-								empty &= StackUtil.isEmpty(stack);
-							}
-						}
-					}
+          for (int index = 0; index < this.buffer.size(); index++) {
+            if (!this.buffer.isEmpty(index)) {
+              ItemStack stack = this.buffer.get(index);
+              ItemStack transferStack = StackUtil.copy(stack);
+              int amount = StackUtil.ENV.deposit(inv, transferStack, true);
+              if (amount > 0) {
+                amount = StackUtil.ENV.deposit(inv, transferStack, false);
+                stack = StackUtil.decSize(stack, amount);
+                this.buffer.put(index, stack);
+                hasChanged = true;
+                empty &= StackUtil.isEmpty(stack);
+              }
+            }
+          }
 
-					if (hasChanged && empty)
-					{
-						break;
-					}
-				}
-			}
+          if (hasChanged && empty) {
+            break;
+          }
+        }
+      }
 
-			if (hasChanged)
-			{
-				this.setChanged();
-			}
-		}
-	}
+      if (hasChanged) {
+        this.setChanged();
+      }
+    }
+  }
 
-	@Override
-	public ContainerBase<?> createServerScreenHandler(int syncId, Player player)
-	{
-		return new ContainerWeightedItemDistributor(syncId, player.getInventory(), this);
-	}
+  @Override
+  public ContainerBase<?> createServerScreenHandler(int syncId, Player player) {
+    return new ContainerWeightedItemDistributor(syncId, player.getInventory(), this);
+  }
 
-	@Override
-	public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inventory, GrowingBuffer data)
-	{
-		return new ContainerWeightedItemDistributor(syncId, inventory, this);
-	}
+  @Override
+  public ContainerBase<?> createClientScreenHandler(
+      int syncId, Inventory inventory, GrowingBuffer data) {
+    return new ContainerWeightedItemDistributor(syncId, inventory, this);
+  }
 
-	@Override
-	public List<Direction> getPriority()
-	{
-		return this.priority;
-	}
+  @Override
+  public List<Direction> getPriority() {
+    return this.priority;
+  }
 
-	@Override
-	public void updatePriority(boolean server)
-	{
-		IC2.network.get(server).updateTileEntityField(this, "priority");
-	}
+  @Override
+  public void updatePriority(boolean server) {
+    IC2.network.get(server).updateTileEntityField(this, "priority");
+  }
 }

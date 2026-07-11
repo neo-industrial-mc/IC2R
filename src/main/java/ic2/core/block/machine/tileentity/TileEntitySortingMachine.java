@@ -15,249 +15,208 @@ import ic2.core.profile.NotClassic;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
-
 import java.util.EnumSet;
 import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 
 @NotClassic
-public class TileEntitySortingMachine extends TileEntityElectricMachine implements IHasGui, INetworkClientTileEntityEventListener, IUpgradableBlock
-{
-	public static final int defaultTier = 2;
-	public final InvSlotUpgrade upgradeSlot;
-	public final InvSlot buffer;
-	private final ItemStack[][] filters;
-	public Direction defaultRoute = Direction.DOWN;
+public class TileEntitySortingMachine extends TileEntityElectricMachine
+    implements IHasGui, INetworkClientTileEntityEventListener, IUpgradableBlock {
+  public static final int defaultTier = 2;
+  public final InvSlotUpgrade upgradeSlot;
+  public final InvSlot buffer;
+  private final ItemStack[][] filters;
+  public Direction defaultRoute = Direction.DOWN;
 
-	public TileEntitySortingMachine(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.SORTING_MACHINE, pos, state, 15000, 2, false);
-		this.upgradeSlot = new InvSlotUpgrade(this, "upgrade", 3);
-		this.buffer = new InvSlot(this, "Buffer", InvSlot.Access.IO, 11);
-		this.filters = new ItemStack[6][7];
-	}
+  public TileEntitySortingMachine(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.SORTING_MACHINE, pos, state, 15000, 2, false);
+    this.upgradeSlot = new InvSlotUpgrade(this, "upgrade", 3);
+    this.buffer = new InvSlot(this, "Buffer", InvSlot.Access.IO, 11);
+    this.filters = new ItemStack[6][7];
+  }
 
-	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
-		super.loadAdditional(nbt, registries);
-		ListTag filtersTag = nbt.getList("filters", 10);
+  @Override
+  protected void loadAdditional(
+      CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.loadAdditional(nbt, registries);
+    ListTag filtersTag = nbt.getList("filters", 10);
 
-		for (int i = 0; i < filtersTag.size(); i++)
-		{
-			CompoundTag filterTag = filtersTag.getCompound(i);
-			int index = filterTag.getByte("index") & 255;
-			ItemStack stack = ItemStack.parseOptional(registries, filterTag);
-			this.filters[index / 7][index % 7] = stack;
-		}
+    for (int i = 0; i < filtersTag.size(); i++) {
+      CompoundTag filterTag = filtersTag.getCompound(i);
+      int index = filterTag.getByte("index") & 255;
+      ItemStack stack = ItemStack.parseOptional(registries, filterTag);
+      this.filters[index / 7][index % 7] = stack;
+    }
 
-		int defaultRouteIdx = nbt.getByte("defaultroute");
-		if (defaultRouteIdx >= 0 && defaultRouteIdx < Util.ALL_DIRS.length)
-		{
-			this.defaultRoute = Util.ALL_DIRS[defaultRouteIdx];
-		}
-	}
+    int defaultRouteIdx = nbt.getByte("defaultroute");
+    if (defaultRouteIdx >= 0 && defaultRouteIdx < Util.ALL_DIRS.length) {
+      this.defaultRoute = Util.ALL_DIRS[defaultRouteIdx];
+    }
+  }
 
-	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
-	{
-		super.saveAdditional(nbt, registries);
-		ListTag filtersTag = new ListTag();
+  @Override
+  public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.saveAdditional(nbt, registries);
+    ListTag filtersTag = new ListTag();
 
-		for (int i = 0; i < 42; i++)
-		{
-			ItemStack stack = this.filters[i / 7][i % 7];
-			if (stack != null)
-			{
-				CompoundTag contentTag = new CompoundTag();
-				contentTag.putByte("index", (byte) i);
-				// save() returns the merged tag instead of mutating the prefix
-				filtersTag.add(stack.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag));
-			}
-		}
+    for (int i = 0; i < 42; i++) {
+      ItemStack stack = this.filters[i / 7][i % 7];
+      if (stack != null) {
+        CompoundTag contentTag = new CompoundTag();
+        contentTag.putByte("index", (byte) i);
+        // save() returns the merged tag instead of mutating the prefix
+        filtersTag.add(stack.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag));
+      }
+    }
 
-		nbt.put("filters", filtersTag);
-		nbt.putByte("defaultroute", (byte) this.defaultRoute.ordinal());
-	}
+    nbt.put("filters", filtersTag);
+    nbt.putByte("defaultroute", (byte) this.defaultRoute.ordinal());
+  }
 
-	@Override
-	protected void onLoaded()
-	{
-		super.onLoaded();
-		if (IC2.sideProxy.isSimulating())
-		{
-			this.setUpgradableBlock();
-		}
-	}
+  @Override
+  protected void onLoaded() {
+    super.onLoaded();
+    if (IC2.sideProxy.isSimulating()) {
+      this.setUpgradableBlock();
+    }
+  }
 
-	@Override
-	protected void updateEntityServer()
-	{
-		super.updateEntityServer();
+  @Override
+  protected void updateEntityServer() {
+    super.updateEntityServer();
 
-		label87:
-		for (int index = 0; index < this.buffer.size(); index++)
-		{
-			if (this.energy.getEnergy() < 20.0)
-			{
-				return;
-			}
+    label87:
+    for (int index = 0; index < this.buffer.size(); index++) {
+      if (this.energy.getEnergy() < 20.0) {
+        return;
+      }
 
-			ItemStack stack = this.buffer.get(index);
-			if (!StackUtil.isEmpty(stack))
-			{
-				for (EnvItemHandler.AdjacentInventory inv : StackUtil.ENV.getAdjacentInventories(this))
-				{
-					if (inv.getSide() != this.defaultRoute)
-					{
-						for (ItemStack filterStack : this.getFilterSlots(inv.getSide()))
-						{
-							if (!StackUtil.isEmpty(filterStack))
-							{
-								int filterSize = StackUtil.getSize(filterStack);
-								if (StackUtil.getSize(stack) >= filterSize
-									&& StackUtil.checkItemEquality(filterStack, stack)
-									&& this.energy.canUseEnergy(filterSize * 20))
-								{
-									ItemStack transferStack = StackUtil.copyWithSize(stack, filterSize);
-									int amount = StackUtil.ENV.deposit(inv, transferStack, true);
-									if (amount == filterSize)
-									{
-										amount = StackUtil.ENV.deposit(inv, transferStack, false);
-										stack = StackUtil.decSize(stack, amount);
-										this.buffer.put(index, stack);
-										this.energy.useEnergy(amount * 20);
-										if (StackUtil.isEmpty(stack))
-										{
-											continue label87;
-										}
-									}
-									break;
-								}
-							}
-						}
-					} else
-					{
-						boolean inFilter = false;
-						ItemStack[][] amount = this.filters;
-						int var7 = amount.length;
-						int filterStack = 0;
+      ItemStack stack = this.buffer.get(index);
+      if (!StackUtil.isEmpty(stack)) {
+        for (EnvItemHandler.AdjacentInventory inv : StackUtil.ENV.getAdjacentInventories(this)) {
+          if (inv.getSide() != this.defaultRoute) {
+            for (ItemStack filterStack : this.getFilterSlots(inv.getSide())) {
+              if (!StackUtil.isEmpty(filterStack)) {
+                int filterSize = StackUtil.getSize(filterStack);
+                if (StackUtil.getSize(stack) >= filterSize
+                    && StackUtil.checkItemEquality(filterStack, stack)
+                    && this.energy.canUseEnergy(filterSize * 20)) {
+                  ItemStack transferStack = StackUtil.copyWithSize(stack, filterSize);
+                  int amount = StackUtil.ENV.deposit(inv, transferStack, true);
+                  if (amount == filterSize) {
+                    amount = StackUtil.ENV.deposit(inv, transferStack, false);
+                    stack = StackUtil.decSize(stack, amount);
+                    this.buffer.put(index, stack);
+                    this.energy.useEnergy(amount * 20);
+                    if (StackUtil.isEmpty(stack)) {
+                      continue label87;
+                    }
+                  }
+                  break;
+                }
+              }
+            }
+          } else {
+            boolean inFilter = false;
+            ItemStack[][] amount = this.filters;
+            int var7 = amount.length;
+            int filterStack = 0;
 
-						label68:
-						while (true)
-						{
-							if (filterStack < var7)
-							{
-								ItemStack[] sideFilters = amount[filterStack];
-								ItemStack[] transferStack = sideFilters;
-								int amountx = transferStack.length;
-								int var12 = 0;
+            label68:
+            while (true) {
+              if (filterStack < var7) {
+                ItemStack[] sideFilters = amount[filterStack];
+                ItemStack[] transferStack = sideFilters;
+                int amountx = transferStack.length;
+                int var12 = 0;
 
-								while (true)
-								{
-									if (var12 >= amountx)
-									{
-										filterStack++;
-										continue label68;
-									}
+                while (true) {
+                  if (var12 >= amountx) {
+                    filterStack++;
+                    continue label68;
+                  }
 
-									ItemStack filter = transferStack[var12];
-									if (StackUtil.checkItemEquality(filter, stack))
-									{
-										inFilter = true;
-										break;
-									}
+                  ItemStack filter = transferStack[var12];
+                  if (StackUtil.checkItemEquality(filter, stack)) {
+                    inFilter = true;
+                    break;
+                  }
 
-									var12++;
-								}
-							}
+                  var12++;
+                }
+              }
 
-							if (!inFilter)
-							{
-								int amountx = StackUtil.ENV.deposit(inv, StackUtil.copyWithSize(stack, 1), false);
-								if (amountx > 0)
-								{
-									stack = StackUtil.decSize(stack, amountx);
-									this.buffer.put(index, stack);
-									this.energy.useEnergy(20.0);
-									StackUtil.isEmpty(stack);
-								}
-								continue label87;
-							}
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
+              if (!inFilter) {
+                int amountx = StackUtil.ENV.deposit(inv, StackUtil.copyWithSize(stack, 1), false);
+                if (amountx > 0) {
+                  stack = StackUtil.decSize(stack, amountx);
+                  this.buffer.put(index, stack);
+                  this.energy.useEnergy(20.0);
+                  StackUtil.isEmpty(stack);
+                }
+                continue label87;
+              }
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
 
-	@Override
-	public void onNetworkEvent(Player player, int event)
-	{
-		if (event >= 0 && event <= 5)
-		{
-			this.defaultRoute = Util.ALL_DIRS[event];
-		}
-	}
+  @Override
+  public void onNetworkEvent(Player player, int event) {
+    if (event >= 0 && event <= 5) {
+      this.defaultRoute = Util.ALL_DIRS[event];
+    }
+  }
 
-	@Override
-	public ContainerBase<?> createServerScreenHandler(int syncId, Player player)
-	{
-		return new ContainerSortingMachine(syncId, player.getInventory(), this);
-	}
+  @Override
+  public ContainerBase<?> createServerScreenHandler(int syncId, Player player) {
+    return new ContainerSortingMachine(syncId, player.getInventory(), this);
+  }
 
-	@Override
-	public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inventory, GrowingBuffer data)
-	{
-		return new ContainerSortingMachine(syncId, inventory, this);
-	}
+  @Override
+  public ContainerBase<?> createClientScreenHandler(
+      int syncId, Inventory inventory, GrowingBuffer data) {
+    return new ContainerSortingMachine(syncId, inventory, this);
+  }
 
-	@Override
-	public Set<UpgradableProperty> getUpgradableProperties()
-	{
-		return EnumSet.of(UpgradableProperty.Transformer);
-	}
+  @Override
+  public Set<UpgradableProperty> getUpgradableProperties() {
+    return EnumSet.of(UpgradableProperty.Transformer);
+  }
 
-	@Override
-	public void setChanged()
-	{
-		super.setChanged();
-		if (IC2.sideProxy.isSimulating())
-		{
-			this.setUpgradableBlock();
-		}
-	}
+  @Override
+  public void setChanged() {
+    super.setChanged();
+    if (IC2.sideProxy.isSimulating()) {
+      this.setUpgradableBlock();
+    }
+  }
 
-	public void setUpgradableBlock()
-	{
-		this.energy.setSinkTier(this.upgradeSlot.getTier(2));
-	}
+  public void setUpgradableBlock() {
+    this.energy.setSinkTier(this.upgradeSlot.getTier(2));
+  }
 
-	@Override
-	public double getEnergy()
-	{
-		return this.energy.getEnergy();
-	}
+  @Override
+  public double getEnergy() {
+    return this.energy.getEnergy();
+  }
 
-	@Override
-	public boolean useEnergy(double amount)
-	{
-		return this.energy.useEnergy(amount);
-	}
+  @Override
+  public boolean useEnergy(double amount) {
+    return this.energy.useEnergy(amount);
+  }
 
-	public ItemStack[] getFilterSlots(Direction side)
-	{
-		return this.filters[side.ordinal()];
-	}
+  public ItemStack[] getFilterSlots(Direction side) {
+    return this.filters[side.ordinal()];
+  }
 }

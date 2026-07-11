@@ -5,11 +5,9 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 
-public final class BeModelLoader implements IGeometryLoader<Ic2Model>
-{
-	public Ic2Model read(JsonObject obj, JsonDeserializationContext context)
-	{
-		ResourceLocation id = ResourceLocation.parse(obj.get("id").getAsString());
-		return new DynamicBeModelForge(id);
-	}
+public final class BeModelLoader implements IGeometryLoader<Ic2Model> {
+  public Ic2Model read(JsonObject obj, JsonDeserializationContext context) {
+    ResourceLocation id = ResourceLocation.parse(obj.get("id").getAsString());
+    return new DynamicBeModelForge(id);
+  }
 }

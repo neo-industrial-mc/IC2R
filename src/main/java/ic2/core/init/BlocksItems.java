@@ -9,26 +9,21 @@ import ic2.core.ref.Ic2Items;
 import ic2.core.ref.Ic2ScreenHandlers;
 import net.minecraft.world.effect.MobEffectCategory;
 
-public class BlocksItems
-{
-	public static void init()
-	{
-		Ic2Fluids.init();
-		Ic2Blocks.init();
-		Ic2BlockEntities.init();
-		Ic2Items.init();
-		Ic2ScreenHandlers.init();
-		initMigration();
-	}
+public class BlocksItems {
+  public static void init() {
+    Ic2Fluids.init();
+    Ic2Blocks.init();
+    Ic2BlockEntities.init();
+    Ic2Items.init();
+    Ic2ScreenHandlers.init();
+    initMigration();
+  }
 
-	// Registered during the MOB_EFFECT RegisterEvent, which fires before BLOCK — see FmlMod.
-	public static void initPotions()
-	{
-		Ic2Potion.radiation = new Ic2Potion(MobEffectCategory.HARMFUL, 5149489);
-		IC2.envProxy.registerStatusEffect(IC2.getIdentifier("radiation"), Ic2Potion.radiation);
-	}
+  // Registered during the MOB_EFFECT RegisterEvent, which fires before BLOCK — see FmlMod.
+  public static void initPotions() {
+    Ic2Potion.radiation = new Ic2Potion(MobEffectCategory.HARMFUL, 5149489);
+    IC2.envProxy.registerStatusEffect(IC2.getIdentifier("radiation"), Ic2Potion.radiation);
+  }
 
-	private static void initMigration()
-	{
-	}
+  private static void initMigration() {}
 }

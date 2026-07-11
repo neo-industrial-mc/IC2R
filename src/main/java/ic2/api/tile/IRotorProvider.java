@@ -3,18 +3,16 @@ package ic2.api.tile;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
-public interface IRotorProvider
-{
-	int getRotorDiameter();
+public interface IRotorProvider {
+  int getRotorDiameter();
 
-	Direction getFacing();
+  Direction getFacing();
 
-	float getAngle();
+  float getAngle();
 
-	default float getRotorAnimationSpeed()
-	{
-		return 0.0F;
-	}
+  default float getRotorAnimationSpeed() {
+    return 0.0F;
+  }
 
-	ResourceLocation getRotorRenderTexture();
+  ResourceLocation getRotorRenderTexture();
 }

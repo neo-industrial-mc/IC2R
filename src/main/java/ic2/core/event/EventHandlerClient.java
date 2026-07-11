@@ -2,7 +2,6 @@ package ic2.core.event;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import ic2.api.item.ElectricItem;
-import ic2.api.item.IEnhancedOverlayProvider;
 import ic2.core.GuiOverlayer;
 import ic2.core.IC2;
 import ic2.core.fluid.FluidHandler;
@@ -15,168 +14,175 @@ import ic2.core.proxy.SideProxyClient;
 import ic2.core.sound.SoundManagerClient;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 
-public class EventHandlerClient
-{
-	public static void onClientSetup()
-	{
-		List<Block> fluidBlocks = new ArrayList<>();
-		for (Block block : BuiltInRegistries.BLOCK.stream().toList())
-		{
-			ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
-			if (id != null && "ic2".equals(id.getNamespace()) && id.getPath().startsWith("fluid_block_"))
-			{
-				fluidBlocks.add(block);
-			}
-		}
+public class EventHandlerClient {
+  public static void onClientSetup() {
+    List<Block> fluidBlocks = new ArrayList<>();
+    for (Block block : BuiltInRegistries.BLOCK.stream().toList()) {
+      ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+      if (id != null
+          && "ic2".equals(id.getNamespace())
+          && id.getPath().startsWith("fluid_block_")) {
+        fluidBlocks.add(block);
+      }
+    }
 
-		if (!fluidBlocks.isEmpty())
-		{
-			SideProxyClient.envProxy.registerBlockLayer(RenderType.translucent(), fluidBlocks.toArray(Block[]::new));
-		}
+    if (!fluidBlocks.isEmpty()) {
+      SideProxyClient.envProxy.registerBlockLayer(
+          RenderType.translucent(), fluidBlocks.toArray(Block[]::new));
+    }
 
-		SideProxyClient.envProxy.registerModelPredicateProvider(IC2.getIdentifier("charge"), (stack, world, entity, seed) -> (float) ElectricItem.manager.getChargeLevel(stack));
+    SideProxyClient.envProxy.registerModelPredicateProvider(
+        IC2.getIdentifier("charge"),
+        (stack, world, entity, seed) -> (float) ElectricItem.manager.getChargeLevel(stack));
 
-		for (Direction direction : Util.ALL_DIRS)
-		{
-			SideProxyClient.envProxy.registerModelPredicateProvider(IC2.getIdentifier(direction.getName()), (stack, world, entity, seed) -> stack.getItem() instanceof ItemUpgradeModule && ItemUpgradeModule.getDirection(stack) == direction ? 1.0F : 0.0F);
-		}
+    for (Direction direction : Util.ALL_DIRS) {
+      SideProxyClient.envProxy.registerModelPredicateProvider(
+          IC2.getIdentifier(direction.getName()),
+          (stack, world, entity, seed) ->
+              stack.getItem() instanceof ItemUpgradeModule
+                      && ItemUpgradeModule.getDirection(stack) == direction
+                  ? 1.0F
+                  : 0.0F);
+    }
 
-		SideProxyClient.envProxy.registerModelPredicateProvider(IC2.getIdentifier("is_activated"), (stack, world, entity, seed) -> stack.getItem() instanceof AbstractItemNanoSaber nanoSaber ? nanoSaber.getActiveData(stack, world) : 0f);
-		SideProxyClient.envProxy.registerModelPredicateProvider(IC2.getIdentifier("tool_box_open"), (stack, world, entity, seed) ->
-			{
-				if (!(entity instanceof Player player))
-				{
-					return 0.0F;
-				} else
-				{
-					ItemStack mainHandItem;
-					boolean open = player.containerMenu instanceof ContainerToolbox && (
-						StackUtil.checkItemEquality(mainHandItem = player.getMainHandItem(), stack) || StackUtil.checkItemEquality(player.getOffhandItem(), stack) && !(mainHandItem.getItem() instanceof IHandHeldInventory)
-					);
-					return open ? 1.0F : 0.0F;
-				}
-			}
-		);
-	}
+    SideProxyClient.envProxy.registerModelPredicateProvider(
+        IC2.getIdentifier("is_activated"),
+        (stack, world, entity, seed) ->
+            stack.getItem() instanceof AbstractItemNanoSaber nanoSaber
+                ? nanoSaber.getActiveData(stack, world)
+                : 0f);
+    SideProxyClient.envProxy.registerModelPredicateProvider(
+        IC2.getIdentifier("tool_box_open"),
+        (stack, world, entity, seed) -> {
+          if (!(entity instanceof Player player)) {
+            return 0.0F;
+          } else {
+            ItemStack mainHandItem;
+            boolean open =
+                player.containerMenu instanceof ContainerToolbox
+                    && (StackUtil.checkItemEquality(mainHandItem = player.getMainHandItem(), stack)
+                        || StackUtil.checkItemEquality(player.getOffhandItem(), stack)
+                            && !(mainHandItem.getItem() instanceof IHandHeldInventory));
+            return open ? 1.0F : 0.0F;
+          }
+        });
+  }
 
-	public static void onSoundSetup()
-	{
-	}
+  public static void onSoundSetup() {}
 
-	public static void livingEntityPreRender(LivingEntity entity, LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> renderer)
-	{
-	}
+  public static void livingEntityPreRender(
+      LivingEntity entity,
+      LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> renderer) {}
 
-	public static void livingEntityPostRender(LivingEntity entity, LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> renderer)
-	{
-	}
+  public static void livingEntityPostRender(
+      LivingEntity entity,
+      LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> renderer) {}
 
-	public static float onSetupFogDensity(BlockState state)
-	{
-		Fluid fluid = FluidHandler.getWorldFluid(state);
-		if (fluid != null && "ic2".equals(Objects.requireNonNull(BuiltInRegistries.FLUID.getKey(fluid)).getNamespace()))
-		{
-			int density = FluidHandler.getDensity(fluid);
-			return (float) Util.map(Math.abs(density), 20000.0, 2.0);
-		} else
-		{
-			return -1.0F;
-		}
-	}
+  public static float onSetupFogDensity(BlockState state) {
+    Fluid fluid = FluidHandler.getWorldFluid(state);
+    if (fluid != null
+        && "ic2"
+            .equals(Objects.requireNonNull(BuiltInRegistries.FLUID.getKey(fluid)).getNamespace())) {
+      int density = FluidHandler.getDensity(fluid);
+      return (float) Util.map(Math.abs(density), 20000.0, 2.0);
+    } else {
+      return -1.0F;
+    }
+  }
 
-	public static int onRenderFogColor(BlockState state)
-	{
-		Fluid fluid = FluidHandler.getWorldFluid(state);
-		return fluid != null && "ic2".equals(BuiltInRegistries.FLUID.getKey(fluid).getNamespace()) ? FluidHandler.getColor(fluid) : -1;
-	}
+  public static int onRenderFogColor(BlockState state) {
+    Fluid fluid = FluidHandler.getWorldFluid(state);
+    return fluid != null && "ic2".equals(BuiltInRegistries.FLUID.getKey(fluid).getNamespace())
+        ? FluidHandler.getColor(fluid)
+        : -1;
+  }
 
-	// TODO
-	/*
-	意图分析：
+  // TODO
+  /*
+  意图分析：
 
-  onDrawBlockHighlight 是绘制玩家准星对准方块时的高亮边框的方法。空 if 的逻辑本应是：
+   onDrawBlockHighlight 是绘制玩家准星对准方块时的高亮边框的方法。空 if 的逻辑本应是：
 
-  1. 检查玩家手中物品是否实现了 IEnhancedOverlayProvider（如 ItemToolCutter 线缆剪、ItemToolCrowbar 撬棍）                                                                                                            
-  2. 调用 providesEnhancedOverlay(world, pos, side, player, stack) 判断该物品是否需要为当前目标方块绘制自定义高亮覆盖层                                                                    
-  3. 如果返回 true，则渲染一个增强的方块选择指示器（比如高亮线缆的连接点、可拆卸的面板方向等）
+   1. 检查玩家手中物品是否实现了 IEnhancedOverlayProvider（如 ItemToolCutter 线缆剪、ItemToolCrowbar 撬棍）
+   2. 调用 providesEnhancedOverlay(world, pos, side, player, stack) 判断该物品是否需要为当前目标方块绘制自定义高亮覆盖层
+   3. 如果返回 true，则渲染一个增强的方块选择指示器（比如高亮线缆的连接点、可拆卸的面板方向等）
 
-  但目前这个 if 体是空的 —— 作者只写了前半段判断逻辑，后半段渲染代码还没来得及写，是个 WIP（Work in progress）。
+   但目前这个 if 体是空的 —— 作者只写了前半段判断逻辑，后半段渲染代码还没来得及写，是个 WIP（Work in progress）。
 
-  从结构上看，它和下面的 onDrawBlockHighlightLast 是一对方法对 —— 前者负责覆盖/替换默认高亮，后者负责在默认高亮之后追加绘制。onDrawBlockHighlightLast 也是半成品（取了 BlockEntity 但什么都没做就 return false 了）。
+   从结构上看，它和下面的 onDrawBlockHighlightLast 是一对方法对 —— 前者负责覆盖/替换默认高亮，后者负责在默认高亮之后追加绘制。onDrawBlockHighlightLast 也是半成品（取了 BlockEntity 但什么都没做就 return false 了）。
 
-  简单说：想给特殊工具（线缆剪、撬棍等）在指向方块时加自定义准星高亮效果，但还没写完。
-	 */
-	public static void onDrawBlockHighlight(Player player, BlockHitResult target, float partialTicks, PoseStack matrix, MultiBufferSource buffers)
-	{
-		assert target.getType() == Type.BLOCK;
-		ItemStack inHand = StackUtil.get(player, InteractionHand.MAIN_HAND);
-		inHand.getItem();
-	}
+   简单说：想给特殊工具（线缆剪、撬棍等）在指向方块时加自定义准星高亮效果，但还没写完。
+   */
+  public static void onDrawBlockHighlight(
+      Player player,
+      BlockHitResult target,
+      float partialTicks,
+      PoseStack matrix,
+      MultiBufferSource buffers) {
+    assert target.getType() == Type.BLOCK;
+    ItemStack inHand = StackUtil.get(player, InteractionHand.MAIN_HAND);
+    inHand.getItem();
+  }
 
-	public static boolean onDrawBlockHighlightLast(Player player, BlockHitResult target, float partialTicks, PoseStack matrix, MultiBufferSource buffers)
-	{
-		assert target.getType() == Type.BLOCK;
-		Level world = player.getCommandSenderWorld();
-		BlockPos pos = target.getBlockPos();
-		if (!world.getWorldBorder().isWithinBounds(pos))
-		{
-			return false;
-		}
+  public static boolean onDrawBlockHighlightLast(
+      Player player,
+      BlockHitResult target,
+      float partialTicks,
+      PoseStack matrix,
+      MultiBufferSource buffers) {
+    assert target.getType() == Type.BLOCK;
+    Level world = player.getCommandSenderWorld();
+    BlockPos pos = target.getBlockPos();
+    if (!world.getWorldBorder().isWithinBounds(pos)) {
+      return false;
+    }
 
-		BlockEntity te = world.getBlockEntity(pos);
-		return false;
-	}
+    BlockEntity te = world.getBlockEntity(pos);
+    return false;
+  }
 
-	public static void onGuiCreate(Screen screen, List<GuiEventListener> widgets, Consumer<GuiEventListener> widgetAdder)
-	{
-	}
+  public static void onGuiCreate(
+      Screen screen, List<GuiEventListener> widgets, Consumer<GuiEventListener> widgetAdder) {}
 
-	private static final GuiOverlayer guiOverlayer = new GuiOverlayer(SideProxyClient.mc);
+  private static final GuiOverlayer guiOverlayer = new GuiOverlayer(SideProxyClient.mc);
 
-	public static void onRenderHotBar(GuiGraphics guiGraphics)
-	{
-		guiOverlayer.render(guiGraphics);
-	}
+  public static void onRenderHotBar(GuiGraphics guiGraphics) {
+    guiOverlayer.render(guiGraphics);
+  }
 
-	public static SoundInstance onSoundPlayed(SoundInstance sound)
-	{
-		return SoundManagerClient.onSoundPlayed(sound);
-	}
+  public static SoundInstance onSoundPlayed(SoundInstance sound) {
+    return SoundManagerClient.onSoundPlayed(sound);
+  }
 
-	public static void onDisconnect()
-	{
-		RpcHandler.onDisconnect();
-	}
+  public static void onDisconnect() {
+    RpcHandler.onDisconnect();
+  }
 }

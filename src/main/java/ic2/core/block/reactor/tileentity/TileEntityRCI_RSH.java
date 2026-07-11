@@ -9,10 +9,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityRCI_RSH extends TileEntityAbstractRCI
-{
-	public TileEntityRCI_RSH(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.RCI_RSH, pos, state, new ItemStack(Ic2Items.RSH_CONDENSATOR), new ItemStack(Blocks.REDSTONE_BLOCK));
-	}
+public class TileEntityRCI_RSH extends TileEntityAbstractRCI {
+  public TileEntityRCI_RSH(BlockPos pos, BlockState state) {
+    super(
+        Ic2BlockEntities.RCI_RSH,
+        pos,
+        state,
+        new ItemStack(Ic2Items.RSH_CONDENSATOR),
+        new ItemStack(Blocks.REDSTONE_BLOCK));
+  }
 }

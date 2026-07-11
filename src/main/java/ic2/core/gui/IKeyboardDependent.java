@@ -1,5 +1,3 @@
 package ic2.core.gui;
 
-public interface IKeyboardDependent
-{
-}
+public interface IKeyboardDependent {}

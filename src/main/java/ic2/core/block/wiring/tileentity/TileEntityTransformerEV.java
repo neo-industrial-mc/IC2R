@@ -6,10 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityTransformerEV extends TileEntityTransformer
-{
-	public TileEntityTransformerEV(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.EV_TRANSFORMER, pos, state, 4);
-	}
+public class TileEntityTransformerEV extends TileEntityTransformer {
+  public TileEntityTransformerEV(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.EV_TRANSFORMER, pos, state, 4);
+  }
 }

@@ -1,6 +1,5 @@
 package ic2.core.item;
 
-import ic2.core.IC2;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -9,71 +8,63 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class DamageHandler
-{
-	public static int getDamage(ItemStack stack)
-	{
-		Item item = stack.getItem();
-		return item == null ? 0 : stack.getDamageValue();
-	}
+public class DamageHandler {
+  public static int getDamage(ItemStack stack) {
+    Item item = stack.getItem();
+    return item == null ? 0 : stack.getDamageValue();
+  }
 
-	public static void setDamage(ItemStack stack, int damage, boolean displayOnly)
-	{
-		Item item = stack.getItem();
-		if (item != null)
-		{
-			if (item instanceof IPseudoDamageItem)
-			{
-				if (!displayOnly)
-				{
-					throw new IllegalStateException("can't damage " + stack + " physically");
-				}
+  public static void setDamage(ItemStack stack, int damage, boolean displayOnly) {
+    Item item = stack.getItem();
+    if (item != null) {
+      if (item instanceof IPseudoDamageItem) {
+        if (!displayOnly) {
+          throw new IllegalStateException("can't damage " + stack + " physically");
+        }
 
-				((IPseudoDamageItem) item).setStackDamage(stack, damage);
-			} else if (stack.isDamageableItem())
-			{
-				stack.setDamageValue(damage);
-			}
-		}
-	}
+        ((IPseudoDamageItem) item).setStackDamage(stack, damage);
+      } else if (stack.isDamageableItem()) {
+        stack.setDamageValue(damage);
+      }
+    }
+  }
 
-	public static int getMaxDamage(ItemStack stack)
-	{
-		Item item = stack.getItem();
-		return item == null ? 0 : stack.getMaxDamage();
-	}
+  public static int getMaxDamage(ItemStack stack) {
+    Item item = stack.getItem();
+    return item == null ? 0 : stack.getMaxDamage();
+  }
 
-	public static boolean damage(ItemStack stack, int damage, LivingEntity src, InteractionHand hand)
-	{
-		Item item = stack.getItem();
-		if (item == null)
-		{
-			return false;
-		} else if (src != null)
-		{
-			if (src.level() instanceof ServerLevel serverLevel)
-			{
-				stack.hurtAndBreak(damage, serverLevel, src instanceof ServerPlayer ? (ServerPlayer) src : null, brokenItem ->
-				{
-					if (hand != null)
-					{
-						EquipmentSlot slot = hand == InteractionHand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
-						src.onEquippedItemBroken(brokenItem, slot);
-					}
-				});
-			}
-			return true;
-		} else
-		{
-			int newDamage = stack.getDamageValue() + damage;
-			if (newDamage >= stack.getMaxDamage())
-			{
-				stack.shrink(1);
-				return true;
-			}
+  public static boolean damage(
+      ItemStack stack, int damage, LivingEntity src, InteractionHand hand) {
+    Item item = stack.getItem();
+    if (item == null) {
+      return false;
+    } else if (src != null) {
+      if (src.level() instanceof ServerLevel serverLevel) {
+        stack.hurtAndBreak(
+            damage,
+            serverLevel,
+            src instanceof ServerPlayer ? (ServerPlayer) src : null,
+            brokenItem -> {
+              if (hand != null) {
+                EquipmentSlot slot =
+                    hand == InteractionHand.OFF_HAND
+                        ? EquipmentSlot.OFFHAND
+                        : EquipmentSlot.MAINHAND;
+                src.onEquippedItemBroken(brokenItem, slot);
+              }
+            });
+      }
+      return true;
+    } else {
+      int newDamage = stack.getDamageValue() + damage;
+      if (newDamage >= stack.getMaxDamage()) {
+        stack.shrink(1);
+        return true;
+      }
 
-			stack.setDamageValue(newDamage);
-			return false;
-		}
-	}
+      stack.setDamageValue(newDamage);
+      return false;
+    }
+  }
 }

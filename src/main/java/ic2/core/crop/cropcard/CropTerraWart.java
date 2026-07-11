@@ -11,61 +11,49 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
-public class CropTerraWart extends Ic2CropCard
-{
-	public CropTerraWart(ICropType cropType)
-	{
-		super(cropType);
-	}
+public class CropTerraWart extends Ic2CropCard {
+  public CropTerraWart(ICropType cropType) {
+    super(cropType);
+  }
 
-	@Override
-	public Block getCropBlock()
-	{
-		return Ic2Blocks.TERRA_WART_CROP;
-	}
+  @Override
+  public Block getCropBlock() {
+    return Ic2Blocks.TERRA_WART_CROP;
+  }
 
-	@Override
-	public CropProperties getProperties()
-	{
-		return new CropProperties(5, 2, 4, 0, 3, 0);
-	}
+  @Override
+  public CropProperties getProperties() {
+    return new CropProperties(5, 2, 4, 0, 3, 0);
+  }
 
-	@Override
-	public String[] getAttributes()
-	{
-		return new String[] { "Blue", "Aether", "Consumable", "Snow" };
-	}
+  @Override
+  public String[] getAttributes() {
+    return new String[] {"Blue", "Aether", "Consumable", "Snow"};
+  }
 
-	@Override
-	public double dropGainChance()
-	{
-		return 0.8;
-	}
+  @Override
+  public double dropGainChance() {
+    return 0.8;
+  }
 
-	@Override
-	public ItemStack getGain(ICropTile crop)
-	{
-		return new ItemStack(Ic2Items.TERRA_WART);
-	}
+  @Override
+  public ItemStack getGain(ICropTile crop) {
+    return new ItemStack(Ic2Items.TERRA_WART);
+  }
 
-	@Override
-	public void tick(ICropTile crop)
-	{
-		if (crop.isBlockBelow(Blocks.SNOW))
-		{
-			if (this.canGrow(crop))
-			{
-				crop.setGrowthPoints(crop.getGrowthPoints() + 100);
-			}
-		} else if (crop.isBlockBelow(Blocks.SOUL_SAND) && crop.getWorldObj().random.nextInt(300) == 0)
-		{
-			crop.setCrop(Ic2Crops.cropNetherWart);
-		}
-	}
+  @Override
+  public void tick(ICropTile crop) {
+    if (crop.isBlockBelow(Blocks.SNOW)) {
+      if (this.canGrow(crop)) {
+        crop.setGrowthPoints(crop.getGrowthPoints() + 100);
+      }
+    } else if (crop.isBlockBelow(Blocks.SOUL_SAND) && crop.getWorldObj().random.nextInt(300) == 0) {
+      crop.setCrop(Ic2Crops.cropNetherWart);
+    }
+  }
 
-	@Override
-	public int getRootsLength(ICropTile crop)
-	{
-		return 5;
-	}
+  @Override
+  public int getRootsLength(ICropTile crop) {
+    return 5;
+  }
 }

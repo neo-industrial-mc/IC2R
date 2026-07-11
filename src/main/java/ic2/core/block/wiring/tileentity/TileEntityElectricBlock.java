@@ -19,11 +19,8 @@ import ic2.core.init.IC2Config;
 import ic2.core.network.GrowingBuffer;
 import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.StackUtil;
-
 import java.util.EnumSet;
 import java.util.List;
-
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -31,207 +28,206 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraft.core.HolderLookup;
 
-public abstract class TileEntityElectricBlock extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener, IEnergyStorage
-{
-	public static byte redstoneModes = 7;
-	public final InvSlotCharge chargeSlot;
-	public final InvSlotDischarge dischargeSlot;
-	public final Energy energy;
-	public final Redstone redstone;
-	public final RedstoneEmitter rsEmitter;
-	public byte redstoneMode = 0;
-	protected double output;
+public abstract class TileEntityElectricBlock extends TileEntityInventory
+    implements IHasGui, INetworkClientTileEntityEventListener, IEnergyStorage {
+  public static byte redstoneModes = 7;
+  public final InvSlotCharge chargeSlot;
+  public final InvSlotDischarge dischargeSlot;
+  public final Energy energy;
+  public final Redstone redstone;
+  public final RedstoneEmitter rsEmitter;
+  public byte redstoneMode = 0;
+  protected double output;
 
-	public TileEntityElectricBlock(BlockEntityType<? extends TileEntityElectricBlock> type, BlockPos pos, BlockState state, int tier, int output, int maxStorage)
-	{
-		super(type, pos, state);
-		this.output = output;
-		this.chargeSlot = new InvSlotCharge(this, tier);
-		this.dischargeSlot = new InvSlotDischarge(this, InvSlot.Access.IO, tier, InvSlot.InvSide.BOTTOM);
-		this.energy = this.addComponent(new Energy(this, maxStorage, EnumSet.complementOf(EnumSet.of(Direction.DOWN)), EnumSet.of(Direction.DOWN), tier, tier, true).addManagedSlot(this.chargeSlot).addManagedSlot(this.dischargeSlot));
-		this.rsEmitter = this.addComponent(new RedstoneEmitter(this));
-		this.redstone = this.addComponent(new Redstone(this));
-		this.comparator.setUpdate(this.energy::getComparatorValue);
-	}
+  public TileEntityElectricBlock(
+      BlockEntityType<? extends TileEntityElectricBlock> type,
+      BlockPos pos,
+      BlockState state,
+      int tier,
+      int output,
+      int maxStorage) {
+    super(type, pos, state);
+    this.output = output;
+    this.chargeSlot = new InvSlotCharge(this, tier);
+    this.dischargeSlot =
+        new InvSlotDischarge(this, InvSlot.Access.IO, tier, InvSlot.InvSide.BOTTOM);
+    this.energy =
+        this.addComponent(
+            new Energy(
+                    this,
+                    maxStorage,
+                    EnumSet.complementOf(EnumSet.of(Direction.DOWN)),
+                    EnumSet.of(Direction.DOWN),
+                    tier,
+                    tier,
+                    true)
+                .addManagedSlot(this.chargeSlot)
+                .addManagedSlot(this.dischargeSlot));
+    this.rsEmitter = this.addComponent(new RedstoneEmitter(this));
+    this.redstone = this.addComponent(new Redstone(this));
+    this.comparator.setUpdate(this.energy::getComparatorValue);
+  }
 
-	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
-		super.loadAdditional(nbt, registries);
-		this.redstoneMode = nbt.getByte("redstoneMode");
-		this.energy.setDirections(EnumSet.complementOf(EnumSet.of(this.getFacing())), EnumSet.of(this.getFacing()));
-	}
+  @Override
+  protected void loadAdditional(
+      CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.loadAdditional(nbt, registries);
+    this.redstoneMode = nbt.getByte("redstoneMode");
+    this.energy.setDirections(
+        EnumSet.complementOf(EnumSet.of(this.getFacing())), EnumSet.of(this.getFacing()));
+  }
 
-	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
-	{
-		super.saveAdditional(nbt, registries);
-		nbt.putByte("redstoneMode", this.redstoneMode);
-	}
+  @Override
+  public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.saveAdditional(nbt, registries);
+    nbt.putByte("redstoneMode", this.redstoneMode);
+  }
 
-	@Override
-	protected void updateEntityServer()
-	{
-		super.updateEntityServer();
-		this.energy.setSendingEnabled(this.shouldEmitEnergy());
-		this.rsEmitter.setLevel(this.shouldEmitRedstone() ? 15 : 0);
-	}
+  @Override
+  protected void updateEntityServer() {
+    super.updateEntityServer();
+    this.energy.setSendingEnabled(this.shouldEmitEnergy());
+    this.rsEmitter.setLevel(this.shouldEmitRedstone() ? 15 : 0);
+  }
 
-	@Override
-	public ContainerBase<?> createServerScreenHandler(int syncId, Player player)
-	{
-		return new ContainerElectricBlock(syncId, player.getInventory(), this);
-	}
+  @Override
+  public ContainerBase<?> createServerScreenHandler(int syncId, Player player) {
+    return new ContainerElectricBlock(syncId, player.getInventory(), this);
+  }
 
-	@Override
-	public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inventory, GrowingBuffer data)
-	{
-		return new ContainerElectricBlock(syncId, inventory, this);
-	}
+  @Override
+  public ContainerBase<?> createClientScreenHandler(
+      int syncId, Inventory inventory, GrowingBuffer data) {
+    return new ContainerElectricBlock(syncId, inventory, this);
+  }
 
-	@Override
-	protected void setFacing(Level world, Direction facing)
-	{
-		super.setFacing(world, facing);
-		this.energy.setDirections(EnumSet.complementOf(EnumSet.of(this.getFacing())), EnumSet.of(this.getFacing()));
-	}
+  @Override
+  protected void setFacing(Level world, Direction facing) {
+    super.setFacing(world, facing);
+    this.energy.setDirections(
+        EnumSet.complementOf(EnumSet.of(this.getFacing())), EnumSet.of(this.getFacing()));
+  }
 
-	protected final void superSetFacing(Level world, Direction facing)
-	{
-		super.setFacing(world, facing);
-	}
+  protected final void superSetFacing(Level world, Direction facing) {
+    super.setFacing(world, facing);
+  }
 
-	protected boolean shouldEmitRedstone()
-	{
-		return switch (this.redstoneMode)
-		{
-			case 1 -> this.energy.getEnergy() >= this.energy.getCapacity() - this.output * 20.0;
-			case 2 ->
-				this.energy.getEnergy() > this.output && this.energy.getEnergy() < this.energy.getCapacity() - this.output;
-			case 3 -> this.energy.getEnergy() < this.energy.getCapacity() - this.output;
-			case 4 -> this.energy.getEnergy() < this.output;
-			default -> false;
-		};
-	}
+  protected boolean shouldEmitRedstone() {
+    return switch (this.redstoneMode) {
+      case 1 -> this.energy.getEnergy() >= this.energy.getCapacity() - this.output * 20.0;
+      case 2 ->
+          this.energy.getEnergy() > this.output
+              && this.energy.getEnergy() < this.energy.getCapacity() - this.output;
+      case 3 -> this.energy.getEnergy() < this.energy.getCapacity() - this.output;
+      case 4 -> this.energy.getEnergy() < this.output;
+      default -> false;
+    };
+  }
 
-	protected boolean shouldEmitEnergy()
-	{
-		boolean redstone = this.redstone.hasRedstoneInput();
-		if (this.redstoneMode == 5)
-		{
-			return !redstone;
-		} else
-		{
-			return this.redstoneMode != 6 || !redstone || this.energy.getEnergy() > this.energy.getCapacity() - this.output * 20.0;
-		}
-	}
+  protected boolean shouldEmitEnergy() {
+    boolean redstone = this.redstone.hasRedstoneInput();
+    if (this.redstoneMode == 5) {
+      return !redstone;
+    } else {
+      return this.redstoneMode != 6
+          || !redstone
+          || this.energy.getEnergy() > this.energy.getCapacity() - this.output * 20.0;
+    }
+  }
 
-	@Override
-	public void onNetworkEvent(Player player, int event)
-	{
-		this.redstoneMode++;
-		if (this.redstoneMode >= redstoneModes)
-		{
-			this.redstoneMode = 0;
-		}
+  @Override
+  public void onNetworkEvent(Player player, int event) {
+    this.redstoneMode++;
+    if (this.redstoneMode >= redstoneModes) {
+      this.redstoneMode = 0;
+    }
 
-		IC2.sideProxy.messagePlayer(player, this.getRedstoneMode());
-	}
+    IC2.sideProxy.messagePlayer(player, this.getRedstoneMode());
+  }
 
-	public String getRedstoneMode()
-	{
-		return this.redstoneMode < redstoneModes && this.redstoneMode >= 0 ? Component.translatable("ic2.EUStorage.gui.mod.redstone" + this.redstoneMode).getString() : "";
-	}
+  public String getRedstoneMode() {
+    return this.redstoneMode < redstoneModes && this.redstoneMode >= 0
+        ? Component.translatable("ic2.EUStorage.gui.mod.redstone" + this.redstoneMode).getString()
+        : "";
+  }
 
-	@Override
-	public void onPlaced(ItemStack stack, LivingEntity placer, Direction facing)
-	{
-		super.onPlaced(stack, placer, facing);
-		if (!this.getLevel().isClientSide)
-		{
-			CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
-			this.energy.addEnergy(nbt.getDouble("energy"));
-		}
-	}
+  @Override
+  public void onPlaced(ItemStack stack, LivingEntity placer, Direction facing) {
+    super.onPlaced(stack, placer, facing);
+    if (!this.getLevel().isClientSide) {
+      CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
+      this.energy.addEnergy(nbt.getDouble("energy"));
+    }
+  }
 
-	@Override
-	public ItemStack adjustDrop(ItemStack drop, boolean wrench)
-	{
-		drop = super.adjustDrop(drop, wrench);
-		if (wrench || this.teBlock.getDefaultDrop() == Ic2TileEntityBlock.DefaultDrop.Self)
-		{
-			double retainedRatio = IC2Config.balance.energyRetainedInStorageBlockDrops.get();
-			double totalEnergy = this.energy.getEnergy();
-			if (retainedRatio > 0.0 && totalEnergy > 0.0)
-			{
-				CompoundTag nbt = StackUtil.getOrCreateNbtData(drop);
-				nbt.putDouble("energy", totalEnergy * retainedRatio);
-			}
-		}
+  @Override
+  public ItemStack adjustDrop(ItemStack drop, boolean wrench) {
+    drop = super.adjustDrop(drop, wrench);
+    if (wrench || this.teBlock.getDefaultDrop() == Ic2TileEntityBlock.DefaultDrop.Self) {
+      double retainedRatio = IC2Config.balance.energyRetainedInStorageBlockDrops.get();
+      double totalEnergy = this.energy.getEnergy();
+      if (retainedRatio > 0.0 && totalEnergy > 0.0) {
+        CompoundTag nbt = StackUtil.getOrCreateNbtData(drop);
+        nbt.putDouble("energy", totalEnergy * retainedRatio);
+      }
+    }
 
-		return drop;
-	}
+    return drop;
+  }
 
-	@Override
-	public int getOutput()
-	{
-		return (int) this.output;
-	}
+  @Override
+  public int getOutput() {
+    return (int) this.output;
+  }
 
-	@Override
-	public double getOutputEnergyUnitsPerTick()
-	{
-		return this.output;
-	}
+  @Override
+  public double getOutputEnergyUnitsPerTick() {
+    return this.output;
+  }
 
-	@Override
-	public int addEnergy(int amount)
-	{
-		this.energy.addEnergy(amount);
-		return amount;
-	}
+  @Override
+  public int addEnergy(int amount) {
+    this.energy.addEnergy(amount);
+    return amount;
+  }
 
-	@Override
-	public int getStored()
-	{
-		return (int) this.energy.getEnergy();
-	}
+  @Override
+  public int getStored() {
+    return (int) this.energy.getEnergy();
+  }
 
-	@Override
-	public void setStored(int energy)
-	{
-		this.energy.forceAddEnergy(energy - this.energy.getEnergy());
-	}
+  @Override
+  public void setStored(int energy) {
+    this.energy.forceAddEnergy(energy - this.energy.getEnergy());
+  }
 
-	@Override
-	public int getCapacity()
-	{
-		return (int) this.energy.getCapacity();
-	}
+  @Override
+  public int getCapacity() {
+    return (int) this.energy.getCapacity();
+  }
 
-	@Override
-	public boolean isTeleporterCompatible(Direction side)
-	{
-		return true;
-	}
+  @Override
+  public boolean isTeleporterCompatible(Direction side) {
+    return true;
+  }
 
-	@Override
-	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
-	{
-		super.appendItemTooltip(stack, tooltip, advanced);
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Output",
-				Math.round(EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier()))));
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Capacity", this.getCapacity()));
-		double stored = StackUtil.getOrCreateNbtData(stack).getDouble("energy");
-		Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Store", (long) stored));
-	}
+  @Override
+  public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced) {
+    super.appendItemTooltip(stack, tooltip, advanced);
+    Ic2Tooltip.add(
+        tooltip,
+        Component.translatable(
+            "ic2.item.tooltip.Output",
+            Math.round(EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier()))));
+    Ic2Tooltip.add(
+        tooltip, Component.translatable("ic2.item.tooltip.Capacity", this.getCapacity()));
+    double stored = StackUtil.getOrCreateNbtData(stack).getDouble("energy");
+    Ic2Tooltip.add(tooltip, Component.translatable("ic2.item.tooltip.Store", (long) stored));
+  }
 }

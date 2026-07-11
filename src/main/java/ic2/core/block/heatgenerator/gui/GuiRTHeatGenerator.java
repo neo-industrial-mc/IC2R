@@ -4,24 +4,42 @@ import ic2.core.Ic2Gui;
 import ic2.core.block.heatgenerator.container.ContainerRTHeatGenerator;
 import ic2.core.gui.TextLabel;
 import ic2.core.gui.dynamic.TextProvider;
+import java.util.function.Supplier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import java.util.function.Supplier;
 
-public class GuiRTHeatGenerator extends Ic2Gui<ContainerRTHeatGenerator>
-{
-	private static final ResourceLocation background = ResourceLocation.fromNamespaceAndPath("ic2", "textures/gui/guirtheatgenerator.png");
+public class GuiRTHeatGenerator extends Ic2Gui<ContainerRTHeatGenerator> {
+  private static final ResourceLocation background =
+      ResourceLocation.fromNamespaceAndPath("ic2", "textures/gui/guirtheatgenerator.png");
 
-	public GuiRTHeatGenerator(ContainerRTHeatGenerator container, Inventory playerInventory, Component title)
-	{
-		super(container, playerInventory, title);
-		this.addElement(TextLabel.create(this, 49, 66, 79, 13, TextProvider.of((Supplier<String>) () -> container.base.gettransmitHeat() + " / " + container.base.getMaxHeatEmittedPerTick()), 5752026, false, 0, 0, true, true).withTooltip("ic2.RTHeatGenerator.gui.tooltipheat"));
-	}
+  public GuiRTHeatGenerator(
+      ContainerRTHeatGenerator container, Inventory playerInventory, Component title) {
+    super(container, playerInventory, title);
+    this.addElement(
+        TextLabel.create(
+                this,
+                49,
+                66,
+                79,
+                13,
+                TextProvider.of(
+                    (Supplier<String>)
+                        () ->
+                            container.base.gettransmitHeat()
+                                + " / "
+                                + container.base.getMaxHeatEmittedPerTick()),
+                5752026,
+                false,
+                0,
+                0,
+                true,
+                true)
+            .withTooltip("ic2.RTHeatGenerator.gui.tooltipheat"));
+  }
 
-	@Override
-	protected ResourceLocation getTextureLocation()
-	{
-		return background;
-	}
+  @Override
+  protected ResourceLocation getTextureLocation() {
+    return background;
+  }
 }

@@ -5,9 +5,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 
-public interface StainableBlock
-{
-	DyeColor getColor(Level var1, BlockPos var2, Direction var3);
+public interface StainableBlock {
+  DyeColor getColor(Level var1, BlockPos var2, Direction var3);
 
-	boolean setColor(Level var1, BlockPos var2, Direction var3, DyeColor var4);
+  boolean setColor(Level var1, BlockPos var2, Direction var3, DyeColor var4);
 }

@@ -6,7 +6,5 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.FIELD })
-public @interface NotExperimental
-{
-}
+@Target({ElementType.TYPE, ElementType.FIELD})
+public @interface NotExperimental {}

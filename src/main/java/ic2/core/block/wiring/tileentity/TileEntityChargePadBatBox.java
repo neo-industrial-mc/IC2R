@@ -6,10 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityChargePadBatBox extends TileEntityChargePadBlock
-{
-	public TileEntityChargePadBatBox(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.BATBOX_CHARGEPAD, pos, state, 1, 32, 40000);
-	}
+public class TileEntityChargePadBatBox extends TileEntityChargePadBlock {
+  public TileEntityChargePadBatBox(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.BATBOX_CHARGEPAD, pos, state, 1, 32, 40000);
+  }
 }

@@ -5,190 +5,168 @@ import ic2.core.IC2;
 import ic2.core.block.comp.Obscuration;
 import ic2.core.block.misc.WallBlock;
 import ic2.core.ref.Ic2BlockEntities;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
 
-public class TileEntityWall extends Ic2TileEntity
-{
-	protected final Obscuration obscuration;
-	private DyeColor color = WallBlock.DEFAULT_COLOR;
-	private volatile TileEntityWall.WallRenderState renderState;
+public class TileEntityWall extends Ic2TileEntity {
+  protected final Obscuration obscuration;
+  private DyeColor color = WallBlock.DEFAULT_COLOR;
+  private volatile TileEntityWall.WallRenderState renderState;
 
-	public TileEntityWall(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.WALL, pos, state);
-		this.obscuration = this.addComponent(new Obscuration(this, () -> IC2.network.get(true).updateTileEntityField(TileEntityWall.this, "obscuration")));
-	}
+  public TileEntityWall(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.WALL, pos, state);
+    this.obscuration =
+        this.addComponent(
+            new Obscuration(
+                this,
+                () ->
+                    IC2.network
+                        .get(true)
+                        .updateTileEntityField(TileEntityWall.this, "obscuration")));
+  }
 
-	public void setColor(DyeColor color)
-	{
-		if (this.color == color)
-		{
-			return;
-		}
+  public void setColor(DyeColor color) {
+    if (this.color == color) {
+      return;
+    }
 
-		this.color = color;
-		if (this.getLevel() == null)
-		{
-			return;
-		}
+    this.color = color;
+    if (this.getLevel() == null) {
+      return;
+    }
 
-		if (!this.getLevel().isClientSide)
-		{
-			IC2.network.get(true).updateTileEntityField(this, "color");
-			this.setChanged();
-		} else if (this.updateRenderState())
-		{
-			this.rerender();
-		}
-	}
+    if (!this.getLevel().isClientSide) {
+      IC2.network.get(true).updateTileEntityField(this, "color");
+      this.setChanged();
+    } else if (this.updateRenderState()) {
+      this.rerender();
+    }
+  }
 
-	public DyeColor getColor()
-	{
-		return this.color;
-	}
+  public DyeColor getColor() {
+    return this.color;
+  }
 
-	public void initializeFromWall(
-		DyeColor color,
-		Direction side,
-		BlockState refState,
-		String refVariant,
-		Direction refSide,
-		int[] colorMultipliers
-	)
-	{
-		this.color = color;
-		this.obscuration.applyObscuration(side, new Obscuration.ObscurationData(refState, refVariant, refSide, colorMultipliers));
-		if (this.getLevel() != null && !this.getLevel().isClientSide)
-		{
-			this.setChanged();
-			NetworkHelper.sendInitialData(this);
-		}
-	}
+  public void initializeFromWall(
+      DyeColor color,
+      Direction side,
+      BlockState refState,
+      String refVariant,
+      Direction refSide,
+      int[] colorMultipliers) {
+    this.color = color;
+    this.obscuration.applyObscuration(
+        side, new Obscuration.ObscurationData(refState, refVariant, refSide, colorMultipliers));
+    if (this.getLevel() != null && !this.getLevel().isClientSide) {
+      this.setChanged();
+      NetworkHelper.sendInitialData(this);
+    }
+  }
 
-	@Override
-	public ItemStack adjustDrop(ItemStack drop, boolean wrench)
-	{
-		return this.getPickBlock();
-	}
+  @Override
+  public ItemStack adjustDrop(ItemStack drop, boolean wrench) {
+    return this.getPickBlock();
+  }
 
-	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
-		super.loadAdditional(nbt, registries);
-		this.color = DyeColor.byId(nbt.getByte("color"));
-	}
+  @Override
+  protected void loadAdditional(
+      CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.loadAdditional(nbt, registries);
+    this.color = DyeColor.byId(nbt.getByte("color"));
+  }
 
-	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
-	{
-		super.saveAdditional(nbt, registries);
-		nbt.putByte("color", (byte) this.color.getId());
-	}
+  @Override
+  public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.saveAdditional(nbt, registries);
+    nbt.putByte("color", (byte) this.color.getId());
+  }
 
-	@Override
-	protected void onLoaded()
-	{
-		super.onLoaded();
-		if (this.getLevel().isClientSide && this.updateRenderState())
-		{
-			this.rerender();
-		}
-	}
+  @Override
+  protected void onLoaded() {
+    super.onLoaded();
+    if (this.getLevel().isClientSide && this.updateRenderState()) {
+      this.rerender();
+    }
+  }
 
-	@Override
-	public List<String> getNetworkedFields()
-	{
-		List<String> ret = new ArrayList<>();
-		ret.add("color");
-		ret.add("obscuration");
-		ret.addAll(super.getNetworkedFields());
-		return ret;
-	}
+  @Override
+  public List<String> getNetworkedFields() {
+    List<String> ret = new ArrayList<>();
+    ret.add("color");
+    ret.add("obscuration");
+    ret.addAll(super.getNetworkedFields());
+    return ret;
+  }
 
-	@Override
-	public void onNetworkUpdate(String field)
-	{
-		super.onNetworkUpdate(field);
-		if (this.updateRenderState())
-		{
-			this.rerender();
-		}
-	}
+  @Override
+  public void onNetworkUpdate(String field) {
+    super.onNetworkUpdate(field);
+    if (this.updateRenderState()) {
+      this.rerender();
+    }
+  }
 
-	@Override
-	protected boolean recolor(Direction side, DyeColor color)
-	{
-		if (color == this.color)
-		{
-			return false;
-		}
+  @Override
+  protected boolean recolor(Direction side, DyeColor color) {
+    if (color == this.color) {
+      return false;
+    }
 
-		this.color = color;
-		if (!this.getLevel().isClientSide)
-		{
-			IC2.network.get(true).updateTileEntityField(this, "color");
-			this.setChanged();
-		} else if (this.updateRenderState())
-		{
-			this.rerender();
-		}
+    this.color = color;
+    if (!this.getLevel().isClientSide) {
+      IC2.network.get(true).updateTileEntityField(this, "color");
+      this.setChanged();
+    } else if (this.updateRenderState()) {
+      this.rerender();
+    }
 
-		return true;
-	}
+    return true;
+  }
 
-	@Override
-	protected ItemStack getPickBlock()
-	{
-		return new ItemStack(WallBlock.get(this.color));
-	}
+  @Override
+  protected ItemStack getPickBlock() {
+    return new ItemStack(WallBlock.get(this.color));
+  }
 
-	private boolean updateRenderState()
-	{
-		TileEntityWall.WallRenderState state = new TileEntityWall.WallRenderState(this.color, this.obscuration.getRenderState());
-		if (state.equals(this.renderState))
-		{
-			return false;
-		}
+  private boolean updateRenderState() {
+    TileEntityWall.WallRenderState state =
+        new TileEntityWall.WallRenderState(this.color, this.obscuration.getRenderState());
+    if (state.equals(this.renderState)) {
+      return false;
+    }
 
-		this.renderState = state;
-		return true;
-	}
+    this.renderState = state;
+    return true;
+  }
 
-	public record WallRenderState(DyeColor color, Obscuration.ObscurationData[] obscurations)
-		{
+  public record WallRenderState(DyeColor color, Obscuration.ObscurationData[] obscurations) {
 
-			@Override
-			public boolean equals(Object obj)
-			{
-				if (obj == this)
-				{
-					return true;
-				} else
-				{
-					return !(obj instanceof WallRenderState o) ? false : o.color == this.color && Arrays.equals(o.obscurations, this.obscurations);
-				}
-			}
-	
-			@Override
-			public int hashCode()
-			{
-				return this.color.hashCode() * 31 + Arrays.hashCode(this.obscurations);
-			}
-	
-			@Override
-			public String toString()
-			{
-				return "WallState<" + this.color + ", " + Arrays.toString(this.obscurations) + ">";
-			}
-		}
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == this) {
+        return true;
+      } else {
+        return !(obj instanceof WallRenderState o)
+            ? false
+            : o.color == this.color && Arrays.equals(o.obscurations, this.obscurations);
+      }
+    }
+
+    @Override
+    public int hashCode() {
+      return this.color.hashCode() * 31 + Arrays.hashCode(this.obscurations);
+    }
+
+    @Override
+    public String toString() {
+      return "WallState<" + this.color + ", " + Arrays.toString(this.obscurations) + ">";
+    }
+  }
 }

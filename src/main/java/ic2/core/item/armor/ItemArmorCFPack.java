@@ -6,18 +6,15 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
-public class ItemArmorCFPack extends ItemArmorFluidTank
-{
-	public ItemArmorCFPack(Properties settings)
-	{
-		super(Ic2ArmorMaterials.CF_PACK.holder(), settings, Ic2Fluids.CONSTRUCTION_FOAM.still(), 80000);
-	}
+public class ItemArmorCFPack extends ItemArmorFluidTank {
+  public ItemArmorCFPack(Properties settings) {
+    super(Ic2ArmorMaterials.CF_PACK.holder(), settings, Ic2Fluids.CONSTRUCTION_FOAM.still(), 80000);
+  }
 
-	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> subItems)
-	{
-		ItemStack stack = new ItemStack(this);
-		this.fillTank(stack);
-		subItems.add(stack);
-		subItems.add(new ItemStack(this));
-	}
+  public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> subItems) {
+    ItemStack stack = new ItemStack(this);
+    this.fillTank(stack);
+    subItems.add(stack);
+    subItems.add(new ItemStack(this));
+  }
 }

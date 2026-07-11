@@ -18,115 +18,120 @@ import ic2.core.network.GrowingBuffer;
 import ic2.core.network.GuiSynced;
 import ic2.core.profile.NotClassic;
 import ic2.core.ref.Ic2BlockEntities;
-
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityFluidBottler extends TileEntityStandardMachine<Void, Object, Object>
-{
-	public final InvSlotConsumableLiquid drainInputSlot;
-	public final InvSlotConsumableLiquid fillInputSlot;
-	@GuiSynced
-	public final Ic2FluidTank fluidTank;
-	protected final Fluids fluids = this.addComponent(new Fluids(this));
+public class TileEntityFluidBottler extends TileEntityStandardMachine<Void, Object, Object> {
+  public final InvSlotConsumableLiquid drainInputSlot;
+  public final InvSlotConsumableLiquid fillInputSlot;
+  @GuiSynced public final Ic2FluidTank fluidTank;
+  protected final Fluids fluids = this.addComponent(new Fluids(this));
 
-	public TileEntityFluidBottler(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.FLUID_BOTTLER, pos, state, 2, 100, 1);
-		this.fluidTank = this.fluids.addTank("fluidTank", 8000);
-		this.drainInputSlot = new InvSlotConsumableLiquidByTank(
-			this, "drainInput", InvSlot.Access.I, 1, InvSlot.InvSide.TOP, InvSlotConsumableLiquid.OpType.Drain, this.fluidTank
-		);
-		this.fillInputSlot = new InvSlotConsumableLiquidByTank(
-			this, "fillInput", InvSlot.Access.I, 1, InvSlot.InvSide.BOTTOM, InvSlotConsumableLiquid.OpType.Fill, this.fluidTank
-		);
-	}
+  public TileEntityFluidBottler(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.FLUID_BOTTLER, pos, state, 2, 100, 1);
+    this.fluidTank = this.fluids.addTank("fluidTank", 8000);
+    this.drainInputSlot =
+        new InvSlotConsumableLiquidByTank(
+            this,
+            "drainInput",
+            InvSlot.Access.I,
+            1,
+            InvSlot.InvSide.TOP,
+            InvSlotConsumableLiquid.OpType.Drain,
+            this.fluidTank);
+    this.fillInputSlot =
+        new InvSlotConsumableLiquidByTank(
+            this,
+            "fillInput",
+            InvSlot.Access.I,
+            1,
+            InvSlot.InvSide.BOTTOM,
+            InvSlotConsumableLiquid.OpType.Fill,
+            this.fluidTank);
+  }
 
-	@Override
-	protected Collection<ItemStack> getOutput(Object output)
-	{
-		return output instanceof IEmptyFluidContainerRecipeManager.Output
-			? ((IEmptyFluidContainerRecipeManager.Output) output).container()
-			: super.getOutput(output);
-	}
+  @Override
+  protected Collection<ItemStack> getOutput(Object output) {
+    return output instanceof IEmptyFluidContainerRecipeManager.Output
+        ? ((IEmptyFluidContainerRecipeManager.Output) output).container()
+        : super.getOutput(output);
+  }
 
-	@Override
-	public void operateOnce(MachineRecipeResult<Void, Object, Object> result, Collection<ItemStack> processResult)
-	{
-		if (result.getOutput() instanceof IEmptyFluidContainerRecipeManager.Output)
-		{
-			this.drainInputSlot.put((ItemStack) result.adjustedInput());
-			Ic2FluidStack fs = ((IEmptyFluidContainerRecipeManager.Output) result.getOutput()).fluid();
-			this.fluidTank.fillMbUnchecked(fs, false);
-		} else
-		{
-			IFillFluidContainerRecipeManager.Input adjInput = (IFillFluidContainerRecipeManager.Input) result.adjustedInput();
-			this.fillInputSlot.put(adjInput.container());
-			this.fluidTank
-				.drainMbUnchecked(adjInput.fluid() == null ? this.fluidTank.getFluidAmount() : this.fluidTank.getFluidAmount() - adjInput.fluid().getAmountMb(), false);
-		}
+  @Override
+  public void operateOnce(
+      MachineRecipeResult<Void, Object, Object> result, Collection<ItemStack> processResult) {
+    if (result.getOutput() instanceof IEmptyFluidContainerRecipeManager.Output) {
+      this.drainInputSlot.put((ItemStack) result.adjustedInput());
+      Ic2FluidStack fs = ((IEmptyFluidContainerRecipeManager.Output) result.getOutput()).fluid();
+      this.fluidTank.fillMbUnchecked(fs, false);
+    } else {
+      IFillFluidContainerRecipeManager.Input adjInput =
+          (IFillFluidContainerRecipeManager.Input) result.adjustedInput();
+      this.fillInputSlot.put(adjInput.container());
+      this.fluidTank.drainMbUnchecked(
+          adjInput.fluid() == null
+              ? this.fluidTank.getFluidAmount()
+              : this.fluidTank.getFluidAmount() - adjInput.fluid().getAmountMb(),
+          false);
+    }
 
-		this.outputSlot.add(processResult);
-	}
+    this.outputSlot.add(processResult);
+  }
 
-	@Override
-	public MachineRecipeResult<Void, Object, Object> getRecipeResult()
-	{
-		MachineRecipeResult<Void, IEmptyFluidContainerRecipeManager.Output, ItemStack> emptyRes = Recipes.emptyFluidContainer
-			.apply(
-				this.drainInputSlot.get(),
-				this.fluidTank.isEmpty() ? null : this.fluidTank.getFluidStack().getFluid(),
-				FluidContainerOutputMode.EmptyFullToOutput,
-				false
-			);
-		if (emptyRes != null
-			&& emptyRes.getOutput().fluid().getAmountMb() <= this.fluidTank.getCapacity() - this.fluidTank.getFluidAmount()
-			&& this.outputSlot.canAdd(emptyRes.getOutput().container()))
-		{
-			return (MachineRecipeResult) emptyRes;
-		}
+  @Override
+  public MachineRecipeResult<Void, Object, Object> getRecipeResult() {
+    MachineRecipeResult<Void, IEmptyFluidContainerRecipeManager.Output, ItemStack> emptyRes =
+        Recipes.emptyFluidContainer.apply(
+            this.drainInputSlot.get(),
+            this.fluidTank.isEmpty() ? null : this.fluidTank.getFluidStack().getFluid(),
+            FluidContainerOutputMode.EmptyFullToOutput,
+            false);
+    if (emptyRes != null
+        && emptyRes.getOutput().fluid().getAmountMb()
+            <= this.fluidTank.getCapacity() - this.fluidTank.getFluidAmount()
+        && this.outputSlot.canAdd(emptyRes.getOutput().container())) {
+      return (MachineRecipeResult) emptyRes;
+    }
 
-		MachineRecipeResult<Void, Collection<ItemStack>, IFillFluidContainerRecipeManager.Input> fillRes = Recipes.fillFluidContainer
-			.apply(
-				new IFillFluidContainerRecipeManager.Input(this.fillInputSlot.get(), this.fluidTank.getFluidStack()),
-				FluidContainerOutputMode.EmptyFullToOutput,
-				false
-			);
-		return fillRes != null && this.outputSlot.canAdd(fillRes.getOutput()) ? (MachineRecipeResult) fillRes : null;
-	}
+    MachineRecipeResult<Void, Collection<ItemStack>, IFillFluidContainerRecipeManager.Input>
+        fillRes =
+            Recipes.fillFluidContainer.apply(
+                new IFillFluidContainerRecipeManager.Input(
+                    this.fillInputSlot.get(), this.fluidTank.getFluidStack()),
+                FluidContainerOutputMode.EmptyFullToOutput,
+                false);
+    return fillRes != null && this.outputSlot.canAdd(fillRes.getOutput())
+        ? (MachineRecipeResult) fillRes
+        : null;
+  }
 
-	@Override
-	public ContainerBase<?> createServerScreenHandler(int syncId, Player player)
-	{
-		return new ContainerFluidBottler(syncId, player.getInventory(), this);
-	}
+  @Override
+  public ContainerBase<?> createServerScreenHandler(int syncId, Player player) {
+    return new ContainerFluidBottler(syncId, player.getInventory(), this);
+  }
 
-	@Override
-	public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inventory, GrowingBuffer data)
-	{
-		return new ContainerFluidBottler(syncId, inventory, this);
-	}
+  @Override
+  public ContainerBase<?> createClientScreenHandler(
+      int syncId, Inventory inventory, GrowingBuffer data) {
+    return new ContainerFluidBottler(syncId, inventory, this);
+  }
 
-	@Override
-	public Set<UpgradableProperty> getUpgradableProperties()
-	{
-		return EnumSet.of(
-			UpgradableProperty.Processing,
-			UpgradableProperty.Transformer,
-			UpgradableProperty.EnergyStorage,
-			UpgradableProperty.ItemConsuming,
-			UpgradableProperty.ItemProducing,
-			UpgradableProperty.FluidConsuming,
-			UpgradableProperty.FluidProducing
-		);
-	}
+  @Override
+  public Set<UpgradableProperty> getUpgradableProperties() {
+    return EnumSet.of(
+        UpgradableProperty.Processing,
+        UpgradableProperty.Transformer,
+        UpgradableProperty.EnergyStorage,
+        UpgradableProperty.ItemConsuming,
+        UpgradableProperty.ItemProducing,
+        UpgradableProperty.FluidConsuming,
+        UpgradableProperty.FluidProducing);
+  }
 }

@@ -18,335 +18,300 @@ import ic2.core.network.GrowingBuffer;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.ref.Ic2SoundEvents;
 import ic2.core.util.LiquidUtil;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
 
-public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, Object> implements INetworkClientTileEntityEventListener
-{
-	public static final int eventSwapTanks = Mode.values.length + 1;
-	public final Ic2FluidTank inputTank;
-	public final Ic2FluidTank outputTank;
-	public final InvSlotConsumableCanner canInputSlot;
-	protected final Fluids fluids;
-	private TileEntityCanner.Mode mode = TileEntityCanner.Mode.BottleSolid;
-	/** Last mode for which side-effects (slot op type / sounds) were applied. Used so GUI field resyncs do not stop work sounds. */
-	private TileEntityCanner.Mode appliedMode;
+public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, Object>
+    implements INetworkClientTileEntityEventListener {
+  public static final int eventSwapTanks = Mode.values.length + 1;
+  public final Ic2FluidTank inputTank;
+  public final Ic2FluidTank outputTank;
+  public final InvSlotConsumableCanner canInputSlot;
+  protected final Fluids fluids;
+  private TileEntityCanner.Mode mode = TileEntityCanner.Mode.BottleSolid;
 
-	public TileEntityCanner(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.CANNER, pos, state, 4, 200, 1);
-		this.inputSlot = new InvSlotProcessableCanner(this, "input", 1);
-		this.canInputSlot = new InvSlotConsumableCanner(this, "canInput", 1);
-		this.fluids = this.addComponent(new Fluids(this));
-		this.inputTank = this.fluids.addTankInsert("inputTank", 8000);
-		this.outputTank = this.fluids.addTankExtract("outputTank", 8000);
-		// Default mode is BottleSolid; InvSlotConsumableLiquid defaults to Drain.
-		this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.None);
-	}
+  /**
+   * Last mode for which side-effects (slot op type / sounds) were applied. Used so GUI field
+   * resyncs do not stop work sounds.
+   */
+  private TileEntityCanner.Mode appliedMode;
 
-	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
-		super.loadAdditional(nbt, registries);
-		this.setMode(TileEntityCanner.Mode.values[nbt.getInt("mode")]);
-	}
+  public TileEntityCanner(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.CANNER, pos, state, 4, 200, 1);
+    this.inputSlot = new InvSlotProcessableCanner(this, "input", 1);
+    this.canInputSlot = new InvSlotConsumableCanner(this, "canInput", 1);
+    this.fluids = this.addComponent(new Fluids(this));
+    this.inputTank = this.fluids.addTankInsert("inputTank", 8000);
+    this.outputTank = this.fluids.addTankExtract("outputTank", 8000);
+    // Default mode is BottleSolid; InvSlotConsumableLiquid defaults to Drain.
+    this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.None);
+  }
 
-	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
-	{
-		super.saveAdditional(nbt, registries);
-		nbt.putInt("mode", this.mode.ordinal());
-	}
+  @Override
+  protected void loadAdditional(
+      CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.loadAdditional(nbt, registries);
+    this.setMode(TileEntityCanner.Mode.values[nbt.getInt("mode")]);
+  }
 
-	@Override
-	public void operateOnce(MachineRecipeResult<Object, Object, Object> result, Collection<ItemStack> processResult)
-	{
-		super.operateOnce(result, processResult);
-		if (this.mode == TileEntityCanner.Mode.EmptyLiquid)
-		{
-			IEmptyFluidContainerRecipeManager.Output output = (IEmptyFluidContainerRecipeManager.Output) result.getOutput();
-			this.getOutputTank().fillMbUnchecked(output.fluid(), false);
-		} else if (this.mode == TileEntityCanner.Mode.EnrichLiquid)
-		{
-			Ic2FluidStack output = ((Ic2FluidStack) result.getOutput()).copy();
-			LiquidUtil.FluidOperationResult outcome;
-			if (!this.canInputSlot.isEmpty())
-			{
-				do
-				{
-					outcome = LiquidUtil.fillContainer(this.canInputSlot.get(), output, FluidContainerOutputMode.EmptyFullToOutput);
-					if (outcome != null)
-					{
-						if (outcome.extraOutput != null && !this.outputSlot.canAdd(outcome.extraOutput))
-						{
-							outcome = null;
-						} else
-						{
-							this.canInputSlot.put(outcome.inPlaceOutput);
-							if (outcome.extraOutput != null)
-							{
-								this.outputSlot.add(outcome.extraOutput);
-							}
+  @Override
+  public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.saveAdditional(nbt, registries);
+    nbt.putInt("mode", this.mode.ordinal());
+  }
 
-							output.setAmountMb(output.getAmountMb() - outcome.fluidChange.getAmountMb());
-						}
-					}
-				} while (outcome != null && !output.isEmpty());
-			}
+  @Override
+  public void operateOnce(
+      MachineRecipeResult<Object, Object, Object> result, Collection<ItemStack> processResult) {
+    super.operateOnce(result, processResult);
+    if (this.mode == TileEntityCanner.Mode.EmptyLiquid) {
+      IEmptyFluidContainerRecipeManager.Output output =
+          (IEmptyFluidContainerRecipeManager.Output) result.getOutput();
+      this.getOutputTank().fillMbUnchecked(output.fluid(), false);
+    } else if (this.mode == TileEntityCanner.Mode.EnrichLiquid) {
+      Ic2FluidStack output = ((Ic2FluidStack) result.getOutput()).copy();
+      LiquidUtil.FluidOperationResult outcome;
+      if (!this.canInputSlot.isEmpty()) {
+        do {
+          outcome =
+              LiquidUtil.fillContainer(
+                  this.canInputSlot.get(), output, FluidContainerOutputMode.EmptyFullToOutput);
+          if (outcome != null) {
+            if (outcome.extraOutput != null && !this.outputSlot.canAdd(outcome.extraOutput)) {
+              outcome = null;
+            } else {
+              this.canInputSlot.put(outcome.inPlaceOutput);
+              if (outcome.extraOutput != null) {
+                this.outputSlot.add(outcome.extraOutput);
+              }
 
-			this.getOutputTank().fillMbUnchecked(output, false);
-		}
-	}
+              output.setAmountMb(output.getAmountMb() - outcome.fluidChange.getAmountMb());
+            }
+          }
+        } while (outcome != null && !output.isEmpty());
+      }
 
-	@Override
-	protected Collection<ItemStack> getOutput(Object output)
-	{
-		if (output instanceof ItemStack)
-		{
-			return Collections.singletonList((ItemStack) output);
-		} else if (output instanceof Ic2FluidStack)
-		{
-			return Collections.emptyList();
-		} else
-		{
-			return output instanceof IEmptyFluidContainerRecipeManager.Output ? ((IEmptyFluidContainerRecipeManager.Output) output).container() : super.getOutput(output);
-		}
-	}
+      this.getOutputTank().fillMbUnchecked(output, false);
+    }
+  }
 
-	@Override
-	public MachineRecipeResult<Object, Object, Object> getRecipeResult()
-	{
-		if (this.mode != TileEntityCanner.Mode.EmptyLiquid && this.mode != TileEntityCanner.Mode.BottleLiquid)
-		{
-			if (this.inputSlot.isEmpty())
-			{
-				return null;
-			}
-		} else if (this.canInputSlot.isEmpty())
-		{
-			return null;
-		}
+  @Override
+  protected Collection<ItemStack> getOutput(Object output) {
+    if (output instanceof ItemStack) {
+      return Collections.singletonList((ItemStack) output);
+    } else if (output instanceof Ic2FluidStack) {
+      return Collections.emptyList();
+    } else {
+      return output instanceof IEmptyFluidContainerRecipeManager.Output
+          ? ((IEmptyFluidContainerRecipeManager.Output) output).container()
+          : super.getOutput(output);
+    }
+  }
 
-		MachineRecipeResult<Object, Object, Object> result = this.inputSlot.process();
-		if (result == null)
-		{
-			return null;
-		}
+  @Override
+  public MachineRecipeResult<Object, Object, Object> getRecipeResult() {
+    if (this.mode != TileEntityCanner.Mode.EmptyLiquid
+        && this.mode != TileEntityCanner.Mode.BottleLiquid) {
+      if (this.inputSlot.isEmpty()) {
+        return null;
+      }
+    } else if (this.canInputSlot.isEmpty()) {
+      return null;
+    }
 
-		if (!this.outputSlot.canAdd(this.getOutput(result.getOutput())))
-		{
-			return null;
-		}
+    MachineRecipeResult<Object, Object, Object> result = this.inputSlot.process();
+    if (result == null) {
+      return null;
+    }
 
-		if (this.mode == TileEntityCanner.Mode.EmptyLiquid)
-		{
-			IEmptyFluidContainerRecipeManager.Output output = (IEmptyFluidContainerRecipeManager.Output) result.getOutput();
-			if (this.getOutputTank().fillMbUnchecked(output.fluid(), true) != output.fluid().getAmountMb())
-			{
-				return null;
-			}
-		} else if (this.mode == TileEntityCanner.Mode.EnrichLiquid)
-		{
-			Ic2FluidStack output = ((Ic2FluidStack) result.getOutput()).copy();
-			LiquidUtil.FluidOperationResult outcome;
-			if (!this.canInputSlot.isEmpty())
-			{
-				do
-				{
-					outcome = LiquidUtil.fillContainer(this.canInputSlot.get(), output, FluidContainerOutputMode.EmptyFullToOutput);
-					if (outcome != null)
-					{
-						if (outcome.extraOutput != null && !this.outputSlot.canAdd(outcome.extraOutput))
-						{
-							outcome = null;
-						} else
-						{
-							output.setAmountMb(output.getAmountMb() - outcome.fluidChange.getAmountMb());
-						}
-					}
-				} while (outcome != null && !output.isEmpty());
-			}
+    if (!this.outputSlot.canAdd(this.getOutput(result.getOutput()))) {
+      return null;
+    }
 
-			if (this.getOutputTank().fillMbUnchecked(output, true) != output.getAmountMb())
-			{
-				return null;
-			}
-		}
+    if (this.mode == TileEntityCanner.Mode.EmptyLiquid) {
+      IEmptyFluidContainerRecipeManager.Output output =
+          (IEmptyFluidContainerRecipeManager.Output) result.getOutput();
+      if (this.getOutputTank().fillMbUnchecked(output.fluid(), true)
+          != output.fluid().getAmountMb()) {
+        return null;
+      }
+    } else if (this.mode == TileEntityCanner.Mode.EnrichLiquid) {
+      Ic2FluidStack output = ((Ic2FluidStack) result.getOutput()).copy();
+      LiquidUtil.FluidOperationResult outcome;
+      if (!this.canInputSlot.isEmpty()) {
+        do {
+          outcome =
+              LiquidUtil.fillContainer(
+                  this.canInputSlot.get(), output, FluidContainerOutputMode.EmptyFullToOutput);
+          if (outcome != null) {
+            if (outcome.extraOutput != null && !this.outputSlot.canAdd(outcome.extraOutput)) {
+              outcome = null;
+            } else {
+              output.setAmountMb(output.getAmountMb() - outcome.fluidChange.getAmountMb());
+            }
+          }
+        } while (outcome != null && !output.isEmpty());
+      }
 
-		return result;
-	}
+      if (this.getOutputTank().fillMbUnchecked(output, true) != output.getAmountMb()) {
+        return null;
+      }
+    }
 
-	public Ic2FluidTank getInputTank()
-	{
-		return this.inputTank;
-	}
+    return result;
+  }
 
-	public Ic2FluidTank getOutputTank()
-	{
-		return this.outputTank;
-	}
+  public Ic2FluidTank getInputTank() {
+    return this.inputTank;
+  }
 
-	@Override
-	public List<String> getNetworkedFields()
-	{
-		List<String> ret = new ArrayList<>();
-		ret.add("canInputSlot");
-		ret.addAll(super.getNetworkedFields());
-		return ret;
-	}
+  public Ic2FluidTank getOutputTank() {
+    return this.outputTank;
+  }
 
-	@Override
-	public SoundEvent getLoopingSoundEvent()
-	{
-		return switch (this.mode)
-		{
-			case BottleSolid, BottleLiquid -> Ic2SoundEvents.MACHINE_CANNER_OPERATE;
-			case EmptyLiquid -> Ic2SoundEvents.MACHINE_CANNER_REVERSE;
-			default -> null;
-		};
-	}
+  @Override
+  public List<String> getNetworkedFields() {
+    List<String> ret = new ArrayList<>();
+    ret.add("canInputSlot");
+    ret.addAll(super.getNetworkedFields());
+    return ret;
+  }
 
-	@Override
-	public SoundEvent getInterruptSoundEvent()
-	{
-		return switch (this.mode)
-		{
-			case BottleSolid, BottleLiquid, EmptyLiquid -> Ic2SoundEvents.MACHINE_INTERRUPT1;
-			default -> null;
-		};
-	}
+  @Override
+  public SoundEvent getLoopingSoundEvent() {
+    return switch (this.mode) {
+      case BottleSolid, BottleLiquid -> Ic2SoundEvents.MACHINE_CANNER_OPERATE;
+      case EmptyLiquid -> Ic2SoundEvents.MACHINE_CANNER_REVERSE;
+      default -> null;
+    };
+  }
 
-	@Override
-	public ContainerBase<TileEntityCanner> createServerScreenHandler(int syncId, Player player)
-	{
-		return new ContainerCanner(syncId, player.getInventory(), this);
-	}
+  @Override
+  public SoundEvent getInterruptSoundEvent() {
+    return switch (this.mode) {
+      case BottleSolid, BottleLiquid, EmptyLiquid -> Ic2SoundEvents.MACHINE_INTERRUPT1;
+      default -> null;
+    };
+  }
 
-	@Override
-	public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inventory, GrowingBuffer data)
-	{
-		return new ContainerCanner(syncId, inventory, this);
-	}
+  @Override
+  public ContainerBase<TileEntityCanner> createServerScreenHandler(int syncId, Player player) {
+    return new ContainerCanner(syncId, player.getInventory(), this);
+  }
 
-	@Override
-	public void onNetworkUpdate(String field)
-	{
-		super.onNetworkUpdate(field);
-		if (field.equals("mode"))
-		{
-			this.setMode(this.mode);
-		}
-	}
+  @Override
+  public ContainerBase<?> createClientScreenHandler(
+      int syncId, Inventory inventory, GrowingBuffer data) {
+    return new ContainerCanner(syncId, inventory, this);
+  }
 
-	@Override
-	public void onNetworkEvent(Player player, int event)
-	{
-		if (event >= 0 && event < Mode.values.length)
-		{
-			this.setMode(TileEntityCanner.Mode.values[event]);
-		} else if (event == eventSwapTanks)
-		{
-			this.switchTanks();
-		}
-	}
+  @Override
+  public void onNetworkUpdate(String field) {
+    super.onNetworkUpdate(field);
+    if (field.equals("mode")) {
+      this.setMode(this.mode);
+    }
+  }
 
-	public TileEntityCanner.Mode getMode()
-	{
-		return this.mode;
-	}
+  @Override
+  public void onNetworkEvent(Player player, int event) {
+    if (event >= 0 && event < Mode.values.length) {
+      this.setMode(TileEntityCanner.Mode.values[event]);
+    } else if (event == eventSwapTanks) {
+      this.switchTanks();
+    }
+  }
 
-	public void setMode(TileEntityCanner.Mode mode)
-	{
-		// GUI open resyncs "mode" every tick via ContainerBase.broadcastChanges → onNetworkUpdate.
-		// Reflection already wrote this.mode before that callback, so compare against appliedMode
-		// rather than the previous this.mode value.
-		boolean modeChanged = this.appliedMode != mode;
-		this.mode = mode;
-		this.appliedMode = mode;
-		switch (mode)
-		{
-			case BottleSolid:
-				this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.None);
-				break;
-			case BottleLiquid:
-				this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.Fill);
-				break;
-			case EmptyLiquid:
-				this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.Drain);
-				break;
-			case EnrichLiquid:
-				this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.Both);
-		}
+  public TileEntityCanner.Mode getMode() {
+    return this.mode;
+  }
 
-		// Looping/interrupt sounds depend on mode (operate vs reverse vs none). Only rebuild when
-		// the mode actually changes — never on repeated GUI field sync of the same mode.
-		if (modeChanged && IC2.sideProxy.isRendering())
-		{
-			this.refreshModeDependentSounds();
-		}
-	}
+  public void setMode(TileEntityCanner.Mode mode) {
+    // GUI open resyncs "mode" every tick via ContainerBase.broadcastChanges → onNetworkUpdate.
+    // Reflection already wrote this.mode before that callback, so compare against appliedMode
+    // rather than the previous this.mode value.
+    boolean modeChanged = this.appliedMode != mode;
+    this.mode = mode;
+    this.appliedMode = mode;
+    switch (mode) {
+      case BottleSolid:
+        this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.None);
+        break;
+      case BottleLiquid:
+        this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.Fill);
+        break;
+      case EmptyLiquid:
+        this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.Drain);
+        break;
+      case EnrichLiquid:
+        this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.Both);
+    }
 
-	/**
-	 * Rebuild mode-dependent sound instances and resume looping if the machine is still active.
-	 */
-	private void refreshModeDependentSounds()
-	{
-		if (this.loopingSound != null)
-		{
-			IC2.soundManager.removeSound(this, this.loopingSound);
-			this.loopingSound = null;
-		}
+    // Looping/interrupt sounds depend on mode (operate vs reverse vs none). Only rebuild when
+    // the mode actually changes — never on repeated GUI field sync of the same mode.
+    if (modeChanged && IC2.sideProxy.isRendering()) {
+      this.refreshModeDependentSounds();
+    }
+  }
 
-		if (this.interruptSound != null)
-		{
-			IC2.soundManager.removeSound(this, this.interruptSound);
-			this.interruptSound = null;
-		}
+  /** Rebuild mode-dependent sound instances and resume looping if the machine is still active. */
+  private void refreshModeDependentSounds() {
+    if (this.loopingSound != null) {
+      IC2.soundManager.removeSound(this, this.loopingSound);
+      this.loopingSound = null;
+    }
 
-		this.initSound();
-		if (this.shouldSoundActive() && this.loopingSound != null)
-		{
-			this.playLoopingSound(false);
-		}
-	}
+    if (this.interruptSound != null) {
+      IC2.soundManager.removeSound(this, this.interruptSound);
+      this.interruptSound = null;
+    }
 
-	private void switchTanks()
-	{
-		if (this.progress != 0)
-		{
-			return;
-		}
+    this.initSound();
+    if (this.shouldSoundActive() && this.loopingSound != null) {
+      this.playLoopingSound(false);
+    }
+  }
 
-		Ic2FluidStack inputStack = this.inputTank.getFluidStack();
-		Ic2FluidStack outputStack = this.outputTank.getFluidStack();
-		this.inputTank.setFluidStack(outputStack);
-		this.outputTank.setFluidStack(inputStack);
-	}
+  private void switchTanks() {
+    if (this.progress != 0) {
+      return;
+    }
 
-	@Override
-	public Set<UpgradableProperty> getUpgradableProperties()
-	{
-		return EnumSet.of(UpgradableProperty.Processing, UpgradableProperty.Transformer, UpgradableProperty.EnergyStorage, UpgradableProperty.ItemConsuming, UpgradableProperty.ItemProducing, UpgradableProperty.FluidConsuming, UpgradableProperty.FluidProducing);
-	}
+    Ic2FluidStack inputStack = this.inputTank.getFluidStack();
+    Ic2FluidStack outputStack = this.outputTank.getFluidStack();
+    this.inputTank.setFluidStack(outputStack);
+    this.outputTank.setFluidStack(inputStack);
+  }
 
-	public enum Mode
-	{
-		BottleSolid, EmptyLiquid, BottleLiquid, EnrichLiquid;
+  @Override
+  public Set<UpgradableProperty> getUpgradableProperties() {
+    return EnumSet.of(
+        UpgradableProperty.Processing,
+        UpgradableProperty.Transformer,
+        UpgradableProperty.EnergyStorage,
+        UpgradableProperty.ItemConsuming,
+        UpgradableProperty.ItemProducing,
+        UpgradableProperty.FluidConsuming,
+        UpgradableProperty.FluidProducing);
+  }
 
-		public static final TileEntityCanner.Mode[] values = values();
-	}
+  public enum Mode {
+    BottleSolid,
+    EmptyLiquid,
+    BottleLiquid,
+    EnrichLiquid;
+
+    public static final TileEntityCanner.Mode[] values = values();
+  }
 }

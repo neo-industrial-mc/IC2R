@@ -1,12 +1,11 @@
 package ic2.api.item;
 
-public interface INanoSaberState
-{
-	boolean isActive();
+public interface INanoSaberState {
+  boolean isActive();
 
-	void setActive(boolean active);
+  void setActive(boolean active);
 
-	int getEnergyTick();
+  int getEnergyTick();
 
-	void setEnergyTick(int energyTick);
+  void setEnergyTick(int energyTick);
 }

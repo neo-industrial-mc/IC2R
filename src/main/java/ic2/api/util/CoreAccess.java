@@ -8,23 +8,22 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public interface CoreAccess
-{
-	boolean isCallingFromIc2();
+public interface CoreAccess {
+  boolean isCallingFromIc2();
 
-	IInfoProvider getItemInfo();
+  IInfoProvider getItemInfo();
 
-	INetworkManager getClientNetworkManager();
+  INetworkManager getClientNetworkManager();
 
-	INetworkManager getServerNetworkManager();
+  INetworkManager getServerNetworkManager();
 
-	DamageSource getElectricDamageSource();
+  DamageSource getElectricDamageSource();
 
-	DamageSource getNukeExplosionDamageSource();
+  DamageSource getNukeExplosionDamageSource();
 
-	DamageSource getRadiationDamageSource();
+  DamageSource getRadiationDamageSource();
 
-	MobEffect getRadiationStatusEffect();
+  MobEffect getRadiationStatusEffect();
 
-	<T extends BlockEntity & IRotorProvider> void registerRotorProvider(BlockEntityType<T> var1);
+  <T extends BlockEntity & IRotorProvider> void registerRotorProvider(BlockEntityType<T> var1);
 }

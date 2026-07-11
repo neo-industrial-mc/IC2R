@@ -30,10 +30,10 @@ import ic2.core.item.ElectricItemManager;
 import ic2.core.item.GatewayElectricItemManager;
 import ic2.core.item.armor.ItemArmorElectric;
 import ic2.core.item.armor.ItemArmorHazmat;
-import ic2.core.item.armor.jetpack.JetpackAttachmentRecipe;
-import ic2.core.item.armor.jetpack.JetpackHandler;
 import ic2.core.item.armor.ItemArmorNanoSuit;
 import ic2.core.item.armor.ItemArmorQuantumSuit;
+import ic2.core.item.armor.jetpack.JetpackAttachmentRecipe;
+import ic2.core.item.armor.jetpack.JetpackHandler;
 import ic2.core.item.tfbp.Tfbp;
 import ic2.core.recipe.input.RecipeInputFactory;
 import ic2.core.ref.Ic2BlockTags;
@@ -52,15 +52,15 @@ import ic2.core.world.Ic2WorldGen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Skeleton;
@@ -74,262 +74,234 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.Nullable;
 
-public final class EventHandler
-{
-	public static void onInitGameEvents()
-	{
-		Ic2SoundEvents.init();
-		Ic2GameEvents.init();
-	}
+public final class EventHandler {
+  public static void onInitGameEvents() {
+    Ic2SoundEvents.init();
+    Ic2GameEvents.init();
+  }
 
-	public static void onInitEarly()
-	{
-		long startTime = System.nanoTime();
-		IC2.log.debug(LogCategory.General, "Starting pre-init.");
-		MainConfig.load();
-		CoreAccessImpl.init();
-		Recipes.inputFactory = new RecipeInputFactory();
-		EnergyNet.instance = EnergyNetGlobal.create();
-		ElectricItem.manager = new GatewayElectricItemManager();
-		ElectricItem.rawManager = new ElectricItemManager();
-		Components.init();
-		BlocksItems.init();
-		Ic2BlockTags.init();
-		Ic2ItemTags.init();
-		Ic2BoatTypes.init();
-		Ic2Entities.init();
-		Ic2RecipeTypes.init();
-		Ic2RecipeSerializers.init();
-		Ic2WorldGen.init();
-		TileEntityRecycler.init();
-		TileEntityElectrolyzer.init();
-		Rezepte.registerRecipes();
-		Ic2Crops.init();
-		IC2.sideProxy.preInit();
-		IC2.initialized = true;
-		IC2.log.debug(LogCategory.General, "Finished pre-init after %d ms.", (System.nanoTime() - startTime) / 1000000L);
-	}
+  public static void onInitEarly() {
+    long startTime = System.nanoTime();
+    IC2.log.debug(LogCategory.General, "Starting pre-init.");
+    MainConfig.load();
+    CoreAccessImpl.init();
+    Recipes.inputFactory = new RecipeInputFactory();
+    EnergyNet.instance = EnergyNetGlobal.create();
+    ElectricItem.manager = new GatewayElectricItemManager();
+    ElectricItem.rawManager = new ElectricItemManager();
+    Components.init();
+    BlocksItems.init();
+    Ic2BlockTags.init();
+    Ic2ItemTags.init();
+    Ic2BoatTypes.init();
+    Ic2Entities.init();
+    Ic2RecipeTypes.init();
+    Ic2RecipeSerializers.init();
+    Ic2WorldGen.init();
+    TileEntityRecycler.init();
+    TileEntityElectrolyzer.init();
+    Rezepte.registerRecipes();
+    Ic2Crops.init();
+    IC2.sideProxy.preInit();
+    IC2.initialized = true;
+    IC2.log.debug(
+        LogCategory.General,
+        "Finished pre-init after %d ms.",
+        (System.nanoTime() - startTime) / 1000000L);
+  }
 
-	public static void onInit()
-	{
-		MainConfig.ignoreInvalidRecipes = IC2Config.recipes.ignoreInvalidRecipes.get();
-		TileEntityMatter.init();
-		TileEntitySemifluidGenerator.init();
-		TileEntityFluidHeatGenerator.init();
-		TileEntityLiquidHeatExchanger.init();
-		TileEntityFermenter.init();
-		JetpackHandler.init();
-		JetpackAttachmentRecipe.init();
-		Tfbp.init();
-	}
+  public static void onInit() {
+    MainConfig.ignoreInvalidRecipes = IC2Config.recipes.ignoreInvalidRecipes.get();
+    TileEntityMatter.init();
+    TileEntitySemifluidGenerator.init();
+    TileEntityFluidHeatGenerator.init();
+    TileEntityLiquidHeatExchanger.init();
+    TileEntityFermenter.init();
+    JetpackHandler.init();
+    JetpackAttachmentRecipe.init();
+    Tfbp.init();
+  }
 
-	public static void onInitLate()
-	{
-		long startTime = System.nanoTime();
-		TileEntityRecycler.initLate();
-		UuIndex.instance.init();
-		IC2.sideProxy.onPostInit();
-		IC2.sideProxy.requestTick(!IC2.envProxy.isClientEnv(), ChunkLoadAwareBlockHandler::init);
-		IC2.log.debug(LogCategory.General, "Finished post-init after %d ms.", (System.nanoTime() - startTime) / 1000000L);
-	}
+  public static void onInitLate() {
+    long startTime = System.nanoTime();
+    TileEntityRecycler.initLate();
+    UuIndex.instance.init();
+    IC2.sideProxy.onPostInit();
+    IC2.sideProxy.requestTick(!IC2.envProxy.isClientEnv(), ChunkLoadAwareBlockHandler::init);
+    IC2.log.debug(
+        LogCategory.General,
+        "Finished post-init after %d ms.",
+        (System.nanoTime() - startTime) / 1000000L);
+  }
 
-	private static boolean loadSubModule(String name)
-	{
-		IC2.log.debug(LogCategory.SubModule, "Loading %s submodule: %s.", "ic2", name);
+  private static boolean loadSubModule(String name) {
+    IC2.log.debug(LogCategory.SubModule, "Loading %s submodule: %s.", "ic2", name);
 
-		try
-		{
-			Class<?> subModuleClass = IC2.class.getClassLoader().loadClass("ic2." + name + ".SubModule");
-			return (Boolean) subModuleClass.getMethod("init").invoke(null);
-		} catch (Throwable t)
-		{
-			IC2.log.debug(LogCategory.SubModule, "Submodule %s not loaded.", name);
-			return false;
-		}
-	}
+    try {
+      Class<?> subModuleClass = IC2.class.getClassLoader().loadClass("ic2." + name + ".SubModule");
+      return (Boolean) subModuleClass.getMethod("init").invoke(null);
+    } catch (Throwable t) {
+      IC2.log.debug(LogCategory.SubModule, "Submodule %s not loaded.", name);
+      return false;
+    }
+  }
 
-	public static void onServerStart(MinecraftServer server)
-	{
-		IC2.sideProxy.onServerAvailable(server);
-		UuIndex.instance.refresh(true);
-	}
+  public static void onServerStart(MinecraftServer server) {
+    IC2.sideProxy.onServerAvailable(server);
+    UuIndex.instance.refresh(true);
+  }
 
-	public static void onPlayerLogout(Player player)
-	{
-		if (IC2.sideProxy.isSimulating())
-		{
-			IC2.sideProxy.getKeyboard().removePlayerReferences(player);
-		}
-	}
+  public static void onPlayerLogout(Player player) {
+    if (IC2.sideProxy.isSimulating()) {
+      IC2.sideProxy.getKeyboard().removePlayerReferences(player);
+    }
+  }
 
-	public static void onWorldLoad(Level world)
-	{
-		if (!world.isClientSide)
-		{
-			ServerLevel serverWorld = (ServerLevel) world;
-			ChunkLoaderLogic.onWorldLoad(serverWorld);
-		}
-	}
+  public static void onWorldLoad(Level world) {
+    if (!world.isClientSide) {
+      ServerLevel serverWorld = (ServerLevel) world;
+      ChunkLoaderLogic.onWorldLoad(serverWorld);
+    }
+  }
 
-	public static void onWorldUnload(Level world)
-	{
-		WorldData.onWorldUnload(world);
-	}
+  public static void onWorldUnload(Level world) {
+    WorldData.onWorldUnload(world);
+  }
 
-	public static void onChunkDataLoad(LevelChunk chunk, CompoundTag data)
-	{
-	}
+  public static void onChunkDataLoad(LevelChunk chunk, CompoundTag data) {}
 
-	public static void onChunkSave(LevelChunk chunk, CompoundTag data)
-	{
-	}
+  public static void onChunkSave(LevelChunk chunk, CompoundTag data) {}
 
-	public static void onChunkLoad(LevelChunk chunk)
-	{
-		ChunkLoadAwareBlockHandler.onChunkLoad(chunk);
-	}
+  public static void onChunkLoad(LevelChunk chunk) {
+    ChunkLoadAwareBlockHandler.onChunkLoad(chunk);
+  }
 
-	public static void onChunkUnload(LevelChunk chunk)
-	{
-		ChunkLoadAwareBlockHandler.onChunkUnload(chunk);
-		if (!chunk.getLevel().isClientSide)
-		{
-			ChunkLoaderLogic.onChunkUnload(chunk);
-		}
-	}
+  public static void onChunkUnload(LevelChunk chunk) {
+    ChunkLoadAwareBlockHandler.onChunkUnload(chunk);
+    if (!chunk.getLevel().isClientSide) {
+      ChunkLoaderLogic.onChunkUnload(chunk);
+    }
+  }
 
-	public static InteractionResult onBlockStartBreak(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction)
-	{
-		if (player.getMainHandItem().getItem() instanceof BlockBreakableItem blockBreakableItem)
-		{
-			InteractionResult actionResult = blockBreakableItem.onBlockStartBreak(player, world, hand, pos, direction);
-			if (actionResult != InteractionResult.PASS)
-			{
-				return actionResult;
-			}
-		}
+  public static InteractionResult onBlockStartBreak(
+      Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
+    if (player.getMainHandItem().getItem() instanceof BlockBreakableItem blockBreakableItem) {
+      InteractionResult actionResult =
+          blockBreakableItem.onBlockStartBreak(player, world, hand, pos, direction);
+      if (actionResult != InteractionResult.PASS) {
+        return actionResult;
+      }
+    }
 
-		BlockState blockState = world.getBlockState(pos);
-		return blockState.getBlock() instanceof BreakableBlock breakableBlock
-			? breakableBlock.startBreak(player, world, hand, pos, blockState, direction)
-			: InteractionResult.PASS;
-	}
+    BlockState blockState = world.getBlockState(pos);
+    return blockState.getBlock() instanceof BreakableBlock breakableBlock
+        ? breakableBlock.startBreak(player, world, hand, pos, blockState, direction)
+        : InteractionResult.PASS;
+  }
 
-	public static boolean beforeBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity)
-	{
-		Item item = player.getMainHandItem().getItem();
-		return !(item instanceof BlockBreakableItem) || ((BlockBreakableItem) item).beforeBlockBreak(world, player, pos, state, blockEntity);
-	}
+  public static boolean beforeBlockBreak(
+      Level world,
+      Player player,
+      BlockPos pos,
+      BlockState state,
+      @Nullable BlockEntity blockEntity) {
+    Item item = player.getMainHandItem().getItem();
+    return !(item instanceof BlockBreakableItem)
+        || ((BlockBreakableItem) item).beforeBlockBreak(world, player, pos, state, blockEntity);
+  }
 
-	public static void afterBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity)
-	{
-		Item item = player.getMainHandItem().getItem();
-		if (item instanceof BlockBreakableItem)
-		{
-			((BlockBreakableItem) item).afterBlockBreak(world, player, pos, state, blockEntity);
-		}
-	}
+  public static void afterBlockBreak(
+      Level world,
+      Player player,
+      BlockPos pos,
+      BlockState state,
+      @Nullable BlockEntity blockEntity) {
+    Item item = player.getMainHandItem().getItem();
+    if (item instanceof BlockBreakableItem) {
+      ((BlockBreakableItem) item).afterBlockBreak(world, player, pos, state, blockEntity);
+    }
+  }
 
-	public static void onPlayerTickStart(Player player)
-	{
-		Ic2FenceBlock.onPlayerTick(player);
-	}
+  public static void onPlayerTickStart(Player player) {
+    Ic2FenceBlock.onPlayerTick(player);
+  }
 
-	public static void onPlayerTick(Player player)
-	{
-		JetpackHandler.onPlayerTick(player);
-	}
+  public static void onPlayerTick(Player player) {
+    JetpackHandler.onPlayerTick(player);
+  }
 
-	public static void onLivingSpecialSpawn(LivingEntity rawEntity)
-	{
-		if (IC2.seasonal && (rawEntity instanceof Zombie || rawEntity instanceof Skeleton) && rawEntity.getCommandSenderWorld().random.nextFloat() < 0.1F)
-		{
-			Mob entity = (Mob) rawEntity;
+  public static void onLivingSpecialSpawn(LivingEntity rawEntity) {
+    if (IC2.seasonal
+        && (rawEntity instanceof Zombie || rawEntity instanceof Skeleton)
+        && rawEntity.getCommandSenderWorld().random.nextFloat() < 0.1F) {
+      Mob entity = (Mob) rawEntity;
 
-			for (EquipmentSlot slot : EquipmentSlot.values())
-			{
-				entity.setDropChance(slot, Float.NEGATIVE_INFINITY);
-			}
-		}
-	}
+      for (EquipmentSlot slot : EquipmentSlot.values()) {
+        entity.setDropChance(slot, Float.NEGATIVE_INFINITY);
+      }
+    }
+  }
 
-	public static boolean onLivingFall(LivingEntity entity, float distance)
-	{
-		if (entity.getCommandSenderWorld().isClientSide)
-		{
-			return false;
-		} else
-		{
-			ItemStack armor = entity.getItemBySlot(EquipmentSlot.FEET);
-			if (StackUtil.isEmpty(armor))
-			{
-				return false;
-			} else
-			{
-				Item armorItem = armor.getItem();
-				if (armorItem == Ic2Items.RUBBER_BOOTS)
-				{
-					return ((ItemArmorHazmat) armorItem).absorbFall(armor, entity, distance);
-				} else if (armorItem == Ic2Items.NANO_BOOTS)
-				{
-					return ((ItemArmorNanoSuit) armorItem).absorbFall(armor, distance);
-				} else
-				{
-					return armorItem == Ic2Items.QUANTUM_BOOTS && ((ItemArmorQuantumSuit) armorItem).absorbFall(armor, distance);
-				}
-			}
-		}
-	}
+  public static boolean onLivingFall(LivingEntity entity, float distance) {
+    if (entity.getCommandSenderWorld().isClientSide) {
+      return false;
+    } else {
+      ItemStack armor = entity.getItemBySlot(EquipmentSlot.FEET);
+      if (StackUtil.isEmpty(armor)) {
+        return false;
+      } else {
+        Item armorItem = armor.getItem();
+        if (armorItem == Ic2Items.RUBBER_BOOTS) {
+          return ((ItemArmorHazmat) armorItem).absorbFall(armor, entity, distance);
+        } else if (armorItem == Ic2Items.NANO_BOOTS) {
+          return ((ItemArmorNanoSuit) armorItem).absorbFall(armor, distance);
+        } else {
+          return armorItem == Ic2Items.QUANTUM_BOOTS
+              && ((ItemArmorQuantumSuit) armorItem).absorbFall(armor, distance);
+        }
+      }
+    }
+  }
 
-	public static boolean onEntitySwingHand(LivingEntity entity, InteractionHand hand)
-	{
-		ItemStack stack = entity.getMainHandItem();
-		if (stack.getItem() instanceof ISwingSoundItem swingSoundItem)
-		{
-			SoundEvent swingSound = swingSoundItem.getSwingSound(entity, hand);
-			if (swingSound != null)
-			{
-				entity.playSound(swingSound, 1.0F, 1.0F);
-			}
+  public static boolean onEntitySwingHand(LivingEntity entity, InteractionHand hand) {
+    ItemStack stack = entity.getMainHandItem();
+    if (stack.getItem() instanceof ISwingSoundItem swingSoundItem) {
+      SoundEvent swingSound = swingSoundItem.getSwingSound(entity, hand);
+      if (swingSound != null) {
+        entity.playSound(swingSound, 1.0F, 1.0F);
+      }
+    }
+    return false;
+  }
 
-		}
-		return false;
-	}
+  public static boolean onEntityInteract(Player player, InteractionHand hand, Entity target) {
+    if (player.getCommandSenderWorld().isClientSide) {
+      return false;
+    }
 
-	public static boolean onEntityInteract(Player player, InteractionHand hand, Entity target)
-	{
-		if (player.getCommandSenderWorld().isClientSide)
-		{
-			return false;
-		}
+    ItemStack stack = StackUtil.get(player, hand);
+    StackUtil.isEmpty(stack);
+    return false;
+  }
 
-		ItemStack stack = StackUtil.get(player, hand);
-		StackUtil.isEmpty(stack);
-		return false;
-	}
+  public static boolean onAttackEntity(Player player, Entity target) {
+    Item item = player.getMainHandItem().getItem();
+    return !(item instanceof IEntityAttackableItem)
+        || ((IEntityAttackableItem) item).onAttackEntity(player, target);
+  }
 
-	public static boolean onAttackEntity(Player player, Entity target)
-	{
-		Item item = player.getMainHandItem().getItem();
-		return !(item instanceof IEntityAttackableItem) || ((IEntityAttackableItem) item).onAttackEntity(player, target);
-	}
+  public static float onEntityAttacked(LivingEntity victim, DamageSource source, float amount) {
+    if (victim instanceof Player player) {
+      if (ItemArmorHazmat.hazmatAbsorbs(source) && ItemArmorHazmat.hasCompleteHazmat(victim)) {
+        if (source.is(DamageTypeTags.IS_FIRE)) {
+          victim.setRemainingFireTicks(0);
+        }
 
-	public static float onEntityAttacked(LivingEntity victim, DamageSource source, float amount)
-	{
-		if (victim instanceof Player player)
-		{
-			if (ItemArmorHazmat.hazmatAbsorbs(source) && ItemArmorHazmat.hasCompleteHazmat(victim))
-			{
-				if (source.is(DamageTypeTags.IS_FIRE))
-				{
-					victim.setRemainingFireTicks(0);
-				}
+        return 0.0F;
+      }
 
-				return 0.0F;
-			}
-
-			return ItemArmorElectric.damageArmor(player, source, amount);
-		}
-		return amount;
-	}
+      return ItemArmorElectric.damageArmor(player, source, amount);
+    }
+    return amount;
+  }
 }

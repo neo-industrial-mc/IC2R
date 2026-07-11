@@ -3,13 +3,12 @@ package ic2.api.network;
 import java.io.DataInput;
 import java.io.DataOutput;
 
-public interface IGrowingBuffer extends DataInput, DataOutput
-{
-	void writeVarInt(int var1);
+public interface IGrowingBuffer extends DataInput, DataOutput {
+  void writeVarInt(int var1);
 
-	void writeString(String var1);
+  void writeString(String var1);
 
-	int readVarInt();
+  int readVarInt();
 
-	String readString();
+  String readString();
 }

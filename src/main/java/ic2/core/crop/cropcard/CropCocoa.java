@@ -9,64 +9,53 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
-public class CropCocoa extends Ic2CropCard
-{
-	public CropCocoa(ICropType cropType)
-	{
-		super(cropType);
-	}
+public class CropCocoa extends Ic2CropCard {
+  public CropCocoa(ICropType cropType) {
+    super(cropType);
+  }
 
-	@Override
-	public Block getCropBlock()
-	{
-		return Ic2Blocks.COCOA_CROP;
-	}
+  @Override
+  public Block getCropBlock() {
+    return Ic2Blocks.COCOA_CROP;
+  }
 
-	@Override
-	public String getDiscoveredBy()
-	{
-		return "Notch";
-	}
+  @Override
+  public String getDiscoveredBy() {
+    return "Notch";
+  }
 
-	@Override
-	public CropProperties getProperties()
-	{
-		return new CropProperties(3, 1, 3, 0, 4, 0);
-	}
+  @Override
+  public CropProperties getProperties() {
+    return new CropProperties(3, 1, 3, 0, 4, 0);
+  }
 
-	@Override
-	public String[] getAttributes()
-	{
-		return new String[] { "Brown", "Food", "Stem" };
-	}
+  @Override
+  public String[] getAttributes() {
+    return new String[] {"Brown", "Food", "Stem"};
+  }
 
-	@Override
-	public boolean canGrow(ICropTile crop)
-	{
-		return crop.getCurrentAge() <= this.getMaxAge() - 1 && crop.getStorageNutrients() >= 3;
-	}
+  @Override
+  public boolean canGrow(ICropTile crop) {
+    return crop.getCurrentAge() <= this.getMaxAge() - 1 && crop.getStorageNutrients() >= 3;
+  }
 
-	@Override
-	public int getWeightInfluences(ICropTile crop, int humidity, int nutrients, int air)
-	{
-		return (int) (humidity * 0.8 + nutrients * 1.3 + air * 0.9);
-	}
+  @Override
+  public int getWeightInfluences(ICropTile crop, int humidity, int nutrients, int air) {
+    return (int) (humidity * 0.8 + nutrients * 1.3 + air * 0.9);
+  }
 
-	@Override
-	public ItemStack getGain(ICropTile crop)
-	{
-		return new ItemStack(Items.COCOA_BEANS);
-	}
+  @Override
+  public ItemStack getGain(ICropTile crop) {
+    return new ItemStack(Items.COCOA_BEANS);
+  }
 
-	@Override
-	public int getGrowthDuration(ICropTile crop)
-	{
-		return crop.getCurrentAge() == this.getMaxAge() - 1 ? 900 : 400;
-	}
+  @Override
+  public int getGrowthDuration(ICropTile crop) {
+    return crop.getCurrentAge() == this.getMaxAge() - 1 ? 900 : 400;
+  }
 
-	@Override
-	public int getAgeAfterHarvest(ICropTile crop)
-	{
-		return this.getMaxAge() - 1;
-	}
+  @Override
+  public int getAgeAfterHarvest(ICropTile crop) {
+    return this.getMaxAge() - 1;
+  }
 }

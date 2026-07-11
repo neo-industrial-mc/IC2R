@@ -10,44 +10,42 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class RubberBoatEntity extends AbstractBoatEntity
-{
-	public RubberBoatEntity(EntityType<? extends AbstractBoatEntity> entityType, Level world)
-	{
-		super(entityType, world);
-	}
+public class RubberBoatEntity extends AbstractBoatEntity {
+  public RubberBoatEntity(EntityType<? extends AbstractBoatEntity> entityType, Level world) {
+    super(entityType, world);
+  }
 
-	@SuppressWarnings("unused")
-	public RubberBoatEntity(EntityType<? extends AbstractBoatEntity> entityType, Level world, double x, double y, double z)
-	{
-		/* This method are used by reflection. */
-		super(entityType, world, x, y, z);
-	}
+  @SuppressWarnings("unused")
+  public RubberBoatEntity(
+      EntityType<? extends AbstractBoatEntity> entityType,
+      Level world,
+      double x,
+      double y,
+      double z) {
+    /* This method are used by reflection. */
+    super(entityType, world, x, y, z);
+  }
 
-	@Override
-	public @NotNull Item getDropItem()
-	{
-		return Ic2Items.BROKEN_RUBBER_BOAT;
-	}
+  @Override
+  public @NotNull Item getDropItem() {
+    return Ic2Items.BROKEN_RUBBER_BOAT;
+  }
 
-	@Override
-	public BoatType getOverrideBoatType()
-	{
-		return Ic2BoatTypes.RUBBER;
-	}
+  @Override
+  public BoatType getOverrideBoatType() {
+    return Ic2BoatTypes.RUBBER;
+  }
 
-	@Override
-	protected float getBlockSpeedFactor()
-	{
-		return super.getBlockSpeedFactor() * 1.05F;
-	}
+  @Override
+  protected float getBlockSpeedFactor() {
+    return super.getBlockSpeedFactor() * 1.05F;
+  }
 
-		public void tick()
-	{
-		super.tick();
-		if (!this.level().isClientSide && this.level().getFluidState(this.blockPosition()).is(FluidTags.LAVA))
-		{
-			this.hurt(this.damageSources().lava(), Float.MAX_VALUE);
-		}
-	}
+  public void tick() {
+    super.tick();
+    if (!this.level().isClientSide
+        && this.level().getFluidState(this.blockPosition()).is(FluidTags.LAVA)) {
+      this.hurt(this.damageSources().lava(), Float.MAX_VALUE);
+    }
+  }
 }

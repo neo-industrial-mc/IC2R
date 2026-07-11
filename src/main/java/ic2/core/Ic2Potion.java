@@ -7,54 +7,44 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
-public class Ic2Potion extends MobEffect
-{
-	public static Ic2Potion radiation;
+public class Ic2Potion extends MobEffect {
+  public static Ic2Potion radiation;
 
-	public Ic2Potion(MobEffectCategory type, int liquidColor)
-	{
-		super(type, liquidColor);
-	}
+  public Ic2Potion(MobEffectCategory type, int liquidColor) {
+    super(type, liquidColor);
+  }
 
-	/**
-	 * Returns the registry Holder for the radiation effect. In 1.21 the mob-effect
-	 * system is Holder-based, so effect look-ups/additions require the Holder rather
-	 * than the raw {@link MobEffect} instance.
-	 */
-	public static Holder<MobEffect> radiationHolder()
-	{
-		return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(radiation);
-	}
+  /**
+   * Returns the registry Holder for the radiation effect. In 1.21 the mob-effect system is
+   * Holder-based, so effect look-ups/additions require the Holder rather than the raw {@link
+   * MobEffect} instance.
+   */
+  public static Holder<MobEffect> radiationHolder() {
+    return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(radiation);
+  }
 
-	public boolean applyEffectTick(LivingEntity entity, int amplifier)
-	{
-		if (this == radiation)
-		{
-			if (Ic2DamageSource.radiation == null)
-			{
-				Ic2DamageSource.init(entity.level().registryAccess());
-			}
-			entity.hurt(Ic2DamageSource.radiation, (float) amplifier / 100 + 0.5F);
-		}
+  public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+    if (this == radiation) {
+      if (Ic2DamageSource.radiation == null) {
+        Ic2DamageSource.init(entity.level().registryAccess());
+      }
+      entity.hurt(Ic2DamageSource.radiation, (float) amplifier / 100 + 0.5F);
+    }
 
-		return true;
-	}
+    return true;
+  }
 
-	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier)
-	{
-		if (this == radiation)
-		{
-			int rate = 25 >> amplifier;
-			return rate > 0 ? duration % rate == 0 : true;
-		} else
-		{
-			return false;
-		}
-	}
+  public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    if (this == radiation) {
+      int rate = 25 >> amplifier;
+      return rate > 0 ? duration % rate == 0 : true;
+    } else {
+      return false;
+    }
+  }
 
-	public void applyTo(LivingEntity entity, int duration, int amplifier)
-	{
-		MobEffectInstance effect = new MobEffectInstance(radiationHolder(), duration, amplifier);
-		entity.addEffect(effect);
-	}
+  public void applyTo(LivingEntity entity, int duration, int amplifier) {
+    MobEffectInstance effect = new MobEffectInstance(radiationHolder(), duration, amplifier);
+    entity.addEffect(effect);
+  }
 }

@@ -7,22 +7,22 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TileEntityITnt extends TileEntityExplosive
-{
-	public TileEntityITnt(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.ITNT, pos, state);
-	}
+public class TileEntityITnt extends TileEntityExplosive {
+  public TileEntityITnt(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.ITNT, pos, state);
+  }
 
-	@Override
-	protected boolean explodeOnRemoval()
-	{
-		return true;
-	}
+  @Override
+  protected boolean explodeOnRemoval() {
+    return true;
+  }
 
-	@Override
-	protected ExplosiveEntity getEntity(LivingEntity igniter)
-	{
-		return new ITntEntity(this.getLevel(), this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 0.5, this.worldPosition.getZ() + 0.5);
-	}
+  @Override
+  protected ExplosiveEntity getEntity(LivingEntity igniter) {
+    return new ITntEntity(
+        this.getLevel(),
+        this.worldPosition.getX() + 0.5,
+        this.worldPosition.getY() + 0.5,
+        this.worldPosition.getZ() + 0.5);
+  }
 }

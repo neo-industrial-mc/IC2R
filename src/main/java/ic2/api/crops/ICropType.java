@@ -2,13 +2,12 @@ package ic2.api.crops;
 
 import net.minecraft.world.level.block.Block;
 
-public interface ICropType
-{
-	String getName();
+public interface ICropType {
+  String getName();
 
-	String getOwner();
+  String getOwner();
 
-	Block getCropBlock();
+  Block getCropBlock();
 
-	int getMaxAge();
+  int getMaxAge();
 }

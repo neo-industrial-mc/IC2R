@@ -7,19 +7,15 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 
-public class HotCoolantBlock extends LiquidBlock
-{
-	public HotCoolantBlock(FlowingFluid fluid, Properties properties)
-	{
-		super(fluid, properties);
-	}
+public class HotCoolantBlock extends LiquidBlock {
+  public HotCoolantBlock(FlowingFluid fluid, Properties properties) {
+    super(fluid, properties);
+  }
 
-	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity)
-	{
-		if (!world.isClientSide)
-		{
-			entity.igniteForSeconds(30);
-		}
-	}
+  @Override
+  public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+    if (!world.isClientSide) {
+      entity.igniteForSeconds(30);
+    }
+  }
 }

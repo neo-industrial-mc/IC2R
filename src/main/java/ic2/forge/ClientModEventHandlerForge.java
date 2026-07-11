@@ -11,124 +11,108 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.sound.SoundEngineLoadEvent;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
-public final class ClientModEventHandlerForge
-{
-	private static <T extends BlockEntity> void registerBer(ClientEnvProxyForge.BerRegistration<T> reg, EntityRenderersEvent.RegisterRenderers event)
-	{
-		event.registerBlockEntityRenderer(reg.blockEntityType(), reg.blockEntityRendererProvider());
-	}
+public final class ClientModEventHandlerForge {
+  private static <T extends BlockEntity> void registerBer(
+      ClientEnvProxyForge.BerRegistration<T> reg, EntityRenderersEvent.RegisterRenderers event) {
+    event.registerBlockEntityRenderer(reg.blockEntityType(), reg.blockEntityRendererProvider());
+  }
 
-	private static <T extends Entity> void registerEntityRenderer(
-		ClientEnvProxyForge.EntityRendererRegistration<T> reg, EntityRenderersEvent.RegisterRenderers event
-	)
-	{
-		event.registerEntityRenderer(reg.type(), reg.factory());
-	}
+  private static <T extends Entity> void registerEntityRenderer(
+      ClientEnvProxyForge.EntityRendererRegistration<T> reg,
+      EntityRenderersEvent.RegisterRenderers event) {
+    event.registerEntityRenderer(reg.type(), reg.factory());
+  }
 
-	private static <T extends BlockEntity> void registerBlockEntityRenderer(
-		ClientEnvProxyForge.BlockEntityRendererRegistration<T> reg, EntityRenderersEvent.RegisterRenderers event
-	)
-	{
-		event.registerBlockEntityRenderer(reg.type(), reg.factory());
-	}
+  private static <T extends BlockEntity> void registerBlockEntityRenderer(
+      ClientEnvProxyForge.BlockEntityRendererRegistration<T> reg,
+      EntityRenderersEvent.RegisterRenderers event) {
+    event.registerBlockEntityRenderer(reg.type(), reg.factory());
+  }
 
-	private static <H extends AbstractContainerMenu> void registerScreen(
-		ClientEnvProxyForge.ScreenRegistration<H> reg, RegisterMenuScreensEvent event
-	)
-	{
-		event.register(reg.type(), reg.factory()::create);
-	}
+  private static <H extends AbstractContainerMenu> void registerScreen(
+      ClientEnvProxyForge.ScreenRegistration<H> reg, RegisterMenuScreensEvent event) {
+    event.register(reg.type(), reg.factory()::create);
+  }
 
-	@SubscribeEvent
-	public void onRegisterMenuScreens(RegisterMenuScreensEvent event)
-	{
-		for (ClientEnvProxyForge.ScreenRegistration<?> reg : ClientEnvProxyForge.screenRegistrations)
-		{
-			registerScreen(reg, event);
-		}
-	}
+  @SubscribeEvent
+  public void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
+    for (ClientEnvProxyForge.ScreenRegistration<?> reg : ClientEnvProxyForge.screenRegistrations) {
+      registerScreen(reg, event);
+    }
+  }
 
-	@SubscribeEvent
-	public void onRegisterBlockColorProviders(RegisterColorHandlersEvent.Block event)
-	{
-		for (ClientEnvProxyForge.BlockColorProviderRegistration reg : ClientEnvProxyForge.blockColorProviderRegistrations)
-		{
-			event.getBlockColors().register(reg.provider(), reg.blocks());
-		}
-	}
+  @SubscribeEvent
+  public void onRegisterBlockColorProviders(RegisterColorHandlersEvent.Block event) {
+    for (ClientEnvProxyForge.BlockColorProviderRegistration reg :
+        ClientEnvProxyForge.blockColorProviderRegistrations) {
+      event.getBlockColors().register(reg.provider(), reg.blocks());
+    }
+  }
 
-	@SubscribeEvent
-	public void onRegisterItemColorProviders(RegisterColorHandlersEvent.Item event)
-	{
-		for (ClientEnvProxyForge.ItemColorProviderRegistration reg : ClientEnvProxyForge.itemColorProviderRegistrations)
-		{
-			event.getItemColors().register(reg.provider(), reg.items());
-		}
-	}
+  @SubscribeEvent
+  public void onRegisterItemColorProviders(RegisterColorHandlersEvent.Item event) {
+    for (ClientEnvProxyForge.ItemColorProviderRegistration reg :
+        ClientEnvProxyForge.itemColorProviderRegistrations) {
+      event.getItemColors().register(reg.provider(), reg.items());
+    }
+  }
 
-	@SubscribeEvent
-	public void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event)
-	{
-		for (ClientEnvProxyForge.BerRegistration<?> reg : ClientEnvProxyForge.berRegistrations)
-		{
-			registerBer(reg, event);
-		}
+  @SubscribeEvent
+  public void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    for (ClientEnvProxyForge.BerRegistration<?> reg : ClientEnvProxyForge.berRegistrations) {
+      registerBer(reg, event);
+    }
 
-		for (ClientEnvProxyForge.EntityRendererRegistration<?> reg : ClientEnvProxyForge.entityRendererRegistrations)
-		{
-			registerEntityRenderer(reg, event);
-		}
+    for (ClientEnvProxyForge.EntityRendererRegistration<?> reg :
+        ClientEnvProxyForge.entityRendererRegistrations) {
+      registerEntityRenderer(reg, event);
+    }
 
-		for (ClientEnvProxyForge.BlockEntityRendererRegistration<?> reg : ClientEnvProxyForge.blockEntityRendererRegistrations)
-		{
-			registerBlockEntityRenderer(reg, event);
-		}
-	}
+    for (ClientEnvProxyForge.BlockEntityRendererRegistration<?> reg :
+        ClientEnvProxyForge.blockEntityRendererRegistrations) {
+      registerBlockEntityRenderer(reg, event);
+    }
+  }
 
-	@SubscribeEvent
-	public void onModelRegistry(ModelEvent.RegisterGeometryLoaders event)
-	{
-		event.register(ResourceLocation.fromNamespaceAndPath("ic2", "be"), new BeModelLoader());
-		event.register(ResourceLocation.fromNamespaceAndPath("ic2", "cable"), new CableModelLoader());
-		event.register(ResourceLocation.fromNamespaceAndPath("ic2", "mask_overlay"), new MaskOverlayItemLoader());
-		event.register(ResourceLocation.fromNamespaceAndPath("ic2", "wall"), new WallModelLoader());
-	}
+  @SubscribeEvent
+  public void onModelRegistry(ModelEvent.RegisterGeometryLoaders event) {
+    event.register(ResourceLocation.fromNamespaceAndPath("ic2", "be"), new BeModelLoader());
+    event.register(ResourceLocation.fromNamespaceAndPath("ic2", "cable"), new CableModelLoader());
+    event.register(
+        ResourceLocation.fromNamespaceAndPath("ic2", "mask_overlay"), new MaskOverlayItemLoader());
+    event.register(ResourceLocation.fromNamespaceAndPath("ic2", "wall"), new WallModelLoader());
+  }
 
-	@SubscribeEvent
-	public void onRegisterKeybindings(RegisterKeyMappingsEvent event)
-	{
-		for (KeyMapping keybinding : ClientEnvProxyForge.keyBindingRegistrations)
-		{
-			event.register(keybinding);
-		}
-	}
+  @SubscribeEvent
+  public void onRegisterKeybindings(RegisterKeyMappingsEvent event) {
+    for (KeyMapping keybinding : ClientEnvProxyForge.keyBindingRegistrations) {
+      event.register(keybinding);
+    }
+  }
 
-	@SubscribeEvent
-	public void onSoundSetup(SoundEngineLoadEvent event)
-	{
-		EventHandlerClient.onSoundSetup();
-	}
+  @SubscribeEvent
+  public void onSoundSetup(SoundEngineLoadEvent event) {
+    EventHandlerClient.onSoundSetup();
+  }
 
-	@SubscribeEvent
-	public void onClientSetup(FMLClientSetupEvent event)
-	{
-		EventHandlerClient.onClientSetup();
+  @SubscribeEvent
+  public void onClientSetup(FMLClientSetupEvent event) {
+    EventHandlerClient.onClientSetup();
 
-		for (ClientEnvProxyForge.BlockLayerRegistration reg : ClientEnvProxyForge.blockLayerRegistrations)
-		{
-			for (var block : reg.blocks())
-			{
-				ItemBlockRenderTypes.setRenderLayer(block, reg.layer());
-			}
-		}
-	}
+    for (ClientEnvProxyForge.BlockLayerRegistration reg :
+        ClientEnvProxyForge.blockLayerRegistrations) {
+      for (var block : reg.blocks()) {
+        ItemBlockRenderTypes.setRenderLayer(block, reg.layer());
+      }
+    }
+  }
 }

@@ -23,286 +23,244 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
 
 @NotClassic
-public class TileEntityScanner extends TileEntityElectricMachine implements IHasGui, INetworkClientTileEntityEventListener
-{
-	public final int duration = 3300;
-	public final InvSlotConsumable inputSlot;
-	public final InvSlot diskSlot;
-	public int progress = 0;
-	public double patternUu;
-	public double patternEu;
-	private ItemStack currentStack = StackUtil.emptyStack;
-	private ItemStack pattern = StackUtil.emptyStack;
-	private TileEntityScanner.State state = TileEntityScanner.State.IDLE;
+public class TileEntityScanner extends TileEntityElectricMachine
+    implements IHasGui, INetworkClientTileEntityEventListener {
+  public final int duration = 3300;
+  public final InvSlotConsumable inputSlot;
+  public final InvSlot diskSlot;
+  public int progress = 0;
+  public double patternUu;
+  public double patternEu;
+  private ItemStack currentStack = StackUtil.emptyStack;
+  private ItemStack pattern = StackUtil.emptyStack;
+  private TileEntityScanner.State state = TileEntityScanner.State.IDLE;
 
-	public TileEntityScanner(BlockPos pos, BlockState state)
-	{
-		super(Ic2BlockEntities.UU_SCANNER, pos, state, 512000, 4);
-		this.inputSlot = new InvSlotScannable(this, "input", 1);
-		this.diskSlot = new InvSlotConsumableId(this, "disk", InvSlot.Access.IO, 1, InvSlot.InvSide.ANY, Ic2Items.CRYSTAL_MEMORY);
-	}
+  public TileEntityScanner(BlockPos pos, BlockState state) {
+    super(Ic2BlockEntities.UU_SCANNER, pos, state, 512000, 4);
+    this.inputSlot = new InvSlotScannable(this, "input", 1);
+    this.diskSlot =
+        new InvSlotConsumableId(
+            this, "disk", InvSlot.Access.IO, 1, InvSlot.InvSide.ANY, Ic2Items.CRYSTAL_MEMORY);
+  }
 
-	@Override
-	protected void updateEntityServer()
-	{
-		super.updateEntityServer();
-		boolean newActive = false;
-		if (this.progress < 3300)
-		{
-			if (!this.inputSlot.isEmpty() && (StackUtil.isEmpty(this.currentStack) || StackUtil.checkItemEquality(this.currentStack, this.inputSlot.get())))
-			{
-				int energyUsePerCycle = 256;
-				if (this.getPatternStorage() == null && this.diskSlot.isEmpty())
-				{
-					this.state = TileEntityScanner.State.NO_STORAGE;
-					this.reset();
-				} else if (this.energy.getEnergy() >= energyUsePerCycle)
-				{
-					if (StackUtil.isEmpty(this.currentStack))
-					{
-						this.currentStack = StackUtil.copyWithSize(this.inputSlot.get(), 1);
-					}
+  @Override
+  protected void updateEntityServer() {
+    super.updateEntityServer();
+    boolean newActive = false;
+    if (this.progress < 3300) {
+      if (!this.inputSlot.isEmpty()
+          && (StackUtil.isEmpty(this.currentStack)
+              || StackUtil.checkItemEquality(this.currentStack, this.inputSlot.get()))) {
+        int energyUsePerCycle = 256;
+        if (this.getPatternStorage() == null && this.diskSlot.isEmpty()) {
+          this.state = TileEntityScanner.State.NO_STORAGE;
+          this.reset();
+        } else if (this.energy.getEnergy() >= energyUsePerCycle) {
+          if (StackUtil.isEmpty(this.currentStack)) {
+            this.currentStack = StackUtil.copyWithSize(this.inputSlot.get(), 1);
+          }
 
-					this.pattern = UuGraph.find(this.currentStack);
-					if (StackUtil.isEmpty(this.pattern))
-					{
-						this.state = TileEntityScanner.State.FAILED;
-					} else if (this.isPatternRecorded(this.pattern))
-					{
-						this.state = TileEntityScanner.State.ALREADY_RECORDED;
-						this.reset();
-					} else
-					{
-						newActive = true;
-						this.state = TileEntityScanner.State.SCANNING;
-						this.energy.useEnergy(energyUsePerCycle);
-						this.progress++;
-						if (this.progress >= 3300)
-						{
-							this.refreshInfo();
-							if (this.patternUu != Double.POSITIVE_INFINITY)
-							{
-								this.state = TileEntityScanner.State.COMPLETED;
-								this.inputSlot.consume(1, false, true);
-								this.setChanged();
-							} else
-							{
-								this.state = TileEntityScanner.State.FAILED;
-							}
-						}
-					}
-				} else
-				{
-					this.state = TileEntityScanner.State.NO_ENERGY;
-				}
-			} else
-			{
-				this.state = TileEntityScanner.State.IDLE;
-				this.reset();
-			}
-		} else if (StackUtil.isEmpty(this.pattern))
-		{
-			this.state = TileEntityScanner.State.IDLE;
-			this.progress = 0;
-		}
+          this.pattern = UuGraph.find(this.currentStack);
+          if (StackUtil.isEmpty(this.pattern)) {
+            this.state = TileEntityScanner.State.FAILED;
+          } else if (this.isPatternRecorded(this.pattern)) {
+            this.state = TileEntityScanner.State.ALREADY_RECORDED;
+            this.reset();
+          } else {
+            newActive = true;
+            this.state = TileEntityScanner.State.SCANNING;
+            this.energy.useEnergy(energyUsePerCycle);
+            this.progress++;
+            if (this.progress >= 3300) {
+              this.refreshInfo();
+              if (this.patternUu != Double.POSITIVE_INFINITY) {
+                this.state = TileEntityScanner.State.COMPLETED;
+                this.inputSlot.consume(1, false, true);
+                this.setChanged();
+              } else {
+                this.state = TileEntityScanner.State.FAILED;
+              }
+            }
+          }
+        } else {
+          this.state = TileEntityScanner.State.NO_ENERGY;
+        }
+      } else {
+        this.state = TileEntityScanner.State.IDLE;
+        this.reset();
+      }
+    } else if (StackUtil.isEmpty(this.pattern)) {
+      this.state = TileEntityScanner.State.IDLE;
+      this.progress = 0;
+    }
 
-		this.setActive(newActive);
-	}
+    this.setActive(newActive);
+  }
 
-	public void reset()
-	{
-		this.progress = 0;
-		this.currentStack = StackUtil.emptyStack;
-		this.pattern = StackUtil.emptyStack;
-	}
+  public void reset() {
+    this.progress = 0;
+    this.currentStack = StackUtil.emptyStack;
+    this.pattern = StackUtil.emptyStack;
+  }
 
-	private boolean isPatternRecorded(ItemStack stack)
-	{
-		if (!this.diskSlot.isEmpty() && this.diskSlot.get().getItem() instanceof ItemCrystalMemory)
-		{
-			ItemStack crystalMemory = this.diskSlot.get();
-			if (StackUtil.checkItemEquality(((ItemCrystalMemory) crystalMemory.getItem()).readItemStack(crystalMemory), stack))
-			{
-				return true;
-			}
-		}
+  private boolean isPatternRecorded(ItemStack stack) {
+    if (!this.diskSlot.isEmpty() && this.diskSlot.get().getItem() instanceof ItemCrystalMemory) {
+      ItemStack crystalMemory = this.diskSlot.get();
+      if (StackUtil.checkItemEquality(
+          ((ItemCrystalMemory) crystalMemory.getItem()).readItemStack(crystalMemory), stack)) {
+        return true;
+      }
+    }
 
-		IPatternStorage storage = this.getPatternStorage();
-		if (storage == null)
-		{
-			return false;
-		}
+    IPatternStorage storage = this.getPatternStorage();
+    if (storage == null) {
+      return false;
+    }
 
-		for (ItemStack stored : storage.getPatterns())
-		{
-			if (StackUtil.checkItemEquality(stored, stack))
-			{
-				return true;
-			}
-		}
+    for (ItemStack stored : storage.getPatterns()) {
+      if (StackUtil.checkItemEquality(stored, stack)) {
+        return true;
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	private void record()
-	{
-		if (!StackUtil.isEmpty(this.pattern) && this.patternUu != Double.POSITIVE_INFINITY)
-		{
-			if (!this.savetoDisk(this.pattern))
-			{
-				IPatternStorage storage = this.getPatternStorage();
-				if (storage == null)
-				{
-					this.state = TileEntityScanner.State.TRANSFER_ERROR;
-					return;
-				}
+  private void record() {
+    if (!StackUtil.isEmpty(this.pattern) && this.patternUu != Double.POSITIVE_INFINITY) {
+      if (!this.savetoDisk(this.pattern)) {
+        IPatternStorage storage = this.getPatternStorage();
+        if (storage == null) {
+          this.state = TileEntityScanner.State.TRANSFER_ERROR;
+          return;
+        }
 
-				if (!storage.addPattern(this.pattern))
-				{
-					this.state = TileEntityScanner.State.TRANSFER_ERROR;
-					return;
-				}
-			}
+        if (!storage.addPattern(this.pattern)) {
+          this.state = TileEntityScanner.State.TRANSFER_ERROR;
+          return;
+        }
+      }
 
-			this.reset();
-		} else
-		{
-			this.reset();
-		}
-	}
+      this.reset();
+    } else {
+      this.reset();
+    }
+  }
 
-	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
-		super.loadAdditional(nbt, registries);
-		this.progress = nbt.getInt("progress");
-		CompoundTag contentTag = nbt.getCompound("currentStack");
-		this.currentStack = ItemStack.parseOptional(registries, contentTag);
-		contentTag = nbt.getCompound("pattern");
-		this.pattern = ItemStack.parseOptional(registries, contentTag);
-		int stateIdx = nbt.getInt("state");
-		this.state = stateIdx < TileEntityScanner.State.values().length ? TileEntityScanner.State.values()[stateIdx] : TileEntityScanner.State.IDLE;
-		this.refreshInfo();
-	}
+  @Override
+  protected void loadAdditional(
+      CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.loadAdditional(nbt, registries);
+    this.progress = nbt.getInt("progress");
+    CompoundTag contentTag = nbt.getCompound("currentStack");
+    this.currentStack = ItemStack.parseOptional(registries, contentTag);
+    contentTag = nbt.getCompound("pattern");
+    this.pattern = ItemStack.parseOptional(registries, contentTag);
+    int stateIdx = nbt.getInt("state");
+    this.state =
+        stateIdx < TileEntityScanner.State.values().length
+            ? TileEntityScanner.State.values()[stateIdx]
+            : TileEntityScanner.State.IDLE;
+    this.refreshInfo();
+  }
 
-	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
-	{
-		super.saveAdditional(nbt, registries);
-		nbt.putInt("progress", this.progress);
-		if (!StackUtil.isEmpty(this.currentStack))
-		{
-			nbt.put("currentStack", this.currentStack.save(registries, new CompoundTag()));
-		}
+  @Override
+  public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+    super.saveAdditional(nbt, registries);
+    nbt.putInt("progress", this.progress);
+    if (!StackUtil.isEmpty(this.currentStack)) {
+      nbt.put("currentStack", this.currentStack.save(registries, new CompoundTag()));
+    }
 
-		if (!StackUtil.isEmpty(this.pattern))
-		{
-			nbt.put("pattern", this.pattern.save(registries, new CompoundTag()));
-		}
+    if (!StackUtil.isEmpty(this.pattern)) {
+      nbt.put("pattern", this.pattern.save(registries, new CompoundTag()));
+    }
 
-		nbt.putInt("state", this.state.ordinal());
-	}
+    nbt.putInt("state", this.state.ordinal());
+  }
 
-	@Override
-	public ContainerBase<?> createServerScreenHandler(int syncId, Player player)
-	{
-		return new ContainerScanner(syncId, player.getInventory(), this);
-	}
+  @Override
+  public ContainerBase<?> createServerScreenHandler(int syncId, Player player) {
+    return new ContainerScanner(syncId, player.getInventory(), this);
+  }
 
-	@Override
-	public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inventory, GrowingBuffer data)
-	{
-		return new ContainerScanner(syncId, inventory, this);
-	}
+  @Override
+  public ContainerBase<?> createClientScreenHandler(
+      int syncId, Inventory inventory, GrowingBuffer data) {
+    return new ContainerScanner(syncId, inventory, this);
+  }
 
-	public IPatternStorage getPatternStorage()
-	{
-		Level world = this.getLevel();
+  public IPatternStorage getPatternStorage() {
+    Level world = this.getLevel();
 
-		for (Direction dir : Util.ALL_DIRS)
-		{
-			BlockEntity target = world.getBlockEntity(this.worldPosition.relative(dir));
-			if (target instanceof IPatternStorage)
-			{
-				return (IPatternStorage) target;
-			}
-		}
+    for (Direction dir : Util.ALL_DIRS) {
+      BlockEntity target = world.getBlockEntity(this.worldPosition.relative(dir));
+      if (target instanceof IPatternStorage) {
+        return (IPatternStorage) target;
+      }
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	public boolean savetoDisk(ItemStack stack)
-	{
-		if (this.diskSlot.isEmpty() || stack == null)
-		{
-			return false;
-		} else if (this.diskSlot.get().getItem() instanceof ItemCrystalMemory)
-		{
-			ItemStack crystalMemory = this.diskSlot.get();
-			((ItemCrystalMemory) crystalMemory.getItem()).writeContentsTag(crystalMemory, stack);
-			return true;
-		} else
-		{
-			return false;
-		}
-	}
+  public boolean savetoDisk(ItemStack stack) {
+    if (this.diskSlot.isEmpty() || stack == null) {
+      return false;
+    } else if (this.diskSlot.get().getItem() instanceof ItemCrystalMemory) {
+      ItemStack crystalMemory = this.diskSlot.get();
+      ((ItemCrystalMemory) crystalMemory.getItem()).writeContentsTag(crystalMemory, stack);
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-	@Override
-	public void onNetworkEvent(Player player, int event)
-	{
-		switch (event)
-		{
-			case 0:
-				this.reset();
-				break;
-			case 1:
-				if (this.progress >= 3300)
-				{
-					this.record();
-				}
-		}
-	}
+  @Override
+  public void onNetworkEvent(Player player, int event) {
+    switch (event) {
+      case 0:
+        this.reset();
+        break;
+      case 1:
+        if (this.progress >= 3300) {
+          this.record();
+        }
+    }
+  }
 
-	private void refreshInfo()
-	{
-		if (!StackUtil.isEmpty(this.pattern))
-		{
-			this.patternUu = UuIndex.instance.getInBuckets(this.pattern);
-			this.patternEu = UuIndex.instance.getReplicationEu(this.pattern);
-		}
-	}
+  private void refreshInfo() {
+    if (!StackUtil.isEmpty(this.pattern)) {
+      this.patternUu = UuIndex.instance.getInBuckets(this.pattern);
+      this.patternEu = UuIndex.instance.getReplicationEu(this.pattern);
+    }
+  }
 
-	public int getPercentageDone()
-	{
-		return 100 * this.progress / 3300;
-	}
+  public int getPercentageDone() {
+    return 100 * this.progress / 3300;
+  }
 
-	public int getSubPercentageDoneScaled(int width)
-	{
-		return width * (100 * this.progress % 3300) / 3300;
-	}
+  public int getSubPercentageDoneScaled(int width) {
+    return width * (100 * this.progress % 3300) / 3300;
+  }
 
-	public TileEntityScanner.State getState()
-	{
-		return this.state;
-	}
+  public TileEntityScanner.State getState() {
+    return this.state;
+  }
 
-	public enum State
-	{
-		IDLE,
-		SCANNING,
-		COMPLETED,
-		FAILED,
-		NO_STORAGE,
-		NO_ENERGY,
-		TRANSFER_ERROR,
-		ALREADY_RECORDED
-	}
+  public enum State {
+    IDLE,
+    SCANNING,
+    COMPLETED,
+    FAILED,
+    NO_STORAGE,
+    NO_ENERGY,
+    TRANSFER_ERROR,
+    ALREADY_RECORDED
+  }
 }

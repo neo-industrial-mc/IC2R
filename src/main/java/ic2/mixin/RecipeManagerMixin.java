@@ -14,17 +14,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 // We use this to check THE FUCKING CREATE MOD is incompatible
 @Mixin(RecipeManager.class)
-public class RecipeManagerMixin
-{
-	@Inject(method = "fromJson(Lnet/minecraft/resources/ResourceLocation;Lcom/google/gson/JsonObject;)Lnet/minecraft/world/item/crafting/Recipe;", at = @At("HEAD"))
-	private static void logRecipeId(ResourceLocation p_44046_, com.google.gson.JsonObject p_44047_, CallbackInfoReturnable<Recipe<?>> cir)
-	{
-		IC2.log.debug(LogCategory.Recipe, "[IC2 Recipe Debug] Loading recipe: %s", p_44046_);
-	}
-	
-	@Inject(method = "fromJson(Lnet/minecraft/resources/ResourceLocation;Lcom/google/gson/JsonObject;Lnet/neoforged/neoforge/common/crafting/conditions/ICondition$IContext;)Lnet/minecraft/world/item/crafting/Recipe;", at = @At("HEAD"))
-	private static void logRecipeId(ResourceLocation p_44046_, JsonObject p_44047_, ICondition.IContext context, CallbackInfoReturnable<Recipe<?>> cir)
-	{
-		IC2.log.info(LogCategory.Recipe, "[IC2 Recipe Debug] Loading recipe: %s", p_44046_);
-	}
+public class RecipeManagerMixin {
+  @Inject(
+      method =
+          "fromJson(Lnet/minecraft/resources/ResourceLocation;Lcom/google/gson/JsonObject;)Lnet/minecraft/world/item/crafting/Recipe;",
+      at = @At("HEAD"))
+  private static void logRecipeId(
+      ResourceLocation p_44046_,
+      com.google.gson.JsonObject p_44047_,
+      CallbackInfoReturnable<Recipe<?>> cir) {
+    IC2.log.debug(LogCategory.Recipe, "[IC2 Recipe Debug] Loading recipe: %s", p_44046_);
+  }
+
+  @Inject(
+      method =
+          "fromJson(Lnet/minecraft/resources/ResourceLocation;Lcom/google/gson/JsonObject;Lnet/neoforged/neoforge/common/crafting/conditions/ICondition$IContext;)Lnet/minecraft/world/item/crafting/Recipe;",
+      at = @At("HEAD"))
+  private static void logRecipeId(
+      ResourceLocation p_44046_,
+      JsonObject p_44047_,
+      ICondition.IContext context,
+      CallbackInfoReturnable<Recipe<?>> cir) {
+    IC2.log.info(LogCategory.Recipe, "[IC2 Recipe Debug] Loading recipe: %s", p_44046_);
+  }
 }
