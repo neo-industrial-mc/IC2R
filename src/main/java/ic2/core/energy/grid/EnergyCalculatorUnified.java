@@ -93,6 +93,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 		data.activeSources.clear();
 		data.activeSinks.clear();
 		data.pathCache.clear();
+		data.eventPaths.clear();
 		data.currentCalcId = -1;
 		Collection<Node> nodes = grid.getNodes();
 		if (nodes.size() >= 2)
@@ -861,17 +862,18 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 	public boolean runSyncStep(Grid grid)
 	{
 		GridData data = getData(grid);
-		return runCalculation(grid, data);
+		runCalculation(grid, data);
+		// Transfer (inject/draw) and cable effects must stay on the server thread.
+		// Returning true would schedule runAsyncStep, re-running the calculation on a
+		// pool thread with world-mutating applyCableEffects (explosions, cable removal,
+		// entity shocks) and transferring energy twice per tick.
+		return false;
 	}
 
 	@Override
 	public void runAsyncStep(Grid grid)
 	{
-		GridData data = getData(grid);
-		if (data.active)
-		{
-			runCalculation(grid, data);
-		}
+		// Intentionally empty: see runSyncStep(Grid).
 	}
 
 	@Override
