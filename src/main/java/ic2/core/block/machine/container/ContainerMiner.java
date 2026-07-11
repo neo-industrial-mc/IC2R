@@ -32,6 +32,7 @@ public class ContainerMiner extends ContainerElectricMachine<TileEntityMiner>
 	{
 		List<String> ret = super.getNetworkedFields();
 		ret.add("progress");
+		ret.add("pumpMode");
 		return ret;
 	}
 }

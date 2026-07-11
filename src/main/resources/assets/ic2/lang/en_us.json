@@ -524,6 +524,8 @@
   "ic2.MetalFormer.gui.switch.Cutting": "Cutting",
   "ic2.MetalFormer.gui.switch.Extruding": "Extruding",
   "ic2.MetalFormer.gui.switch.Rolling": "Rolling",
+  "ic2.Miner.gui.pumpMode.off": "Pump Mode: OFF (mine ores; pause at liquid sources)",
+  "ic2.Miner.gui.pumpMode.on": "Pump Mode: ON (prioritize liquids when pump is adjacent)",
   "ic2.NuclearReactor.gui.info.EUoutput": "Output: %1$s EU/t",
   "ic2.NuclearReactor.gui.info.HUoutput": "Output: %1$s HU/s",
   "ic2.NuclearReactor.gui.info.temp": "Core Temperature: %1$.2f%%",

@@ -524,6 +524,8 @@
   "ic2.MetalFormer.gui.switch.Cutting": "剪切",
   "ic2.MetalFormer.gui.switch.Extruding": "挤压",
   "ic2.MetalFormer.gui.switch.Rolling": "辊压",
+  "ic2.Miner.gui.pumpMode.off": "泵抽模式：关（仅挖矿，遇源液体暂停）",
+  "ic2.Miner.gui.pumpMode.on": "泵抽模式：开（相邻泵时主动抽取液体）",
   "ic2.NuclearReactor.gui.info.EUoutput": "输出: %1$s EU/t",
   "ic2.NuclearReactor.gui.info.HUoutput": "输出: %1$s HU/t",
   "ic2.NuclearReactor.gui.info.temp": "核心温度: %1$.2f%%",

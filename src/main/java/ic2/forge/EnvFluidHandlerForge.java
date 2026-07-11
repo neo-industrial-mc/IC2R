@@ -11,7 +11,6 @@ import ic2.core.block.misc.UUMatterBlock;
 import ic2.core.fluid.EnvFluidHandler;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.util.StackUtil;
-import ic2.core.util.Util;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
@@ -466,13 +465,7 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
     public int getWorldFluidLevel(BlockState state, Level world, BlockPos pos) {
         Block block = state.getBlock();
         if (block instanceof LiquidBlock) {
-            FluidState fluidState = state.getFluidState();
-            if (fluidState.isSource()) {
-                return 0;
-            }
-            Integer level = fluidState.getValue(FlowingFluid.LEVEL);
-            float fillPct = level / 8.0F;
-            return 7 - Util.limit(Math.round(6.0F * fillPct), 0, 6);
+            return state.getValue(LiquidBlock.LEVEL);
         }
         return -1;
     }

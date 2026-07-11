@@ -57,6 +57,7 @@ public class TileEntityPump extends TileEntityElectricMachine implements IHasGui
 	@GuiSynced
 	public float guiProgress;
 	private TileEntityMiner miner = null;
+	private BlockPos cachedFluidSource = null;
 
 	public TileEntityPump(BlockPos pos, BlockState state)
 	{
@@ -106,6 +107,7 @@ public class TileEntityPump extends TileEntityElectricMachine implements IHasGui
 	protected void updateEntityServer()
 	{
 		super.updateEntityServer();
+		this.cachedFluidSource = null;
 		boolean needsInvUpdate = false;
 		if (this.canOperate() && this.energy.getEnergy() >= this.energyConsume * this.operationLength)
 		{
@@ -220,9 +222,15 @@ public class TileEntityPump extends TileEntityElectricMachine implements IHasGui
 			{
 				assert miner.liquidPos != null;
 				cPos = miner.liquidPos;
+			} else if (sim)
+			{
+				cPos = this.cachedFluidSource = PumpUtil.searchFluidSource(world, startPos, true);
+			} else if (this.cachedFluidSource != null)
+			{
+				cPos = this.cachedFluidSource;
 			} else
 			{
-				cPos = PumpUtil.searchFluidSource(world, startPos);
+				cPos = PumpUtil.searchFluidSource(world, startPos, false);
 			}
 
 			if (cPos != null)
@@ -246,7 +254,8 @@ public class TileEntityPump extends TileEntityElectricMachine implements IHasGui
 
 	public void setUpgradestat()
 	{
-		double previousProgress = (double) this.progress / this.operationLength;
+		int previousOperationLength = Math.max(1, this.operationLength);
+		double previousProgress = (double) this.progress / previousOperationLength;
 		this.operationsPerTick = this.upgradeSlot.getOperationsPerTick(this.defaultOperationLength);
 		this.operationLength = this.upgradeSlot.getOperationLength(this.defaultOperationLength);
 		this.energyConsume = this.upgradeSlot.getEnergyDemand(this.defaultEnergyConsume);
