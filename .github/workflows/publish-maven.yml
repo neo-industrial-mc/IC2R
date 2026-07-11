@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 concurrency:
@@ -36,7 +36,33 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Publish Maven package
-        run: ./gradlew --no-daemon --stacktrace publishMavenJavaPublicationToGithubPackagesRepository
+      - name: Build mod JAR and publish Maven package
+        run: ./gradlew --no-daemon --stacktrace jar publishMavenJavaPublicationToGithubPackagesRepository
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create JAR checksum
+        if: github.event_name == 'release'
+        shell: bash
+        run: |
+          shopt -s nullglob
+          jars=(build/libs/*.jar)
+          if (( ${#jars[@]} != 1 )); then
+            echo "Expected exactly one mod JAR in build/libs, found ${#jars[@]}." >&2
+            exit 1
+          fi
+
+          jar_name="$(basename "${jars[0]}")"
+          cd build/libs
+          sha256sum "$jar_name" > "$jar_name.sha256"
+
+      - name: Add mod JAR and checksum to release
+        if: github.event_name == 'release'
+        shell: bash
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            build/libs/*.jar \
+            build/libs/*.jar.sha256 \
+            --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
