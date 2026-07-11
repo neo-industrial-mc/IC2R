@@ -68,7 +68,13 @@ public class ItemToolCrowbar extends TieredItem implements IEnhancedOverlayProvi
 
 		if (world.getBlockEntity(pos) instanceof ICoverHolder target)
 		{
-			Direction selectedFacing = RotationUtil.rotateByHit(side, (float) hitPos.x, (float) hitPos.y, (float) hitPos.z);
+			// hitPos is absolute world coords; rotateByHit expects face-local 0..1
+			Direction selectedFacing = RotationUtil.rotateByHit(
+				side,
+				(float) (hitPos.x - pos.getX()),
+				(float) (hitPos.y - pos.getY()),
+				(float) (hitPos.z - pos.getZ())
+			);
 			if (target.canRemoveCover(world, pos, selectedFacing))
 			{
 				if (!world.isClientSide)

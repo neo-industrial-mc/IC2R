@@ -91,9 +91,12 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent
 	public void onDrawBlockHighlight(RenderHighlightEvent.Block event)
 	{
-		EventHandlerClient.onDrawBlockHighlight(
+		if (EventHandlerClient.onDrawBlockHighlight(
 			SideProxyClient.mc.player, event.getTarget(), event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource()
-		);
+		))
+		{
+			event.setCanceled(true);
+		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)

@@ -2,6 +2,8 @@ package ic2.core.event;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import ic2.api.item.ElectricItem;
+import ic2.api.item.IEnhancedOverlayProvider;
+import ic2.api.tile.IWrenchAble;
 import ic2.core.GuiOverlayer;
 import ic2.core.IC2;
 import ic2.core.fluid.FluidHandler;
@@ -17,6 +19,7 @@ import ic2.core.event.TickHandler;
 import ic2.core.proxy.SideProxyClient;
 import ic2.core.ref.Ic2Items;
 import ic2.core.sound.SoundManagerClient;
+import ic2.core.util.EnhancedOverlayRenderer;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
 
@@ -50,6 +53,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
 public class EventHandlerClient
 {
@@ -135,40 +139,60 @@ public class EventHandlerClient
 		return fluid != null && "ic2".equals(ForgeRegistries.FLUIDS.getKey(fluid).getNamespace()) ? FluidHandler.getColor(fluid) : -1;
 	}
 
-	// TODO
-	/*
-	意图分析：
-
-  onDrawBlockHighlight 是绘制玩家准星对准方块时的高亮边框的方法。空 if 的逻辑本应是：
-
-  1. 检查玩家手中物品是否实现了 IEnhancedOverlayProvider（如 ItemToolCutter 线缆剪、ItemToolCrowbar 撬棍）                                                                                                            
-  2. 调用 providesEnhancedOverlay(world, pos, side, player, stack) 判断该物品是否需要为当前目标方块绘制自定义高亮覆盖层                                                                    
-  3. 如果返回 true，则渲染一个增强的方块选择指示器（比如高亮线缆的连接点、可拆卸的面板方向等）
-
-  但目前这个 if 体是空的 —— 作者只写了前半段判断逻辑，后半段渲染代码还没来得及写，是个 WIP（Work in progress）。
-
-  从结构上看，它和下面的 onDrawBlockHighlightLast 是一对方法对 —— 前者负责覆盖/替换默认高亮，后者负责在默认高亮之后追加绘制。onDrawBlockHighlightLast 也是半成品（取了 BlockEntity 但什么都没做就 return false 了）。
-
-  简单说：想给特殊工具（线缆剪、撬棍等）在指向方块时加自定义准星高亮效果，但还没写完。
+	/**
+	 * Draw GT-style face grid when the held item implements {@link IEnhancedOverlayProvider}.
+	 *
+	 * @return {@code true} to cancel the vanilla block outline (we drew a replacement)
 	 */
-	public static void onDrawBlockHighlight(Player player, BlockHitResult target, float partialTicks, PoseStack matrix, MultiBufferSource buffers)
+	public static boolean onDrawBlockHighlight(Player player, BlockHitResult target, float partialTicks, PoseStack matrix, MultiBufferSource buffers)
 	{
 		assert target.getType() == Type.BLOCK;
-		ItemStack inHand = StackUtil.get(player, InteractionHand.MAIN_HAND);
-		inHand.getItem();
-	}
 
-	public static boolean onDrawBlockHighlightLast(Player player, BlockHitResult target, float partialTicks, PoseStack matrix, MultiBufferSource buffers)
-	{
-		assert target.getType() == Type.BLOCK;
-		Level world = player.getCommandSenderWorld();
+		ItemStack inHand = StackUtil.get(player, InteractionHand.MAIN_HAND);
+		if (!(inHand.getItem() instanceof IEnhancedOverlayProvider provider))
+		{
+			return false;
+		}
+
+		Level world = player.level();
 		BlockPos pos = target.getBlockPos();
 		if (!world.getWorldBorder().isWithinBounds(pos))
 		{
 			return false;
 		}
 
-		BlockEntity te = world.getBlockEntity(pos);
+		Direction side = target.getDirection();
+		if (!provider.providesEnhancedOverlay(world, pos, side, player, inHand))
+		{
+			return false;
+		}
+
+		Direction currentFacing = resolveFacingForOverlay(world, pos);
+		return EnhancedOverlayRenderer.render(world, target, matrix, buffers, currentFacing);
+	}
+
+	@Nullable
+	private static Direction resolveFacingForOverlay(Level world, BlockPos pos)
+	{
+		BlockState state = world.getBlockState(pos);
+		if (state.getBlock() instanceof IWrenchAble wrenchAble)
+		{
+			return wrenchAble.getFacing(world, pos);
+		}
+
+		var property = state.getBlock().getStateDefinition().getProperty("facing");
+		if (property != null && property.getValueClass() == Direction.class)
+		{
+			@SuppressWarnings("unchecked")
+			var facingProperty = (net.minecraft.world.level.block.state.properties.Property<Direction>) property;
+			return state.getValue(facingProperty);
+		}
+
+		return null;
+	}
+
+	public static boolean onDrawBlockHighlightLast(Player player, BlockHitResult target, float partialTicks, PoseStack matrix, MultiBufferSource buffers)
+	{
 		return false;
 	}
 

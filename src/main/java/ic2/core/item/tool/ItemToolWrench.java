@@ -2,6 +2,7 @@ package ic2.core.item.tool;
 
 import ic2.api.item.BlockBreakableItem;
 import ic2.api.item.IBoxable;
+import ic2.api.item.IEnhancedOverlayProvider;
 import ic2.api.tile.IWrenchAble;
 import ic2.core.IC2;
 import ic2.core.init.IC2Config;
@@ -9,6 +10,7 @@ import ic2.core.item.PriorityUsableItem;
 import ic2.core.ref.Ic2ItemTags;
 import ic2.core.ref.Ic2SoundEvents;
 import ic2.core.util.LogCategory;
+import ic2.core.util.RotationUtil;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
 
@@ -32,11 +34,12 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable, BlockBreakableItem
+public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable, BlockBreakableItem, IEnhancedOverlayProvider
 {
 	public ItemToolWrench(Properties settings)
 	{
@@ -45,7 +48,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 
 	public static int onWrenchUse(Player player, UseOnContext context, boolean removeBlock)
 	{
-		WrenchResult result = wrenchBlock(context.getLevel(), context.getClickedPos(), context.getClickedFace(), player, removeBlock);
+		WrenchResult result = wrenchBlock(context, player, removeBlock);
 		if (result != WrenchResult.Nothing)
 		{
 			if (!context.getLevel().isClientSide)
@@ -60,8 +63,11 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return -1;
 	}
 
-	public static WrenchResult wrenchBlock(Level world, BlockPos pos, Direction side, Player player, boolean remove)
+	public static WrenchResult wrenchBlock(UseOnContext context, Player player, boolean remove)
 	{
+		Level world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		Direction side = context.getClickedFace();
 		BlockState state = world.getBlockState(pos);
 		if (state.isAir())
 		{
@@ -71,29 +77,40 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		Block block = state.getBlock();
 		if (block instanceof IWrenchAble wrenchAble)
 		{
-			return wrenchAbleBlock(world, pos, side, player, remove, state, wrenchAble);
+			return wrenchAbleBlock(world, pos, side, player, remove, state, wrenchAble, context.getClickLocation());
 		}
 
-		return wrenchVanillaBlock(world, pos, side, player, state);
+		return wrenchVanillaBlock(world, pos, side, player, state, context.getClickLocation());
 	}
 
-	private static WrenchResult wrenchAbleBlock(Level world, BlockPos pos, Direction side, Player player, boolean remove, BlockState state, IWrenchAble wrenchAble)
+	/**
+	 * Resolve the intended facing from click position on the face (GT-style 3×3 grid),
+	 * or Alt-rotate around the clicked face's axis.
+	 */
+	private static Direction resolveNewFacing(Direction side, Player player, Vec3 hitLocation, BlockPos pos, Direction currentFacing)
 	{
-		Direction currentFacing = wrenchAble.getFacing(world, pos);
-		Direction newFacing;
-
 		if (IC2.keyboard.isAltKeyDown(player))
 		{
-			// Alt key: rotate facing around the clicked side's axis
 			Axis axis = side.getAxis();
-			newFacing = isAltRotationClockwise(side, player)
+			return isAltRotationClockwise(side, player)
 				? currentFacing.getClockWise(axis)
 				: currentFacing.getCounterClockWise(axis);
-		} else
-		{
-			// Normal: face the clicked side; Shift: face the opposite (back toward player)
-			newFacing = player.isShiftKeyDown() ? side.getOpposite() : side;
 		}
+
+		// Hit-region on the face → direction (center / edges / corners), matching the overlay grid.
+		float hitX = (float) (hitLocation.x - pos.getX());
+		float hitY = (float) (hitLocation.y - pos.getY());
+		float hitZ = (float) (hitLocation.z - pos.getZ());
+		return RotationUtil.rotateByHit(side, hitX, hitY, hitZ);
+	}
+
+	private static WrenchResult wrenchAbleBlock(
+		Level world, BlockPos pos, Direction side, Player player, boolean remove,
+		BlockState state, IWrenchAble wrenchAble, Vec3 hitLocation
+	)
+	{
+		Direction currentFacing = wrenchAble.getFacing(world, pos);
+		Direction newFacing = resolveNewFacing(side, player, hitLocation, pos, currentFacing);
 
 		// If the facing would change, try to rotate
 		if (newFacing != currentFacing && wrenchAble.setFacing(world, pos, newFacing, player))
@@ -110,7 +127,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return WrenchResult.Nothing;
 	}
 
-	private static WrenchResult wrenchVanillaBlock(Level world, BlockPos pos, Direction side, Player player, BlockState state)
+	private static WrenchResult wrenchVanillaBlock(Level world, BlockPos pos, Direction side, Player player, BlockState state, Vec3 hitLocation)
 	{
 		// Alt key: rotate around the clicked side's axis
 		if (IC2.keyboard.isAltKeyDown(player))
@@ -126,15 +143,17 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 			return WrenchResult.Nothing;
 		}
 
-		// On horizontal faces: try to rotate the block's facing
-		if (side.getAxis().isHorizontal())
+		Property<?> property = state.getBlock().getStateDefinition().getProperty("facing");
+		if (property != null && property.getValueClass() == Direction.class)
 		{
-			Property<?> property = state.getBlock().getStateDefinition().getProperty("facing");
-			if (property != null && property.getValueClass() == Direction.class)
+			@SuppressWarnings("unchecked")
+			Property<Direction> facingProperty = (Property<Direction>) property;
+			Direction facing = state.getValue(facingProperty);
+			Direction newFacing = resolveNewFacing(side, player, hitLocation, pos, facing);
+			if (facing != newFacing && facingProperty.getPossibleValues().contains(newFacing))
 			{
-				Direction facing = (Direction) state.getValue(property);
-				Direction newFacing = player.isShiftKeyDown() ? side.getOpposite() : side;
-				if (facing.getAxis().isHorizontal() && facing != newFacing && property.getPossibleValues().contains(newFacing))
+				// Prefer rotate helper for horizontal-only blocks; fall back to setValue for full 6-way facing.
+				if (facing.getAxis().isHorizontal() && newFacing.getAxis().isHorizontal())
 				{
 					Rotation rotation = getHorizontalRotation(facing, newFacing);
 					BlockState newState = IC2.envProxy.rotate(state, world, pos, rotation);
@@ -144,6 +163,9 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 						return WrenchResult.Rotated;
 					}
 				}
+
+				world.setBlockAndUpdate(pos, state.setValue(facingProperty, newFacing));
+				return WrenchResult.Rotated;
 			}
 		}
 
@@ -313,6 +335,19 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	public boolean isValidRepairItem(@NotNull ItemStack toRepair, ItemStack repair)
 	{
 		return repair.is(Ic2ItemTags.BRONZE_INGOTS);
+	}
+
+	@Override
+	public boolean providesEnhancedOverlay(Level world, BlockPos pos, Direction side, Player player, ItemStack stack)
+	{
+		BlockState state = world.getBlockState(pos);
+		if (state.getBlock() instanceof IWrenchAble)
+		{
+			return true;
+		}
+
+		Property<?> property = state.getBlock().getStateDefinition().getProperty("facing");
+		return property != null && property.getValueClass() == Direction.class;
 	}
 
 	public enum WrenchResult

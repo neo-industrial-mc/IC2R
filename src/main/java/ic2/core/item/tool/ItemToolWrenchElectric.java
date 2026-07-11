@@ -2,14 +2,21 @@ package ic2.core.item.tool;
 
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IBoxable;
+import ic2.api.item.IEnhancedOverlayProvider;
+import ic2.api.tile.IWrenchAble;
 import ic2.core.item.PriorityUsableItem;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
-public class ItemToolWrenchElectric extends ItemElectricTool implements PriorityUsableItem, IBoxable
+public class ItemToolWrenchElectric extends ItemElectricTool implements PriorityUsableItem, IBoxable, IEnhancedOverlayProvider
 {
 	public ItemToolWrenchElectric(Properties settings)
 	{
@@ -63,5 +70,19 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 	public boolean canBeStoredInToolbox(ItemStack stack)
 	{
 		return true;
+	}
+
+	@Override
+	public boolean providesEnhancedOverlay(Level world, BlockPos pos, Direction side, Player player, ItemStack stack)
+	{
+		// Still show the grid with empty charge so the player can plan the click.
+		BlockState state = world.getBlockState(pos);
+		if (state.getBlock() instanceof IWrenchAble)
+		{
+			return true;
+		}
+
+		Property<?> property = state.getBlock().getStateDefinition().getProperty("facing");
+		return property != null && property.getValueClass() == Direction.class;
 	}
 }
