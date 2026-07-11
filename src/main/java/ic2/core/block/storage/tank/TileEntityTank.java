@@ -2,7 +2,6 @@ package ic2.core.block.storage.tank;
 
 import ic2.api.upgrade.IUpgradableBlock;
 import ic2.api.upgrade.UpgradableProperty;
-import ic2.api.util.FluidContainerOutputMode;
 import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
@@ -87,101 +86,21 @@ public abstract class TileEntityTank extends TileEntityInventory implements IHas
 	@Override
 	protected InteractionResult onActivated(Player player, InteractionHand hand, Direction side, Vec3 hit)
 	{
-		ItemStack inHand = StackUtil.get(player, hand);
-		if (!LiquidUtil.isFluidContainer(inHand))
+		if (LiquidUtil.transferFluidFromHandClick(player, hand, this.contents, player.isShiftKeyDown()))
 		{
-			return super.onActivated(player, hand, side, hit);
-		}
-
-		Ic2FluidStack fs = this.contents.getFluidStack();
-		int amount;
-		if (fs != null && !fs.isEmpty())
-		{
-			amount = LiquidUtil.fillContainer(player, hand, fs, FluidContainerOutputMode.InPlacePreferred, false);
-			if (amount != 0)
-			{
-				fs.decreaseMb(amount);
-				return InteractionResult.SUCCESS;
-			}
-		}
-
-		amount = fs != null ? fs.getAmountMb() : 0;
-		fs = LiquidUtil.drainContainer(
-			player,
-			hand,
-			fs != null && !fs.isEmpty() ? fs.getFluid() : null,
-			this.contents.getCapacity() - amount,
-			FluidContainerOutputMode.InPlacePreferred,
-			false
-		);
-		if (fs != null && !fs.isEmpty())
-		{
-			this.contents.fillMb(fs, false);
+			this.setChanged();
 			return InteractionResult.SUCCESS;
-		} else
-		{
-			return InteractionResult.PASS;
 		}
+
+		return super.onActivated(player, hand, side, hit);
 	}
 
 	@Override
 	public void onNetworkEvent(Player player, int event)
 	{
-		if (event != 0) return;
-
-		ItemStack carried = player.containerMenu.getCarried();
-		if (StackUtil.isEmpty(carried) || !LiquidUtil.isFluidContainer(carried)) return;
-
-		ItemStack single = StackUtil.copyWithSize(carried, 1);
-		ItemStack remaining = StackUtil.getSize(carried) > 1 ? StackUtil.decSize(carried.copy()) : StackUtil.emptyStack;
-
-		Ic2FluidStack tankFs = this.contents.getFluidStack();
-
-		// 先尝试从储罐向容器填充液体
-		if (tankFs != null && !tankFs.isEmpty())
+		if (event == 0 || event == 1)
 		{
-			LiquidUtil.FluidOperationResult result = LiquidUtil.fillContainer(single.copy(), tankFs.copy(), FluidContainerOutputMode.InPlacePreferred);
-			if (result != null)
-			{
-				this.contents.drainMb(result.fluidChange.getAmountMb(), false);
-				player.containerMenu.setCarried(result.inPlaceOutput);
-				if (!StackUtil.isEmpty(remaining) && !StackUtil.storeInventoryItem(remaining, player, false))
-				{
-					player.drop(remaining, false);
-				}
-				if (result.extraOutput != null && !StackUtil.storeInventoryItem(result.extraOutput, player, false))
-				{
-					player.drop(result.extraOutput, false);
-				}
-				player.containerMenu.broadcastChanges();
-				return;
-			}
-		}
-
-		// 再尝试从容器向储罐排入液体
-		int space = this.contents.getCapacity() - (tankFs != null ? tankFs.getAmountMb() : 0);
-		if (space > 0)
-		{
-			LiquidUtil.FluidOperationResult result = LiquidUtil.drainContainer(
-				single.copy(),
-				tankFs != null && !tankFs.isEmpty() ? tankFs.getFluid() : null,
-				space,
-				FluidContainerOutputMode.InPlacePreferred
-			);
-			if (result != null)
-			{
-				this.contents.fillMb(result.fluidChange, false);
-				player.containerMenu.setCarried(result.inPlaceOutput);
-				if (!StackUtil.isEmpty(remaining) && !StackUtil.storeInventoryItem(remaining, player, false))
-				{
-					player.drop(remaining, false);
-				}
-				if (result.extraOutput != null && !StackUtil.storeInventoryItem(result.extraOutput, player, false))
-				{
-					player.drop(result.extraOutput, false);
-				}
-				player.containerMenu.broadcastChanges();
-			}
+			LiquidUtil.transferFluidFromGuiClick(player, this.contents, event == 1);
 		}
 	}
 

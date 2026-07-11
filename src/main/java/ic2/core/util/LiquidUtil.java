@@ -3,6 +3,7 @@ package ic2.core.util;
 import ic2.api.util.FluidContainerOutputMode;
 import ic2.core.fluid.FluidHandler;
 import ic2.core.fluid.Ic2FluidStack;
+import ic2.core.fluid.Ic2FluidTank;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -160,6 +161,225 @@ public class LiquidUtil
 		}
 
 		return result.fluidChange.getAmountMb();
+	}
+
+	public static boolean transferFluidFromHandClick(Player player, InteractionHand hand, Ic2FluidTank tank, boolean shift)
+	{
+		ItemStack held = StackUtil.get(player, hand);
+		if (StackUtil.isEmpty(held) || !isFluidContainer(held))
+		{
+			return false;
+		}
+
+		LiquidUtil.ContainerTankTransferResult result = transferFluidBetweenContainerStackAndTank(held, tank, shift);
+		if (!result.changed)
+		{
+			return false;
+		}
+
+		StackUtil.set(player, hand, result.remaining);
+		storeRemainingOrDrop(player, result.output);
+		return true;
+	}
+
+	public static void transferFluidFromGuiClick(Player player, Ic2FluidTank tank, boolean shift)
+	{
+		ItemStack carried = player.containerMenu.getCarried();
+		if (StackUtil.isEmpty(carried) || !isFluidContainer(carried))
+		{
+			return;
+		}
+
+		LiquidUtil.ContainerTankTransferResult result = transferFluidBetweenContainerStackAndTank(carried, tank, shift);
+		if (!result.changed)
+		{
+			return;
+		}
+
+		player.containerMenu.setCarried(result.remaining);
+		storeRemainingOrDrop(player, result.output);
+		player.containerMenu.broadcastChanges();
+	}
+
+	private static LiquidUtil.ContainerTankTransferResult transferFluidBetweenContainerStackAndTank(ItemStack stack, Ic2FluidTank tank, boolean batch)
+	{
+		return batch
+			? transferFluidBetweenContainerStackAndTankBatch(stack, tank)
+			: transferFluidBetweenContainerStackAndTankSingle(stack, tank);
+	}
+
+	private static LiquidUtil.ContainerTankTransferResult transferFluidBetweenContainerStackAndTankSingle(ItemStack stack, Ic2FluidTank tank)
+	{
+		ItemStack remaining = StackUtil.getSize(stack) > 1 ? StackUtil.decSize(stack.copy()) : StackUtil.emptyStack;
+		ItemStack single = StackUtil.copyWithSize(stack, 1);
+		Ic2FluidStack tankFs = tank.getFluidStack();
+
+		if (tankFs != null && !tankFs.isEmpty())
+		{
+			LiquidUtil.FluidOperationResult result = fillContainerComplete(single.copy(), tankFs.copy(), FluidContainerOutputMode.AnyToOutput);
+			if (result != null)
+			{
+				tank.drainMb(result.fluidChange.getAmountMb(), false);
+				return new LiquidUtil.ContainerTankTransferResult(true, remaining, getFluidOperationOutput(result));
+			}
+		}
+
+		int space = tank.getCapacity() - (tankFs != null ? tankFs.getAmountMb() : 0);
+		if (space > 0)
+		{
+			LiquidUtil.FluidOperationResult result = drainContainerComplete(
+				single.copy(),
+				tankFs != null && !tankFs.isEmpty() ? tankFs.getFluid() : null,
+				space,
+				FluidContainerOutputMode.AnyToOutput
+			);
+			if (result != null)
+			{
+				tank.fillMb(result.fluidChange, false);
+				return new LiquidUtil.ContainerTankTransferResult(true, remaining, getFluidOperationOutput(result));
+			}
+		}
+
+		return LiquidUtil.ContainerTankTransferResult.UNCHANGED;
+	}
+
+	private static LiquidUtil.ContainerTankTransferResult transferFluidBetweenContainerStackAndTankBatch(ItemStack stack, Ic2FluidTank tank)
+	{
+		ItemStack remaining = stack.copy();
+		ItemStack output = StackUtil.emptyStack;
+		boolean changed = false;
+
+		while (!StackUtil.isEmpty(remaining))
+		{
+			Ic2FluidStack tankFs = tank.getFluidStack();
+			if (tankFs == null || tankFs.isEmpty())
+			{
+				break;
+			}
+
+			ItemStack single = StackUtil.copyWithSize(remaining, 1);
+			LiquidUtil.FluidOperationResult result = fillContainerComplete(single, tankFs.copy(), FluidContainerOutputMode.AnyToOutput);
+			if (result == null)
+			{
+				break;
+			}
+
+			tank.drainMb(result.fluidChange.getAmountMb(), false);
+			remaining = StackUtil.decSize(remaining);
+			output = mergeStacks(output, getFluidOperationOutput(result));
+			changed = true;
+		}
+
+		if (!changed)
+		{
+			while (!StackUtil.isEmpty(remaining))
+			{
+				Ic2FluidStack tankFs = tank.getFluidStack();
+				int space = tank.getCapacity() - (tankFs != null ? tankFs.getAmountMb() : 0);
+				if (space <= 0)
+				{
+					break;
+				}
+
+				ItemStack single = StackUtil.copyWithSize(remaining, 1);
+				LiquidUtil.FluidOperationResult result = drainContainerComplete(
+					single,
+					tankFs != null && !tankFs.isEmpty() ? tankFs.getFluid() : null,
+					space,
+					FluidContainerOutputMode.AnyToOutput
+				);
+				if (result == null)
+				{
+					break;
+				}
+
+				tank.fillMb(result.fluidChange, false);
+				remaining = StackUtil.decSize(remaining);
+				output = mergeStacks(output, getFluidOperationOutput(result));
+				changed = true;
+			}
+		}
+
+		return changed ? new LiquidUtil.ContainerTankTransferResult(true, remaining, output) : LiquidUtil.ContainerTankTransferResult.UNCHANGED;
+	}
+
+	public static LiquidUtil.FluidOperationResult fillContainerComplete(ItemStack stack, Ic2FluidStack fsIn, FluidContainerOutputMode outputMode)
+	{
+		ItemStack testSingle = StackUtil.copyWithSize(stack, 1);
+		Ic2FluidStack fillTestFs = fsIn.copy();
+		fillTestFs.setAmountMb(Integer.MAX_VALUE);
+		MutableObject<ItemStack> newStack = new MutableObject<>();
+		// fill the scratch copy for real (upstream simulates) so containers that store the fluid in
+		// place, e.g. empty cells holding fluids without a dedicated cell item, test as full below
+		int fillAmount = FluidHandler.fillMb(testSingle, fillTestFs, false, newStack);
+		if (fillAmount <= 0)
+		{
+			return null;
+		}
+
+		ItemStack afterFill = newStack.getValue() != null ? newStack.getValue() : testSingle;
+		fillTestFs.setAmountMb(Integer.MAX_VALUE);
+		if (FluidHandler.fillMb(afterFill, fillTestFs, true, null) > 0)
+		{
+			return null;
+		}
+
+		if (fsIn.getAmountMb() < fillAmount)
+		{
+			return null;
+		}
+
+		return fillContainer(stack, fsIn.copyWithAmountMb(fillAmount), outputMode);
+	}
+
+	public static LiquidUtil.FluidOperationResult drainContainerComplete(ItemStack stack, Fluid fluid, int maxAmount, FluidContainerOutputMode outputMode)
+	{
+		ItemStack testSingle = StackUtil.copyWithSize(stack, 1);
+		Ic2FluidStack fullContent = FluidHandler.drainMb(testSingle, Integer.MAX_VALUE, true, null);
+		if (fullContent == null || fullContent.isEmpty())
+		{
+			return null;
+		}
+
+		if (fullContent.getAmountMb() > maxAmount)
+		{
+			return null;
+		}
+
+		return drainContainer(stack, fluid, maxAmount, outputMode);
+	}
+
+	private static ItemStack getFluidOperationOutput(LiquidUtil.FluidOperationResult result)
+	{
+		return !StackUtil.isEmpty(result.extraOutput) ? result.extraOutput : result.inPlaceOutput;
+	}
+
+	private static ItemStack mergeStacks(ItemStack base, ItemStack addition)
+	{
+		if (StackUtil.isEmpty(addition))
+		{
+			return base;
+		}
+
+		if (StackUtil.isEmpty(base))
+		{
+			return addition.copy();
+		}
+
+		if (StackUtil.checkItemEqualityStrict(base, addition))
+		{
+			return StackUtil.copyWithSize(base, StackUtil.getSize(base) + StackUtil.getSize(addition));
+		}
+
+		return base;
+	}
+
+	private static void storeRemainingOrDrop(Player player, ItemStack stack)
+	{
+		if (!StackUtil.isEmpty(stack) && !StackUtil.storeInventoryItem(stack, player, false))
+		{
+			player.drop(stack, false);
+		}
 	}
 
 	public static LiquidUtil.FluidOperationResult drainContainer(ItemStack stack, Fluid fluid, int maxAmount, FluidContainerOutputMode outputMode)
@@ -637,6 +857,22 @@ public class LiquidUtil
 			this.fluidChange = fluidChange;
 			this.inPlaceOutput = inPlaceOutput;
 			this.extraOutput = extraOutput;
+		}
+	}
+
+	private static class ContainerTankTransferResult
+	{
+		static final LiquidUtil.ContainerTankTransferResult UNCHANGED = new LiquidUtil.ContainerTankTransferResult(false, StackUtil.emptyStack, StackUtil.emptyStack);
+
+		final boolean changed;
+		final ItemStack remaining;
+		final ItemStack output;
+
+		ContainerTankTransferResult(boolean changed, ItemStack remaining, ItemStack output)
+		{
+			this.changed = changed;
+			this.remaining = remaining;
+			this.output = output;
 		}
 	}
 
