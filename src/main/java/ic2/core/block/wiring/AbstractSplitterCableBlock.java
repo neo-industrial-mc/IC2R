@@ -32,6 +32,7 @@ public abstract class AbstractSplitterCableBlock extends AbstractCableBlock
 		return (BlockState) super.getStateForPlacement(ctx).setValue(active, ctx.getLevel().hasNeighborSignal(ctx.getClickedPos()));
 	}
 
+	@Override
 	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify)
 	{
 		if (!world.isClientSide)
@@ -50,6 +51,8 @@ public abstract class AbstractSplitterCableBlock extends AbstractCableBlock
 				}
 			}
 		}
+
+		super.neighborChanged(state, world, pos, block, fromPos, notify);
 	}
 
 	// a redstone signal (active) takes the splitter out of the enet, cutting the current

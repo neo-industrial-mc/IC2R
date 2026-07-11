@@ -1,6 +1,7 @@
 package ic2.forge.model;
 
 import com.mojang.datafixers.util.Pair;
+import ic2.core.block.wiring.AbstractCableBlock;
 import ic2.core.block.wiring.CableFoam;
 import ic2.core.block.wiring.CableType;
 import ic2.core.block.wiring.DynamicCableModel;
@@ -27,6 +28,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
@@ -100,6 +102,11 @@ final class DynamicCableModelForge extends DynamicCableModel<List<BakedQuad>[], 
 
 	public ModelData getModelData(BlockAndTintGetter world, BlockPos pos, BlockState state, ModelData tileData)
 	{
+		if (state.getBlock() instanceof AbstractCableBlock cable && !cable.isFoam() && world instanceof Level level)
+		{
+			state = cable.withConnectionStates(state, level, pos);
+		}
+
 		List<BakedQuad>[] mesh = this.getMesh(state);
 		tileData = tileData.derive().with(MESH_DATA, mesh).build();
 		assert tileData.get(MESH_DATA) == mesh;

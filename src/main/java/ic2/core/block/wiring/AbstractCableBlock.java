@@ -235,6 +235,11 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 			neighborState = world.getBlockState(neighborPos);
 		}
 
+		if (neighborState.isAir())
+		{
+			return false;
+		}
+
 		if (!(neighborState.getBlock() instanceof AbstractCableBlock neighborBlock))
 		{
 			return isEuConnectable(world, neighborPos);
@@ -251,6 +256,11 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 
 	private static boolean isEuConnectable(Level world, BlockPos pos)
 	{
+		if (world.getBlockState(pos).isAir())
+		{
+			return false;
+		}
+
 		if (!world.isClientSide)
 		{
 			IEnergyTile tile = EnergyNet.instance.getTile(world, pos);
@@ -313,6 +323,22 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 		} else
 		{
 			return state.getValue(foamProperty).isPresent() ? Shapes.block() : Shapes.empty();
+		}
+	}
+
+	@Override
+	public void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block block, @NotNull BlockPos fromPos, boolean notify)
+	{
+		super.neighborChanged(state, world, pos, block, fromPos, notify);
+
+		if (!this.isFoam() && !world.isClientSide)
+		{
+			BlockState current = world.getBlockState(pos);
+			BlockState newState = this.withConnectionStates(current, world, pos);
+			if (newState != current)
+			{
+				world.setBlockAndUpdate(pos, newState);
+			}
 		}
 	}
 
