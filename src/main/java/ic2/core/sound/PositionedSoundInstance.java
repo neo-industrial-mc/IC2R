@@ -28,7 +28,7 @@ public class PositionedSoundInstance extends SimpleSoundInstance implements List
 	@Override
 	public void onFinish(Runnable then)
 	{
-		this.onFinish = null;
+		this.onFinish = then;
 	}
 
 	@Override
