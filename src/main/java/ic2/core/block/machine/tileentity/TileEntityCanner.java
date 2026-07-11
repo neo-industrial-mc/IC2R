@@ -44,6 +44,8 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 	public final InvSlotConsumableCanner canInputSlot;
 	protected final Fluids fluids;
 	private TileEntityCanner.Mode mode = TileEntityCanner.Mode.BottleSolid;
+	/** Last mode for which side-effects (slot op type / sounds) were applied. Used so GUI field resyncs do not stop work sounds. */
+	private TileEntityCanner.Mode appliedMode;
 
 	public TileEntityCanner(BlockPos pos, BlockState state)
 	{
@@ -53,6 +55,8 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 		this.fluids = this.addComponent(new Fluids(this));
 		this.inputTank = this.fluids.addTankInsert("inputTank", 8000);
 		this.outputTank = this.fluids.addTankExtract("outputTank", 8000);
+		// Default mode is BottleSolid; InvSlotConsumableLiquid defaults to Drain.
+		this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.None);
 	}
 
 	@Override
@@ -267,7 +271,12 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 
 	public void setMode(TileEntityCanner.Mode mode)
 	{
+		// GUI open resyncs "mode" every tick via ContainerBase.broadcastChanges → onNetworkUpdate.
+		// Reflection already wrote this.mode before that callback, so compare against appliedMode
+		// rather than the previous this.mode value.
+		boolean modeChanged = this.appliedMode != mode;
 		this.mode = mode;
+		this.appliedMode = mode;
 		switch (mode)
 		{
 			case BottleSolid:
@@ -283,9 +292,35 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 				this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.Both);
 		}
 
-		if (IC2.sideProxy.isRendering())
+		// Looping/interrupt sounds depend on mode (operate vs reverse vs none). Only rebuild when
+		// the mode actually changes — never on repeated GUI field sync of the same mode.
+		if (modeChanged && IC2.sideProxy.isRendering())
 		{
-			this.stopLoopingSound();
+			this.refreshModeDependentSounds();
+		}
+	}
+
+	/**
+	 * Rebuild mode-dependent sound instances and resume looping if the machine is still active.
+	 */
+	private void refreshModeDependentSounds()
+	{
+		if (this.loopingSound != null)
+		{
+			IC2.soundManager.removeSound(this, this.loopingSound);
+			this.loopingSound = null;
+		}
+
+		if (this.interruptSound != null)
+		{
+			IC2.soundManager.removeSound(this, this.interruptSound);
+			this.interruptSound = null;
+		}
+
+		this.initSound();
+		if (this.shouldSoundActive() && this.loopingSound != null)
+		{
+			this.playLoopingSound(false);
 		}
 	}
 
