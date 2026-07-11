@@ -24,6 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
@@ -60,10 +61,31 @@ public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGe
 	}
 
 	@Override
+	public void load(CompoundTag nbt)
+	{
+		super.load(nbt);
+		this.rotationSpeed = nbt.getFloat("rotationSpeed");
+	}
+
+	@Override
+	public void saveAdditional(CompoundTag nbt)
+	{
+		super.saveAdditional(nbt);
+		nbt.putFloat("rotationSpeed", this.rotationSpeed);
+	}
+
+	@Override
 	protected void onLoaded()
 	{
 		super.onLoaded();
 		this.updateSeaInfo();
+		// Re-sync animation fields so clients that load the TE after a world re-entry
+		// (or chunk re-watch) receive the current speed even if it does not change again.
+		if (this.getLevel() != null && !this.getLevel().isClientSide)
+		{
+			IC2.network.get(true).updateTileEntityField(this, "rotationSpeed");
+			IC2.network.get(true).updateTileEntityField(this, "rotorSlot");
+		}
 	}
 
 	@Override
@@ -381,6 +403,7 @@ public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGe
 	@OnlyIn(Dist.CLIENT)
 	protected void updateEntityClient()
 	{
+		super.updateEntityClient();
 		float animationSpeed = this.getRotorAnimationSpeed();
 		if (animationSpeed != 0.0F)
 		{
