@@ -275,6 +275,7 @@ public class TileEntityScanner extends TileEntityElectricMachine implements IHas
 		if (!StackUtil.isEmpty(this.pattern))
 		{
 			this.patternUu = UuIndex.instance.getInBuckets(this.pattern);
+			this.patternEu = UuIndex.instance.getReplicationEu(this.pattern);
 		}
 	}
 

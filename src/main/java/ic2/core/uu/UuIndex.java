@@ -57,6 +57,11 @@ public class UuIndex
 		return ret * 1.0E-5;
 	}
 
+	public double getReplicationEu(ItemStack request)
+	{
+		return UuGraph.get(request);
+	}
+
 	public void init()
 	{
 		if (!this.resolvers.isEmpty() || !this.lateResolvers.isEmpty())

@@ -33,7 +33,7 @@ public class GuiReplicator extends Ic2Gui<ContainerReplicator>
 
 			String uuReq = Util.toSiString(te.patternUu, 4) + Component.translatable("ic2.generic.text.bucketUnit").getString();
 			String euReq = Util.toSiString(te.patternEu, 4) + Component.translatable("ic2.generic.text.EU").getString();
-			return te.pattern.getHoverName() + " UU: " + uuReq + " EU: " + euReq;
+			return te.pattern.getHoverName().getString() + " UU: " + uuReq + " EU: " + euReq;
 		}));
 		this.addElement(new CustomButton(this, 80, 16, 9, 18, this.createEventSender(0)).withTooltip("ic2.Replicator.gui.info.last"));
 		this.addElement(new CustomButton(this, 109, 16, 9, 18, this.createEventSender(1)).withTooltip("ic2.Replicator.gui.info.next"));
@@ -53,6 +53,7 @@ public class GuiReplicator extends Ic2Gui<ContainerReplicator>
 			if (te.patternUu != 0.0)
 			{
 				progressUu = Math.min((int) Math.round(100.0 * te.uuProcessed / te.patternUu), 100);
+				progressEu = progressUu;
 			}
 
 			return String.format("UU:%d%%  EU:%d%%  >%s", progressUu, progressEu, te.getMode() == TileEntityReplicator.Mode.SINGLE ? "" : ">");

@@ -31,7 +31,7 @@ public class ItemCrystalMemory extends Item
 		if (!StackUtil.isEmpty(recorded))
 		{
 			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.crystal_memory.tooltip.item", Component.translatable(recorded.getDescriptionId())));
-			Ic2Tooltip.add(tooltip, Component.literal(Component.translatable("item.ic2.crystal_memory.tooltip.uu_matter") + " " + Util.toSiString(UuIndex.instance.getInBuckets(recorded), 4) + "B"));
+			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.crystal_memory.tooltip.uu_matter", Util.toSiString(UuIndex.instance.getInBuckets(recorded), 4)));
 		} else
 		{
 			Ic2Tooltip.add(tooltip, Component.translatable("item.ic2.crystal_memory.tooltip.empty"));
