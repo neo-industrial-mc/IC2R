@@ -1132,6 +1132,7 @@
   "item.ic2.sulfur_dust": "Sulfur Dust",
   "item.ic2.superheated_steam_bucket": "Superheated Steam Bucket",
   "item.ic2.superheated_steam_cell": "Superheated Steam Cell",
+  "item.ic2.tank.tooltip": "Capacity: %s mB",
   "item.ic2.terra_wart": "Terra Wart",
   "item.ic2.thick_neutron_reflector": "Thick Neutron Reflector",
   "item.ic2.tin_can": "Tin Can",

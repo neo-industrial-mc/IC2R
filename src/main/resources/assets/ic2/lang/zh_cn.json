@@ -1132,6 +1132,7 @@
   "item.ic2.sulfur_dust": "硫粉",
   "item.ic2.superheated_steam_bucket": "过热蒸汽桶",
   "item.ic2.superheated_steam_cell": "过热蒸汽单元",
+  "item.ic2.tank.tooltip": "容量：%s mB",
   "item.ic2.terra_wart": "大地疣",
   "item.ic2.thick_neutron_reflector": "加厚中子反射板",
   "item.ic2.tin_can": "空的锡罐",
