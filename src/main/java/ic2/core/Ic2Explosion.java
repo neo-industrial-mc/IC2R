@@ -338,11 +338,13 @@ public class Ic2Explosion extends Explosion
 							BlockEntity blockEntity = state.hasBlockEntity() ? this.worldObj.getBlockEntity(tmpPos) : null;
 							if (blockEntity instanceof TileEntityExplosive explosive)
 							{
+								// Prime ITNT/Nuke — do not destroy them as inert blocks.
 								explosive.onExploded(this);
 							} else
 							{
-								this.worldObj.setBlock(tmpPos, Blocks.AIR.defaultBlockState(), 3);
-								block.wasExploded(this.worldObj, tmpPos, this);
+								// Prefer onBlockExploded so blocks like placed dynamite / vanilla TNT
+								// can arm themselves (wasExploded alone is not always enough).
+								state.onBlockExploded(this.worldObj, tmpPos, this);
 							}
 						}
 					}

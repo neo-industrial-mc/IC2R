@@ -132,9 +132,18 @@ public class BlockDynamite extends Block
 		BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos
 	)
 	{
-		return state.getValue(FACING).getOpposite() == direction && !state.canSurvive(level, pos)
-			? Blocks.AIR.defaultBlockState()
-			: super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+		if (state.getValue(FACING).getOpposite() == direction && !state.canSurvive(level, pos))
+		{
+			// noLootTable: destroyBlock would not drop — refund the stick like classic IC2.
+			if (level instanceof Level realLevel && !realLevel.isClientSide)
+			{
+				Block.popResource(realLevel, pos, new ItemStack(Ic2Items.DYNAMITE));
+			}
+
+			return Blocks.AIR.defaultBlockState();
+		}
+
+		return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
 	}
 
 	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving)
@@ -145,9 +154,11 @@ public class BlockDynamite extends Block
 		}
 	}
 
+	@Override
 	public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion)
 	{
-		if (!level.isClientSide)
+		// Chain reaction: arm with a short fuse instead of vanishing.
+		if (!level.isClientSide && !level.getBlockState(pos).isAir())
 		{
 			LivingEntity igniter = explosion.getIndirectSourceEntity();
 			this.explode(level, pos, igniter, true);
@@ -172,9 +183,11 @@ public class BlockDynamite extends Block
 		{
 			this.explode(level, pos, null, false);
 		}
-		else if (!this.canSurvive(state, level, pos))
+		else if (!this.canSurvive(state, level, pos) && level.getBlockState(pos).is(this))
 		{
+			// Path when shape updates did not already clear the stick (classic: drop the item).
 			level.removeBlock(pos, false);
+			Block.popResource(level, pos, new ItemStack(Ic2Items.DYNAMITE));
 		}
 	}
 

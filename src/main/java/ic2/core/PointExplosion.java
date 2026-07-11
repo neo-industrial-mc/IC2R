@@ -1,5 +1,6 @@
 package ic2.core;
 
+import ic2.core.block.machine.tileentity.TileEntityExplosive;
 import ic2.core.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -12,12 +13,19 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Small point explosion used by dynamite. Affects a 3×3×3 block area and damages nearby entities.
+ * <p>
+ * Mirrors classic IC2 PointExplosion + vanilla finalize behavior:
+ * explosives (ITNT/Nuke/TNT/placed dynamite) are primed/detonated rather than dropped as items.
  */
 public class PointExplosion extends Explosion
 {
@@ -72,6 +80,8 @@ public class PointExplosion extends Explosion
 		int cy = Util.roundToNegInf(this.explosionY);
 		int cz = Util.roundToNegInf(this.explosionZ);
 
+		// Collect affected positions first (immutable) so chain reactions cannot skip cells.
+		List<BlockPos> affected = new ArrayList<>(27);
 		for (int x = cx - 1; x <= cx + 1; x++)
 		{
 			for (int y = cy - 1; y <= cy + 1; y++)
@@ -88,19 +98,50 @@ public class PointExplosion extends Explosion
 					float resistance = state.getBlock().getExplosionResistance(state, this.world, pos, this);
 					if (resistance < this.power * 10.0F)
 					{
-						// Match vanilla/Forge explosion handling:
-						// - TNT / other mods: wasExploded() primes the block instead of dropping it
-						// - IC2 ITNT/Nuke: Ic2TileEntityBlock.onBlockExploded() arms the explosive TE
-						// - Dynamite sticks: BlockDynamite.onBlockExploded() arms with a short fuse
-						if (state.canDropFromExplosion(this.world, pos, this) && this.world.random.nextFloat() <= this.dropRate)
-						{
-							Block.dropResources(state, this.world, pos, this.world.getBlockEntity(pos), this.entity, net.minecraft.world.item.ItemStack.EMPTY);
-						}
-
-						state.onBlockExploded(this.world, pos, this);
+						affected.add(pos.immutable());
 					}
 				}
 			}
+		}
+
+		// Destroy / detonate blocks. Match Ic2Explosion + vanilla finalizeExplosion:
+		// - IC2 ITNT/Nuke: arm via TileEntityExplosive (never drop as an item)
+		// - TNT / placed dynamite / other wasExploded handlers: onBlockExploded primes them
+		// - Normal blocks: optional drops, then remove
+		for (BlockPos pos : affected)
+		{
+			BlockState state = this.world.getBlockState(pos);
+			if (state.isAir())
+			{
+				continue;
+			}
+
+			BlockEntity blockEntity = state.hasBlockEntity() ? this.world.getBlockEntity(pos) : null;
+			if (blockEntity instanceof TileEntityExplosive explosive)
+			{
+				// Explicit path: prime ITNT/Nuke. Do not drop resources or fall through to
+				// super.onBlockExploded which would wipe the block without arming it when the
+				// BE is missing or explode() returns early.
+				explosive.onExploded(this);
+				continue;
+			}
+
+			// Vanilla/Forge: canDropFromExplosion is false for TNT, placed dynamite, etc.
+			// Only drop when the block is meant to become loot rather than chain-detonate.
+			if (state.canDropFromExplosion(this.world, pos, this) && this.world.random.nextFloat() <= this.dropRate)
+			{
+				Block.dropResources(
+					state,
+					this.world,
+					pos,
+					blockEntity,
+					this.entity,
+					net.minecraft.world.item.ItemStack.EMPTY
+				);
+			}
+
+			// Removes the block and calls wasExploded / BlockDynamite.onBlockExploded, etc.
+			state.onBlockExploded(this.world, pos, this);
 		}
 
 		DamageSource damageSource = this.world.damageSources().explosion(this);
@@ -113,8 +154,14 @@ public class PointExplosion extends Explosion
 			this.explosionZ + 2.0
 		);
 
+		// Exclude the igniter (classic behavior) and the dynamite entity if still present.
 		for (Entity target : this.world.getEntities(this.igniter, box))
 		{
+			if (target == this.entity || target.isRemoved())
+			{
+				continue;
+			}
+
 			target.hurt(damageSource, this.entityDamage);
 		}
 

@@ -51,6 +51,14 @@ public class ItemDynamite extends Item implements IBoxable
 			return InteractionResult.FAIL;
 		}
 
+		// Classic IC2: only place into empty space. Never overwrite an existing dynamite
+		// (same cell, different face) — that would delete the old stick and still consume one.
+		BlockState existing = level.getBlockState(pos);
+		if (!existing.canBeReplaced(placeContext))
+		{
+			return InteractionResult.FAIL;
+		}
+
 		BlockState placeState = dynamite.getStateForPlacement(placeContext);
 		if (placeState == null || !dynamite.canSurvive(placeState, level, pos))
 		{
@@ -66,6 +74,8 @@ public class ItemDynamite extends Item implements IBoxable
 		{
 			StackUtil.consumeOrError(player, context.getHand(), 1);
 		}
+
+		level.playSound(null, pos, SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F);
 
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
