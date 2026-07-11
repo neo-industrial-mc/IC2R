@@ -2,6 +2,7 @@ package ic2.core.block.wiring.tileentity;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.network.INetworkClientTileEntityEventListener;
+import ic2.api.network.NetworkHelper;
 import ic2.core.ContainerBase;
 import ic2.core.IHasGui;
 import ic2.core.block.comp.Energy;
@@ -111,7 +112,13 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 		this.energy.setEnabled(true);
 		if (force || this.transformMode != newMode)
 		{
+			TileEntityTransformer.Mode previousMode = this.transformMode;
 			this.transformMode = newMode;
+			if (previousMode != newMode)
+			{
+				NetworkHelper.updateTileEntityField(this, "transformMode");
+			}
+
 			this.setActive(this.isStepUp());
 			if (this.isStepUp())
 			{
