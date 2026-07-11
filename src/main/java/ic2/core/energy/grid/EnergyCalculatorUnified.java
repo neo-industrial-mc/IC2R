@@ -88,6 +88,8 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 		data.activeSources.clear();
 		data.activeSinks.clear();
 		data.pathCache.clear();
+		data.eventPaths.clear();
+		data.deferredEventPaths.clear();
 		data.currentCalcId = -1;
 		Collection<Node> nodes = grid.getNodes();
 		if (nodes.size() >= 2)
@@ -639,6 +641,11 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 			for (EnergyPath path : eventPaths)
 			{
+				if (path == null)
+				{
+					continue;
+				}
+
 				double amount = path.maxPacketConducted;
 				if (amount > path.minConductorBreakdownEnergy || amount > path.minInsulationBreakdownEnergy)
 				{
@@ -803,17 +810,17 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 	public boolean runSyncStep(Grid grid)
 	{
 		GridData data = GridData.get(grid);
-		return runCalculation(grid, data);
+		runCalculation(grid, data);
+		// Transfer (inject/draw) and deferred path bookkeeping must stay on the server
+		// thread. Returning true would schedule runAsyncStep, which races with
+		// applyDeferredEffects on deferredEventPaths and can surface null paths (NPE).
+		return false;
 	}
 
 	@Override
 	public void runAsyncStep(Grid grid)
 	{
-		GridData data = GridData.get(grid);
-		if (data.active)
-		{
-			runCalculation(grid, data);
-		}
+		// Intentionally empty: see runSyncStep(Grid).
 	}
 
 	@Override
