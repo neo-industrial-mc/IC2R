@@ -2,6 +2,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'net.neoforged.moddev' version '2.0.141'
+    id 'com.diffplug.spotless' version '8.8.0'
     id 'idea'
 }
 
@@ -30,6 +31,19 @@ base {
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+spotless {
+    java {
+        googleJavaFormat('1.35.0')
+        formatAnnotations()
+    }
+
+    format 'misc', {
+        target '*.gradle', '*.md', '.gitignore', '.editorconfig'
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
 
 neoForge {
     version = project.neo_version
