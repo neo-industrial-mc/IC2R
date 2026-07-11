@@ -194,7 +194,7 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 				}
 			}
 
-			if (this.energy.getEnergy() >= this.energy.getCapacity())
+			if (this.isReadyToGenerate())
 			{
 				needsInvUpdate = this.attemptGeneration();
 			}
@@ -211,6 +211,29 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 			this.setActive(false);
 		}
 	}
+
+	/**
+	 * True when the buffer is full enough to produce 1 mB of UU-Matter.
+	 * Under the GT energy net, transfer is quantized to whole voltage packets, so free space
+	 * smaller than one packet can never be filled — treat that remainder as full.
+	 */
+	private boolean isReadyToGenerate()
+	{
+		if (this.energy.getEnergy() >= this.energy.getCapacity())
+		{
+			return true;
+		}
+
+		double free = this.energy.getFreeEnergy();
+		if (free <= 0.0)
+		{
+			return this.energy.getEnergy() > 0.0;
+		}
+
+		int packetVoltage = this.energy.getSinkWorkingVoltage().getVoltage();
+		return packetVoltage > 0 && free < packetVoltage && this.energy.getEnergy() > 0.0;
+	}
+
 	public boolean attemptGeneration()
 	{
 		if (this.fluidTank.getFluidAmount() + 1 > this.fluidTank.getCapacity())
@@ -218,13 +241,24 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 			return false;
 		}
 
+		if (!this.isReadyToGenerate())
+		{
+			return false;
+		}
+
 		this.fluidTank.fillMbUnchecked(Ic2FluidStack.create(Ic2Fluids.UU_MATTER.still(), 1), false);
-		this.energy.useEnergy(this.energy.getCapacity());
+		// Drain up to capacity; if only a near-full remainder is present, drain all of it.
+		this.energy.useEnergy(this.energy.getCapacity(), false);
 		return true;
 	}
 
 	public String getProgressAsString()
 	{
+		if (this.isReadyToGenerate())
+		{
+			return "100%";
+		}
+
 		int p = (int) Math.min(100.0 * this.energy.getFillRatio(), 100.0);
 		return p + "%";
 	}
@@ -274,7 +308,9 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 	{
 		this.upgradeSlot.onChanged();
 		this.energy.setSinkTier(applyModifier(getDefaultTier(), this.upgradeSlot.extraTier));
-		this.syncElectricalProfile((int) this.energy.getCapacity());
+		// Capacity is EU per mB UU-Matter, not continuous EU/t. Keep sink-tier voltage and allow
+		// high amperage so GT packet transfer can charge the buffer quickly.
+		this.energy.configureEnergyBuffer(64);
 	}
 
 	@Override
