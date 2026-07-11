@@ -48,7 +48,10 @@ public class TileEntityCokeKilnGrate extends TileEntityInventory implements IHas
 	{
 		if (event == 0 || event == 1)
 		{
-			LiquidUtil.transferFluidFromGuiClick(player, this.fluidTank, event == 1);
+			if (LiquidUtil.transferFluidFromGuiClick(player, this.fluidTank, event == 1))
+			{
+				this.setChanged();
+			}
 		}
 	}
 

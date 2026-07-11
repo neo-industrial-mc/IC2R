@@ -182,23 +182,24 @@ public class LiquidUtil
 		return true;
 	}
 
-	public static void transferFluidFromGuiClick(Player player, Ic2FluidTank tank, boolean shift)
+	public static boolean transferFluidFromGuiClick(Player player, Ic2FluidTank tank, boolean shift)
 	{
 		ItemStack carried = player.containerMenu.getCarried();
 		if (StackUtil.isEmpty(carried) || !isFluidContainer(carried))
 		{
-			return;
+			return false;
 		}
 
 		LiquidUtil.ContainerTankTransferResult result = transferFluidBetweenContainerStackAndTank(carried, tank, shift);
 		if (!result.changed)
 		{
-			return;
+			return false;
 		}
 
 		player.containerMenu.setCarried(result.remaining);
 		storeRemainingOrDrop(player, result.output);
 		player.containerMenu.broadcastChanges();
+		return true;
 	}
 
 	private static LiquidUtil.ContainerTankTransferResult transferFluidBetweenContainerStackAndTank(ItemStack stack, Ic2FluidTank tank, boolean batch)

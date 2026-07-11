@@ -1,5 +1,6 @@
 package ic2.core.gametest;
 
+import ic2.api.network.INetworkClientTileEntityEventListener;
 import ic2.core.block.comp.Energy;
 import ic2.core.block.comp.Fluids;
 import ic2.core.block.generator.tileentity.TileEntitySolarGenerator;
@@ -9,6 +10,7 @@ import ic2.core.block.machine.tileentity.TileEntityFluidDistributor;
 import ic2.core.block.machine.tileentity.TileEntityFluidRegulator;
 import ic2.core.block.machine.tileentity.TileEntitySolarDistiller;
 import ic2.core.block.machine.tileentity.TileEntityTank;
+import ic2.core.block.tileentity.Ic2TileEntity;
 import ic2.core.block.tileentity.Ic2TileEntityBlock;
 import ic2.core.fluid.FluidHandler;
 import ic2.core.fluid.Ic2FluidStack;
@@ -383,6 +385,69 @@ public class FluidMachineGameTests
 			helper.assertTrue(te.getFluidTank().isEmpty(), "fluid regulator should be drained");
 			Ic2GameTestAssertions.assertNear(helper, energy.getEnergy(), 1000.0 - 50.0, "fluid regulator energy after 5 operations");
 		});
+	}
+
+	// tank GUI drain, persistence: draining a tank into a cursor container through the GUI network
+	// event must mark the tile changed. The hand-click path already calls setChanged; the GUI path did
+	// not, so the emptied tank was never persisted and reverted to full on chunk reload while the
+	// player kept the filled cell (reload dupe). Covers the machine tank.
+	@GameTest(template = EMPTY, timeoutTicks = 100)
+	public static void machineTankGuiDrainIsPersisted(GameTestHelper helper)
+	{
+		helper.setBlock(MACHINE_POS, Ic2Blocks.TANK);
+		Ic2FluidTank tank = firstTank(helper, MACHINE_POS);
+		tank.fillMb(Ic2FluidStack.create(net.minecraft.world.level.material.Fluids.WATER, 5000), false);
+		assertGuiDrainMarksTileChanged(helper, MACHINE_POS);
+		helper.succeed();
+	}
+
+	// same persistence guarantee for the storage tank variant, which shares the LiquidUtil GUI path
+	@GameTest(template = EMPTY, timeoutTicks = 100)
+	public static void storageTankGuiDrainIsPersisted(GameTestHelper helper)
+	{
+		helper.setBlock(MACHINE_POS, Ic2Blocks.IRON_TANK);
+		Ic2FluidTank tank = firstTank(helper, MACHINE_POS);
+		tank.fillMb(Ic2FluidStack.create(net.minecraft.world.level.material.Fluids.WATER, 999000), false);
+		assertGuiDrainMarksTileChanged(helper, MACHINE_POS);
+		helper.succeed();
+	}
+
+	// and for the coke kiln grate, the third tile wired to the same GUI fluid transfer
+	@GameTest(template = EMPTY, timeoutTicks = 100)
+	public static void cokeKilnGrateGuiDrainIsPersisted(GameTestHelper helper)
+	{
+		helper.setBlock(MACHINE_POS, Ic2Blocks.COKE_KILN_GRATE);
+		Ic2FluidTank tank = firstTank(helper, MACHINE_POS);
+		tank.fillMb(Ic2FluidStack.create(net.minecraft.world.level.material.Fluids.WATER, 5000), false);
+		assertGuiDrainMarksTileChanged(helper, MACHINE_POS);
+		helper.succeed();
+	}
+
+	private static Ic2FluidTank firstTank(GameTestHelper helper, BlockPos pos)
+	{
+		return ((Ic2TileEntity) helper.getBlockEntity(pos)).getComponent(Fluids.class).getAllTanks().iterator().next();
+	}
+
+	// clears the tile's chunk-unsaved flag, drains exactly one cell through the GUI network event, and
+	// asserts the fluid left the tank and the chunk was marked unsaved again. On a lone passive tile
+	// nothing else dirties the chunk, so the flag flip is entirely down to the transfer's setChanged.
+	private static void assertGuiDrainMarksTileChanged(GameTestHelper helper, BlockPos relativePos)
+	{
+		Ic2TileEntity te = (Ic2TileEntity) helper.getBlockEntity(relativePos);
+		Ic2FluidTank tank = te.getComponent(Fluids.class).getAllTanks().iterator().next();
+		int before = tank.getFluidAmount();
+		helper.assertTrue(before >= 1000, "test setup: tank should hold at least 1000 mB, has " + before);
+
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+		player.containerMenu.setCarried(new ItemStack(Ic2Items.EMPTY_CELL));
+
+		ServerLevel level = helper.getLevel();
+		BlockPos abs = helper.absolutePos(relativePos);
+		level.getChunkAt(abs).setUnsaved(false);
+		((INetworkClientTileEntityEventListener) te).onNetworkEvent(player, 0);
+
+		helper.assertValueEqual(tank.getFluidAmount(), before - 1000, "one cell worth drained from the tank");
+		helper.assertTrue(level.getChunkAt(abs).isUnsaved(), "the GUI fluid transfer must mark the tile changed so the drain is persisted");
 	}
 
 	private static void assertTankContains(GameTestHelper helper, Ic2FluidTank tank, Fluid fluid, int minAmountMb, String what)

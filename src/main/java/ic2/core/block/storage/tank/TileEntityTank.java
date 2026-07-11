@@ -100,7 +100,10 @@ public abstract class TileEntityTank extends TileEntityInventory implements IHas
 	{
 		if (event == 0 || event == 1)
 		{
-			LiquidUtil.transferFluidFromGuiClick(player, this.contents, event == 1);
+			if (LiquidUtil.transferFluidFromGuiClick(player, this.contents, event == 1))
+			{
+				this.setChanged();
+			}
 		}
 	}
 
