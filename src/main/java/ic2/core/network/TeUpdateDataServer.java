@@ -2,8 +2,8 @@ package ic2.core.network;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class TeUpdateDataServer
 {
-	private final Set<String> globalFields = new HashSet<>();
+	private final Set<String> globalFields = new LinkedHashSet<>();
 	private final Map<ServerPlayer, Set<String>> playerFieldMap = new IdentityHashMap<>();
 
 	TeUpdateDataServer()
@@ -36,7 +36,7 @@ public class TeUpdateDataServer
 	{
 		if (!this.globalFields.contains(name))
 		{
-			Set<String> playerFields = this.playerFieldMap.computeIfAbsent(player, k -> new HashSet<>());
+			Set<String> playerFields = this.playerFieldMap.computeIfAbsent(player, k -> new LinkedHashSet<>());
 
 			playerFields.add(name);
 		}
