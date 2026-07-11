@@ -57,6 +57,7 @@ final class ItemGroupIconSupplier implements Supplier<ItemStack>
 			case MACHINES -> new ItemStack(Ic2Items.MACERATOR);
 			case GENERATORS_AND_WIRING -> new ItemStack(Ic2Items.GENERATOR);
 			case TOOLS_AND_UTILITIES -> new ItemStack(Ic2Items.WRENCH);
+			case FLUID_CELLS -> new ItemStack(Ic2Items.FACADE_CELL);
 			case COMBAT -> new ItemStack(Ic2Items.NANO_SABER).setHoverName(Component.nullToEmpty("ic2:tab_icon"));
 			case MATERIALS -> new ItemStack(Ic2Items.RUBBER);
 			case FARMING -> new ItemStack(Ic2Items.CROP_SEED_BACK);

@@ -15,6 +15,7 @@ import ic2.core.fluid.FluidBeBridge;
 import ic2.core.fluid.Ic2FluidBlock;
 import ic2.core.fluid.Ic2FluidItem;
 import ic2.core.item.tool.AbstractItemNanoSaber;
+import ic2.core.ref.Ic2Items;
 import ic2.core.util.LogCategory;
 import ic2.core.util.Util;
 import net.minecraft.core.BlockPos;
@@ -56,6 +57,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.MissingMappingsEvent;
 import org.jetbrains.annotations.NotNull;
 
 public final class EventHandlerForge
@@ -68,6 +71,18 @@ public final class EventHandlerForge
 	public void serverStart(ServerStartingEvent event)
 	{
 		EventHandler.onServerStart(event.getServer());
+	}
+
+	@SubscribeEvent
+	public void onMissingMappings(MissingMappingsEvent event)
+	{
+		for (MissingMappingsEvent.Mapping<Item> mapping : event.getMappings(ForgeRegistries.Keys.ITEMS, "ic2"))
+		{
+			if ("empty_cell".equals(mapping.getKey().getPath()))
+			{
+				mapping.remap(Ic2Items.FACADE_CELL);
+			}
+		}
 	}
 
 	@SubscribeEvent

@@ -35,12 +35,12 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_empty_cell": {
+    "has_facade_cell": {
       "conditions": {
         "items": [
           {
             "items": [
-              "ic2:empty_cell"
+              "ic2:facade_cell"
             ]
           }
         ]
@@ -72,7 +72,7 @@
       "has_crop_stick",
       "has_circuit",
       "has_chests/wooden",
-      "has_empty_cell",
+      "has_facade_cell",
       "has_the_recipe"
     ]
   ],

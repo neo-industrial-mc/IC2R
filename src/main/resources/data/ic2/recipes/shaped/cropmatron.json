@@ -19,7 +19,7 @@
       "tag": "forge:chests/wooden"
     },
     "U": {
-      "item": "ic2:empty_cell"
+      "item": "ic2:facade_cell"
     }
   },
   "consuming": true,

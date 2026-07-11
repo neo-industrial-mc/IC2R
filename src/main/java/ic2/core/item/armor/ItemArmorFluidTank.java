@@ -38,7 +38,7 @@ public abstract class ItemArmorFluidTank extends ItemArmorUtility implements Sta
 			return Component.translatable("ic2.item.fluid_container.empty");
 		} else
 		{
-			return Component.translatable("ic2.item.fluid_container.with_fluid", Component.translatable(fs.getFluidTypeKey()), fs.getAmountMb());
+			return Component.translatable("ic2.item.fluid_container.with_fluid", fs.getFluidDisplayName(), fs.getAmountMb());
 		}
 	}
 

@@ -13,7 +13,7 @@
       "item": "ic2:circuit"
     },
     "C": {
-      "item": "ic2:empty_cell"
+      "item": "ic2:facade_cell"
     },
     "D": {
       "item": "ic2:iron_casing"

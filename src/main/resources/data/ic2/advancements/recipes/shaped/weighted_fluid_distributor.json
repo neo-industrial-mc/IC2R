@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_empty_cell": {
+    "has_facade_cell": {
       "conditions": {
         "items": [
           {
             "items": [
-              "ic2:empty_cell"
+              "ic2:facade_cell"
             ]
           }
         ]
@@ -59,7 +59,7 @@
   "requirements": [
     [
       "has_machine",
-      "has_empty_cell",
+      "has_facade_cell",
       "has_fluid_ejector_upgrade",
       "has_fluid_pulling_upgrade",
       "has_the_recipe"

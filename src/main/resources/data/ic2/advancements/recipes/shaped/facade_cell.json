@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ic2:shaped/empty_cell"
+        "recipe": "ic2:shaped/facade_cell"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -41,7 +41,7 @@
   ],
   "rewards": {
     "recipes": [
-      "ic2:shaped/empty_cell"
+      "ic2:shaped/facade_cell"
     ]
   },
   "sends_telemetry_event": true

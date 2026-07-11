@@ -13,10 +13,12 @@ import ic2.core.Ic2ItemGroupType;
 import ic2.core.fluid.EnvFluidHandler;
 import ic2.core.item.BlockItemEnergyStorage;
 import ic2.core.item.ElectricItemManager;
+import ic2.core.item.ItemClassicCell;
 import ic2.core.item.ItemCropSeed;
 import ic2.core.item.EnvItemHandler;
 import ic2.core.item.armor.ItemArmorFluidTank;
 import ic2.core.ref.Ic2Items;
+import ic2.core.util.LiquidUtil;
 import ic2.core.network.GrowingBuffer;
 import ic2.core.util.StackUtil;
 import ic2.core.proxy.EnvProxy;
@@ -84,6 +86,7 @@ import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerTy
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -323,6 +326,23 @@ public final class EnvProxyForge implements EnvProxy
 					for (CropCard crop : Crops.instance.getCrops())
 					{
 						output.accept(ItemCropSeed.generateItemStackFromValues(crop, 1, 1, 1, 4));
+					}
+				}
+
+				// AE2-facade style: empty cell + special cells + one entry per still fluid
+				// (dedicated item when registered, otherwise facade_cell with fluid NBT).
+				if (groupType == Ic2ItemGroupType.FLUID_CELLS)
+				{
+					output.accept(new ItemStack(Ic2Items.FACADE_CELL));
+					output.accept(new ItemStack(Ic2Items.ELECTROLYZED_WATER_CELL));
+					output.accept(new ItemStack(Ic2Items.HYDRATION_CELL));
+					for (Fluid fluid : LiquidUtil.getAllFluidsSorted())
+					{
+						ItemStack filled = ItemClassicCell.createFilledStack(fluid);
+						if (!filled.isEmpty())
+						{
+							output.accept(filled);
+						}
 					}
 				}
 			})

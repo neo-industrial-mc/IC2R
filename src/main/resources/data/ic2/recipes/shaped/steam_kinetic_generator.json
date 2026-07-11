@@ -16,7 +16,7 @@
       "item": "ic2:steel_casing"
     },
     "E": {
-      "item": "ic2:empty_cell"
+      "item": "ic2:facade_cell"
     }
   },
   "consuming": true,

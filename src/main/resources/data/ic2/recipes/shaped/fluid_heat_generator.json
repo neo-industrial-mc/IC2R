@@ -10,7 +10,7 @@
       "item": "ic2:heat_conductor"
     },
     "C": {
-      "item": "ic2:empty_cell"
+      "item": "ic2:facade_cell"
     },
     "I": {
       "item": "ic2:iron_casing"

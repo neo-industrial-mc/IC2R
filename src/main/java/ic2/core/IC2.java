@@ -32,6 +32,7 @@ public class IC2
 	public static final CreativeModeTab tabIc2Reactor;
 	public static final CreativeModeTab tabIc2Machines;
 	public static final CreativeModeTab tabIc2ToolsAndUtilities;
+	public static final CreativeModeTab tabIc2FluidCells;
 	public static final CreativeModeTab tabIc2Combat;
 	public static final CreativeModeTab tabIc2Farming;
 	public static final CreativeModeTab tabIc2Materials;
@@ -54,6 +55,7 @@ public class IC2
 		tabIc2Reactor = envProxy.createItemGroup(getIdentifier("reactor"), new ItemGroupIconSupplier(Ic2ItemGroupType.REACTOR), Ic2ItemGroupType.REACTOR);
 		tabIc2Machines = envProxy.createItemGroup(getIdentifier("machines"), new ItemGroupIconSupplier(Ic2ItemGroupType.MACHINES), Ic2ItemGroupType.MACHINES);
 		tabIc2ToolsAndUtilities = envProxy.createItemGroup(getIdentifier("tools_and_utilities"), new ItemGroupIconSupplier(Ic2ItemGroupType.TOOLS_AND_UTILITIES), Ic2ItemGroupType.TOOLS_AND_UTILITIES);
+		tabIc2FluidCells = envProxy.createItemGroup(getIdentifier("fluid_cells"), new ItemGroupIconSupplier(Ic2ItemGroupType.FLUID_CELLS), Ic2ItemGroupType.FLUID_CELLS);
 		tabIc2Combat = envProxy.createItemGroup(getIdentifier("combat"), new ItemGroupIconSupplier(Ic2ItemGroupType.COMBAT), Ic2ItemGroupType.COMBAT);
 		tabIc2Farming = envProxy.createItemGroup(getIdentifier("farming"), new ItemGroupIconSupplier(Ic2ItemGroupType.FARMING), Ic2ItemGroupType.FARMING);
 		tabIc2Materials = envProxy.createItemGroup(getIdentifier("materials"), new ItemGroupIconSupplier(Ic2ItemGroupType.MATERIALS), Ic2ItemGroupType.MATERIALS);

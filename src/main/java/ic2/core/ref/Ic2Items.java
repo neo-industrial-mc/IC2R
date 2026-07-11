@@ -544,7 +544,7 @@ public final class Ic2Items
 	public static final Item IRON_ROTOR = register("iron_rotor", new ItemWindRotor(new Properties().durability(86400), 7, true, 0.5F, 14, 75, ResourceLocation.fromNamespaceAndPath("ic2", "textures/item/rotor/iron_rotor_model.png")));
 	public static final Item STEEL_ROTOR = register("steel_rotor", new ItemWindRotor(new Properties().durability(172800), 9, true, 0.75F, 17, 90, ResourceLocation.fromNamespaceAndPath("ic2", "textures/item/rotor/steel_rotor_model.png")));
 	public static final Item CARBON_ROTOR = register("carbon_rotor", new ItemWindRotor(new Properties().durability(604800), 11, true, 1.0F, 20, 110, ResourceLocation.fromNamespaceAndPath("ic2", "textures/item/rotor/carbon_rotor_model.png")));
-	public static final Item EMPTY_CELL = register("empty_cell", new ItemClassicCell(new Properties(), Fluids.EMPTY, 0));
+	public static final Item FACADE_CELL = register("facade_cell", new ItemClassicCell(new Properties(), Fluids.EMPTY, 0));
 	public static final Item WATER_CELL = register("water_cell", new ItemClassicCell(new Properties(), Fluids.WATER, 1));
 	public static final Item LAVA_CELL = register("lava_cell", new ItemClassicCell(new Properties(), Fluids.LAVA, 1));
 	public static final Item AIR_CELL = register("air_cell", new ItemClassicCell(new Properties(), Ic2Fluids.AIR.still(), 1));
@@ -1028,7 +1028,6 @@ public final class Ic2Items
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ADVANCED_PULLING_UPGRADE);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ADVANCED_RE_BATTERY);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ADVANCED_SCANNER);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> AIR_CELL);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> BLACK_PAINTER);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> BLANK_TFBP);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> BLUE_PAINTER);
@@ -1055,8 +1054,6 @@ public final class Ic2Items
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ELECTRIC_BOAT);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ELECTRIC_TREETAP);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ELECTRIC_WRENCH);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ELECTROLYZED_WATER_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> EMPTY_CELL);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ENERGY_CRYSTAL);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ENERGY_STORAGE_UPGRADE);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> FILLED_TIN_CAN);
@@ -1072,7 +1069,6 @@ public final class Ic2Items
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> IRON_ROTOR);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> IRRIGATION_TFBP);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> LAPOTRON_CRYSTAL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> LAVA_CELL);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> LIGHT_BLUE_PAINTER);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> LIGHT_GRAY_PAINTER);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> LIME_PAINTER);
@@ -1106,22 +1102,6 @@ public final class Ic2Items
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> CONTAINMENT_BOX);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> TRANSFORMER_UPGRADE);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> TREETAP);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> WATER_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> BIOMASS_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> BIOGAS_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> CONSTRUCTION_FOAM_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> COOLANT_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> CREOSOTE_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> DISTILLED_WATER_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> HEAVY_WATER_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> HOT_COOLANT_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> HOT_WATER_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> HYDROGEN_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> OXYGEN_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> PAHOEHOE_LAVA_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> STEAM_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> SUPERHEATED_STEAM_CELL);
-		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> UU_MATTER_CELL);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> WHITE_PAINTER);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> WIND_METER);
 		addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> WOODEN_ROTOR);

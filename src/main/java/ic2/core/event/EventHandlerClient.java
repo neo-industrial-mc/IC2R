@@ -5,6 +5,8 @@ import ic2.api.item.ElectricItem;
 import ic2.core.GuiOverlayer;
 import ic2.core.IC2;
 import ic2.core.fluid.FluidHandler;
+import ic2.core.fluid.Ic2FluidStack;
+import ic2.core.fluid.StandardFluidItem;
 import ic2.core.item.IHandHeldInventory;
 import ic2.core.item.tool.AbstractItemNanoSaber;
 import ic2.core.item.tool.ContainerToolbox;
@@ -13,6 +15,7 @@ import ic2.core.network.RpcHandler;
 import ic2.core.block.tileentity.TileEntityBase;
 import ic2.core.event.TickHandler;
 import ic2.core.proxy.SideProxyClient;
+import ic2.core.ref.Ic2Items;
 import ic2.core.sound.SoundManagerClient;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
@@ -68,6 +71,15 @@ public class EventHandlerClient
 		}
 
 		SideProxyClient.envProxy.registerModelPredicateProvider(IC2.getIdentifier("charge"), (stack, world, entity, seed) -> (float) ElectricItem.manager.getChargeLevel(stack));
+		SideProxyClient.envProxy.registerModelPredicateProvider(
+			Ic2Items.FACADE_CELL,
+			IC2.getIdentifier("has_fluid"),
+			(stack, world, entity, seed) ->
+			{
+				Ic2FluidStack stored = StandardFluidItem.getFs(stack);
+				return stored != null && !stored.isEmpty() ? 1.0F : 0.0F;
+			}
+		);
 
 		for (Direction direction : Util.ALL_DIRS)
 		{

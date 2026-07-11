@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_empty_cell": {
+    "has_facade_cell": {
       "conditions": {
         "items": [
           {
             "items": [
-              "ic2:empty_cell"
+              "ic2:facade_cell"
             ]
           }
         ]
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "has_empty_cell",
+      "has_facade_cell",
       "has_plates/iron",
       "has_the_recipe"
     ]

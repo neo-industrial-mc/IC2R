@@ -10,7 +10,7 @@
       "item": "ic2:reactor_vessel"
     },
     "C": {
-      "item": "ic2:empty_cell"
+      "item": "ic2:facade_cell"
     }
   },
   "consuming": true,

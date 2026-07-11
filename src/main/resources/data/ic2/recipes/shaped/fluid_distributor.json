@@ -13,7 +13,7 @@
       "item": "ic2:fluid_ejector_upgrade"
     },
     "C": {
-      "item": "ic2:empty_cell"
+      "item": "ic2:facade_cell"
     }
   },
   "consuming": true,

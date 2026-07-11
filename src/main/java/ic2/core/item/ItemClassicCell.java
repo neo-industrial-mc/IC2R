@@ -60,16 +60,83 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 		}
 	}
 
+	/**
+	 * Returns the dedicated cell item for a fluid, or null if none is registered.
+	 */
+	@Nullable
+	public static ItemClassicCell getInstance(Fluid fluid)
+	{
+		return fluid == null || fluid == Fluids.EMPTY ? null : instances.get(fluid);
+	}
+
+	/**
+	 * Builds a filled cell stack for the given still fluid.
+	 * Uses a dedicated cell item when one exists; otherwise stores the fluid as NBT on {@code facade_cell}
+	 * (same idea as AE2 cable facades: one item + many variants).
+	 */
+	public static ItemStack createFilledStack(Fluid fluid)
+	{
+		if (fluid == null || fluid == Fluids.EMPTY)
+		{
+			return ItemStack.EMPTY;
+		}
+
+		ItemClassicCell dedicated = instances.get(fluid);
+		if (dedicated != null)
+		{
+			return new ItemStack(dedicated);
+		}
+
+		ItemStack stack = new ItemStack(Ic2Items.FACADE_CELL);
+		StandardFluidItem.setFs(stack, Ic2FluidStack.create(fluid, CELL_CAPACITY_MB));
+		return stack;
+	}
+
+	@Override
+	public Component getName(@NotNull ItemStack stack)
+	{
+		if (this.fluid == Fluids.EMPTY)
+		{
+			Ic2FluidStack stored = StandardFluidItem.getFs(stack);
+			if (stored != null && !stored.isEmpty())
+			{
+				return Component.translatable("ic2.item.fluid_cell.filled", stored.getFluidDisplayName());
+			}
+		}
+
+		return super.getName(stack);
+	}
+
 	@Override
 	public Item getEmptiedBucketItem()
 	{
-		return Ic2Items.EMPTY_CELL;
+		return Ic2Items.FACADE_CELL;
+	}
+
+	/**
+	 * Dedicated cells use their fixed fluid; {@code facade_cell} reads fluid from NBT when filled.
+	 */
+	@Override
+	protected Fluid getContainedFluid(ItemStack stack)
+	{
+		if (this.fluid != null && this.fluid != Fluids.EMPTY)
+		{
+			return this.fluid;
+		}
+
+		Ic2FluidStack stored = StandardFluidItem.getFs(stack);
+		if (stored != null && !stored.isEmpty())
+		{
+			return stored.getFluid();
+		}
+
+		return Fluids.EMPTY;
 	}
 
 	@Override
 	public List<Fluid> getDrainableFluidList()
 	{
-		return this.fluid == Fluids.EMPTY ? LiquidUtil.getAllFluidsSorted() : List.copyOf(instances.keySet());
+		return this.fluid == Fluids.EMPTY || this.fluid == null ? LiquidUtil.getAllFluidsSorted() : List.copyOf(instances.keySet());
 	}
 
 	@Override
@@ -80,7 +147,8 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 		{
 			return cell;
 		}
-		return Ic2Items.EMPTY_CELL;
+		// Universal path: return facade_cell; NBT is filled by tryDrainFluid/fillMb for empty facade.
+		return Ic2Items.FACADE_CELL;
 	}
 
 	@Override
@@ -90,12 +158,6 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 		return (this == Ic2Items.WATER_CELL || this == Ic2Items.WEED_EX_CELL || this == Ic2Items.HYDRATION_CELL)
 			&& (be = context.getLevel().getBlockEntity(context.getClickedPos())) instanceof TileEntityCrop
 			&& this.useOnCrop(context.getItemInHand(), (TileEntityCrop) be, true);
-	}
-
-	@Override
-	public boolean emptyContents(@Nullable Player player, Level world, BlockPos pos, @Nullable BlockHitResult hitResult)
-	{
-		return super.emptyContents(player, world, pos, hitResult);
 	}
 
 	@Override
@@ -267,7 +329,7 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 			{
 				Ic2Tooltip.add(
 					tooltip,
-					Component.translatable("ic2.item.fluid_container.with_fluid", Component.translatable(stored.getFluidTypeKey()), stored.getAmountMb())
+					Component.translatable("ic2.item.fluid_container.with_fluid", stored.getFluidDisplayName(), stored.getAmountMb())
 				);
 			}
 		}
@@ -356,7 +418,7 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 
 		if (newStack != null)
 		{
-			newStack.setValue(new ItemStack(Ic2Items.EMPTY_CELL));
+			newStack.setValue(new ItemStack(Ic2Items.FACADE_CELL));
 		}
 
 		return Ic2FluidStack.create(this.fluid, CELL_CAPACITY_MB);
@@ -414,7 +476,7 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem
 
 			if (newStack != null)
 			{
-				newStack.setValue(new ItemStack(Ic2Items.EMPTY_CELL));
+				newStack.setValue(new ItemStack(Ic2Items.FACADE_CELL));
 			}
 
 			return CELL_CAPACITY_MB;

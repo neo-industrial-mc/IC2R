@@ -1,11 +1,11 @@
 package ic2.core.fluid;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public interface Ic2FluidStack
 {
@@ -39,13 +39,31 @@ public interface Ic2FluidStack
 		return FluidHandler.ENV_HANDLER.readFluidStack(nbt);
 	}
 
+	/**
+	 * Translation key for this fluid's {@link net.minecraftforge.fluids.FluidType} description.
+	 * Prefer {@link #getFluidDisplayName()} when building UI text so nested translation works.
+	 */
 	default String getFluidTypeKey()
 	{
-		// Returns a string like: `fluid_type.ic2.xxx` for the fluid type, or null if the stack is empty.
-		if (isEmpty()) return null;
+		if (isEmpty())
+		{
+			return null;
+		}
 
-		return "fluid_type." + String.valueOf(ForgeRegistries.FLUIDS.getKey(getFluid())).replace(':', '.');
+		return getFluid().getFluidType().getDescriptionId();
+	}
 
+	/**
+	 * Localized fluid name from Forge {@link net.minecraftforge.fluids.FluidType}.
+	 */
+	default Component getFluidDisplayName()
+	{
+		if (isEmpty())
+		{
+			return Component.empty();
+		}
+
+		return getFluid().getFluidType().getDescription();
 	}
 
 	Ic2FluidStack copy();

@@ -13,7 +13,7 @@
       "item": "ic2:circuit"
     },
     "F": {
-      "item": "ic2:empty_cell"
+      "item": "ic2:facade_cell"
     },
     "R": {
       "item": "minecraft:redstone"
