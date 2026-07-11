@@ -66,6 +66,17 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 		return potionRemovalCost;
 	}
 
+	private static int getPotionRemovalCost(Holder<MobEffect> potion, MobEffectInstance effect, int baseCost)
+	{
+		if (potion.value() == Ic2Potion.radiation)
+		{
+			// IC2 radiation uses high amplifier values for damage scaling, not vanilla potion levels.
+			return baseCost + effect.getAmplifier() * 100;
+		}
+
+		return baseCost * (effect.getAmplifier() + 1);
+	}
+
 	private static final Map<Player, Float> jumpCharges = new WeakHashMap<>();
 
 	public ItemArmorQuantumSuit(Holder<ArmorMaterial> material, EquipmentSlot armorType, Properties settings)
@@ -262,17 +273,20 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 				IC2.grantAdvancement(player, "ic2/build_generator/build_compressor/build_nano_suit/build_quantum_suits/starve_with_q_helmet");
 			}
 
-			for (MobEffectInstance effect : new LinkedList<>(player.getActiveEffects()))
+			if (IC2.sideProxy.isSimulating())
 			{
-				Holder<MobEffect> potion = effect.getEffect();
-				Integer cost = potionRemovalCost().get(potion);
-				if (cost != null)
+				for (MobEffectInstance effect : new LinkedList<>(player.getActiveEffects()))
 				{
-					cost = cost * (effect.getAmplifier() + 1);
-					if (ElectricItem.manager.canUse(stack, cost))
+					Holder<MobEffect> potion = effect.getEffect();
+					Integer baseCost = potionRemovalCost().get(potion);
+					if (baseCost != null)
 					{
-						ElectricItem.manager.use(stack, cost, player);
-						player.removeEffect(potion);
+						int cost = getPotionRemovalCost(potion, effect, baseCost);
+						if (ElectricItem.manager.canUse(stack, cost))
+						{
+							ElectricItem.manager.use(stack, cost, player);
+							player.removeEffect(potion);
+						}
 					}
 				}
 			}
@@ -455,6 +469,13 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 							Vec3 motion = player.getDeltaMovement();
 							player.setDeltaMovement(motion.x * 3.5, motion.y, motion.z * 3.5);
 						}
+
+						Vec3 motion = player.getDeltaMovement();
+						player.setDeltaMovement(motion.x, motion.y + jumpCharge * 0.3F, motion.z);
+						jumpCharges.put(player, jumpCharge * 0.75F);
+					} else if (jumpCharge < 1.0F)
+					{
+						jumpCharges.put(player, 0.0F);
 					}
 				}
 			}
@@ -469,13 +490,6 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 
 	@Override
 	public void drainEnergy(ItemStack pack, int amount)
-
-						Vec3 motion = player.getDeltaMovement();
-						player.setDeltaMovement(motion.x, motion.y + jumpCharge * 0.3F, motion.z);
-						jumpCharges.put(player, jumpCharge * 0.75F);
-					} else if (jumpCharge < 1.0F)
-					{
-						jumpCharges.put(player, 0.0F);
 	{
 		ElectricItem.manager.discharge(pack, amount + 6, Integer.MAX_VALUE, true, false, false);
 	}
