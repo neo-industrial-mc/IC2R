@@ -129,6 +129,7 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		if (IC2.sideProxy.isSimulating())
 		{
 			this.setOverclockRates();
+			this.recipeResult = this.getRecipeResult();
 		}
 	}
 
@@ -148,8 +149,10 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		super.updateEntityServer();
 		boolean needsInvUpdate = false;
 		MachineRecipeResult<RI, RO, I> result;
-		if (this.recipeResult == null
-			|| (result = this.processInput()) == null
+		if (this.recipeResult == null)
+		{
+			this.recipeResult = this.getRecipeResult();
+		} else if ((result = this.processInput()) == null
 			|| !isSameRecipeInput(result.recipe().getInput(), this.recipeResult.recipe().getInput()))
 		{
 			this.recipeResult = this.getRecipeResult();
