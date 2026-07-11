@@ -23,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -31,6 +32,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @NotClassic
 public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui
@@ -43,13 +46,38 @@ public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGen
 	private int crossSection;
 	private float rotationSpeed;
 	private float angle = 0.0F;
-	private long lastCheck;
 
 	public TileEntityWindKineticGenerator(BlockPos pos, BlockState state)
 	{
 		super(Ic2BlockEntities.WIND_KINETIC_GENERATOR, pos, state);
 		this.updateTicker = IC2.random.nextInt(this.getTickRate());
 		this.rotorSlot = new InvSlotConsumableKineticRotor(this, "rotorslot", InvSlot.Access.IO, 1, InvSlot.InvSide.ANY, IKineticRotor.GearboxType.WIND, "rotorSlot");
+	}
+
+	@Override
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
+		this.rotationSpeed = nbt.getFloat("rotationSpeed");
+	}
+
+	@Override
+	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	{
+		super.saveAdditional(nbt, registries);
+		nbt.putFloat("rotationSpeed", this.rotationSpeed);
+	}
+
+	@Override
+	protected void onLoaded()
+	{
+		super.onLoaded();
+		// Re-sync animation fields so clients that load the TE after a world re-entry
+		// (or chunk re-watch) receive the current speed even if it does not change again.
+		if (this.getLevel() != null && !this.getLevel().isClientSide)
+		{
+			IC2.network.get(true).updateTileEntityField(this, "rotationSpeed");
+			IC2.network.get(true).updateTileEntityField(this, "rotorSlot");
+		}
 	}
 
 	@Override
@@ -249,16 +277,26 @@ public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGen
 	}
 
 	@Override
+	public float getRotorAnimationSpeed()
+	{
+		return this.rotationSpeed;
+	}
+
+	@Override
 	public float getAngle()
 	{
+		return this.angle;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	protected void updateEntityClient()
+	{
+		super.updateEntityClient();
 		if (this.rotationSpeed != 0.0F)
 		{
-			this.angle = this.angle + (float) (System.currentTimeMillis() - this.lastCheck) * this.rotationSpeed;
-			this.angle %= 360.0F;
+			this.angle = (this.angle + this.rotationSpeed * 50.0F) % 360.0F;
 		}
-
-		this.lastCheck = System.currentTimeMillis();
-		return this.angle;
 	}
 
 	public float getEfficiency()

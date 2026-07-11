@@ -6,6 +6,7 @@ import com.mojang.math.Axis;
 import ic2.api.tile.IRotorProvider;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceMap;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class KineticGeneratorRenderer<T extends BlockEntity & IRotorProvider> implements BlockEntityRenderer<T>
 {
+	private static final float DEGREES_PER_TICK = 50.0F;
 	private static final Int2ReferenceMap<ModelPart> rotorModels = new Int2ReferenceOpenHashMap<>();
 
 	public KineticGeneratorRenderer(Context ctx)
@@ -34,7 +36,8 @@ public class KineticGeneratorRenderer<T extends BlockEntity & IRotorProvider> im
 		int diameter = windGen.getRotorDiameter();
 		if (diameter != 0)
 		{
-			float angle = windGen.getAngle();
+			float partial = Minecraft.getInstance().isPaused() ? 0.0F : tickDelta;
+			float angle = (windGen.getAngle() + windGen.getRotorAnimationSpeed() * DEGREES_PER_TICK * partial) % 360.0F;
 			ResourceLocation rotorRL = windGen.getRotorRenderTexture();
 			ModelPart model = (ModelPart) rotorModels.get(diameter);
 			if (model == null)

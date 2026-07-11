@@ -24,6 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
@@ -36,6 +37,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.util.RandomSource;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @NotClassic
 public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui
@@ -46,7 +49,6 @@ public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGe
 	private boolean rightFacing;
 	private int distanceToNormalBiome;
 	private int waterFlow;
-	private long lastCheck;
 	private float angle = 0.0F;
 	private float rotationSpeed;
 
@@ -60,10 +62,30 @@ public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGe
 	}
 
 	@Override
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
+		this.rotationSpeed = nbt.getFloat("rotationSpeed");
+	}
+
+	@Override
+	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	{
+		super.saveAdditional(nbt, registries);
+		nbt.putFloat("rotationSpeed", this.rotationSpeed);
+	}
+
+	@Override
 	protected void onLoaded()
 	{
 		super.onLoaded();
 		this.updateSeaInfo();
+		// Re-sync animation fields so clients that load the TE after a world re-entry
+		// (or chunk re-watch) receive the current speed even if it does not change again.
+		if (this.getLevel() != null && !this.getLevel().isClientSide)
+		{
+			IC2.network.get(true).updateTileEntityField(this, "rotationSpeed");
+			IC2.network.get(true).updateTileEntityField(this, "rotorSlot");
+		}
 	}
 
 	@Override
@@ -366,16 +388,27 @@ public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGe
 	}
 
 	@Override
+	public float getRotorAnimationSpeed()
+	{
+		return this.rotationSpeed * 0.1F;
+	}
+
+	@Override
 	public float getAngle()
 	{
-		if (this.rotationSpeed != 0.0F)
-		{
-			this.angle = this.angle + (float) (System.currentTimeMillis() - this.lastCheck) * this.rotationSpeed * 0.1F;
-			this.angle %= 360.0F;
-		}
-
-		this.lastCheck = System.currentTimeMillis();
 		return this.angle;
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	protected void updateEntityClient()
+	{
+		super.updateEntityClient();
+		float animationSpeed = this.getRotorAnimationSpeed();
+		if (animationSpeed != 0.0F)
+		{
+			this.angle = (this.angle + animationSpeed * 50.0F) % 360.0F;
+		}
 	}
 
 	public enum BiomeState
