@@ -56,6 +56,8 @@ public final class Ic2ItemTags
 	public static final TagKey<Item> RUBBER_LOGS = create("rubber_logs");
 	public static final TagKey<Item> FORGE_HAMMERS = create("forge_hammers");
 	public static final TagKey<Item> WIRE_CUTTERS = create("wire_cutters");
+	/** Items that count as the correct tool for {@link Ic2BlockTags#MINEABLE_WITH_WRENCH}. */
+	public static final TagKey<Item> WRENCHES = create("wrenches");
 
 	public static void init()
 	{

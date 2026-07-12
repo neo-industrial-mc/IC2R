@@ -9,6 +9,8 @@ import net.minecraft.world.level.block.Block;
 public final class Ic2BlockTags
 {
 	public static final TagKey<Block> EMPTY = create("ic2:empty", "ic2:empty");
+	/** Blocks correctly mined with the IC2 wrench (1.12 HarvestTool.Wrench). */
+	public static final TagKey<Block> MINEABLE_WITH_WRENCH = create("ic2:mineable/wrench", "ic2:mineable/wrench");
 	public static final TagKey<Block> ORES = create("c:ores", "forge:ores");
 	public static final TagKey<Block> RUBBER_LOGS = create("c:rubber_logs", "forge:rubber_logs");
 	public static final TagKey<Block> LEAD_ORES = create("c:lead_ores", "forge:ores/lead");
