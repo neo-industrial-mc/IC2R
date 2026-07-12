@@ -12,6 +12,7 @@ import ic2.core.block.tileentity.Ic2TileEntityBlock;
 import ic2.core.fluid.FluidHandler;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.item.ItemCropSeed;
+import ic2.core.item.ItemHydrationCell;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.ref.Ic2Blocks;
 import ic2.core.ref.Ic2Fluids;
@@ -469,6 +470,17 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile
 				}
 
 				return true;
+			}
+
+			if (heldItem.getItem() instanceof ItemHydrationCell hydrationCell)
+			{
+				if (hydrationCell.applyToCrop(heldItem, this, true))
+				{
+					this.dirty = true;
+					return true;
+				}
+
+				return false;
 			}
 
 			Ic2FluidStack fs = Ic2FluidStack.create(Fluids.WATER, Integer.MAX_VALUE);
