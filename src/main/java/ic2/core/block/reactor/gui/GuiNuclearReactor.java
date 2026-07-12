@@ -14,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
+import java.util.Locale;
+
 public class GuiNuclearReactor extends Ic2Gui<ContainerNuclearReactor>
 {
 	private static final ResourceLocation background = ResourceLocation.fromNamespaceAndPath("ic2", "textures/gui/guinuclearreactor.png");
@@ -25,7 +27,11 @@ public class GuiNuclearReactor extends Ic2Gui<ContainerNuclearReactor>
 		IEnableHandler enableHandler = GuiNuclearReactor.this.menu.base::isFluidCooled;
 		this.addElement(TankGauge.createBorderless(this, 10, 54, container.base.getInputTank(), true).withEnableHandler(enableHandler));
 		this.addElement(TankGauge.createBorderless(this, 190, 54, container.base.getOutputTank(), false).withEnableHandler(enableHandler));
-		this.addElement(new LinkedGauge(this, 7, 136, container.base, "heat", Gauge.GaugeStyle.HeatNuclearReactor).withTooltip(() -> Component.translatable("ic2.NuclearReactor.gui.info.temp", GuiNuclearReactor.this.menu.base.getGuiValue("heat") * 100.0).getString()));
+		this.addElement(new LinkedGauge(this, 7, 136, container.base, "heat", Gauge.GaugeStyle.HeatNuclearReactor).withTooltip(() -> {
+			// Minecraft translation does not reliably honor printf precision (e.g. %.2f); format for display here.
+			String heatPercent = String.format(Locale.ROOT, "%.2f", GuiNuclearReactor.this.menu.base.getGuiValue("heat") * 100.0);
+			return Component.translatable("ic2.NuclearReactor.gui.info.temp", heatPercent).getString();
+		}));
 		this.addElement(TextLabel.create(this, 107, 136, 200, 13, TextProvider.of(() -> GuiNuclearReactor.this.menu.base.isFluidCooled() ? Component.translatable("ic2.NuclearReactor.gui.info.HUoutput", GuiNuclearReactor.this.menu.base.EmitHeat).getString() : Component.translatable("ic2.NuclearReactor.gui.info.EUoutput", Math.round(GuiNuclearReactor.this.menu.base.getReactorEUEnergyOutput())).getString()), 5752026, false, 4, 0, false, true));
 		this.addElement(new Area(this, 5, 160, 18, 18).withTooltip(() -> GuiNuclearReactor.this.menu.base.isFluidCooled() ? "ic2.NuclearReactor.gui.mode.fluid" : "ic2.NuclearReactor.gui.mode.electric"));
 	}

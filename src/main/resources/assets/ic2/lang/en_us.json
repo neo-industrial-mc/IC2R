@@ -529,7 +529,7 @@
   "ic2.MetalFormer.gui.switch.Rolling": "Rolling",
   "ic2.NuclearReactor.gui.info.EUoutput": "Output: %1$s EU/t",
   "ic2.NuclearReactor.gui.info.HUoutput": "Output: %1$s HU/s",
-  "ic2.NuclearReactor.gui.info.temp": "Core Temperature: %1$.2f%%",
+  "ic2.NuclearReactor.gui.info.temp": "Core Temperature: %1$s%%",
   "ic2.NuclearReactor.gui.mode.electric": "Nuclear Reactor in EU mode: Output throttled by 50%",
   "ic2.NuclearReactor.gui.mode.fluid": "Nuclear Reactor in Fluid Cooling mode: Outputting at 100%",
   "ic2.PatternStorage.gui.info.export": "export to Crystal",
