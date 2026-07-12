@@ -134,7 +134,7 @@ public final class ElectricalNodes
 			return tier < 0 ? 0.0 : EnergyNet.instance.getPowerFromTier(tier) * packetCount;
 		}
 
-		int ampsPerPacket = getSourceAmpsPerPacket(node, source, packetCount);
+		int ampsPerPacket = getSourceAmpsPerPacket(node, source);
 		return ampsPerPacket * node.getWorkingVoltage().getVoltage() * packetCount;
 	}
 
@@ -154,8 +154,7 @@ public final class ElectricalNodes
 			return tier < 0 ? 0.0 : EnergyNet.instance.getPowerFromTier(tier);
 		}
 
-		int packetCount = getSourcePacketCount(source);
-		int ampsPerPacket = getSourceAmpsPerPacket(node, source, packetCount);
+		int ampsPerPacket = getSourceAmpsPerPacket(node, source);
 		return ampsPerPacket * node.getWorkingVoltage().getVoltage();
 	}
 
@@ -171,31 +170,28 @@ public final class ElectricalNodes
 		return tier < 0 ? 0.0 : EnergyNet.instance.getPowerFromTier(tier);
 	}
 
-	private static int getSourcePacketCount(IEnergySource source)
+	/**
+	 * Amps carried by one emitted packet at the source working voltage.
+	 * <p>
+	 * Multi-packet sources (transformers) always emit 1A packets; total current is the packet count.
+	 * Never fold {@code maxSourceAmperage} into a single packet when only a partial buffer is ready
+	 * (e.g. transformer storage = 2740 EU, packetCount = 1) — that would send a 4×V oversize packet
+	 * and explode sinks such as MFSU under IC Mode overvoltage checks.
+	 */
+	private static int getSourceAmpsPerPacket(IElectricalNode node, IEnergySource source)
 	{
 		if (source instanceof IMultiEnergySource multi && multi.sendMultipleEnergyPackets())
 		{
-			return Math.max(1, multi.getMultipleEnergyPacketAmount());
+			return 1;
 		}
 
-		return 1;
-	}
-
-	private static int getSourceAmpsPerPacket(IElectricalNode node, IEnergySource source, int packetCount)
-	{
 		int workingCurrent = node.getWorkingCurrent();
 		if (workingCurrent > 0)
 		{
 			return workingCurrent;
 		}
 
-		int maxAmps = Math.max(1, node.getMaxSourceAmperage());
-		if (source instanceof IMultiEnergySource multi && multi.sendMultipleEnergyPackets() && packetCount > 1)
-		{
-			return Math.max(1, maxAmps / packetCount);
-		}
-
-		return maxAmps;
+		return Math.max(1, node.getMaxSourceAmperage());
 	}
 
 	/**
