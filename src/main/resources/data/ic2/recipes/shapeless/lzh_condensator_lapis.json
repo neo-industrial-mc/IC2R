@@ -1,0 +1,8 @@
+{
+  "type": "ic2:gradual",
+  "item": "ic2:lzh_condensator",
+  "charge_material": {
+    "item": "minecraft:lapis_lazuli"
+  },
+  "amount": 40000
+}
