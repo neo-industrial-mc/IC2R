@@ -23,8 +23,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -53,116 +51,93 @@ import org.jetbrains.annotations.Nullable;
  *   <li>Left-click: safely mine {@link IWrenchAble} machines (wrench drops), 1 durability</li>
  *   <li>Right-click: set facing from the face hit grid (no durability cost)</li>
  * </ul>
- * Shared {@link #onWrenchUse} is kept for the electric wrench's rotation + energy path.
+ * Shared helpers below are also used by {@link ItemToolWrenchElectric}.
  */
 public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable, BlockBreakableItem, IEnhancedOverlayProvider, IHitSoundOverride
 {
 	/** Durability cost when mining/removing a machine (matches 1.12 ItemTool mining). */
 	private static final int MINE_DAMAGE = 1;
 
+	/** Mining efficiency for wrenchable machines (HarvestLevel.Iron in 1.12 ItemToolWrenchNew). */
+	public static final float WRENCH_DESTROY_SPEED = 6.0F;
+
 	public ItemToolWrench(Properties settings)
 	{
 		super(settings);
 	}
 
-	/**
-	 * Shared right-click use used by the electric wrench.
-	 * Rotate {@link IWrenchAble} blocks only; removal is left-click mining.
-	 *
-	 * @return damage/energy amount on success (server), -2 client success (sound played), -1 no-op
-	 */
-	public static int onWrenchUse(Player player, UseOnContext context)
+	// === Shared helpers (manual + electric wrench) ===
+
+	/** Whether this block is a machine the wrench is meant to harvest / overlay. */
+	public static boolean isWrenchTarget(BlockState state)
 	{
-		WrenchResult result = wrenchBlock(context, player);
-		if (result != WrenchResult.Nothing)
-		{
-			if (!context.getLevel().isClientSide)
-			{
-				return 1;
-			}
-
-			player.playSound(Ic2SoundEvents.ITEM_WRENCH_USE, 1.0F, 1.0F);
-			return -2;
-		}
-
-		return -1;
+		return state.is(Ic2BlockTags.MINEABLE_WITH_WRENCH) || state.getBlock() instanceof IWrenchAble;
 	}
 
-	public static WrenchResult wrenchBlock(UseOnContext context, Player player)
+	/**
+	 * Resolve facing from the clicked face's 3×3 hit grid (matches the enhanced overlay).
+	 */
+	public static Direction facingFromHit(Direction side, BlockPos pos, Vec3 hitLocation)
+	{
+		float hitX = (float) (hitLocation.x - pos.getX());
+		float hitY = (float) (hitLocation.y - pos.getY());
+		float hitZ = (float) (hitLocation.z - pos.getZ());
+		return RotationUtil.rotateByHit(side, hitX, hitY, hitZ);
+	}
+
+	/**
+	 * Right-click: always attempt {@link IWrenchAble#setFacing} from the hit region.
+	 *
+	 * @return {@link InteractionResult#FAIL} if not an IWrenchAble / air;
+	 *         {@link InteractionResult#PASS} on client after sound;
+	 *         {@link InteractionResult#SUCCESS} on server
+	 */
+	public static InteractionResult trySetFacingFromHit(UseOnContext context, Player player)
 	{
 		Level world = context.getLevel();
 		BlockPos pos = context.getClickedPos();
-		Direction side = context.getClickedFace();
 		BlockState state = world.getBlockState(pos);
 		if (state.isAir())
 		{
-			return WrenchResult.Nothing;
+			return InteractionResult.FAIL;
 		}
 
-		Block block = state.getBlock();
-		if (block instanceof IWrenchAble wrenchAble)
+		if (!(state.getBlock() instanceof IWrenchAble wrenchAble))
 		{
-			return wrenchAbleBlock(world, pos, side, player, wrenchAble, context.getClickLocation());
+			return InteractionResult.FAIL;
 		}
 
-		return WrenchResult.Nothing;
+		Direction newFacing = facingFromHit(context.getClickedFace(), pos, context.getClickLocation());
+		// Match 1.12 ItemToolWrenchNew: always attempt setFacing from the hit region.
+		wrenchAble.setFacing(world, pos, newFacing, player);
+
+		if (world.isClientSide)
+		{
+			player.playSound(Ic2SoundEvents.ITEM_WRENCH_USE, 1.0F, 1.0F);
+			return InteractionResult.PASS;
+		}
+
+		return InteractionResult.SUCCESS;
 	}
 
 	/**
-	 * Resolve facing from the clicked face's 3×3 hit grid, or Alt-rotate around the face axis
-	 * (Alt kept for the electric wrench path; the manual wrench uses pure hit-based facing).
+	 * Left-click removal: cancel vanilla break and drop the machine itself (not the casing).
+	 * Caller is responsible for durability / energy cost.
+	 *
+	 * @return true if the block was handled as a wrench remove (vanilla break should be canceled)
 	 */
-	private static Direction resolveNewFacing(Direction side, Player player, Vec3 hitLocation, BlockPos pos, Direction currentFacing)
+	public static boolean tryRemoveWithWrench(Level world, Player player, BlockPos pos, BlockState state)
 	{
-		if (IC2.keyboard.isAltKeyDown(player))
+		if (!(state.getBlock() instanceof IWrenchAble wrenchAble) || !wrenchAble.wrenchCanRemove(world, pos, player))
 		{
-			Axis axis = side.getAxis();
-			return isAltRotationClockwise(side, player)
-				? currentFacing.getClockWise(axis)
-				: currentFacing.getCounterClockWise(axis);
+			return false;
 		}
 
-		float hitX = (float) (hitLocation.x - pos.getX());
-		float hitY = (float) (hitLocation.y - pos.getY());
-		float hitZ = (float) (hitLocation.z - pos.getZ());
-		return RotationUtil.rotateByHit(side, hitX, hitY, hitZ);
+		removeBlockWithWrench(world, pos, state, player, wrenchAble);
+		return true;
 	}
 
-	private static Direction facingFromHit(Direction side, BlockPos pos, Vec3 hitLocation)
-	{
-		float hitX = (float) (hitLocation.x - pos.getX());
-		float hitY = (float) (hitLocation.y - pos.getY());
-		float hitZ = (float) (hitLocation.z - pos.getZ());
-		return RotationUtil.rotateByHit(side, hitX, hitY, hitZ);
-	}
-
-	private static WrenchResult wrenchAbleBlock(
-		Level world, BlockPos pos, Direction side, Player player,
-		IWrenchAble wrenchAble, Vec3 hitLocation
-	)
-	{
-		Direction currentFacing = wrenchAble.getFacing(world, pos);
-		Direction newFacing = resolveNewFacing(side, player, hitLocation, pos, currentFacing);
-
-		if (newFacing != currentFacing && wrenchAble.setFacing(world, pos, newFacing, player))
-		{
-			return WrenchResult.Rotated;
-		}
-
-		return WrenchResult.Nothing;
-	}
-
-	private static boolean isAltRotationClockwise(Direction sideHit, Player player)
-	{
-		return sideHit.getAxisDirection() == AxisDirection.POSITIVE != player.isShiftKeyDown();
-	}
-
-	private static String getTeName(BlockEntity te)
-	{
-		return te != null ? ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(te.getType()).toString() : "none";
-	}
-
-	private static void removeBlockWithWrench(Level world, BlockPos pos, BlockState state, Player player, IWrenchAble wrenchAble)
+	static void removeBlockWithWrench(Level world, BlockPos pos, BlockState state, Player player, IWrenchAble wrenchAble)
 	{
 		if (world.isClientSide)
 		{
@@ -211,6 +186,11 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		}
 	}
 
+	private static String getTeName(BlockEntity te)
+	{
+		return te != null ? ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(te.getType()).toString() : "none";
+	}
+
 	// === Left-click (mining) behavior — 1.12 ItemToolWrenchNew tool harvest ===
 
 	@Override
@@ -226,9 +206,8 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	@Override
 	public boolean beforeBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity)
 	{
-		if (state.getBlock() instanceof IWrenchAble wrenchAble && wrenchAble.wrenchCanRemove(world, pos, player))
+		if (tryRemoveWithWrench(world, player, pos, state))
 		{
-			removeBlockWithWrench(world, pos, state, player, wrenchAble);
 			player.getMainHandItem().hurtAndBreak(MINE_DAMAGE, player, p -> p.broadcastBreakEvent(p.getUsedItemHand()));
 			return false;
 		}
@@ -249,16 +228,15 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	@Override
 	public boolean isCorrectToolForDrops(BlockState state)
 	{
-		return state.is(Ic2BlockTags.MINEABLE_WITH_WRENCH) || state.getBlock() instanceof IWrenchAble;
+		return isWrenchTarget(state);
 	}
 
 	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
-		// Iron tool efficiency (HarvestLevel.Iron in 1.12 ItemToolWrenchNew)
 		if (this.isCorrectToolForDrops(state))
 		{
-			return 6.0F;
+			return WRENCH_DESTROY_SPEED;
 		}
 
 		return super.getDestroySpeed(stack, state);
@@ -277,7 +255,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	}
 
 	/**
-	 * Hit-grid facing only (no Alt path). Does not damage the tool — durability is spent on mining.
+	 * Hit-grid facing only. Does not damage the tool — durability is spent on mining.
 	 */
 	@Override
 	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context)
@@ -293,30 +271,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 			return InteractionResult.PASS;
 		}
 
-		Level world = context.getLevel();
-		BlockPos pos = context.getClickedPos();
-		BlockState state = world.getBlockState(pos);
-		if (state.isAir())
-		{
-			return InteractionResult.FAIL;
-		}
-
-		if (!(state.getBlock() instanceof IWrenchAble wrenchAble))
-		{
-			return InteractionResult.FAIL;
-		}
-
-		Direction newFacing = facingFromHit(context.getClickedFace(), pos, context.getClickLocation());
-		// Match 1.12 ItemToolWrenchNew: always attempt setFacing from the hit region.
-		wrenchAble.setFacing(world, pos, newFacing, player);
-
-		if (world.isClientSide)
-		{
-			player.playSound(Ic2SoundEvents.ITEM_WRENCH_USE, 1.0F, 1.0F);
-			return InteractionResult.PASS;
-		}
-
-		return InteractionResult.SUCCESS;
+		return trySetFacingFromHit(context, player);
 	}
 
 	public void damage(ItemStack is, int damage, Player player, InteractionHand hand)
@@ -375,11 +330,5 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return world.getBlockState(pos).getBlock() instanceof IWrenchAble
 			? Ic2SoundEvents.ITEM_WRENCH_USE
 			: null;
-	}
-
-	public enum WrenchResult
-	{
-		Rotated,
-		Nothing
 	}
 }
