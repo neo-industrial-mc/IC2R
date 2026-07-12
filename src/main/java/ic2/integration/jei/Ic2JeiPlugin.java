@@ -12,6 +12,7 @@ import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.gui.dynamic.DynamicContainer;
 import ic2.core.recipe.v2.RecipeHolder;
 import ic2.core.ref.Ic2Blocks;
+import ic2.core.ref.Ic2ItemTags;
 import ic2.core.ref.Ic2RecipeTypes;
 import ic2.core.ref.Ic2ScreenHandlers;
 import ic2.core.util.LiquidUtil;
@@ -53,8 +54,10 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -62,10 +65,12 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @JeiPlugin
 public class Ic2JeiPlugin implements IModPlugin
@@ -176,8 +181,10 @@ public class Ic2JeiPlugin implements IModPlugin
 	
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
 	{
-		registration.addRecipeTransferHandler(new CraftingTransferInfo<>(ContainerIndustrialWorkbench.class, Ic2ScreenHandlers.INDUSTRIAL_WORKBENCH, 36, 37, 45));
-		registration.addRecipeTransferHandler(new CraftingTransferInfo<>(ContainerBatchCrafter.class, Ic2ScreenHandlers.BATCH_CRAFTER, 46, 37, 45));
+		// Industrial workbench: 3x3 grid + 2x9 buffer + forge-hammer / wire-cutter dedicated rows.
+		registration.addRecipeTransferHandler(new IndustrialWorkbenchTransferInfo());
+		// Batch crafter: recipe slots are inputs only (JEI maps by index to recipe INPUT views).
+		registration.addRecipeTransferHandler(new CraftingTransferInfo<>(ContainerBatchCrafter.class, Ic2ScreenHandlers.BATCH_CRAFTER, 37, 45, 0, 36));
 
 		registration.addRecipeTransferHandler(new IOTransferInfo<>(ContainerMetalFormer.class, Ic2ScreenHandlers.METAL_FORMER, this.METAL_FORMER_EXTRUDING, List.of(37), List.of(38), 0, 36));
 		registration.addRecipeTransferHandler(new IOTransferInfo<>(ContainerMetalFormer.class, Ic2ScreenHandlers.METAL_FORMER, this.METAL_FORMER_ROLLING, List.of(37), List.of(38), 0, 36));
@@ -232,12 +239,17 @@ public class Ic2JeiPlugin implements IModPlugin
 		registration.addRecipes(this.CANNER_BOTTLE_LIQUID, bottleLiquidRecipes);
 	}
 
+	/**
+	 * JEI pairs recipe INPUT views with {@link #getRecipeSlots} by index.
+	 * Do not include the result slot — only crafting inputs.
+	 */
 	private record CraftingTransferInfo<C extends AbstractContainerMenu>(
 		Class<C> containerClass,
 		MenuType<C> menuType,
-		int outputSlot,
 		int inputStart,
-		int inputEnd) implements IRecipeTransferInfo<C, CraftingRecipe>
+		int inputEndInclusive,
+		int inventoryStart,
+		int inventoryCount) implements IRecipeTransferInfo<C, CraftingRecipe>
 		{
 
 			@Override
@@ -245,48 +257,246 @@ public class Ic2JeiPlugin implements IModPlugin
 			{
 				return this.containerClass;
 			}
-	
+
 			@Override
 			public @NotNull Optional<MenuType<C>> getMenuType()
 			{
 				return Optional.of(this.menuType);
 			}
-	
+
 			@Override
 			public @NotNull RecipeType<CraftingRecipe> getRecipeType()
 			{
 				return RecipeTypes.CRAFTING;
 			}
-	
+
 			@Override
 			public boolean canHandle(@NotNull C container, @NotNull CraftingRecipe recipe)
 			{
 				return true;
 			}
-	
+
 			@Override
 			public @NotNull List<Slot> getRecipeSlots(C container, @NotNull CraftingRecipe recipe)
 			{
-				List<Slot> slots = new ArrayList<>(10);
-				slots.add(container.getSlot(this.outputSlot));
-				for (int i = this.inputStart; i <= this.inputEnd; i++)
+				List<Slot> slots = new ArrayList<>(this.inputEndInclusive - this.inputStart + 1);
+				for (int i = this.inputStart; i <= this.inputEndInclusive; i++)
 				{
 					slots.add(container.getSlot(i));
 				}
 				return slots;
 			}
-	
+
 			@Override
 			public @NotNull List<Slot> getInventorySlots(@NotNull C container, @NotNull CraftingRecipe recipe)
 			{
-				List<Slot> slots = new ArrayList<>(36);
-				for (int i = 0; i < 36; i++)
+				List<Slot> slots = new ArrayList<>(this.inventoryCount);
+				for (int i = 0; i < this.inventoryCount; i++)
 				{
-					slots.add(container.getSlot(i));
+					slots.add(container.getSlot(this.inventoryStart + i));
 				}
 				return slots;
 			}
 		}
+
+	/**
+	 * Industrial workbench transfer:
+	 * <ul>
+	 *   <li>3x3 grid slots map 1:1 to JEI crafting inputs (no result slot)</li>
+	 *   <li>2x9 buffer is treated as extra inventory for pull/stow</li>
+	 *   <li>2-ingredient forge-hammer / wire-cutter recipes target dedicated tool rows</li>
+	 * </ul>
+	 * Slot layout (player inv first via {@link ic2.core.ContainerFullInv}):
+	 * 0-35 player, 36 craft result, 37-45 grid, 46-63 buffer,
+	 * 64 left tool, 65 left input, 66 left result, 67 right tool, 68 right input, 69 right result.
+	 */
+	private static final class IndustrialWorkbenchTransferInfo implements IRecipeTransferInfo<ContainerIndustrialWorkbench, CraftingRecipe>
+	{
+		private record ToolCombo(boolean hammer, int toolIngredientIndex)
+		{
+			boolean isHammer()
+			{
+				return this.hammer;
+			}
+		}
+
+		@Override
+		public @NotNull Class<? extends ContainerIndustrialWorkbench> getContainerClass()
+		{
+			return ContainerIndustrialWorkbench.class;
+		}
+
+		@Override
+		public @NotNull Optional<MenuType<ContainerIndustrialWorkbench>> getMenuType()
+		{
+			return Optional.of(Ic2ScreenHandlers.INDUSTRIAL_WORKBENCH);
+		}
+
+		@Override
+		public @NotNull RecipeType<CraftingRecipe> getRecipeType()
+		{
+			return RecipeTypes.CRAFTING;
+		}
+
+		@Override
+		public boolean canHandle(@NotNull ContainerIndustrialWorkbench container, @NotNull CraftingRecipe recipe)
+		{
+			return true;
+		}
+
+		@Override
+		public @NotNull List<Slot> getRecipeSlots(ContainerIndustrialWorkbench container, @NotNull CraftingRecipe recipe)
+		{
+			ToolCombo combo = detectToolCombo(recipe);
+			if (combo != null)
+			{
+				return getToolComboRecipeSlots(container, combo);
+			}
+			return getGridRecipeSlots(container);
+		}
+
+		@Override
+		public @NotNull List<Slot> getInventorySlots(@NotNull ContainerIndustrialWorkbench container, @NotNull CraftingRecipe recipe)
+		{
+			List<Slot> slots = new ArrayList<>(36 + 18 + 4);
+			// Player inventory
+			for (int i = 0; i < 36; i++)
+			{
+				slots.add(container.getSlot(i));
+			}
+			// 2x9 temporary storage buffer
+			for (int i = container.indexBufferStart; i < container.indexBufferEnd; i++)
+			{
+				slots.add(container.getSlot(i));
+			}
+
+			ToolCombo combo = detectToolCombo(recipe);
+			if (combo == null)
+			{
+				// For normal crafting, dedicated tool rows can supply materials/tools.
+				addToolRowInventorySlots(container, slots, true, true);
+			} else if (combo.isHammer())
+			{
+				// Hammer row is recipe target; cutter row can still supply items.
+				addToolRowInventorySlots(container, slots, false, true);
+			} else
+			{
+				addToolRowInventorySlots(container, slots, true, false);
+			}
+			return slots;
+		}
+
+		private static List<Slot> getGridRecipeSlots(ContainerIndustrialWorkbench container)
+		{
+			List<Slot> slots = new ArrayList<>(9);
+			for (int i = container.indexGridStart; i < container.indexGridEnd; i++)
+			{
+				slots.add(container.getSlot(i));
+			}
+			return slots;
+		}
+
+		/**
+		 * JEI always exposes 9 crafting input views. Two-ingredient shapeless recipes only fill
+		 * views 0 and 1 (via CraftingGridHelper); remaining views are empty and skipped.
+		 * Extra grid slots are included so transfer also clears leftover items from the 3x3.
+		 */
+		private static List<Slot> getToolComboRecipeSlots(ContainerIndustrialWorkbench container, ToolCombo combo)
+		{
+			Slot toolSlot = container.getSlot(combo.isHammer() ? container.indexToolHammer : container.indexToolCutter);
+			Slot inputSlot = container.getSlot(combo.isHammer() ? container.indexInputHammer : container.indexInputCutter);
+
+			List<Slot> slots = new ArrayList<>(11);
+			// Map JEI ingredient order: tool ingredient view → tool slot, material → input slot.
+			if (combo.toolIngredientIndex() == 0)
+			{
+				slots.add(toolSlot);
+				slots.add(inputSlot);
+			} else
+			{
+				slots.add(inputSlot);
+				slots.add(toolSlot);
+			}
+			for (int i = container.indexGridStart; i < container.indexGridEnd; i++)
+			{
+				slots.add(container.getSlot(i));
+			}
+			return slots;
+		}
+
+		private static void addToolRowInventorySlots(
+			ContainerIndustrialWorkbench container,
+			List<Slot> slots,
+			boolean includeHammerRow,
+			boolean includeCutterRow)
+		{
+			if (includeHammerRow)
+			{
+				slots.add(container.getSlot(container.indexToolHammer));
+				slots.add(container.getSlot(container.indexInputHammer));
+			}
+			if (includeCutterRow)
+			{
+				slots.add(container.getSlot(container.indexToolCutter));
+				slots.add(container.getSlot(container.indexInputCutter));
+			}
+		}
+
+		/**
+		 * Recipes that are exactly {@code material + forge_hammer} or {@code material + wire_cutter}.
+		 * These match the industrial workbench's 2-slot dedicated crafting rows.
+		 */
+		@Nullable
+		private static ToolCombo detectToolCombo(CraftingRecipe recipe)
+		{
+			NonNullList<Ingredient> ingredients = recipe.getIngredients();
+			if (ingredients.size() != 2)
+			{
+				return null;
+			}
+
+			int hammerIndex = -1;
+			int cutterIndex = -1;
+			for (int i = 0; i < ingredients.size(); i++)
+			{
+				Ingredient ingredient = ingredients.get(i);
+				if (ingredient.isEmpty())
+				{
+					continue;
+				}
+				if (ingredientMatchesTag(ingredient, Ic2ItemTags.FORGE_HAMMERS))
+				{
+					hammerIndex = i;
+				} else if (ingredientMatchesTag(ingredient, Ic2ItemTags.WIRE_CUTTERS))
+				{
+					cutterIndex = i;
+				}
+			}
+
+			// Exactly one tool ingredient + one material.
+			if (hammerIndex >= 0 && cutterIndex < 0)
+			{
+				return new ToolCombo(true, hammerIndex);
+			}
+			if (cutterIndex >= 0 && hammerIndex < 0)
+			{
+				return new ToolCombo(false, cutterIndex);
+			}
+			return null;
+		}
+
+		private static boolean ingredientMatchesTag(Ingredient ingredient, TagKey<Item> tag)
+		{
+			for (ItemStack stack : ingredient.getItems())
+			{
+				if (!stack.isEmpty() && stack.is(tag))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	}
 
 	private record IOTransferInfo<R>(
 		Class<? extends AbstractContainerMenu> containerClass,
