@@ -4,30 +4,35 @@ import ic2.core.IC2;
 import ic2.core.block.comp.Energy;
 import ic2.core.block.tileentity.Ic2TileEntity;
 
-import java.util.List;
-import java.util.Objects;
-
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import snownee.jade.api.Accessor;
-import snownee.jade.api.view.ClientViewGroup;
-import snownee.jade.api.view.EnergyView;
-import snownee.jade.api.view.IClientExtensionProvider;
-import snownee.jade.api.view.IServerExtensionProvider;
-import snownee.jade.api.view.ViewGroup;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.IBlockComponentProvider;
+import snownee.jade.api.IServerDataProvider;
+import snownee.jade.api.ITooltip;
+import snownee.jade.api.TooltipPosition;
+import snownee.jade.api.config.IPluginConfig;
+import snownee.jade.api.ui.BoxStyle;
+import snownee.jade.api.ui.IElementHelper;
 
 /**
- * Exposes IC2 EU buffers to Jade's universal energy storage UI.
- * Forge ENERGY (FE) is intentionally not used — IC2R runs on EU.
+ * EU buffer display for IC2 tiles on Jade.
+ * <p>
+ * Rendered as a custom progress bar so fill colors and label format can be
+ * configured in {@code ic2-client.toml} → {@code [jade.energy]}.
+ * Jade's universal energy colors are hard-coded and cannot be changed from a
+ * {@code EnergyView} provider, which is why this uses a block component instead.
  */
-public enum Ic2EnergyProvider implements IServerExtensionProvider<Object, CompoundTag>, IClientExtensionProvider<CompoundTag, EnergyView>
+public enum Ic2EnergyProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor>
 {
 	INSTANCE;
 
 	public static final ResourceLocation UID = IC2.getIdentifier("energy_storage");
-	private static final String UNIT = "EU";
+
+	private static final String KEY_HAS = "ic2EHas";
+	private static final String KEY_STORED = "ic2ECur";
+	private static final String KEY_CAPACITY = "ic2ECap";
 
 	@Override
 	public ResourceLocation getUid()
@@ -36,41 +41,57 @@ public enum Ic2EnergyProvider implements IServerExtensionProvider<Object, Compou
 	}
 
 	@Override
-	public List<ViewGroup<CompoundTag>> getGroups(ServerPlayer player, ServerLevel world, Object target, boolean showDetails)
+	public int getDefaultPriority()
 	{
-		if (!(target instanceof Ic2TileEntity te) || !te.hasComponent(Energy.class))
+		// Above body text so the bar sits with other storage UIs.
+		return TooltipPosition.BODY + 50;
+	}
+
+	@Override
+	public void appendServerData(CompoundTag tag, BlockAccessor accessor)
+	{
+		if (!(accessor.getBlockEntity() instanceof Ic2TileEntity te) || !te.hasComponent(Energy.class))
 		{
-			return null;
+			return;
 		}
 
 		Energy energy = te.getComponent(Energy.class);
 		long capacity = Math.max(0L, (long) energy.getCapacity());
 		if (capacity <= 0L)
 		{
-			return null;
+			return;
 		}
 
 		long stored = Math.max(0L, Math.min(capacity, (long) energy.getEnergy()));
-		ViewGroup<CompoundTag> group = new ViewGroup<>(List.of(EnergyView.of(stored, capacity)));
-		group.getExtraData().putString("Unit", UNIT);
-		return List.of(group);
+		tag.putBoolean(KEY_HAS, true);
+		tag.putLong(KEY_STORED, stored);
+		tag.putLong(KEY_CAPACITY, capacity);
 	}
 
 	@Override
-	public List<ClientViewGroup<EnergyView>> getClientGroups(Accessor<?> accessor, List<ViewGroup<CompoundTag>> groups)
+	public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config)
 	{
-		return groups.stream().map(group ->
+		CompoundTag data = accessor.getServerData();
+		if (!data.getBoolean(KEY_HAS))
 		{
-			String unit = group.getExtraData().getString("Unit");
-			if (unit.isEmpty())
-			{
-				unit = UNIT;
-			}
+			return;
+		}
+		if (!JadeConfigHelper.energyMode().isVisible(accessor.showDetails()))
+		{
+			return;
+		}
 
-			String finalUnit = unit;
-			return new ClientViewGroup<>(
-				group.views.stream().map(tag -> EnergyView.read(tag, finalUnit)).filter(Objects::nonNull).toList()
-			);
-		}).toList();
+		long capacity = data.getLong(KEY_CAPACITY);
+		if (capacity <= 0L)
+		{
+			return;
+		}
+
+		long stored = Math.max(0L, Math.min(capacity, data.getLong(KEY_STORED)));
+		float ratio = (float) stored / (float) capacity;
+		Component text = JadeConfigHelper.formatEnergyText(stored, capacity, ratio);
+
+		IElementHelper helper = IElementHelper.get();
+		tooltip.add(helper.progress(ratio, text, JadeConfigHelper.energyStyle(), BoxStyle.DEFAULT, true));
 	}
 }

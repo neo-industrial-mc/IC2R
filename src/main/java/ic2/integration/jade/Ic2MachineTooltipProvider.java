@@ -18,13 +18,14 @@ import snownee.jade.api.TooltipPosition;
 import snownee.jade.api.config.IPluginConfig;
 
 /**
- * Text lines for IC2 machines on Jade:
+ * Text lines for IC2 machines on Jade.
  * <ul>
  *   <li>Voltage (all electric tiles)</li>
  *   <li>Recipe / source power (when the energy profile has recipe power)</li>
  *   <li>Storage output + redstone mode (BatBox / MFE / …)</li>
- *   <li>Working / idle (Shift details)</li>
+ *   <li>Working / idle</li>
  * </ul>
+ * Visibility of each line is controlled by {@code ic2-client.toml} → {@code [jade.machine]}.
  * Item inventory and fluids stay on Jade's universal providers.
  */
 public enum Ic2MachineTooltipProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor>
@@ -92,33 +93,42 @@ public enum Ic2MachineTooltipProvider implements IBlockComponentProvider, IServe
 	public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config)
 	{
 		CompoundTag data = accessor.getServerData();
+		boolean details = accessor.showDetails();
+
 		if (data.getBoolean(KEY_HAS_ENERGY))
 		{
 			VoltageTier voltage = VoltageTier.fromIcTier(data.getInt(KEY_VOLTAGE));
-			tooltip.add(ElectricalDisplay.formatVoltage(voltage));
 
-			boolean hasSink = data.getBoolean(KEY_HAS_SINK);
-			boolean hasSource = data.getBoolean(KEY_HAS_SOURCE);
-			int recipePower = data.getInt(KEY_RECIPE_POWER);
-			int sourceAmps = Math.max(1, data.getInt(KEY_MAX_SOURCE_AMPS));
+			if (JadeConfigHelper.voltageMode().isVisible(details))
+			{
+				tooltip.add(ElectricalDisplay.formatVoltage(voltage));
+			}
 
-			if (data.getBoolean(KEY_STORAGE) && hasSink && hasSource)
+			if (JadeConfigHelper.powerMode().isVisible(details))
 			{
-				// Storage block: show continuous output rating.
-				int euPerTick = voltage.getVoltage() * sourceAmps;
-				tooltip.add(Component.translatable("ic2.electric.tooltip.output", ElectricalDisplay.formatPowerCompact(euPerTick, voltage, sourceAmps)));
-			} else if (hasSource && !hasSink && recipePower > 0)
-			{
-				// Pure generator / source.
-				tooltip.add(ElectricalDisplay.formatPower(recipePower, voltage, (double) recipePower / Math.max(1, voltage.getVoltage())));
-			} else if (hasSink && recipePower > 0)
-			{
-				// Recipe machine (or other consumer with known demand).
-				tooltip.add(Component.translatable("ic2.jade.eu_per_tick", recipePower));
+				boolean hasSink = data.getBoolean(KEY_HAS_SINK);
+				boolean hasSource = data.getBoolean(KEY_HAS_SOURCE);
+				int recipePower = data.getInt(KEY_RECIPE_POWER);
+				int sourceAmps = Math.max(1, data.getInt(KEY_MAX_SOURCE_AMPS));
+
+				if (data.getBoolean(KEY_STORAGE) && hasSink && hasSource)
+				{
+					// Storage block: show continuous output rating.
+					int euPerTick = voltage.getVoltage() * sourceAmps;
+					tooltip.add(Component.translatable("ic2.electric.tooltip.output", ElectricalDisplay.formatPowerCompact(euPerTick, voltage, sourceAmps)));
+				} else if (hasSource && !hasSink && recipePower > 0)
+				{
+					// Pure generator / source.
+					tooltip.add(ElectricalDisplay.formatPower(recipePower, voltage, (double) recipePower / Math.max(1, voltage.getVoltage())));
+				} else if (hasSink && recipePower > 0)
+				{
+					// Recipe machine (or other consumer with known demand).
+					tooltip.add(Component.translatable("ic2.jade.eu_per_tick", recipePower));
+				}
 			}
 		}
 
-		if (data.getBoolean(KEY_STORAGE) && data.contains(KEY_REDSTONE_MODE))
+		if (data.getBoolean(KEY_STORAGE) && data.contains(KEY_REDSTONE_MODE) && JadeConfigHelper.redstoneMode().isVisible(details))
 		{
 			byte mode = data.getByte(KEY_REDSTONE_MODE);
 			if (mode >= 0 && mode < TileEntityElectricBlock.redstoneModes)
@@ -127,7 +137,7 @@ public enum Ic2MachineTooltipProvider implements IBlockComponentProvider, IServe
 			}
 		}
 
-		if (accessor.showDetails() && data.contains(KEY_ACTIVE))
+		if (data.contains(KEY_ACTIVE) && JadeConfigHelper.activeMode().isVisible(details))
 		{
 			tooltip.add(Component.translatable(data.getBoolean(KEY_ACTIVE) ? "ic2.jade.working" : "ic2.jade.idle"));
 		}

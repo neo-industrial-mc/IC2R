@@ -12,7 +12,6 @@ import ic2.core.gui.dynamic.IGuiValueProvider;
 import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,7 +33,8 @@ import snownee.jade.api.view.ViewGroup;
  *   <li>{@link CustomGauge.IGaugeRatioProvider}</li>
  *   <li>Scanner / Replicator specialty fields</li>
  * </ol>
- * Progress is only shown while {@code > 0}.
+ * Progress is only shown while {@code > 0}. Client display (visibility, text, colors)
+ * is controlled by {@code ic2-client.toml} → {@code [jade.progress]}.
  */
 public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, CompoundTag>, IClientExtensionProvider<CompoundTag, ProgressView>
 {
@@ -42,6 +42,9 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 
 	public static final ResourceLocation UID = IC2.getIdentifier("progress");
 	private static final float MIN_VISIBLE = 1.0E-4F;
+
+	private static final String KEY_CURRENT = "ic2Cur";
+	private static final String KEY_MAX = "ic2Max";
 
 	@Override
 	public ResourceLocation getUid()
@@ -52,40 +55,56 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 	@Override
 	public List<ViewGroup<CompoundTag>> getGroups(ServerPlayer player, ServerLevel world, Object target, boolean showDetails)
 	{
-		float progress = resolveProgress(target);
-		if (progress <= MIN_VISIBLE)
+		ProgressSnapshot snap = resolve(target);
+		if (snap == null || snap.ratio <= MIN_VISIBLE)
 		{
 			return null;
 		}
 
-		progress = Math.min(1.0F, progress);
-		return List.of(new ViewGroup<>(List.of(ProgressView.create(progress))));
+		float progress = Math.min(1.0F, snap.ratio);
+		ViewGroup<CompoundTag> group = new ViewGroup<>(List.of(ProgressView.create(progress)));
+		if (snap.max > 0L)
+		{
+			group.getExtraData().putLong(KEY_CURRENT, snap.current);
+			group.getExtraData().putLong(KEY_MAX, snap.max);
+		}
+		return List.of(group);
 	}
 
 	@Override
 	public List<ClientViewGroup<ProgressView>> getClientGroups(Accessor<?> accessor, List<ViewGroup<CompoundTag>> groups)
 	{
+		if (!JadeConfigHelper.progressMode().isVisible(accessor.showDetails()))
+		{
+			return List.of();
+		}
+
 		return ClientViewGroup.map(groups, ProgressView::read, (serverGroup, clientGroup) ->
 		{
+			CompoundTag extra = serverGroup.getExtraData();
+			long current = extra.getLong(KEY_CURRENT);
+			long max = extra.getLong(KEY_MAX);
+
 			for (ProgressView view : clientGroup.views)
 			{
-				int percent = Math.round(Math.min(1.0F, Math.max(0.0F, view.progress)) * 100.0F);
-				view.text = Component.translatable("ic2.jade.progress", percent);
+				view.style = JadeConfigHelper.progressStyle();
+				view.text = JadeConfigHelper.formatProgressText(view.progress, current, max);
 			}
 		});
 	}
 
 	/**
-	 * @return progress in {@code [0, 1]}, or {@code <= 0} when nothing to display
+	 * @return progress snapshot, or {@code null} when nothing to display
 	 */
-	static float resolveProgress(Object target)
+	static ProgressSnapshot resolve(Object target)
 	{
 		if (target instanceof Ic2TileEntity te && te.hasComponent(Process.class))
 		{
-			float ratio = (float) te.getComponent(Process.class).getProgressRatio();
+			Process process = te.getComponent(Process.class);
+			float ratio = (float) process.getProgressRatio();
 			if (ratio > MIN_VISIBLE)
 			{
-				return ratio;
+				return new ProgressSnapshot(ratio, process.getProgress(), process.operationDuration);
 			}
 		}
 
@@ -94,7 +113,9 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 			float progress = machine.getProgress();
 			if (progress > MIN_VISIBLE)
 			{
-				return progress;
+				int max = Math.max(1, machine.operationLength);
+				long current = Math.round((double) progress * max);
+				return new ProgressSnapshot(progress, current, max);
 			}
 		}
 
@@ -105,7 +126,7 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 				double progress = guiValues.getGuiValue("progress");
 				if (progress > MIN_VISIBLE)
 				{
-					return (float) progress;
+					return new ProgressSnapshot((float) progress, 0L, 0L);
 				}
 			} catch (IllegalArgumentException | UnsupportedOperationException ignored)
 			{
@@ -118,20 +139,35 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 			double ratio = gauge.getRatio();
 			if (ratio > MIN_VISIBLE)
 			{
-				return (float) ratio;
+				return new ProgressSnapshot((float) ratio, 0L, 0L);
 			}
 		}
 
 		if (target instanceof TileEntityScanner scanner && scanner.duration > 0 && scanner.progress > 0)
 		{
-			return (float) scanner.progress / (float) scanner.duration;
+			return new ProgressSnapshot(
+				(float) scanner.progress / (float) scanner.duration,
+				scanner.progress,
+				scanner.duration
+			);
 		}
 
 		if (target instanceof TileEntityReplicator replicator && replicator.patternUu > 0.0 && replicator.uuProcessed > 0.0)
 		{
-			return (float) Math.min(1.0, replicator.uuProcessed / replicator.patternUu);
+			// Scale UU buckets to milli-units so fraction labels stay readable as integers.
+			long current = Math.round(replicator.uuProcessed * 1000.0);
+			long max = Math.round(replicator.patternUu * 1000.0);
+			return new ProgressSnapshot(
+				(float) Math.min(1.0, replicator.uuProcessed / replicator.patternUu),
+				current,
+				Math.max(1L, max)
+			);
 		}
 
-		return 0.0F;
+		return null;
+	}
+
+	record ProgressSnapshot(float ratio, long current, long max)
+	{
 	}
 }
