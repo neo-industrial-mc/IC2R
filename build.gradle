@@ -106,16 +106,23 @@ minecraft {
 repositories {
     mavenCentral()
     maven { url = "https://maven.blamejared.com/" }
-    maven { url "https://api.modrinth.com/maven" }
+    maven { url = "https://api.modrinth.com/maven" }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    
+    // JEI
     compileOnly "mezz.jei:jei-1.20.1-forge-api:${jei_version}"
     runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
 
+    // AE2
     compileOnly fg.deobf("maven.modrinth:ae2:7KVs6HMQ")
     // compileOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}:api"
+
+    // Jade
+    compileOnly "maven.modrinth:jade:${jade_version}+forge"
+    runtimeOnly fg.deobf("maven.modrinth:jade:${jade_version}+forge")
 }
 
 reobf {
