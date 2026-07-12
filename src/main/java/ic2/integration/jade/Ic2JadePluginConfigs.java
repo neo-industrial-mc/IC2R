@@ -56,7 +56,7 @@ public final class Ic2JadePluginConfigs
 
 		// Progress
 		registration.addConfig(PROGRESS_DISPLAY, JadeDisplayMode.ALWAYS);
-		registration.addConfig(PROGRESS_TEXT_MODE, JadeProgressTextMode.PERCENT);
+		registration.addConfig(PROGRESS_TEXT_MODE, JadeProgressTextMode.BOTH);
 		registration.addConfig(PROGRESS_COLOR, "#FF55FF55", COLOR);
 		registration.addConfig(PROGRESS_COLOR2, "#FF55FF55", COLOR);
 

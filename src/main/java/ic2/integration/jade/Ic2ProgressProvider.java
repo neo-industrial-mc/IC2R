@@ -2,6 +2,7 @@ package ic2.integration.jade;
 
 import ic2.core.IC2;
 import ic2.core.block.comp.Process;
+import ic2.core.block.machine.tileentity.TileEntityBlastFurnace;
 import ic2.core.block.machine.tileentity.TileEntityReplicator;
 import ic2.core.block.machine.tileentity.TileEntityScanner;
 import ic2.core.block.machine.tileentity.TileEntityStandardMachine;
@@ -29,12 +30,13 @@ import snownee.jade.api.view.ViewGroup;
  * <ol>
  *   <li>{@link Process} component ratio</li>
  *   <li>{@link TileEntityStandardMachine#getProgress()}</li>
- *   <li>{@link IGuiValueProvider} key {@code "progress"}</li>
+ *   <li>{@link TileEntityBlastFurnace} ticks ({@code progress} / recipe {@code duration})</li>
+ *   <li>{@link IGuiValueProvider} key {@code "progress"} (ratio only)</li>
  *   <li>{@link CustomGauge.IGaugeRatioProvider}</li>
  *   <li>Scanner / Replicator specialty fields</li>
  * </ol>
  * Progress is only shown while {@code > 0}. Client display (visibility, text, colors)
- * is controlled by {@code ic2-client.toml} → {@code [jade.progress]}.
+ * is controlled by Jade's plugin config (progress options under IC2).
  */
 public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, CompoundTag>, IClientExtensionProvider<CompoundTag, ProgressView>
 {
@@ -45,6 +47,8 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 
 	private static final String KEY_CURRENT = "ic2Cur";
 	private static final String KEY_MAX = "ic2Max";
+	/** When true, current/max are game ticks and labels use seconds. */
+	private static final String KEY_TIME_BASED = "ic2Time";
 
 	@Override
 	public ResourceLocation getUid()
@@ -67,6 +71,7 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 		{
 			group.getExtraData().putLong(KEY_CURRENT, snap.current);
 			group.getExtraData().putLong(KEY_MAX, snap.max);
+			group.getExtraData().putBoolean(KEY_TIME_BASED, snap.timeBased);
 		}
 		return List.of(group);
 	}
@@ -84,11 +89,12 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 			CompoundTag extra = serverGroup.getExtraData();
 			long current = extra.getLong(KEY_CURRENT);
 			long max = extra.getLong(KEY_MAX);
+			boolean timeBased = extra.getBoolean(KEY_TIME_BASED);
 
 			for (ProgressView view : clientGroup.views)
 			{
 				view.style = JadeConfigHelper.progressStyle();
-				view.text = JadeConfigHelper.formatProgressText(view.progress, current, max);
+				view.text = JadeConfigHelper.formatProgressText(view.progress, current, max, timeBased);
 			}
 		});
 	}
@@ -104,7 +110,8 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 			float ratio = (float) process.getProgressRatio();
 			if (ratio > MIN_VISIBLE)
 			{
-				return new ProgressSnapshot(ratio, process.getProgress(), process.operationDuration);
+				// operationDuration / progress are ticks (recipe time).
+				return ProgressSnapshot.time(ratio, process.getProgress(), process.operationDuration);
 			}
 		}
 
@@ -115,8 +122,16 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 			{
 				int max = Math.max(1, machine.operationLength);
 				long current = Math.round((double) progress * max);
-				return new ProgressSnapshot(progress, current, max);
+				return ProgressSnapshot.time(progress, current, max);
 			}
+		}
+
+		// Custom TE (not Process / StandardMachine): has tick progress + recipe duration.
+		if (target instanceof TileEntityBlastFurnace blast && blast.getProgress() > 0)
+		{
+			int max = blast.getProgressNeeded();
+			int current = blast.getProgress();
+			return ProgressSnapshot.time((float) current / (float) max, current, max);
 		}
 
 		if (target instanceof IGuiValueProvider guiValues)
@@ -126,7 +141,7 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 				double progress = guiValues.getGuiValue("progress");
 				if (progress > MIN_VISIBLE)
 				{
-					return new ProgressSnapshot((float) progress, 0L, 0L);
+					return ProgressSnapshot.ratioOnly((float) progress);
 				}
 			} catch (IllegalArgumentException | UnsupportedOperationException ignored)
 			{
@@ -139,13 +154,13 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 			double ratio = gauge.getRatio();
 			if (ratio > MIN_VISIBLE)
 			{
-				return new ProgressSnapshot((float) ratio, 0L, 0L);
+				return ProgressSnapshot.ratioOnly((float) ratio);
 			}
 		}
 
 		if (target instanceof TileEntityScanner scanner && scanner.duration > 0 && scanner.progress > 0)
 		{
-			return new ProgressSnapshot(
+			return ProgressSnapshot.time(
 				(float) scanner.progress / (float) scanner.duration,
 				scanner.progress,
 				scanner.duration
@@ -154,10 +169,10 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 
 		if (target instanceof TileEntityReplicator replicator && replicator.patternUu > 0.0 && replicator.uuProcessed > 0.0)
 		{
-			// Scale UU buckets to milli-units so fraction labels stay readable as integers.
+			// UU buckets (not time). Scale to milli-units for integer transport.
 			long current = Math.round(replicator.uuProcessed * 1000.0);
 			long max = Math.round(replicator.patternUu * 1000.0);
-			return new ProgressSnapshot(
+			return ProgressSnapshot.amount(
 				(float) Math.min(1.0, replicator.uuProcessed / replicator.patternUu),
 				current,
 				Math.max(1L, max)
@@ -167,7 +182,24 @@ public enum Ic2ProgressProvider implements IServerExtensionProvider<Object, Comp
 		return null;
 	}
 
-	record ProgressSnapshot(float ratio, long current, long max)
+	/**
+	 * @param timeBased {@code true} if current/max are recipe ticks (shown as seconds)
+	 */
+	record ProgressSnapshot(float ratio, long current, long max, boolean timeBased)
 	{
+		static ProgressSnapshot time(float ratio, long currentTicks, long maxTicks)
+		{
+			return new ProgressSnapshot(ratio, currentTicks, Math.max(1L, maxTicks), true);
+		}
+
+		static ProgressSnapshot amount(float ratio, long current, long max)
+		{
+			return new ProgressSnapshot(ratio, current, max, false);
+		}
+
+		static ProgressSnapshot ratioOnly(float ratio)
+		{
+			return new ProgressSnapshot(ratio, 0L, 0L, false);
+		}
 	}
 }

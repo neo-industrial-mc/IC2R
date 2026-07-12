@@ -1,5 +1,7 @@
 package ic2.integration.jade;
 
+import java.util.Locale;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.config.IPluginConfig;
@@ -60,7 +62,8 @@ public final class JadeConfigHelper
 
 	public static JadeProgressTextMode progressTextMode()
 	{
-		return getEnum(Ic2JadePluginConfigs.PROGRESS_TEXT_MODE, JadeProgressTextMode.PERCENT);
+		// Default: elapsed / total recipe time + percent in parentheses.
+		return getEnum(Ic2JadePluginConfigs.PROGRESS_TEXT_MODE, JadeProgressTextMode.BOTH);
 	}
 
 	public static String energyUnit()
@@ -157,7 +160,12 @@ public final class JadeConfigHelper
 		};
 	}
 
-	public static Component formatProgressText(float ratio, long current, long max)
+	/**
+	 * @param current   ticks (if {@code timeBased}) or raw amount units
+	 * @param max       total ticks / amount
+	 * @param timeBased when true, format absolute values as seconds (recipe duration)
+	 */
+	public static Component formatProgressText(float ratio, long current, long max, boolean timeBased)
 	{
 		JadeProgressTextMode mode = progressTextMode();
 		if (mode == JadeProgressTextMode.NONE)
@@ -168,17 +176,46 @@ public final class JadeConfigHelper
 		int percent = Math.round(Math.min(1.0F, Math.max(0.0F, ratio)) * 100.0F);
 		boolean hasAbsolute = max > 0L;
 
+		if (!hasAbsolute || mode == JadeProgressTextMode.PERCENT)
+		{
+			return Component.translatable("ic2.jade.progress", percent);
+		}
+
+		if (timeBased)
+		{
+			// Recipe machines: elapsed time / operation length, optional percent.
+			String elapsed = formatSeconds(current);
+			String total = formatSeconds(max);
+			return switch (mode)
+			{
+				case FRACTION -> Component.translatable("ic2.jade.progress.time", elapsed, total);
+				case BOTH -> Component.translatable("ic2.jade.progress.time_both", elapsed, total, percent);
+				default -> Component.translatable("ic2.jade.progress", percent);
+			};
+		}
+
+		// Non-time progress (e.g. replicator UU amount).
 		return switch (mode)
 		{
-			case PERCENT -> Component.translatable("ic2.jade.progress", percent);
-			case FRACTION -> hasAbsolute
-				? Component.translatable("ic2.jade.progress.fraction", current, max)
-				: Component.translatable("ic2.jade.progress", percent);
-			case BOTH -> hasAbsolute
-				? Component.translatable("ic2.jade.progress.both", current, max, percent)
-				: Component.translatable("ic2.jade.progress", percent);
-			case NONE -> null;
+			case FRACTION -> Component.translatable("ic2.jade.progress.fraction", current, max);
+			case BOTH -> Component.translatable("ic2.jade.progress.both", current, max, percent);
+			default -> Component.translatable("ic2.jade.progress", percent);
 		};
+	}
+
+	/** Formats game ticks as seconds for progress labels. */
+	static String formatSeconds(long ticks)
+	{
+		double seconds = Math.max(0L, ticks) / 20.0;
+		if (seconds >= 100.0)
+		{
+			return String.format(Locale.ROOT, "%.0f", seconds);
+		}
+		if (seconds >= 10.0 || seconds == Math.rint(seconds))
+		{
+			return String.format(Locale.ROOT, "%.1f", seconds);
+		}
+		return String.format(Locale.ROOT, "%.2f", seconds);
 	}
 
 	@SuppressWarnings("unchecked")

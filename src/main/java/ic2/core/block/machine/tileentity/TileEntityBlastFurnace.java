@@ -196,6 +196,18 @@ public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgr
 		return this.heat >= maxHeat;
 	}
 
+	/** Elapsed recipe progress in ticks (for Jade / overlays). */
+	public int getProgress()
+	{
+		return this.progress;
+	}
+
+	/** Total recipe duration in ticks from recipe metadata {@code duration}. */
+	public int getProgressNeeded()
+	{
+		return Math.max(1, this.progressNeeded);
+	}
+
 	@Override
 	public ContainerBase<?> createServerScreenHandler(int syncId, Player player)
 	{
