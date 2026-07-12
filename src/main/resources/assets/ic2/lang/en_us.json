@@ -1278,5 +1278,6 @@
   "item.ic2.remote": "Dynamite-O-Mote",
   "ic2.remote.tooltip.linked": "Linked to %s dynamite",
   "ic2.remote.cannot_unlink": "This dynamite stick is not linked to this remote, cannot unlink.",
-  "subtitle.ic2.item.remote.use": "Dynamite-O-Mote: Use"
+  "subtitle.ic2.item.remote.use": "Dynamite-O-Mote: Use",
+  "ic2.jei.recipes": "Show recipes"
 }

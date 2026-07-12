@@ -1278,5 +1278,6 @@
   "item.ic2.remote": "炸药引爆器",
   "ic2.remote.tooltip.linked": "已连接 %s 根炸药",
   "ic2.remote.cannot_unlink": "该炸药未连接到此引爆器，无法解除连接。",
-  "subtitle.ic2.item.remote.use": "炸药引爆器：使用"
+  "subtitle.ic2.item.remote.use": "炸药引爆器：使用",
+  "ic2.jei.recipes": "显示配方"
 }
