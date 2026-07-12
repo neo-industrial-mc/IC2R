@@ -6,6 +6,7 @@ import ic2.api.energy.profile.VoltageTier;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
+import ic2.core.energy.EnergyNetMode;
 import ic2.core.energy.profile.ElectricalProfile;
 import ic2.api.energy.tile.IMetaDelegate;
 import ic2.api.reactor.IBaseReactorComponent;
@@ -102,6 +103,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	private float lastOutput = 0.0F;
 	private final ElectricalProfile profile = new ElectricalProfile(VoltageTier.LV);
 	private float lastSyncedOfferedOutput = -1.0F;
+	private double energyBuffer = 0.0;
 	private int EmitHeatBuffer = 0;
 	private boolean fluidCooled = false;
 
@@ -217,6 +219,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		super.load(nbt);
 		this.heat = nbt.getInt("heat");
 		this.output = nbt.getShort("output");
+		this.energyBuffer = nbt.getDouble("energyBuffer");
 	}
 
 	@Override
@@ -225,6 +228,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		super.saveAdditional(nbt);
 		nbt.putInt("heat", this.heat);
 		nbt.putShort("output", (short) this.getReactorEnergyOutput());
+		nbt.putDouble("energyBuffer", this.energyBuffer);
 	}
 
 	@Override
@@ -240,6 +244,10 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	@Override
 	public void drawEnergy(double amount)
 	{
+		if (this.isGtEnergyNet())
+		{
+			this.energyBuffer = Math.max(0.0, this.energyBuffer - amount);
+		}
 	}
 
 	@Override
@@ -251,21 +259,35 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	@Override
 	public double getOfferedEnergy()
 	{
-		float offeredOutput = this.getReactorEnergyOutput() * 5.0F * IC2Config.balance.energy.generator.nuclear.get().floatValue();
-		this.syncSourceProfile(offeredOutput);
-		return offeredOutput;
+		float productionEuPerTick = this.getCurrentOfferedOutput();
+		this.syncSourceProfile(productionEuPerTick);
+		// GT mode only emits whole amp packets (offer >= V). Buffer production like ConversionGenerator.
+		return this.isGtEnergyNet() ? this.energyBuffer : productionEuPerTick;
 	}
 
 	private void syncSourceProfile(float outputEuPerTick)
 	{
-		if (this.lastSyncedOfferedOutput == outputEuPerTick)
+		if (outputEuPerTick > 0.0F)
 		{
-			return;
-		}
+			if (this.lastSyncedOfferedOutput == outputEuPerTick)
+			{
+				return;
+			}
 
-		this.lastSyncedOfferedOutput = outputEuPerTick;
-		this.profile.setWorkingVoltage(VoltageTier.fromPower(outputEuPerTick));
-		this.profile.setRecipePower(Math.round(outputEuPerTick));
+			this.lastSyncedOfferedOutput = outputEuPerTick;
+			this.profile.setWorkingVoltage(VoltageTier.fromPower(outputEuPerTick));
+			this.profile.setRecipePower(Math.round(outputEuPerTick));
+		} else if (!this.isGtEnergyNet() || this.energyBuffer <= 0.0)
+		{
+			if (this.lastSyncedOfferedOutput == 0.0F)
+			{
+				return;
+			}
+
+			this.lastSyncedOfferedOutput = 0.0F;
+			this.profile.setWorkingVoltage(VoltageTier.ULV);
+			this.profile.setRecipePower(0);
+		}
 	}
 
 	@Override
@@ -303,32 +325,78 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		return this.getReactorEnergyOutput() * 5.0F * IC2Config.balance.energy.generator.nuclear.get().floatValue();
 	}
 
+	private VoltageTier getOutputVoltageTier(float outputEuPerTick)
+	{
+		return outputEuPerTick <= 0.0F ? VoltageTier.ULV : VoltageTier.fromPower(outputEuPerTick);
+	}
+
+	private boolean isGtEnergyNet()
+	{
+		return EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get()) == EnergyNetMode.GT;
+	}
+
+	/**
+	 * GT mode accumulates production until at least 1 full amp packet can be emitted.
+	 * Without this, dynamic V from {@link VoltageTier#fromPower} is almost always greater than
+	 * the instantaneous EU/t, so {@code ElectricalNodes.getGtOfferAmps} returns 0.
+	 */
+	private void accumulateGtEnergyBuffer()
+	{
+		if (!this.isGtEnergyNet() || this.fluidCooled)
+		{
+			return;
+		}
+
+		float outputEuPerTick = this.getCurrentOfferedOutput();
+		if (outputEuPerTick > 0.0F)
+		{
+			int voltage = this.getOutputVoltageTier(outputEuPerTick).getVoltage();
+			double maxBuffer = Math.max(voltage, outputEuPerTick);
+			this.energyBuffer = Math.min(this.energyBuffer + outputEuPerTick, maxBuffer);
+			this.syncSourceProfile(outputEuPerTick);
+		} else if (this.energyBuffer <= 0.0)
+		{
+			this.syncSourceProfile(0.0F);
+		}
+	}
+
 	@Override
 	public double getEnergyBufferCapacity()
 	{
 		float offered = this.getCurrentOfferedOutput();
-		int voltage = VoltageTier.fromPower(offered).getVoltage();
-		return Math.max(voltage, Math.round(offered));
+		if (offered <= 0.0F && this.isGtEnergyNet() && this.energyBuffer > 0.0)
+		{
+			return this.profile.getWorkingVoltage().getVoltage();
+		}
+
+		int voltage = this.getOutputVoltageTier(offered).getVoltage();
+		return Math.max(voltage, offered);
 	}
 
 	@Override
 	public double getEnergyBufferFree()
 	{
-		float offered = this.getCurrentOfferedOutput();
 		double capacity = this.getEnergyBufferCapacity();
+		if (this.isGtEnergyNet())
+		{
+			return Math.max(0.0, capacity - Math.min(this.energyBuffer, capacity));
+		}
+
+		float offered = this.getCurrentOfferedOutput();
 		return Math.max(0.0, capacity - Math.min(offered, capacity));
 	}
 
 	@Override
 	public int getSourceTier()
 	{
-		return VoltageTier.fromPower(this.getCurrentOfferedOutput()).getIcTier();
+		return this.profile.getWorkingVoltage().getIcTier();
 	}
 
 	@Override
 	public double getReactorEUEnergyOutput()
 	{
-		return this.getOfferedEnergy();
+		// Always the production rate (EU/t), never the GT packet buffer fill.
+		return this.getCurrentOfferedOutput();
 	}
 
 	@Override
@@ -378,6 +446,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	protected void updateEntityServer()
 	{
 		super.updateEntityServer();
+		this.accumulateGtEnergyBuffer();
 		if (this.updateTicker++ % this.getTickRate() == 0)
 		{
 			if (!Util.isAreaLoaded(this.getLevel(), this.worldPosition, 8))
@@ -972,6 +1041,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 			this.addedToEnergyNet = false;
 		}
 
+		this.energyBuffer = 0.0;
 		this.createCasingRedstoneLinks();
 		this.openTanks();
 	}
