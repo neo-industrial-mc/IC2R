@@ -145,6 +145,20 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		return (level >= 3 || !state.is(BlockTags.NEEDS_DIAMOND_TOOL)) && (level >= 2 || !state.is(BlockTags.NEEDS_IRON_TOOL)) && (level >= 1 || !state.is(BlockTags.NEEDS_STONE_TOOL)) && this.isEffective(state);
 	}
 
+	/**
+	 * Forge routes {@link ItemStack#isCorrectToolForDrops} to this stack-sensitive
+	 * override on {@link DiggerItem}, not to {@link #isCorrectToolForDrops(BlockState)}.
+	 * Subclasses (wrench, chainsaw, drills) implement the BlockState form — keep them
+	 * wired by delegating here. Without this, the parent only checks the single
+	 * digger tag (often {@link Ic2BlockTags#EMPTY} for the electric wrench), so Jade
+	 * shows ✕ and mining uses the incorrect-tool penalty (÷100 instead of ÷30).
+	 */
+	@Override
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
+	{
+		return this.isCorrectToolForDrops(state);
+	}
+
 	private boolean isEffective(BlockState state)
 	{
 		for (TagKey<Block> tag : this.effectiveBlocks)
