@@ -44,13 +44,13 @@ public class Ic2WorldGen
 
 	public static void init()
 	{
-		attachOreFeatureToBiome("ore_lead");
-		attachOreFeatureToBiome("ore_lead_lower");
-		attachOreFeatureToBiome("ore_tin_small");
-		attachOreFeatureToBiome("ore_tin_upper");
-		attachOreFeatureToBiome("ore_uranium");
-		attachOreFeatureToBiome("ore_uranium_buried");
-		attachOreFeatureToBiome("ore_uranium_large");
+		attachOreFeatureToBiome("lead_ore");
+		attachOreFeatureToBiome("lead_ore_lower");
+		attachOreFeatureToBiome("tin_ore_small");
+		attachOreFeatureToBiome("tin_ore_upper");
+		attachOreFeatureToBiome("uranium_ore");
+		attachOreFeatureToBiome("uranium_ore_buried");
+		attachOreFeatureToBiome("uranium_ore_large");
 		attachRubberTreeFeatureToBiome("trees_rubber_jungle", EnvProxy.BiomeSelector.JUNGLE);
 		attachRubberTreeFeatureToBiome("trees_rubber_forest", EnvProxy.BiomeSelector.FOREST);
 		attachRubberTreeFeatureToBiome("trees_rubber_swamp", EnvProxy.BiomeSelector.SWAMP);

@@ -1,5 +1,5 @@
 {
-  "feature": "ic2:ore_lead",
+  "feature": "ic2:lead_ore",
   "placement": [
     {
       "type": "minecraft:count",

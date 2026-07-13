@@ -15,8 +15,8 @@
 
 | 放置特征 ID | 配置特征 | 每区块尝试次数 | 高度分布类型 | 高度范围 (Y) | 矿脉大小 | 暴露空气丢弃率 |
 |---|---|---:|---|---|---:|---:|
-| `ic2:ore_tin_upper` | `ic2:ore_tin` | 15 | 梯形 (trapezoid) | 72 ~ 160 | 10 | 0% |
-| `ic2:ore_tin_small` | `ic2:ore_tin_small` | 54 | 梯形 (trapezoid) | -64 ~ 80 | 6 | 0% |
+| `ic2:tin_ore_upper` | `ic2:tin_ore` | 15 | 梯形 (trapezoid) | 72 ~ 160 | 10 | 0% |
+| `ic2:tin_ore_small` | `ic2:tin_ore_small` | 54 | 梯形 (trapezoid) | -64 ~ 80 | 6 | 0% |
 
 - **替换目标**：`stone_ore_replaceables` / `deepslate_ore_replaceables`（石头与深板岩）
 - **驱动逻辑**：双层梯形分布；上层（Y 72–160）矿脉较大但频率低，下层（Y -64–80）频率极高、矿脉较小，整体偏向中低海拔富集。
@@ -25,8 +25,8 @@
 
 | 放置特征 ID | 配置特征 | 每区块尝试次数 | 高度分布类型 | 高度范围 (Y) | 矿脉大小 | 暴露空气丢弃率 |
 |---|---|---:|---|---|---:|---:|
-| `ic2:ore_lead` | `ic2:ore_lead` | 14 | 均匀 (uniform) | -80 ~ 72 | 8 | 0% |
-| `ic2:ore_lead_lower` | `ic2:ore_lead` | 10 | 梯形 (trapezoid) | -80 ~ -16 | 8 | 0% |
+| `ic2:lead_ore` | `ic2:lead_ore` | 14 | 均匀 (uniform) | -80 ~ 72 | 8 | 0% |
+| `ic2:lead_ore_lower` | `ic2:lead_ore` | 10 | 梯形 (trapezoid) | -80 ~ -16 | 8 | 0% |
 
 - **替换目标**：同上
 - **驱动逻辑**：全高度均匀层 + 深层额外梯形加成；Y -80 ~ -16 区间有双层叠加，深板岩区域（Y < 0）实际丰度更高。
@@ -35,9 +35,9 @@
 
 | 放置特征 ID | 配置特征 | 每区块尝试次数 | 高度分布类型 | 高度范围 (Y) | 矿脉大小 | 暴露空气丢弃率 |
 |---|---|---:|---|---|---:|---:|
-| `ic2:ore_uranium` | `ic2:ore_uranium` | 6 | 梯形 (trapezoid) | -96 ~ 72 | 8 | 40% |
-| `ic2:ore_uranium_buried` | `ic2:ore_uranium_buried` | 7 | 梯形 (trapezoid) | -96 ~ 72 | 8 | 100% |
-| `ic2:ore_uranium_large` | `ic2:ore_uranium_large` | 1（仅 1/5 区块） | 梯形 (trapezoid) | -96 ~ 72 | 12 | 65% |
+| `ic2:uranium_ore` | `ic2:uranium_ore` | 6 | 梯形 (trapezoid) | -96 ~ 72 | 8 | 40% |
+| `ic2:uranium_ore_buried` | `ic2:uranium_ore_buried` | 7 | 梯形 (trapezoid) | -96 ~ 72 | 8 | 100% |
+| `ic2:uranium_ore_large` | `ic2:uranium_ore_large` | 1（仅 1/5 区块） | 梯形 (trapezoid) | -96 ~ 72 | 12 | 65% |
 
 - **替换目标**：同上
 - **驱动逻辑**：参照原版钻石的三层结构（普通 + 埋藏 + 稀有大型）；埋藏矿脉（`discard_chance_on_air_exposure: 1.0`）仅生成于完全包裹的岩石中，有效产出更集中在地下深处。

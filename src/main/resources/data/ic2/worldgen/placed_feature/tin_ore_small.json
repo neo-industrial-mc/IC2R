@@ -1,9 +1,9 @@
 {
-  "feature": "ic2:ore_uranium",
+  "feature": "ic2:tin_ore_small",
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 6
+      "count": 54
     },
     {
       "type": "minecraft:in_square"
@@ -13,10 +13,10 @@
       "height": {
         "type": "minecraft:trapezoid",
         "max_inclusive": {
-          "absolute": 72
+          "absolute": 80
         },
         "min_inclusive": {
-          "absolute": -96
+          "absolute": -64
         }
       }
     },
