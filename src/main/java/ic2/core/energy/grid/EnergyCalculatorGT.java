@@ -106,6 +106,12 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 			tile.setSourceData((double) offerAmps * voltage, offerAmps);
 		}
 
+		if (!foundAny)
+		{
+			// Same sticky-stat issue as Unified: without a calc pass, path energy never ages out.
+			GridData.advanceCalcIds(enet);
+		}
+
 		return foundAny;
 	}
 

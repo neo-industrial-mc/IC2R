@@ -34,4 +34,22 @@ class GridData
 
 		return ret;
 	}
+
+	/**
+	 * Bump every active grid's calc id so path-local {@code energySupplied} from prior ticks
+	 * no longer matches {@code currentCalcId}. Used when the energy net has no sources offering
+	 * energy and therefore skips {@code runCalculation} — without this, meters/detectors keep
+	 * reporting the last non-zero throughput forever.
+	 */
+	static void advanceCalcIds(EnergyNetLocal enet)
+	{
+		for (Grid grid : enet.getGrids())
+		{
+			GridData data = grid.getData();
+			if (data != null && data.active)
+			{
+				data.currentCalcId++;
+			}
+		}
+	}
 }
