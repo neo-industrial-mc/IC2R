@@ -18,6 +18,7 @@ import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.event.sound.SoundEngineLoadEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -139,6 +140,13 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent
 	public void onDisconnect(PlayerEvent.PlayerLoggedOutEvent event)
 	{
+		EventHandlerClient.onDisconnect();
+	}
+
+	@SubscribeEvent
+	public void onClientLoggingOut(ClientPlayerNetworkEvent.LoggingOut event)
+	{
+		// More reliable than PlayerLoggedOutEvent when leaving a dedicated server.
 		EventHandlerClient.onDisconnect();
 	}
 

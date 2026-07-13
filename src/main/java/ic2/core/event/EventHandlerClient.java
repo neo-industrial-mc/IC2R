@@ -10,6 +10,7 @@ import ic2.core.fluid.FluidHandler;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.fluid.StandardFluidItem;
 import ic2.core.item.IHandHeldInventory;
+import ic2.core.item.armor.jetpack.JetpackLogic;
 import ic2.core.item.tool.AbstractItemNanoSaber;
 import ic2.core.item.tool.ContainerToolbox;
 import ic2.core.item.upgrade.ItemUpgradeModule;
@@ -215,6 +216,8 @@ public class EventHandlerClient
 	public static void onDisconnect()
 	{
 		RpcHandler.onDisconnect();
+		// Ensure looping jetpack audio cannot survive into the next multiplayer session.
+		JetpackLogic.stopJetpackSound(null);
 	}
 
 	public static void onClientPlayerJoin(Player player)
