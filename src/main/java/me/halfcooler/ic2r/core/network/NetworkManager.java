@@ -47,7 +47,12 @@ import net.minecraft.world.phys.Vec3;
 
 public class NetworkManager implements INetworkManager
 {
-	public static final ResourceLocation channelId = IC2R.getIdentifier("m");
+	/**
+	 * Must not touch {@link IC2R} here: {@code PlatformNetworkForge} reads this during SPI install,
+	 * and {@code IC2R} static init also calls {@code ForgePlatformServices.install()} — using
+	 * {@code IC2R.getIdentifier} would recurse and leave {@code channelId} null.
+	 */
+	public static final ResourceLocation channelId = ResourceLocation.fromNamespaceAndPath("ic2r", "m");
 
 	private static TeUpdateDataServer getTeUpdateData(BlockEntity te)
 	{

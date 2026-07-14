@@ -13,27 +13,38 @@ import me.halfcooler.ic2r.platform.services.PlatformServices;
  */
 public final class ForgePlatformServices
 {
+	/** True while constructing adapters so nested {@link #install} from class-init is a no-op. */
+	private static volatile boolean installing;
+
 	private ForgePlatformServices()
 	{
 	}
 
-	/** Idempotent install from the Forge mod entry / {@code IC2R} static. */
+	/** Idempotent (and re-entrant-safe) install from the Forge mod entry / {@code IC2R} static. */
 	public static void install()
 	{
-		if (PlatformServices.isInstalled())
+		if (PlatformServices.isInstalled() || installing)
 		{
 			return;
 		}
 
-		PlatformServices.install(
-			new PlatformRegistryForge(),
-			new PlatformEnergyBridgeForge(),
-			new PlatformFluidBridgeForge(),
-			new PlatformItemTransferForge(),
-			new PlatformNetworkForge(),
-			new PlatformPlayerUiForge(),
-			new PlatformConfigForge(),
-			new PlatformLifecycleForge()
-		);
+		installing = true;
+		try
+		{
+			PlatformServices.install(
+				new PlatformRegistryForge(),
+				new PlatformEnergyBridgeForge(),
+				new PlatformFluidBridgeForge(),
+				new PlatformItemTransferForge(),
+				new PlatformNetworkForge(),
+				new PlatformPlayerUiForge(),
+				new PlatformConfigForge(),
+				new PlatformLifecycleForge()
+			);
+		}
+		finally
+		{
+			installing = false;
+		}
 	}
 }
