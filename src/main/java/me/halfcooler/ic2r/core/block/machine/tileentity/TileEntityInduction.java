@@ -248,24 +248,24 @@ public class TileEntityInduction extends TileEntityElectricMachine implements IH
 	@Override
 	public SoundEvent getStartSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_FURNACE_INDUCTION_START;
+		return Ic2rSoundEvents.MACHINE_FURNACE_INDUCTION_START.get();
 	}
 
 	@Override
 	public SoundEvent getStopSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_FURNACE_INDUCTION_STOP;
+		return Ic2rSoundEvents.MACHINE_FURNACE_INDUCTION_STOP.get();
 	}
 
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_FURNACE_INDUCTION_LOOP;
+		return Ic2rSoundEvents.MACHINE_FURNACE_INDUCTION_LOOP.get();
 	}
 
 	@Override
 	public SoundEvent getInterruptSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_INTERRUPT1;
+		return Ic2rSoundEvents.MACHINE_INTERRUPT1.get();
 	}
 }

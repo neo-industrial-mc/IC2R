@@ -27,13 +27,13 @@ public class TileEntityExtractor extends TileEntityStandardMachine<IRecipeInput,
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_EXTRACTOR_OPERATE;
+		return Ic2rSoundEvents.MACHINE_EXTRACTOR_OPERATE.get();
 	}
 
 	@Override
 	public SoundEvent getInterruptSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_INTERRUPT1;
+		return Ic2rSoundEvents.MACHINE_INTERRUPT1.get();
 	}
 
 	@Override

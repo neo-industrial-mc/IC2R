@@ -356,20 +356,20 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 			case 0:
 			case 3:
 			case 4:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SHOOT);
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SHOOT.get());
 				break;
 			case 1:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LOW_FOCUS);
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LOW_FOCUS.get());
 				break;
 			case 2:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LONG_RANGE);
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LONG_RANGE.get());
 				break;
 			case 5:
 			case 7:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SCATTER);
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SCATTER.get());
 				break;
 			case 6:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_EXPLOSIVE);
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_EXPLOSIVE.get());
 		}
 	}
 }

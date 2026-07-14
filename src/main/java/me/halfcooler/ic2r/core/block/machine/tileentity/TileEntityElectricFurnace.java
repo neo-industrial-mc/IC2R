@@ -68,25 +68,25 @@ public class TileEntityElectricFurnace extends TileEntityStandardMachine<ItemSta
 	@Override
 	public SoundEvent getStartSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_FURNACE_ELECTRIC_START;
+		return Ic2rSoundEvents.MACHINE_FURNACE_ELECTRIC_START.get();
 	}
 
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_FURNACE_ELECTRIC_LOOP;
+		return Ic2rSoundEvents.MACHINE_FURNACE_ELECTRIC_LOOP.get();
 	}
 
 	@Override
 	public SoundEvent getInterruptSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_INTERRUPT1;
+		return Ic2rSoundEvents.MACHINE_INTERRUPT1.get();
 	}
 
 	@Override
 	public SoundEvent getStopSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_FURNACE_ELECTRIC_STOP;
+		return Ic2rSoundEvents.MACHINE_FURNACE_ELECTRIC_STOP.get();
 	}
 
 	@Override

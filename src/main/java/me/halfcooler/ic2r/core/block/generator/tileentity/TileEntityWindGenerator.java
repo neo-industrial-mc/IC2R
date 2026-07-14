@@ -131,7 +131,7 @@ public class TileEntityWindGenerator extends TileEntityBaseRotorGenerator implem
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.GENERATOR_WIND_LOOP;
+		return Ic2rSoundEvents.GENERATOR_WIND_LOOP.get();
 	}
 
 	@Override

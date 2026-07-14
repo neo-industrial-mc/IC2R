@@ -117,7 +117,7 @@ public class ItemTreetap extends Item implements IBoxable
 
 	public static SoundEvent getToolUseSound(boolean isElectric)
 	{
-		return isElectric ? Ic2rSoundEvents.ITEM_TREETAP_ELECTRIC_USE : Ic2rSoundEvents.ITEM_TREETAP_USE;
+		return isElectric ? Ic2rSoundEvents.ITEM_TREETAP_ELECTRIC_USE.get() : Ic2rSoundEvents.ITEM_TREETAP_USE.get();
 	}
 
 	public InteractionResult useOn(UseOnContext context)

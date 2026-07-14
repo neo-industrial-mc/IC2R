@@ -205,7 +205,7 @@ public class TileEntityTradeOMat
 								this.worldPosition.getX(),
 								this.worldPosition.getY(),
 								this.worldPosition.getZ(),
-								Ic2rSoundEvents.MACHINE_OMAT_OPERATE,
+								Ic2rSoundEvents.MACHINE_OMAT_OPERATE.get(),
 								SoundSource.BLOCKS,
 								1.0F,
 								1.0F,

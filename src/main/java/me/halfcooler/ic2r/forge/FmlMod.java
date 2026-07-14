@@ -7,6 +7,7 @@ import me.halfcooler.ic2r.core.init.IC2RUuScanConfig;
 import me.halfcooler.ic2r.core.network.NetworkManager;
 import me.halfcooler.ic2r.core.loot.Ic2rLootNbtProviderTypes;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
+import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.integration.ae2.Ic2rAe2Plugin;
 
 import java.util.ArrayList;
@@ -56,6 +57,8 @@ public final class FmlMod
 		EnvFluidHandlerForge.fluidRegistry.register(modEventBus);
 		EnvFluidHandlerForge.fluidTypeRegistry.register(modEventBus);
 		Ic2rLootModifier.lootModifiersRegistry.register(modEventBus);
+		// W1.7: SoundEvent category fully DeferredRegister + RegistryObject
+		Ic2rSoundEvents.register(modEventBus);
 		if (FMLEnvironment.dist.isClient())
 		{
 			modEventBus.register(new ClientModEventHandlerForge());

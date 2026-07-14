@@ -59,7 +59,7 @@ public class ItemToolCutter extends ItemToolCrafting implements IEnhancedOverlay
 			cable.tryRemoveInsulation(state, world, pos, false);
 			if (world.isClientSide)
 			{
-				player.playSound(Ic2rSoundEvents.ITEM_CUTTER_USE, 1.0F, 1.0F);
+				player.playSound(Ic2rSoundEvents.ITEM_CUTTER_USE.get(), 1.0F, 1.0F);
 			} else
 			{
 				StackUtil.dropAsEntity(world, pos, new ItemStack(Ic2rItems.RUBBER));

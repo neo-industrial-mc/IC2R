@@ -356,7 +356,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 
 	public SoundEvent getShutdownSound()
 	{
-		return Ic2rSoundEvents.ITEM_ELECTRIC_SHUTDOWN;
+		return Ic2rSoundEvents.ITEM_ELECTRIC_SHUTDOWN.get();
 	}
 
 	public boolean isBarVisible(ItemStack stack)

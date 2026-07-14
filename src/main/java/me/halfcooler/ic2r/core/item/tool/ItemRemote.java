@@ -94,7 +94,7 @@ public class ItemRemote extends Item
 			return InteractionResultHolder.success(stack);
 		}
 
-		level.playSound(null, player.getX(), player.getY(), player.getZ(), Ic2rSoundEvents.ITEM_REMOTE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
+		level.playSound(null, player.getX(), player.getY(), player.getZ(), Ic2rSoundEvents.ITEM_REMOTE_USE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		launchRemotes(level, stack, player);
 		return InteractionResultHolder.success(stack);
 	}

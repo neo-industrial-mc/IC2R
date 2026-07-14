@@ -372,7 +372,7 @@ public class TileEntityTeleporter extends TileEntityBase implements INetworkTile
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_TELEPORTER_CHARGE;
+		return Ic2rSoundEvents.MACHINE_TELEPORTER_CHARGE.get();
 	}
 
 	@Override
@@ -393,7 +393,7 @@ public class TileEntityTeleporter extends TileEntityBase implements INetworkTile
 				return;
 			}
 
-			this.level.playLocalSound(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), Ic2rSoundEvents.MACHINE_TELEPORTER_USE, SoundSource.BLOCKS, 1.0F, 1.0F, true);
+			this.level.playLocalSound(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), Ic2rSoundEvents.MACHINE_TELEPORTER_USE.get(), SoundSource.BLOCKS, 1.0F, 1.0F, true);
 			this.spawnBlueParticles(20, this.worldPosition);
 			this.spawnBlueParticles(20, this.target);
 		} else

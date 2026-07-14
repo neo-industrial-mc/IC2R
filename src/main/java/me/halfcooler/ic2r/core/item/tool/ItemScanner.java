@@ -61,7 +61,7 @@ public class ItemScanner extends BaseElectricItem implements IBoxable, IHandHeld
 				}
 			} else
 			{
-				player.playSound(Ic2rSoundEvents.ITEM_SCANNER_USE, 1.0F, 1.0F);
+				player.playSound(Ic2rSoundEvents.ITEM_SCANNER_USE.get(), 1.0F, 1.0F);
 			}
 
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

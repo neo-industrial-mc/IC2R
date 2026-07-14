@@ -186,7 +186,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 
 	public SoundEvent getToolUsingSound()
 	{
-		return IC2R.random.nextBoolean() ? Ic2rSoundEvents.ITEM_CHAINSAW_USE1 : Ic2rSoundEvents.ITEM_CHAINSAW_USE2;
+		return IC2R.random.nextBoolean() ? Ic2rSoundEvents.ITEM_CHAINSAW_USE1.get() : Ic2rSoundEvents.ITEM_CHAINSAW_USE2.get();
 	}
 
 	@Override
@@ -204,13 +204,13 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	@Override
 	protected SoundEvent getIdleSound(LivingEntity player, ItemStack stack)
 	{
-		return Ic2rSoundEvents.ITEM_CHAINSAW_IDLE;
+		return Ic2rSoundEvents.ITEM_CHAINSAW_IDLE.get();
 	}
 
 	@Override
 	protected SoundEvent getStopSound(LivingEntity player, ItemStack stack)
 	{
-		return Ic2rSoundEvents.ITEM_CHAINSAW_STOP;
+		return Ic2rSoundEvents.ITEM_CHAINSAW_STOP.get();
 	}
 
 	@Override

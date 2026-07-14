@@ -113,7 +113,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 
 		if (world.isClientSide)
 		{
-			player.playSound(Ic2rSoundEvents.ITEM_WRENCH_USE, 1.0F, 1.0F);
+			player.playSound(Ic2rSoundEvents.ITEM_WRENCH_USE.get(), 1.0F, 1.0F);
 			return InteractionResult.PASS;
 		}
 
@@ -328,7 +328,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		}
 
 		return world.getBlockState(pos).getBlock() instanceof IWrenchAble
-			? Ic2rSoundEvents.ITEM_WRENCH_USE
+			? Ic2rSoundEvents.ITEM_WRENCH_USE.get()
 			: null;
 	}
 }

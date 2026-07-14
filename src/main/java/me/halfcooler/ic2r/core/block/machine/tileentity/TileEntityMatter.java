@@ -352,12 +352,12 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_MATTER_GENERATOR_LOOP;
+		return Ic2rSoundEvents.MACHINE_MATTER_GENERATOR_LOOP.get();
 	}
 
 	@Override
 	public SoundEvent getSubLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_MATTER_GENERATOR_SCRAP;
+		return Ic2rSoundEvents.MACHINE_MATTER_GENERATOR_SCRAP.get();
 	}
 }

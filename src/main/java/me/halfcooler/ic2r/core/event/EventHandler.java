@@ -44,7 +44,6 @@ import me.halfcooler.ic2r.core.ref.Ic2rItemTags;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rRecipeSerializers;
 import me.halfcooler.ic2r.core.ref.Ic2rRecipeTypes;
-import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.uu.UuIndex;
@@ -80,7 +79,7 @@ public final class EventHandler
 {
 	public static void onInitGameEvents()
 	{
-		Ic2rSoundEvents.init();
+		// SoundEvents are queued via DeferredRegister in FmlMod constructor (W1.7).
 		Ic2rGameEvents.init();
 	}
 

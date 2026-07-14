@@ -170,7 +170,7 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 		}
 
 		return world.getBlockState(pos).getBlock() instanceof IWrenchAble
-			? Ic2rSoundEvents.ITEM_WRENCH_USE
+			? Ic2rSoundEvents.ITEM_WRENCH_USE.get()
 			: null;
 	}
 }

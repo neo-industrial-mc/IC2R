@@ -188,9 +188,9 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
 	{
 		return switch (IC2R.random.nextInt(3))
 		{
-			case 1 -> Ic2rSoundEvents.ITEM_NANOSABER_SWING2;
-			case 2 -> Ic2rSoundEvents.ITEM_NANOSABER_SWING3;
-			default -> Ic2rSoundEvents.ITEM_NANOSABER_SWING1;
+			case 1 -> Ic2rSoundEvents.ITEM_NANOSABER_SWING2.get();
+			case 2 -> Ic2rSoundEvents.ITEM_NANOSABER_SWING3.get();
+			default -> Ic2rSoundEvents.ITEM_NANOSABER_SWING1.get();
 		};
 	}
 
@@ -281,13 +281,13 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
 	@Override
 	protected SoundEvent getIdleSound(LivingEntity player, ItemStack stack)
 	{
-		return Ic2rSoundEvents.ITEM_NANOSABER_IDLE;
+		return Ic2rSoundEvents.ITEM_NANOSABER_IDLE.get();
 	}
 
 	@Override
 	protected SoundEvent getStartSound(LivingEntity player, ItemStack stack)
 	{
-		return Ic2rSoundEvents.ITEM_NANOSABER_POWER_UP;
+		return Ic2rSoundEvents.ITEM_NANOSABER_POWER_UP.get();
 	}
 
 	@Override

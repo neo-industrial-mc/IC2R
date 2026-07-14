@@ -213,8 +213,8 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 	{
 		return switch (this.mode)
 		{
-			case BottleSolid, BottleLiquid -> Ic2rSoundEvents.MACHINE_CANNER_OPERATE;
-			case EmptyLiquid -> Ic2rSoundEvents.MACHINE_CANNER_REVERSE;
+			case BottleSolid, BottleLiquid -> Ic2rSoundEvents.MACHINE_CANNER_OPERATE.get();
+			case EmptyLiquid -> Ic2rSoundEvents.MACHINE_CANNER_REVERSE.get();
 			default -> null;
 		};
 	}
@@ -224,7 +224,7 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 	{
 		return switch (this.mode)
 		{
-			case BottleSolid, BottleLiquid, EmptyLiquid -> Ic2rSoundEvents.MACHINE_INTERRUPT1;
+			case BottleSolid, BottleLiquid, EmptyLiquid -> Ic2rSoundEvents.MACHINE_INTERRUPT1.get();
 			default -> null;
 		};
 	}

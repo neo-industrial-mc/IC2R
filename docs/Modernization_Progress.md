@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W1.6  
+**last_completed:** W1.7  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -23,7 +23,7 @@
 | W1.4 | done | 清零 Vector 配方死字段 + 热路径 RandomSource.create()；create(42L)/printStackTrace 豁免登记 |
 | W1.5 | done | Energy storage/energyBuffer→energy_buffer + LegacyNbt；标准机 progress；迁移测 38 tests 绿 |
 | W1.6 | done | Ic2rItems 按 8 域拆分 + 门面保留；511 字段；compile+test 绿；Blocks 未拆 |
-| W1.7 | pending | Deferred/Holder 试点 |
+| W1.7 | done | SoundEvent 全类 DeferredRegister+RegistryObject；FmlMod bus 挂载；test 38/38 绿 |
 | W1.8 | pending | 阶段 1 收口 |
 | W2.1 | pending | InvSlot → Handler 委托试点 |
 | W2.2 | pending | 流体适配收窄试点 |
@@ -39,11 +39,12 @@
 
 ## Last session
 
-- unit: W1.6
+- unit: W1.7
 - result: done / PASS
-- suggested_commit: `refactor: split Ic2rItems registration into domain classes`
+- suggested_commit: `feat(registry): deferred-register SoundEvents as Holder pilot`
 - verify_log: |
-    - DoD: 仅拆 Items 8 域类；门面 Ic2rItems.XXX 保留；511 对齐 ✅
-    - 仍 envProxy.registerItem，未 Deferred（W1.7）
-    - Ic2rBlocks 未拆
-    - compileJava + test 绿
+    - DoD: Ic2rSoundEvents 全 RegistryObject + DeferredRegister ✅
+    - FmlMod 挂 bus；即时 registerSoundEvent 已禁用
+    - path 抽查 item.treetap.use 等不变
+    - Items/Blocks 仍即时注册（范围正确）
+    - compileJava + test 38/38 绿

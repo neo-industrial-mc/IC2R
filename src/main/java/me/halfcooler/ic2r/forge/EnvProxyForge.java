@@ -215,10 +215,11 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public SoundEvent registerSoundEvent(String id)
 	{
-		ResourceLocation identifier = IC2R.getIdentifier(id);
-		SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(identifier);
-		ForgeRegistries.SOUND_EVENTS.register(identifier, soundEvent);
-		return soundEvent;
+		// W1.7: SoundEvents are fully Deferred/Holder via Ic2rSoundEvents.REGISTRY.
+		// Immediate ForgeRegistries registration is no longer used for this category.
+		throw new UnsupportedOperationException(
+			"Sound events must be registered via Ic2rSoundEvents DeferredRegister (W1.7). id=" + id
+		);
 	}
 
 	@Override

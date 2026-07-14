@@ -153,7 +153,7 @@ public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSou
 	@Override
 	protected SoundEvent getIdleSound(LivingEntity player, ItemStack stack)
 	{
-		return stack.getItem() == Ic2rItems.DRILL ? Ic2rSoundEvents.ITEM_DRILL_IDLE : null;
+		return stack.getItem() == Ic2rItems.DRILL ? Ic2rSoundEvents.ITEM_DRILL_IDLE.get() : null;
 	}
 
 	@Override
@@ -166,6 +166,6 @@ public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSou
 	public SoundEvent getBreakSoundForBlock(LocalPlayer player, Level world, BlockPos pos, ItemStack stack)
 	{
 		Block block = world.getBlockState(pos).getBlock();
-		return block.defaultDestroyTime() >= 3.0F ? Ic2rSoundEvents.ITEM_DRILL_HARD : Ic2rSoundEvents.ITEM_DRILL_SOFT;
+		return block.defaultDestroyTime() >= 3.0F ? Ic2rSoundEvents.ITEM_DRILL_HARD.get() : Ic2rSoundEvents.ITEM_DRILL_SOFT.get();
 	}
 }

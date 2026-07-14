@@ -86,7 +86,7 @@ public class ItemToolCrowbar extends TieredItem implements IEnhancedOverlayProvi
 					}
 				} else
 				{
-					IC2R.soundManager.playOnce(Ic2rSoundEvents.ITEM_CROWBAR_USE, SoundSource.BLOCKS, 1.0F, 1.0F, player);
+					IC2R.soundManager.playOnce(Ic2rSoundEvents.ITEM_CROWBAR_USE.get(), SoundSource.BLOCKS, 1.0F, 1.0F, player);
 				}
 			}
 

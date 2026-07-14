@@ -216,6 +216,6 @@ public class TileEntityTerra extends TileEntityElectricMachine
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_TERRAFORMER_LOOP;
+		return Ic2rSoundEvents.MACHINE_TERRAFORMER_LOOP.get();
 	}
 }
