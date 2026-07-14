@@ -143,21 +143,22 @@
 | G3.7 | 物理多模块 **partial/skeleton**（文档 + `modules/` 骨架；运行时仍单模块） | P1 | **partial/skeleton（见 §15）**：映射文档 + 目录 README + `settings.gradle` 注释 include；**未**搬迁 `src/main`、**未**默认多项目。下一 Unit 满足 g3_7 §6 前置后再启用 include |
 | G3.8 | Architectury **未**引入 | P2 | **skipped / deferred by design（见 §16）**：[g3_8_architectury_decision.md](g3_8_architectury_decision.md)；非缺陷；再评估前置 = NeoForge 最小集 + SPI 稳定 |
 | G3.9 | 巨型 BE / api 面 / Mixin 瘦身（§8.3） | P2 | **partial（见 §17）**：Mixin 清单 done；[api_surface.md](api_surface.md)；`CropGrowthMath` 1 BE 切片 + 测；**未**拆完全部巨型 BE |
-| G3.10 | **继承 G1.\***：TeUpdate 仍默认、snake_case 仅试点、阶段 1 覆盖率 gap | P0 | 见 phase1_closeout；不阻塞本收口登记 |
+| G3.10 | **继承 G1.\***：TeUpdate 仍默认、snake_case 仅试点、阶段 1 覆盖率 gap | P0 | **partial（交叉对照 done，见 §18）**：G1.6/G1.7/G1.8 **done**；G1.1/G1.3–G1.5 **partial**；**G1.2 仍 gap**。TeUpdate **帧仍默认**；宽口径 ≪60%。**禁止**宣称 G1 全清 |
 | G3.11 | **继承 G2.\***：管道/AE2 e2e 无、配方非全机型直查、~47 guidef、DataGen 窄 | P0–P2 | 见 phase2_closeout |
 
 ### 4.1 与 G1 / G2 继承关系
 
 ```text
-G1.*（阶段 1 基础设施缺口）
-  └─ 仍 open：G1.1 TeUpdate 默认、G1.2–G1.4 覆盖/电网/标准机、G1.5 命名…
+G1.*（阶段 1 基础设施缺口）— G3.10 交叉见 §18
+  └─ 仍 open：G1.1 TeUpdate 帧默认、G1.2 覆盖率 gap、G1.3–G1.4 包级极低、G1.5 全库命名
+  └─ 已关：G1.6 recipe 匹配器、G1.7 Spotless N/A、G1.8 Blocks 域拆
 G2.*（阶段 2 Forge 生态试点缺口）
-  └─ 仍 open：G2.1–G2.6 适配/配方/GUI/DataGen…
+  └─ 仍 open：G2.1–G2.6 适配/配方/GUI/DataGen…（G3.11）
 G3.*（本文件）
   └─ 叠加：loader 隔离、多 loader 最小集、common 覆盖率 75%、Origin 清零、EnvProxy 退役
 ```
 
-阶段 3 **不能**关闭 G1/G2；关闭条件仍在各自专项。G3.3 与 G1.2/G2.4 **同一覆盖率债**的不同门槛表述。
+阶段 3 **不能**关闭 G1/G2；关闭条件仍在各自专项。G3.3 与 G1.2/G2.4 **同一覆盖率债**的不同门槛表述。G3.10 仅**登记** G1 债在阶段 3 视角下的真实状态，**不**勾满 §6.3。
 
 ### 4.2 建议优先级（阶段 3 后，非队列强制序）
 
@@ -564,4 +565,78 @@ G3.*（本文件）
 - 新建：`core/crop/CropGrowthMath.java`；`src/test/.../crop/CropGrowthMathTest.java`  
 - 改：`core/crop/TileEntityCrop.java`（委托纯逻辑）  
 - 文档：本文件 §4 G3.9 + **§17**；[api_surface.md](api_surface.md)；[origin.md](origin.md) 切片行；[README.md](README.md) 索引  
+
+---
+
+## 18. G3.10 — 继承 G1.* 交叉对照（阶段 3 视角）
+
+> **Work Unit**: G3.10  
+> **日期**: 2026-07-14  
+> **状态**: **partial**（交叉对照 **done**；所描述 G1 债 **未全部清零**）  
+> **性质**: 只读交叉对照 + 本文件 / 可选 phase1 指针；**无**强制生产代码；**不**为凑覆盖率堆测  
+> **对照对象**: 本文件 §4 **G3.10 原始断言** vs G1.\* 迁移 + 阶段 2/3 后续后的真实状态  
+> **前序交叉**: [phase2_closeout.md §8](phase2_closeout.md)（G2.7）；[phase1_closeout.md](phase1_closeout.md) §3 / §8 / §9  
+
+### 18.1 W3.5 时的 G3.10 原始断言（冻结）
+
+| 断言（W3.5 登记） | 含义 |
+|:---|:---|
+| **TeUpdate 仍默认** | 运行时协议帧仍走 `getNetworkedFields()` + 字符串字段名 + `TeUpdate`/`DataEncoder`；反射 R/W 仍为未注册字段路径 |
+| **snake_case 仅试点** | 核心命名面未全库收口；W1.5 / G1.5 为试点+扩域，非 §6.3 #3 勾满 |
+| **阶段 1 覆盖率 gap** | §4.5 阶段 1 核心包宽口径 **≪ 60%**（G1.2） |
+| 关联 | 整组 **G1.1–G1.8**；不阻塞阶段 3 名义收口（W3.5 已以 gap 登记） |
+
+### 18.2 原始断言 vs 真实状态（阶段 3 视角）
+
+| 原始断言 / Gap | G1 迁移 + 后续（含 G2.7 / G3.3）真实状态 | 关闭判定 |
+|:---|:---|:---|
+| **TeUpdate 仍默认**（G1.1） | **帧仍默认**：`NetworkManager` 仍按 `getNetworkedFields()` 列表编码；`ContainerBase`/`INetworkDataProvider` 仍字符串字段表。**已推进（G1.1）**：`readFieldValueForNetwork` / `TeUpdate` apply 对 **已注册 Sync** 优先 `tryGetValue` / `trySetValue`（legacy alias）；绑定面含标准机 `gui_progress`/`active`、BatchCrafter、ElectricBlock `redstone_mode` 等。未注册仍反射 | **部分关闭** — Sync **值路径优先**；**协议帧 / 默认路径未切主** |
+| **snake_case 仅试点**（G1.5） | 试点 **done**（`energy_buffer`、标准机 `progress`、wire `gui_progress`/`active`）+ **G1.5 扩域**（反应堆 NBT、BatchCrafter Sync、ElectricBlock `redstone_mode`）。**全库未收口**：作物/配置/大量 Container 网络名、组件 ID 等仍 camelCase（`naming_audit`） | **partial** — 非「仅试点」字面已过时，但是**仍远未全库** |
+| **阶段 1 覆盖率 gap**（G1.2） | G1.2 复测宽口径 **3.76%**（317/8442）；G3.3 阶段 1 宽口径 **~4.47%**（380/8499）仍 ≪ **60%**。common-ish（阶段 3）**~1.79%** 亦远低于 75%（G3.3） | **仍 open（gap）** — **禁止**宣称 60% / G1 覆盖率 done |
+| energy.grid 主体（G1.3） | `EnergyTransferMath` 高覆盖 + EN-\* 部分绿 + G3.3 边界加深；包级 G1.2 **2.81%** → G3.3 **~3.01%**。Calculator/路径/爆炸主体仍 ~0% | **partial** — 切口有；**包级仍极低** |
+| 标准机循环（G1.4） | `StandardMachineCycleMath` + SM-001…004 绿 + TE 接线 + G3.3 边界；包级 G1.2 **0.98%** → G3.3 **~1.23%**。巨型 TE 分母主导 | **partial** — 行为单测已有；**包级仍极低** |
+
+### 18.3 G1.1–G1.8 逐条状态（阶段 3 登记）
+
+| ID | 主题 | 状态 | 证据一句话 |
+|:---|:---|:---|:---|
+| G1.1 | TeUpdate / Sync 优先 | **partial** | 已注册字段 Sync 优先 R/W（`NetworkManager`/`TeUpdate`）；**TeUpdate 帧仍默认**；未注册反射 |
+| G1.2 | 核心包 ≥60%（阶段 1） | **gap** | 宽口径 G1.2 **3.76%** / G3.3 宽 **~4.47%** ≪ 60%；**禁止**勾 done |
+| G1.3 | energy.grid 可测端口 | **partial** | `EnergyTransferMath`(+Test) 切口；包级仍 ~3% |
+| G1.4 | 标准机循环行为测 | **partial** | `StandardMachineCycleMath`(+Test)；SM-001…004；包级仍 ~1% |
+| G1.5 | snake_case 全库 | **partial** | 试点 + G1.5 扩域；全库网络/NBT/配置未收口 |
+| G1.6 | recipe 匹配器 | **done** | `MachineRecipeMatchMath` + Test；RC 部分绿（运行时仍绑 registries） |
+| G1.7 | Spotless/Checkstyle | **done(N/A) / skipped** | phase1 §10：本阶段**不**启用 |
+| G1.8 | Blocks 按域拆分 | **done** | `Ic2rBlocks` 门面 + `core/ref/blocks/*` |
+
+### 18.4 一句话总判（G3.10）
+
+| 项 | 值 |
+|:---|:---|
+| **G3.10 状态** | **partial**（交叉对照 **done**；G1 债 **未全清**） |
+| 相对 G3.10 原始三断言 | TeUpdate 默认 **仍真**；snake_case「仅试点」→ **试点+扩域仍 partial**；阶段 1 覆盖率 **仍 gap** |
+| 相对 G2.7（阶段 2 交叉） | **一致**：G1.1/3/4/5 partial、G1.2 gap、G1.6–1.8 已关；阶段 3 仅多了 G3.3 覆盖率小幅抬升证据，**未改变**关闭判定 |
+| 已关闭（G1 子集） | G1.6、G1.7（N/A skip）、G1.8 |
+| **仍 open** | G1.1 帧默认；**G1.2 ≪60%**；G1.3/G1.4 包级；G1.5 全库命名 |
+| 覆盖率诚实句 | 阶段 1 门槛 **未达**；宽口径约 **4%** 量级，**不是** 60%；**不得**宣称 G1 全清 |
+
+### 18.5 与 §8.5 / G3.3 关系
+
+- G3.10 **不**重新跑 JaCoCo；覆盖数字引用 [phase1 §8](phase1_closeout.md) 与本文件 **§12（G3.3）**。  
+- G3.3 抬 common-ish / 宽口径 **不**关闭 G1.2；G1.2 关闭条件仍是阶段 1 宽口径 **≥60%**（或项目另行改口径）。  
+- §6.3 #1（反射网络不再默认）仍 **partial/gap** — 与 G1.1 同债。  
+
+### 18.6 建议后续（**非本 G3.10**；勿空转）
+
+1. **G1.1 真切主**（若产品需要）：更多 TE 注册 Sync；去掉未注册反射默认或 Sync 为唯一写出（wire 策略另开 Unit）。  
+2. **G1.3 / G1.4 加深** 有意义行为行 → 再谈 **G1.2** 复测；在 ~4% 量级 **禁止**勾 G1.2 done。  
+3. **G1.5** 按 `naming_audit` 分批，与 Sync 切主同步，避免双名地狱。  
+4. **不要**：为勾 G3.10 / §6.3 堆无断言测或全库 rename。  
+
+### 18.7 变更范围（G3.10）
+
+- 本文件 §4 G3.10 行 + §4.1 + **§18**  
+- 可选：[phase1_closeout.md](phase1_closeout.md) 末尾 G3.10 指针  
+- [Modernization_Progress.md](../Modernization_Progress.md) G3.10  
+- **无**生产代码功能改动；**无**为凑覆盖率新测；**无** git commit/push  
 

@@ -306,4 +306,26 @@
 - `Ic2rBlocks.java`（门面化）  
 - `core/ref/blocks/Ic2rBlocks*.java`（新建域实现）  
 - 本文件本节  
-  
+
+---
+
+## 12. G3.10 交叉指针（阶段 3 视角 vs G1 债）
+
+> **Work Unit**: G3.10（文档交叉，**非**新实现）  
+> **日期**: 2026-07-14  
+> **全文对照表**: [phase3_closeout.md §18](phase3_closeout.md)  
+> **前序**: 本文件 §9（G2.7 指针）；[phase2_closeout.md §8](phase2_closeout.md)  
+
+| G1.* | G3.10 后登记状态 | 一句话 |
+|:---|:---|:---|
+| G1.1 | **partial** | Sync **优先**已接 TeUpdate 值路径；**帧/默认协议**仍 TeUpdate |
+| G1.2 | **gap** | 宽口径 ~3.76%（G1.2）/ ~4.47%（G3.3 宽）**不**达 60% |
+| G1.3 | **partial** | 电网纯逻辑切口 + 测；包级仍极低 |
+| G1.4 | **partial** | 标准机循环纯逻辑 + 测 + 接线；包级仍极低 |
+| G1.5 | **partial** | 命名试点 + 扩域；全库未收口 |
+| G1.6 | **done** | recipe 匹配器纯逻辑 |
+| G1.7 | **done(N/A) / skipped** | 本阶段不启用 Spotless/Checkstyle（§10） |
+| G1.8 | **done** | `Ic2rBlocks` 按域拆分 |
+
+**禁止**：将 G1.2 标为 done、宣称阶段 1 覆盖率门槛已满足，或宣称 **G1 全清**。  
+ 

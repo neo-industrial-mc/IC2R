@@ -1,25 +1,22 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** G3.9  
+**last_completed:** G3.10  
 **updated:** 2026-07-14  
 
 ## Queue（G3）
 
 | ID | status | last_notes |
 |----|--------|------------|
-| G3.1–G3.7 | done | 见历史 |
-| G3.8 | skipped | Architectury **有意延期**（g3_8_architectury_decision.md）；非缺陷 |
-| G3.9 | done | Mixin 仅 RecipeManagerMixin；api_surface.md；CropGrowthMath 切片 + 10 测；partial 未拆全 BE |
-| G3.10–G3.11 | pending | 继承 G1/G2 交叉登记（多为已部分推进的债） |
+| G3.1–G3.9 | done / G3.8 skipped | 见历史 |
+| G3.10 | done | 继承 G1.* 交叉：G1.1/3/4/5 partial；G1.2 覆盖率仍 gap；G1.6/8 done；G1.7 N/A；禁止宣称 G1 全清 |
+| G3.11 | pending | 继承 G2.* 交叉对照 |
 
 ## Last session
 
-- units: G3.8 (view+skip) → G3.9
-- result: PASS
-- suggested_commits: |
-    1) `docs: G3.8 defer Architectury by design`
-    2) `feat: CropGrowthMath extract + api/mixin inventory for G3.9`
+- unit: G3.10
+- result: done / PASS
+- suggested_commit: `docs: G3.10 cross-check inherited G1 gaps from phase 3 view`
 - verify_log: |
-    - G3.8: 无 Architectury 依赖 ✅
-    - G3.9: CropGrowthMath 回接；test 绿；巨型 BE 未全拆
+    - phase3 §18 + phase1 §12 对照表 ✅
+    - TeUpdate 帧默认 / G1.2 gap 诚实；仅 docs
