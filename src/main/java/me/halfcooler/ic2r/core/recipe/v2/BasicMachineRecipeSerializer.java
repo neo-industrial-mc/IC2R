@@ -38,7 +38,7 @@ public class BasicMachineRecipeSerializer implements RecipeSerializer<RecipeHold
 	public RecipeHolder<IRecipeInput, Collection<ItemStack>> fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
 	{
 		byte type = buf.readByte();
-		if (type != 0)
+		if (!RecipeSerializerMath.isBasicNetworkMarker(type))
 		{
 			throw new Error("Reading recipe error! The type of recipe: \"" + id.getPath() + "\" is wrong!");
 		} else
@@ -49,7 +49,7 @@ public class BasicMachineRecipeSerializer implements RecipeSerializer<RecipeHold
 
 	public void toNetwork(FriendlyByteBuf buf, RecipeHolder<IRecipeInput, Collection<ItemStack>> recipe)
 	{
-		buf.writeByte(0);
+		buf.writeByte(RecipeSerializerMath.BASIC_NETWORK_MARKER);
 		RecipeIo.writeInput(buf, recipe.recipe().getInput());
 		RecipeIo.writeOutput(buf, recipe.recipe().getOutput());
 		buf.writeNbt(recipe.recipe().getMetaData());

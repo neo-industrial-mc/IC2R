@@ -210,7 +210,7 @@ public class InvSlot implements Iterable<ItemStack>
 
 	public boolean accepts(ItemStack stack)
 	{
-		return true;
+		return InvSlotTransferMath.defaultAccepts();
 	}
 
 	public boolean canInput()

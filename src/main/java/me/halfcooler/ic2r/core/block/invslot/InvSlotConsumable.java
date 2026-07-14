@@ -26,7 +26,13 @@ public abstract class InvSlotConsumable extends InvSlot
 	@Override
 	public boolean canOutput()
 	{
-		return super.canOutput() || this.access != InvSlot.Access.NONE && !this.isEmpty() && !this.accepts(this.get());
+		// Leftover eject: Access.I slots may extract items that no longer accept() (G2.4 pure gate).
+		return InvSlotTransferMath.consumableCanOutput(
+			super.canOutput(),
+			this.access == InvSlot.Access.NONE,
+			this.isEmpty(),
+			this.isEmpty() || this.accepts(this.get())
+		);
 	}
 
 	public ItemStack consume(int amount)

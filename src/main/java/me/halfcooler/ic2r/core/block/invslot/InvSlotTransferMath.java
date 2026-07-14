@@ -2,9 +2,12 @@ package me.halfcooler.ic2r.core.block.invslot;
 
 /**
  * Pure insert/extract arithmetic for {@link InvSlotItemHandler}.
- * No Minecraft/Forge types — unit-testable without client or registry bootstrap (W2.1 / G2.1).
+ * No Minecraft/Forge types — unit-testable without client or registry bootstrap (W2.1 / G2.1 / G2.4).
  * Combined-index helpers mirror {@code TileEntityInventory} multi-InvSlot layout for the
  * null-facing combined {@code ITEM_HANDLER} view. See {@code docs/spec/item_handler_contract.md}.
+ * <p>
+ * Accept / consumable-output helpers mirror {@link InvSlot#accepts}, {@link InvSlotOutput},
+ * and {@link InvSlotConsumable#canOutput()} leftover-eject rules.
  */
 public final class InvSlotTransferMath
 {
@@ -26,6 +29,51 @@ public final class InvSlotTransferMath
 	public static boolean allowsExtract(boolean canOutput, boolean slotEmpty)
 	{
 		return canOutput && !slotEmpty;
+	}
+
+	/**
+	 * Default {@link InvSlot#accepts} policy — accepts any offered stack
+	 * (emptiness gated separately by {@link #allowsInsert}).
+	 */
+	public static boolean defaultAccepts()
+	{
+		return true;
+	}
+
+	/**
+	 * {@link InvSlotOutput#accepts} policy — always rejects automation insert.
+	 */
+	public static boolean outputAccepts()
+	{
+		return false;
+	}
+
+	/**
+	 * Linked / filter accept: only when linked has content and stacks are equal.
+	 * Mirrors {@code InvSlotConsumableLinked} spirit without ItemStack types.
+	 */
+	public static boolean linkedAccepts(boolean linkedEmpty, boolean sameAsLinked)
+	{
+		return !linkedEmpty && sameAsLinked;
+	}
+
+	/**
+	 * {@link InvSlotConsumable#canOutput()} — allow extract of invalid leftover items.
+	 * {@code accessAllowsOutput || (!accessIsNone && !slotEmpty && !acceptsCurrent)}.
+	 */
+	public static boolean consumableCanOutput(
+		boolean accessAllowsOutput,
+		boolean accessIsNone,
+		boolean slotEmpty,
+		boolean acceptsCurrent
+	)
+	{
+		if (accessAllowsOutput)
+		{
+			return true;
+		}
+
+		return !accessIsNone && !slotEmpty && !acceptsCurrent;
 	}
 
 	/**

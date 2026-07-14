@@ -38,40 +38,53 @@ public class RecipeIo
 	{
 		if (json.isJsonArray())
 		{
+			// Shape ARRAY — keep order aligned with RecipeSerializerMath.classifyInputShape
 			return parseMultiple(json.getAsJsonArray(), 1);
 		}
 
 		int count = 1;
 		if (json.isJsonObject())
 		{
-			count = GsonHelper.getAsInt(json.getAsJsonObject(), "count", 1);
-		}
-
-		if (json.isJsonObject())
-		{
 			JsonObject object = json.getAsJsonObject();
-			if (object.has("fluid"))
-			{
-				return new RecipeInputFluidContainer(asFluid(object.get("fluid")), GsonHelper.getAsInt(object, "amount"));
-			}
+			count = RecipeSerializerMath.countOrDefault(
+				object.has("count"),
+				GsonHelper.getAsInt(object, "count", 1),
+				1
+			);
 
-			if (object.has("data"))
+			RecipeSerializerMath.InputShape shape = RecipeSerializerMath.classifyInputShape(
+				false,
+				object.has("fluid"),
+				object.has("data"),
+				object.has("any")
+			);
+			switch (shape)
 			{
-				Item item = GsonHelper.getAsItem(object, "item");
-				ItemStack stack = new ItemStack(item, count);
-				stack.setTag(asNbt(object.get("data"), "data"));
-				return new RecipeInputItemStack(stack);
-			}
-
-			if (object.has("any"))
-			{
-				JsonElement entry = object.get("any");
-				if (!entry.isJsonArray())
+				case FLUID ->
 				{
-					throw new JsonSyntaxException("\"any\" IC2R ingredient entry must be an array, was " + GsonHelper.getType(entry));
+					return new RecipeInputFluidContainer(asFluid(object.get("fluid")), GsonHelper.getAsInt(object, "amount"));
 				}
+				case ITEM_DATA ->
+				{
+					Item item = GsonHelper.getAsItem(object, "item");
+					ItemStack stack = new ItemStack(item, count);
+					stack.setTag(asNbt(object.get("data"), "data"));
+					return new RecipeInputItemStack(stack);
+				}
+				case ANY ->
+				{
+					JsonElement entry = object.get("any");
+					if (!entry.isJsonArray())
+					{
+						throw new JsonSyntaxException("\"any\" IC2R ingredient entry must be an array, was " + GsonHelper.getType(entry));
+					}
 
-				return parseMultiple(entry.getAsJsonArray(), count);
+					return parseMultiple(entry.getAsJsonArray(), count);
+				}
+				default ->
+				{
+					// INGREDIENT (and defensive fall-through)
+				}
 			}
 		}
 

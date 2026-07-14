@@ -5,6 +5,8 @@ import me.halfcooler.ic2r.core.fluid.FluidTransferMath;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Pure logic tests for tank fill/empty transfer rules (W2.2 / FL-001).
@@ -119,5 +121,121 @@ class FluidTransferMathTest
 		drained = FluidTransferMath.drainableMb(stored, Integer.MAX_VALUE, true);
 		assertEquals(15500, drained);
 		assertEquals(0, FluidTransferMath.remainingStoredAfterDrain(stored, drained));
+	}
+
+	// --- G2.4: Ic2rFluidTank fill/drain delegate gates (compat / external / simulate) ---
+
+	/** Empty tank accepts any fluid; non-empty requires same fluid. */
+	@Test
+	void tank_fluids_compatible_empty_or_same()
+	{
+		assertTrue(FluidTransferMath.tankFluidsCompatible(true, false));
+		assertTrue(FluidTransferMath.tankFluidsCompatible(true, true));
+		assertTrue(FluidTransferMath.tankFluidsCompatible(false, true));
+		assertFalse(FluidTransferMath.tankFluidsCompatible(false, false));
+	}
+
+	/**
+	 * External fill respects canFill; unchecked (external=false) bypasses canFill;
+	 * empty offer always rejected.
+	 */
+	@Test
+	void fill_access_external_vs_unchecked_and_empty_offer()
+	{
+		assertFalse(FluidTransferMath.fillAccessAllowed(true, true, true));
+		assertFalse(FluidTransferMath.fillAccessAllowed(true, false, true));
+
+		// external + canFill
+		assertTrue(FluidTransferMath.fillAccessAllowed(false, true, true));
+		assertFalse(FluidTransferMath.fillAccessAllowed(false, true, false));
+
+		// unchecked bypasses canFill=false
+		assertTrue(FluidTransferMath.fillAccessAllowed(false, false, false));
+	}
+
+	/**
+	 * Full tank / incompatible / external-deny → 0; empty tank fill; partial into free space.
+	 * Mirrors Ic2rFluidTank.fillMbDelegated path.
+	 */
+	@Test
+	void fillMbDelegated_full_incompatible_deny_and_partial()
+	{
+		// full tank
+		assertEquals(0, FluidTransferMath.fillMbDelegated(
+			1000, 1000, 500, false, true, false, true, true
+		));
+		// incompatible fluids
+		assertEquals(0, FluidTransferMath.fillMbDelegated(
+			1000, 200, 500, false, false, false, true, true
+		));
+		// external canFill deny
+		assertEquals(0, FluidTransferMath.fillMbDelegated(
+			1000, 0, 500, true, false, false, true, false
+		));
+		// empty tank accepts full offer up to capacity
+		assertEquals(500, FluidTransferMath.fillMbDelegated(
+			1000, 0, 500, true, false, false, true, true
+		));
+		// partial free space 300
+		assertEquals(300, FluidTransferMath.fillMbDelegated(
+			1000, 700, 500, false, true, false, true, true
+		));
+		// unchecked fill with canFill=false still works
+		assertEquals(100, FluidTransferMath.fillMbDelegated(
+			1000, 0, 100, true, false, false, false, false
+		));
+	}
+
+	/**
+	 * Amount drain: external canDrain gate; empty tank; unchecked bypass.
+	 * Stack drain: wrong fluid / empty request rejected; match allows.
+	 */
+	@Test
+	void drain_delegated_amount_and_stack_match_gates()
+	{
+		// amount drain external deny
+		assertEquals(0, FluidTransferMath.drainMbDelegated(1000, 200, true, false));
+		// amount drain empty tank
+		assertEquals(0, FluidTransferMath.drainMbDelegated(0, 200, true, true));
+		// amount drain ok / unchecked bypass
+		assertEquals(200, FluidTransferMath.drainMbDelegated(1000, 200, true, true));
+		assertEquals(200, FluidTransferMath.drainMbDelegated(1000, 200, false, false));
+
+		// stack drain wrong fluid
+		assertEquals(0, FluidTransferMath.drainMbByStackDelegated(
+			1000, 200, false, false, false, true, true
+		));
+		// stack drain empty request
+		assertEquals(0, FluidTransferMath.drainMbByStackDelegated(
+			1000, 200, false, true, true, true, true
+		));
+		// stack drain empty tank
+		assertEquals(0, FluidTransferMath.drainMbByStackDelegated(
+			0, 200, true, false, true, true, true
+		));
+		// stack match + partial / full
+		assertEquals(200, FluidTransferMath.drainMbByStackDelegated(
+			1000, 200, false, false, true, true, true
+		));
+		assertEquals(1000, FluidTransferMath.drainMbByStackDelegated(
+			1000, 9999, false, false, true, true, true
+		));
+	}
+
+	/**
+	 * Simulate must not change stored; commit fill/drain updates; full drain → 0.
+	 */
+	@Test
+	void simulate_vs_commit_stored_after_fill_and_drain()
+	{
+		int stored = 400;
+		assertEquals(400, FluidTransferMath.storedAfterFill(stored, 100, true));
+		assertEquals(500, FluidTransferMath.storedAfterFill(stored, 100, false));
+		assertEquals(400, FluidTransferMath.storedAfterFill(stored, 0, false));
+
+		assertEquals(400, FluidTransferMath.storedAfterDrain(stored, 150, true));
+		assertEquals(250, FluidTransferMath.storedAfterDrain(stored, 150, false));
+		assertEquals(0, FluidTransferMath.storedAfterDrain(stored, 400, false));
+		assertEquals(0, FluidTransferMath.storedAfterDrain(stored, 999, false));
 	}
 }

@@ -84,8 +84,12 @@ public class Ic2rFluidTank
 
 	private Ic2rFluidStack drainMb(int amount, boolean simulate, boolean external)
 	{
-		boolean canDrain = !external || this.canDrain();
-		int drained = FluidTransferMath.drainableMb(this.getFluidAmount(), amount, canDrain);
+		int drained = FluidTransferMath.drainMbDelegated(
+			this.getFluidAmount(),
+			amount,
+			external,
+			this.canDrain()
+		);
 		if (drained <= 0 || this.fluidStack == null || this.fluidStack.isEmpty())
 		{
 			return Ic2rFluidStack.EMPTY;
@@ -126,15 +130,17 @@ public class Ic2rFluidTank
 
 	private int drainMb(Ic2rFluidStack toDrain, boolean simulate, boolean external)
 	{
-		boolean fluidsMatch = this.fluidStack != null
-			&& !this.fluidStack.isEmpty()
-			&& !toDrain.isEmpty()
-			&& this.fluidStack.hasExactFluid(toDrain);
-		boolean canDrain = fluidsMatch && (!external || this.canDrain());
-		int ret = FluidTransferMath.drainableMb(
+		boolean tankEmpty = this.fluidStack == null || this.fluidStack.isEmpty();
+		boolean sameFluid = !tankEmpty && !toDrain.isEmpty() && this.fluidStack.hasExactFluid(toDrain);
+		int ret = FluidTransferMath.drainMbByStackDelegated(
 			this.getFluidAmount(),
 			toDrain.isEmpty() ? 0 : toDrain.getAmountMb(),
-			canDrain);
+			tankEmpty,
+			toDrain.isEmpty(),
+			sameFluid,
+			external,
+			this.canDrain()
+		);
 		if (ret <= 0)
 		{
 			return 0;
@@ -166,16 +172,19 @@ public class Ic2rFluidTank
 
 	private int fillMb(Ic2rFluidStack toFill, boolean simulate, boolean external)
 	{
-		boolean fluidsCompatible = this.fluidStack == null
-			|| this.fluidStack.isEmpty()
-			|| this.fluidStack.hasExactFluid(toFill);
-		boolean canFill = !toFill.isEmpty() && (!external || this.canFill(toFill.getFluid()));
-		int ret = FluidTransferMath.fillableMb(
+		boolean tankEmpty = this.fluidStack == null || this.fluidStack.isEmpty();
+		boolean sameFluid = !tankEmpty && !toFill.isEmpty() && this.fluidStack.hasExactFluid(toFill);
+		boolean canFillFluid = !toFill.isEmpty() && this.canFill(toFill.getFluid());
+		int ret = FluidTransferMath.fillMbDelegated(
 			this.capacity,
 			this.getFluidAmount(),
 			toFill.isEmpty() ? 0 : toFill.getAmountMb(),
-			fluidsCompatible,
-			canFill);
+			tankEmpty,
+			sameFluid,
+			toFill.isEmpty(),
+			external,
+			canFillFluid
+		);
 		if (ret <= 0)
 		{
 			return 0;

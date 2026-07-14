@@ -367,6 +367,74 @@ class InvSlotHandlerMathTest
 		assertEquals(0, output.count);
 	}
 
+	// --- G2.4: accept policies + consumable leftover canOutput ---
+
+	/**
+	 * Role accepts: default true, output always false, linked requires non-empty match.
+	 * Insert gate composes access + policy.
+	 */
+	@Test
+	void accept_policies_default_output_linked_compose_insert()
+	{
+		assertTrue(InvSlotTransferMath.defaultAccepts());
+		assertFalse(InvSlotTransferMath.outputAccepts());
+
+		assertFalse(InvSlotTransferMath.linkedAccepts(true, true));
+		assertFalse(InvSlotTransferMath.linkedAccepts(true, false));
+		assertFalse(InvSlotTransferMath.linkedAccepts(false, false));
+		assertTrue(InvSlotTransferMath.linkedAccepts(false, true));
+
+		// I + default accepts → insert ok
+		assertTrue(InvSlotTransferMath.allowsInsert(
+			InvSlot.Access.I.isInput(),
+			InvSlotTransferMath.defaultAccepts(),
+			false
+		));
+		// O + output accepts → insert blocked even if canInput were true
+		assertFalse(InvSlotTransferMath.allowsInsert(
+			InvSlot.Access.O.isInput(),
+			InvSlotTransferMath.outputAccepts(),
+			false
+		));
+		// I + linked mismatch → blocked
+		assertFalse(InvSlotTransferMath.allowsInsert(
+			true,
+			InvSlotTransferMath.linkedAccepts(false, false),
+			false
+		));
+	}
+
+	/**
+	 * InvSlotConsumable#canOutput leftover eject: Access.I slot may extract items that no longer
+	 * accept(); Access.NONE never; empty never; still-valid input stays non-extractable.
+	 */
+	@Test
+	void consumable_canOutput_leftover_eject_matrix()
+	{
+		// Access.O / IO already output
+		assertTrue(InvSlotTransferMath.consumableCanOutput(true, false, false, true));
+
+		// Access.I, non-empty, accepts current → no eject
+		assertFalse(InvSlotTransferMath.consumableCanOutput(false, false, false, true));
+		// Access.I, non-empty, rejects current → eject allowed
+		assertTrue(InvSlotTransferMath.consumableCanOutput(false, false, false, false));
+		// empty slot → no eject
+		assertFalse(InvSlotTransferMath.consumableCanOutput(false, false, true, true));
+		assertFalse(InvSlotTransferMath.consumableCanOutput(false, false, true, false));
+		// Access.NONE never ejects via this path
+		assertFalse(InvSlotTransferMath.consumableCanOutput(false, true, false, false));
+
+		// extract gate composes with leftover canOutput
+		assertTrue(InvSlotTransferMath.allowsExtract(
+			InvSlotTransferMath.consumableCanOutput(false, false, false, false),
+			false
+		));
+		assertFalse(InvSlotTransferMath.allowsExtract(
+			InvSlotTransferMath.consumableCanOutput(false, false, false, true),
+			false
+		));
+	}
+
 	// --- helpers ---
 
 	/** discharge(1) + output(1) + upgrade(4) + input(1). */

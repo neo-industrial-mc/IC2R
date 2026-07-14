@@ -23,7 +23,7 @@ public class InvSlotOutput extends InvSlot
 	@Override
 	public boolean accepts(ItemStack stack)
 	{
-		return false;
+		return InvSlotTransferMath.outputAccepts();
 	}
 
 	public int add(Collection<ItemStack> stacks)
