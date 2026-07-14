@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W0.1  
+**last_completed:** W0.2  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -12,7 +12,7 @@
 | ID | status | last_notes |
 |----|--------|------------|
 | W0.1 | done | JUnit5 + JaCoCo 已接；SmokeTest 1/1 通过；gradlew test SUCCESS |
-| W0.2 | pending | Progress/规格目录 |
+| W0.2 | done | docs/spec/README.md + golden_suite.md 骨架；Progress 文件就位 |
 | W0.3 | pending | Golden Suite 大纲 |
 | W0.4 | pending | EnergyNet 可测切口 + 首批测试 |
 | W0.5 | pending | 命名审计 |
@@ -39,11 +39,10 @@
 
 ## Last session
 
-- unit: W0.1
+- unit: W0.2
 - result: done / PASS
-- suggested_commit: `test: bootstrap junit5 and jacoco with smoke test`
+- suggested_commit: `docs: add spec directory and golden suite skeleton`
 - verify_log: |
-    - DoD: useJUnitPlatform ✅；SmokeTest 1/1 ✅；jacoco plugin ✅
-    - `gradlew test` BUILD SUCCESSFUL
-    - diff 范围: build.gradle, src/test/**, docs/Modernization_Progress.md
-    - 无 src/main 玩法改动
+    - DoD: Progress ✅；docs/spec/README.md ✅；golden_suite.md 含 IC/GT/标准机/配方/NBT 章节 ✅
+    - 未抢做 naming_audit.md / origin.md
+    - 无 src/ 或 build.gradle 改动
