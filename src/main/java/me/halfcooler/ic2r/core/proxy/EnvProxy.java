@@ -65,7 +65,6 @@ public interface EnvProxy
 	// G3.5 / E2: isFabricEnv / isForgeEnv / getServer removed —
 	// use PlatformServices.lifecycle().getLoaderKind() / .getServer()
 
-	void registerBlock(ResourceLocation var1, Block var2);
 
 	<T extends BlockEntity> BlockEntityType<T> registerBlockEntity(ResourceLocation var1, BiFunction<BlockPos, BlockState, T> var2, Block... var3);
 

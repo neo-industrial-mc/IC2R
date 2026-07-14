@@ -23,8 +23,6 @@ public final class JetpackHandlerForge
 	public static void register()
 	{
 		MinecraftForge.EVENT_BUS.register(new JetpackHandlerForge());
-		// Register the domain handler as backup manager
-		JetpackHandler.init();
 	}
 
 	// Render layer injection moved from core; simplified to avoid generics issues.

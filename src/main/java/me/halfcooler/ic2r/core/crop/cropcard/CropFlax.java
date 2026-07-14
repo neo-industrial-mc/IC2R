@@ -19,7 +19,7 @@ public class CropFlax extends Ic2rCropCard
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.FLAX_CROP;
+		return Ic2rBlocks.FLAX_CROP.get();
 	}
 
 	@Override

@@ -123,7 +123,7 @@ public class FoamBlock extends Block
 			return switch (this)
 			{
 				case normal -> WallBlock.get(WallBlock.DEFAULT_COLOR).defaultBlockState();
-				case reinforced -> Ic2rBlocks.REINFORCED_STONE.defaultBlockState();
+				case reinforced -> Ic2rBlocks.REINFORCED_STONE.get().defaultBlockState();
 			};
 		}
 	}

@@ -47,7 +47,7 @@ public final class Ic2rItemsReactor
 	public static final Item RSH_CONDENSATOR = Ic2rItems.register("rsh_condensator", new ItemReactorCondensator(new Properties(), 20000));
 	public static final Item LZH_CONDENSATOR = Ic2rItems.register("lzh_condensator", new ItemReactorCondensator(new Properties(), 100000));
 	public static final Item HEATPACK = Ic2rItems.register("heatpack", new ItemReactorHeatpack(new Properties(), 1000, 1));
-	public static final Item REACTOR_VESSEL = Ic2rItems.register("reactor_vessel", new ItemBlockIc2r(Ic2rBlocks.REACTOR_VESSEL, new Properties()));
+	public static final Item REACTOR_VESSEL = Ic2rItems.register("reactor_vessel", new ItemBlockIc2r(Ic2rBlocks.REACTOR_VESSEL.get(), new Properties()));
 	public static final Item URANIUM_FUEL_ROD = Ic2rItems.register("uranium_fuel_rod", new ItemReactorUranium(new Properties(), 1));
 	public static final Item DUAL_URANIUM_FUEL_ROD = Ic2rItems.register("dual_uranium_fuel_rod", new ItemReactorUranium(new Properties(), 2));
 	public static final Item QUAD_URANIUM_FUEL_ROD = Ic2rItems.register("quad_uranium_fuel_rod", new ItemReactorUranium(new Properties(), 4));

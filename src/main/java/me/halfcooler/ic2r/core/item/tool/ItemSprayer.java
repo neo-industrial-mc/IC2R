@@ -222,12 +222,12 @@ public class ItemSprayer extends Item implements StandardFluidItem, IBoxable
 			if (state.is(Blocks.SCAFFOLDING))
 			{
 				world.destroyBlock(targetPos, true);
-				world.setBlockAndUpdate(targetPos, Ic2rBlocks.FOAM.defaultBlockState().setValue(FoamBlock.typeProperty, FoamBlock.FoamType.normal));
+				world.setBlockAndUpdate(targetPos, Ic2rBlocks.FOAM.get().defaultBlockState().setValue(FoamBlock.typeProperty, FoamBlock.FoamType.normal));
 			} else if (state.getBlock() instanceof CableBlock cable)
 			{
 				BlockState foamState = cable.toFoamState(state, cable.getFoamCableBlock());
 				world.setBlockAndUpdate(targetPos, foamState);
-			} else if (!world.setBlockAndUpdate(targetPos, Ic2rBlocks.FOAM.defaultBlockState().setValue(FoamBlock.typeProperty, FoamBlock.FoamType.normal)))
+			} else if (!world.setBlockAndUpdate(targetPos, Ic2rBlocks.FOAM.get().defaultBlockState().setValue(FoamBlock.typeProperty, FoamBlock.FoamType.normal)))
 			{
 				failedPlacements++;
 			}

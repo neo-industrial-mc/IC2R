@@ -13,7 +13,7 @@ public class ItemCrop extends BlockItem implements IBoxable
 {
 	public ItemCrop(Properties settings)
 	{
-		super(Ic2rBlocks.CROP_STICK, settings);
+		super(Ic2rBlocks.CROP_STICK.get(), settings);
 	}
 
 	protected boolean canPlace(BlockPlaceContext context, BlockState state)

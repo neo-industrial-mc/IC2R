@@ -29,7 +29,7 @@ public class ItemTreetapElectric extends ItemElectricTool
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
 		ItemStack stack = context.getItemInHand();
-		if (block == Ic2rBlocks.RUBBER_LOG && this.canUse(stack))
+		if (block == Ic2rBlocks.RUBBER_LOG.get() && this.canUse(stack))
 		{
 			Player player = context.getPlayer();
 			if (player == null)

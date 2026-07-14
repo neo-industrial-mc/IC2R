@@ -10,7 +10,7 @@ public class ITntEntity extends ExplosiveEntity
 {
 	public ITntEntity(Level world, double x, double y, double z)
 	{
-		super(Ic2rEntities.ITNT, world, x, y, z, 60, 5.5F, 0.9F, 0.3F, Ic2rBlocks.ITNT.defaultBlockState(), 0);
+		super(Ic2rEntities.ITNT, world, x, y, z, 60, 5.5F, 0.9F, 0.3F, Ic2rBlocks.ITNT.get().defaultBlockState(), 0);
 	}
 
 	public ITntEntity(EntityType<? extends ITntEntity> type, Level world)

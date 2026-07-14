@@ -21,7 +21,7 @@ public class CropMelon extends CropVanillaStem
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.MELON_CROP;
+		return Ic2rBlocks.MELON_CROP.get();
 	}
 
 	@Override

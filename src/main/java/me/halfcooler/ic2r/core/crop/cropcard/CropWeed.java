@@ -20,7 +20,7 @@ public class CropWeed extends Ic2rCropCard
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.WEED_CROP;
+		return Ic2rBlocks.WEED_CROP.get();
 	}
 
 	@Override

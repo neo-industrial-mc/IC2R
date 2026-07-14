@@ -19,7 +19,7 @@ public class CropHops extends Ic2rCropCard
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.HOPS_CROP;
+		return Ic2rBlocks.HOPS_CROP.get();
 	}
 
 	@Override

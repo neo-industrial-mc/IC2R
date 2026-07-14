@@ -53,7 +53,7 @@ public class Ic2rSheetBlock extends Block
 						break;
 					}
 
-					if (state != Ic2rBlocks.RUBBER_SHEET.defaultBlockState())
+					if (state != Ic2rBlocks.RUBBER_SHEET.get().defaultBlockState())
 					{
 						break;
 					}
@@ -105,12 +105,12 @@ public class Ic2rSheetBlock extends Block
 
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
 	{
-		if (state.getBlock() == Ic2rBlocks.RESIN_SHEET)
+		if (state.getBlock() == Ic2rBlocks.RESIN_SHEET.get())
 		{
 			return Shapes.empty();
 		} else
 		{
-			return !(state.getBlock() == Ic2rBlocks.WOOL_SHEET && context instanceof EntityCollisionContext entityContext)
+			return !(state.getBlock() == Ic2rBlocks.WOOL_SHEET.get() && context instanceof EntityCollisionContext entityContext)
 				|| !(entityContext.getEntity() instanceof Player)
 				|| !entityContext.getEntity().isShiftKeyDown()
 				&& !(entityContext.getEntity().getY() < pos.getY() + 0.125 - entityContext.getEntity().maxUpStep())
@@ -121,20 +121,20 @@ public class Ic2rSheetBlock extends Block
 
 	private boolean isValidPosition(Level world, BlockPos pos, BlockState state)
 	{
-		if (state.getBlock() == Ic2rBlocks.RESIN_SHEET)
+		if (state.getBlock() == Ic2rBlocks.RESIN_SHEET.get())
 		{
 			return this.isNormalCubeBelow(world, pos);
 		}
 
-		if (state.getBlock() != Ic2rBlocks.RUBBER_SHEET)
+		if (state.getBlock() != Ic2rBlocks.RUBBER_SHEET.get())
 		{
-			return state.getBlock() == Ic2rBlocks.WOOL_SHEET;
+			return state.getBlock() == Ic2rBlocks.WOOL_SHEET.get();
 		}
 
 		for (Direction facing : Util.HORIZONTAL_DIRS)
 		{
 			state = world.getBlockState(pos.relative(facing));
-			if (state == Ic2rBlocks.RUBBER_SHEET.defaultBlockState() || state.getBlock().isCollisionShapeFullBlock(state, world, pos))
+			if (state == Ic2rBlocks.RUBBER_SHEET.get().defaultBlockState() || state.getBlock().isCollisionShapeFullBlock(state, world, pos))
 			{
 				return true;
 			}
@@ -161,11 +161,11 @@ public class Ic2rSheetBlock extends Block
 
 	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity)
 	{
-		if (state.getBlock() == Ic2rBlocks.RESIN_SHEET)
+		if (state.getBlock() == Ic2rBlocks.RESIN_SHEET.get())
 		{
 			entity.fallDistance = (float) (entity.fallDistance * 0.75);
 			entity.setDeltaMovement(entity.getDeltaMovement().x() * 0.6, entity.getDeltaMovement().y() * 0.85, entity.getDeltaMovement().z() * 0.6);
-		} else if (state.getBlock() == Ic2rBlocks.RUBBER_SHEET)
+		} else if (state.getBlock() == Ic2rBlocks.RUBBER_SHEET.get())
 		{
 			if (!world.isEmptyBlock(pos.below()))
 			{
@@ -199,7 +199,7 @@ public class Ic2rSheetBlock extends Block
 				{
 					entity.setDeltaMovement(entity.getDeltaMovement().x(), entity.getDeltaMovement().y() * -0.8, entity.getDeltaMovement().z());
 				}
-			} else if (state.getBlock() == Ic2rBlocks.WOOL_SHEET)
+			} else if (state.getBlock() == Ic2rBlocks.WOOL_SHEET.get())
 			{
 				entity.fallDistance = (float) (entity.fallDistance * 0.95);
 			}

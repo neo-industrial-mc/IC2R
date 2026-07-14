@@ -18,7 +18,7 @@ public class CropCarrots extends CropVanilla
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.CARROTS_CROP;
+		return Ic2rBlocks.CARROTS_CROP.get();
 	}
 
 	@Override

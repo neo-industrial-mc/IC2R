@@ -19,7 +19,7 @@ public class CropCocoa extends Ic2rCropCard
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.COCOA_CROP;
+		return Ic2rBlocks.COCOA_CROP.get();
 	}
 
 	@Override

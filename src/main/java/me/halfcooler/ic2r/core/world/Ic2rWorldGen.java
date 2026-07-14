@@ -24,17 +24,17 @@ public class Ic2rWorldGen
 {
 	private static final WeightedStateProvider RUBBER_LOG_PROVIDER = new WeightedStateProvider(
 		(SimpleWeightedRandomList.Builder) SimpleWeightedRandomList.builder()
-			.add(Ic2rBlocks.RUBBER_LOG.defaultBlockState(), 16)
-			.add(Ic2rBlocks.RUBBER_LOG.defaultBlockState().setValue(RubberLogBlock.stateProperty, RubberLogBlock.RubberWoodState.wet_north), 1)
-			.add(Ic2rBlocks.RUBBER_LOG.defaultBlockState().setValue(RubberLogBlock.stateProperty, RubberLogBlock.RubberWoodState.wet_east), 1)
-			.add(Ic2rBlocks.RUBBER_LOG.defaultBlockState().setValue(RubberLogBlock.stateProperty, RubberLogBlock.RubberWoodState.wet_south), 1)
-			.add(Ic2rBlocks.RUBBER_LOG.defaultBlockState().setValue(RubberLogBlock.stateProperty, RubberLogBlock.RubberWoodState.wet_west), 1)
+			.add(Ic2rBlocks.RUBBER_LOG.get().defaultBlockState(), 16)
+			.add(Ic2rBlocks.RUBBER_LOG.get().defaultBlockState().setValue(RubberLogBlock.stateProperty, RubberLogBlock.RubberWoodState.wet_north), 1)
+			.add(Ic2rBlocks.RUBBER_LOG.get().defaultBlockState().setValue(RubberLogBlock.stateProperty, RubberLogBlock.RubberWoodState.wet_east), 1)
+			.add(Ic2rBlocks.RUBBER_LOG.get().defaultBlockState().setValue(RubberLogBlock.stateProperty, RubberLogBlock.RubberWoodState.wet_south), 1)
+			.add(Ic2rBlocks.RUBBER_LOG.get().defaultBlockState().setValue(RubberLogBlock.stateProperty, RubberLogBlock.RubberWoodState.wet_west), 1)
 	);
 	public static final CompletableFuture<Holder<ConfiguredFeature<TreeConfiguration, ?>>> RUBBER_TREE = register(
 		new TreeConfigurationBuilder(
 			RUBBER_LOG_PROVIDER,
 			new StraightTrunkPlacer(4, 4, 0),
-			BlockStateProvider.simple(Ic2rBlocks.RUBBER_LEAVES),
+			BlockStateProvider.simple(Ic2rBlocks.RUBBER_LEAVES.get()),
 			RubberTreeFoliagePlacer.INSTANCE,
 			new TwoLayersFeatureSize(1, 0, 1)
 		)

@@ -21,7 +21,7 @@ public class CropPumpkin extends CropVanillaStem
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.PUMPKIN_CROP;
+		return Ic2rBlocks.PUMPKIN_CROP.get();
 	}
 
 	@Override

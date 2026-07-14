@@ -5,6 +5,7 @@ import me.halfcooler.ic2r.core.Ic2rPotion;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
+import me.halfcooler.ic2r.core.item.armor.jetpack.JetpackHandler;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -18,6 +19,7 @@ public class BlocksItems
 		Ic2rBlocks.init();
 		Ic2rBlockEntities.init();
 		Ic2rItems.init();
+		JetpackHandler.init();
 		Ic2rScreenHandlers.init();
 		initMigration();
 	}

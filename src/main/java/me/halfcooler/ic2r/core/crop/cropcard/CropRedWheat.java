@@ -20,7 +20,7 @@ public class CropRedWheat extends Ic2rCropCard
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.RED_WHEAT_CROP;
+		return Ic2rBlocks.RED_WHEAT_CROP.get();
 	}
 
 	@Override

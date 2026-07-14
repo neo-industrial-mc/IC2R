@@ -46,7 +46,6 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
  */
 public interface PlatformRegistry
 {
-	void registerBlock(ResourceLocation id, Block block);
 
 	void registerItem(ResourceLocation id, Item item);
 

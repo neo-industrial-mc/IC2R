@@ -26,7 +26,7 @@ public class RubberWoodBlock extends Block
 		ItemStack mainHandItem = player.getMainHandItem();
 		if (mainHandItem.getItem() instanceof AxeItem)
 		{
-			WorldUtil.strip(state, world, pos, player, mainHandItem, Ic2rBlocks.STRIPPED_RUBBER_WOOD.defaultBlockState());
+			WorldUtil.strip(state, world, pos, player, mainHandItem, Ic2rBlocks.STRIPPED_RUBBER_WOOD.get().defaultBlockState());
 			return InteractionResult.sidedSuccess(world.isClientSide);
 		} else
 		{

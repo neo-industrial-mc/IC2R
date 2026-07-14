@@ -19,7 +19,7 @@ public class CropWheat extends CropVanilla
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.WHEAT_CROP;
+		return Ic2rBlocks.WHEAT_CROP.get();
 	}
 
 	@Override

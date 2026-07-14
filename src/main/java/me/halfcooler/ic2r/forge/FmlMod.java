@@ -6,9 +6,10 @@ import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.init.IC2RUuScanConfig;
 import me.halfcooler.ic2r.core.network.NetworkManager;
 import me.halfcooler.ic2r.core.loot.Ic2rLootNbtProviderTypes;
+import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
-import me.halfcooler.ic2r.forge.item.armor.jetpack.JetpackHandlerForge;
+
 import me.halfcooler.ic2r.forge.ref.Ic2rSoundEventsForge;
 import me.halfcooler.ic2r.integration.ae2.Ic2rAe2Plugin;
 
@@ -49,6 +50,10 @@ public final class FmlMod
 		// W3.2: install platform SPI before common code may use PlatformServices
 		ForgePlatformServices.install();
 		IEventBus modEventBus = this.ctx.getModEventBus();
+		// Force class-loading of *Blocks definition files so RegistryObject entries
+		// exist before BLOCKS DeferredRegister processes during RegisterEvent.
+		Ic2rBlocks.init();
+		EnvProxyForge.BLOCKS.register(modEventBus);
 		modEventBus.register(this);
 		EnvProxyForge.blockEntityRegistry.register(modEventBus);
 		EnvProxyForge.creativeTabRegistry.register(modEventBus);
@@ -63,7 +68,6 @@ public final class FmlMod
 		Ic2rLootModifier.lootModifiersRegistry.register(modEventBus);
 		// W1.7: SoundEvent category fully DeferredRegister + RegistryObject
 		Ic2rSoundEventsForge.register(modEventBus);
-			JetpackHandlerForge.register();
 		if (FMLEnvironment.dist.isClient())
 		{
 			modEventBus.register(new ClientModEventHandlerForge());

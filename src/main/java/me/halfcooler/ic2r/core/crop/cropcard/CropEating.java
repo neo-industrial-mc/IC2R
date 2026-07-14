@@ -57,7 +57,7 @@ public class CropEating extends Ic2rCropCard
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.EATING_PLANT_CROP;
+		return Ic2rBlocks.EATING_PLANT_CROP.get();
 	}
 
 	@Override

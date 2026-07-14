@@ -46,9 +46,9 @@ public class Flatification extends TerraformerBase
 		removable.add(Blocks.BROWN_MUSHROOM);
 		removable.add(Blocks.PUMPKIN);
 		removable.add(Blocks.MELON);
-		removable.add(Ic2rBlocks.RUBBER_LEAVES);
-		removable.add(Ic2rBlocks.RUBBER_SAPLING);
-		removable.add(Ic2rBlocks.RUBBER_LOG);
+		removable.add(Ic2rBlocks.RUBBER_LEAVES.get());
+		removable.add(Ic2rBlocks.RUBBER_SAPLING.get());
+		removable.add(Ic2rBlocks.RUBBER_LOG.get());
 	}
 
 	@Override

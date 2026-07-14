@@ -849,7 +849,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		{
 			if (this.level != null)
 			{
-				this.level.setBlockAndUpdate(this.worldPosition, Ic2rBlocks.CROP_STICK.defaultBlockState().setValue(Ic2rTileEntityBlock.CROSSING_BASE, crossingBase));
+				this.level.setBlockAndUpdate(this.worldPosition, Ic2rBlocks.CROP_STICK.get().defaultBlockState().setValue(Ic2rTileEntityBlock.CROSSING_BASE, crossingBase));
 			}
 		}
 	}
@@ -1019,7 +1019,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		this.resetData();
 		if (this.level != null)
 		{
-			this.level.setBlockAndUpdate(this.worldPosition, Ic2rBlocks.CROP_STICK.defaultBlockState().setValue(Ic2rTileEntityBlock.CROSSING_BASE, false));
+			this.level.setBlockAndUpdate(this.worldPosition, Ic2rBlocks.CROP_STICK.get().defaultBlockState().setValue(Ic2rTileEntityBlock.CROSSING_BASE, false));
 		}
 	}
 
@@ -1118,7 +1118,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		if (crop.getCropBlock() instanceof Ic2rTileEntityBlock cropBlock)
 		{
 			BlockState newState = cropBlock.defaultBlockState();
-			if (!newState.is(Ic2rBlocks.CROP_STICK))
+			if (!newState.is(Ic2rBlocks.CROP_STICK.get()))
 			{
 				if (age > cropBlock.getCropMaxAge()) age = cropBlock.getCropMaxAge();
 				newState = newState.setValue(cropBlock.getAgeProperty(), age);
@@ -1142,7 +1142,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		if (cropBlock instanceof Ic2rTileEntityBlock ic2CropBlock)
 		{
 			BlockState newState = cropBlock.defaultBlockState();
-			if (!newState.is(Ic2rBlocks.CROP_STICK))
+			if (!newState.is(Ic2rBlocks.CROP_STICK.get()))
 			{
 				newState = newState.setValue(ic2CropBlock.getAgeProperty(), (int) this.currentAge);
 			}

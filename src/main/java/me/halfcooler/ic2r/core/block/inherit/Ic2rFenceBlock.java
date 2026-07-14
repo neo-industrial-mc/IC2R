@@ -48,7 +48,7 @@ public class Ic2rFenceBlock extends FenceBlock
 
 	private static TileEntityMagnetizer getMagnetizer(BlockGetter world, BlockPos pos, Direction side, BlockState state, boolean checkPower)
 	{
-		if (!state.is(Ic2rBlocks.MAGNETIZER))
+		if (!state.is(Ic2rBlocks.MAGNETIZER.get()))
 		{
 			return null;
 		}

@@ -16,7 +16,7 @@ public class NukeEntity extends ExplosiveEntity
 {
 	public NukeEntity(Level world, double x, double y, double z, float power, int radiationRange)
 	{
-		super(Ic2rEntities.NUKE, world, x, y, z, 300, power, 0.05F, 1.5F, Ic2rBlocks.NUKE.defaultBlockState(), radiationRange);
+		super(Ic2rEntities.NUKE, world, x, y, z, 300, power, 0.05F, 1.5F, Ic2rBlocks.NUKE.get().defaultBlockState(), radiationRange);
 	}
 
 	public NukeEntity(EntityType<? extends NukeEntity> type, Level world)

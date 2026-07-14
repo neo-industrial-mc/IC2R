@@ -19,7 +19,7 @@ public class CropCoffee extends Ic2rCropCard
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.COFFEE_CROP;
+		return Ic2rBlocks.COFFEE_CROP.get();
 	}
 
 	@Override

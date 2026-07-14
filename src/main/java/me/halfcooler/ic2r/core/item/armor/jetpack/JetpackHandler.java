@@ -27,8 +27,17 @@ import net.minecraft.world.item.ItemStack;
 
 public class JetpackHandler implements IBackupElectricItemManager
 {
-	static final ItemStack jetpack = new ItemStack(Ic2rItems.JETPACK_ELECTRIC);
+	private static ItemStack jetpackCache;
 	private static final Map<Player, ItemStack> playerArmorBuffer = new WeakHashMap<>();
+
+	static ItemStack getJetpackStack()
+	{
+		if (jetpackCache == null)
+		{
+			jetpackCache = new ItemStack(Ic2rItems.JETPACK_ELECTRIC);
+		}
+		return jetpackCache;
+	}
 	public static JetpackHandler instance;
 	private boolean internalHandlesCheck = false;
 
@@ -96,12 +105,12 @@ public class JetpackHandler implements IBackupElectricItemManager
 	public static IJetpack getJetpack(ItemStack stack)
 	{
 		assert hasJetpack(stack);
-		return stack.getItem() instanceof IJetpack ? (IJetpack) stack.getItem() : (IJetpack) jetpack.getItem();
+		return stack.getItem() instanceof IJetpack ? (IJetpack) stack.getItem() : (IJetpack) getJetpackStack().getItem();
 	}
 
 	public static double getTransferLimit()
 	{
-		return ((IElectricItem) jetpack.getItem()).getTransferLimit(jetpack);
+		return ((IElectricItem) getJetpackStack().getItem()).getTransferLimit(getJetpackStack());
 	}
 
 	@Override
@@ -177,7 +186,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 	@Override
 	public double getMaxCharge(ItemStack stack)
 	{
-		return ElectricItem.manager.getMaxCharge(jetpack.copy());
+		return ElectricItem.manager.getMaxCharge(getJetpackStack().copy());
 	}
 
 	@Override
@@ -206,7 +215,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 	@Override
 	public int getTier(ItemStack stack)
 	{
-		return ElectricItem.manager.getTier(jetpack.copy());
+		return ElectricItem.manager.getTier(getJetpackStack().copy());
 	}
 
 	@Override
@@ -232,7 +241,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 			ItemStack lastStack = playerArmorBuffer.get(player);
 			if (!StackUtil.isEmpty(lastStack) && hasJetpackAttached(lastStack) && StackUtil.isEmpty(stack))
 			{
-				ItemStack newJetpack = jetpack.copy();
+				ItemStack newJetpack = getJetpackStack().copy();
 				double oldCharge = ElectricItem.manager.getCharge(lastStack);
 				ElectricItem.manager.charge(newJetpack, oldCharge, Integer.MAX_VALUE, true, false);
 				player.setItemSlot(EquipmentSlot.CHEST, newJetpack);

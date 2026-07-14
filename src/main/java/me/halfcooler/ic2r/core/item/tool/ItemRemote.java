@@ -50,7 +50,7 @@ public class ItemRemote extends Item
 
 		BlockPos pos = context.getClickedPos();
 		BlockState state = level.getBlockState(pos);
-		if (!state.is(Ic2rBlocks.DYNAMITE))
+		if (!state.is(Ic2rBlocks.DYNAMITE.get()))
 		{
 			// Consume the click so use() does not fire and detonate by accident.
 			return InteractionResult.SUCCESS;
@@ -140,7 +140,7 @@ public class ItemRemote extends Item
 			if (level.isLoaded(pos))
 			{
 				BlockState state = level.getBlockState(pos);
-				if (state.is(Ic2rBlocks.DYNAMITE) && state.getValue(BlockDynamite.LINKED))
+				if (state.is(Ic2rBlocks.DYNAMITE.get()) && state.getValue(BlockDynamite.LINKED))
 				{
 					((BlockDynamite) state.getBlock()).detonate(level, pos, player);
 				}

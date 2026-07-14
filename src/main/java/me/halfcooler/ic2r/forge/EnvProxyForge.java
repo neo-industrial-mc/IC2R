@@ -108,6 +108,7 @@ public final class EnvProxyForge implements EnvProxy
 	static final DeferredRegister<FoliagePlacerType<?>> foliagePlacerRegistry = DeferredRegister.create(ForgeRegistries.FOLIAGE_PLACER_TYPES, "ic2r");
 	static final DeferredRegister<RecipeType<?>> recipeTypeRegistry = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, "ic2r");
 	static final DeferredRegister<RecipeSerializer<?>> recipeSerializerRegistry = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, "ic2r");
+	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, "ic2r");
 	private static final boolean isClient = FMLEnvironment.dist.isClient();
 	static List<Runnable> pendingItemRegistrations = new ArrayList<>();
 	static List<ConfiguredFeatureRegistration<?, ?>> configuredFeatureRegistrations = new ArrayList<>();
@@ -127,12 +128,6 @@ public final class EnvProxyForge implements EnvProxy
 
 	// G3.5 / E2: isFabricEnv / isForgeEnv / getServer removed —
 	// use PlatformServices.lifecycle().getLoaderKind() / .getServer()
-
-	@Override
-	public void registerBlock(ResourceLocation id, Block block)
-	{
-		ForgeRegistries.BLOCKS.register(id, block);
-	}
 
 	@Override
 	public <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(ResourceLocation id, BiFunction<BlockPos, BlockState, T> factory, Block... blocks)

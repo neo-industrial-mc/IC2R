@@ -68,7 +68,7 @@ public class WallBlock extends Block implements StainableBlock, RetexturableBloc
 		int[] refColorMultipliers
 	)
 	{
-		if (!world.setBlock(pos, Ic2rBlocks.OBSCURED_WALL.defaultBlockState(), Block.UPDATE_ALL))
+		if (!world.setBlock(pos, Ic2rBlocks.OBSCURED_WALL.get().defaultBlockState(), Block.UPDATE_ALL))
 		{
 			return false;
 		}

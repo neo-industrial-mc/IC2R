@@ -88,7 +88,7 @@ public class Cultivation extends TerraformerBase
 		plants.add(Blocks.BROWN_MUSHROOM.defaultBlockState());
 		plants.add(Blocks.PUMPKIN.defaultBlockState());
 		plants.add(Blocks.MELON.defaultBlockState());
-		plants.add(Ic2rBlocks.RUBBER_SAPLING.defaultBlockState());
+		plants.add(Ic2rBlocks.RUBBER_SAPLING.get().defaultBlockState());
 	}
 
 	@Override

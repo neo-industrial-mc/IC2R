@@ -44,7 +44,7 @@ public class ItemDynamite extends Item implements IBoxable
 		Player player = context.getPlayer();
 		BlockPlaceContext placeContext = new BlockPlaceContext(context);
 		BlockPos pos = placeContext.getClickedPos();
-		BlockDynamite dynamite = (BlockDynamite) Ic2rBlocks.DYNAMITE;
+		BlockDynamite dynamite = (BlockDynamite) Ic2rBlocks.DYNAMITE.get();
 
 		if (!level.getWorldBorder().isWithinBounds(pos) || player != null && !player.mayUseItemAt(pos, context.getClickedFace(), context.getItemInHand()))
 		{

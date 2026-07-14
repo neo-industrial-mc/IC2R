@@ -152,6 +152,8 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.registries.RegistryObject;
+import me.halfcooler.ic2r.forge.EnvProxyForge;
 
 /** Domain block registrations: rubber wood, sheets, walls, foam, explosives, building blocks */
 public final class Ic2rBlocksBuilding
@@ -160,12 +162,12 @@ public final class Ic2rBlocksBuilding
 	{
 	}
 
-	public static final LeavesBlock RUBBER_LEAVES = Ic2rBlocks.register("rubber_leaves", new LeavesBlock(Properties.of().strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion().isValidSpawn(Ic2rBlocks::canSpawnOnLeaves).isSuffocating(Ic2rBlocks::never).isViewBlocking(Ic2rBlocks::never)));
-	public static final RubberLogBlock RUBBER_LOG = Ic2rBlocks.register("rubber_log", new RubberLogBlock(Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN).randomTicks().strength(2.0F, 3.0f).sound(SoundType.WOOD)));
-	public static final RotatedPillarBlock STRIPPED_RUBBER_LOG = Ic2rBlocks.register("stripped_rubber_log", new RotatedPillarBlock(Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
-	public static final RubberWoodBlock RUBBER_WOOD = Ic2rBlocks.register("rubber_wood", new RubberWoodBlock(Properties.of().mapColor(MapColor.COLOR_BROWN).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
-	public static final Block STRIPPED_RUBBER_WOOD = Ic2rBlocks.register("stripped_rubber_wood", new Block(Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
-	public static final Block RUBBER_SAPLING = Ic2rBlocks.register("rubber_sapling", new SaplingBlock(new AbstractTreeGrower()
+	public static final RegistryObject<LeavesBlock> RUBBER_LEAVES = EnvProxyForge.BLOCKS.register("rubber_leaves", () -> new LeavesBlock(Properties.of().strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion().isValidSpawn(Ic2rBlocks::canSpawnOnLeaves).isSuffocating(Ic2rBlocks::never).isViewBlocking(Ic2rBlocks::never)));
+	public static final RegistryObject<RubberLogBlock> RUBBER_LOG = EnvProxyForge.BLOCKS.register("rubber_log", () -> new RubberLogBlock(Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN).randomTicks().strength(2.0F, 3.0f).sound(SoundType.WOOD)));
+	public static final RegistryObject<RotatedPillarBlock> STRIPPED_RUBBER_LOG = EnvProxyForge.BLOCKS.register("stripped_rubber_log", () -> new RotatedPillarBlock(Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
+	public static final RegistryObject<RubberWoodBlock> RUBBER_WOOD = EnvProxyForge.BLOCKS.register("rubber_wood", () -> new RubberWoodBlock(Properties.of().mapColor(MapColor.COLOR_BROWN).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
+	public static final RegistryObject<Block> STRIPPED_RUBBER_WOOD = EnvProxyForge.BLOCKS.register("stripped_rubber_wood", () -> new Block(Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
+	public static final RegistryObject<Block> RUBBER_SAPLING = EnvProxyForge.BLOCKS.register("rubber_sapling", () -> new SaplingBlock(new AbstractTreeGrower()
 	{
 		protected ResourceKey<ConfiguredFeature<?, ?>> getConfiguredFeature(@NotNull RandomSource random, boolean bees)
 		{
@@ -174,63 +176,58 @@ public final class Ic2rBlocksBuilding
 	}, Properties.of().noCollission().randomTicks().instabreak().sound(SoundType.GRASS))
 	{
 	});
-	public static final Block RUBBER_PLANKS = Ic2rBlocks.register("rubber_planks", new Block(Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
-	public static final Block RUBBER_BUTTON = Ic2rBlocks.register("rubber_button", new ButtonBlock(Properties.of().noCollission().strength(0.5F).sound(SoundType.WOOD), BlockSetType.OAK, 30, false)
+	public static final RegistryObject<Block> RUBBER_PLANKS = EnvProxyForge.BLOCKS.register("rubber_planks", () -> new Block(Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+	public static final RegistryObject<Block> RUBBER_BUTTON = EnvProxyForge.BLOCKS.register("rubber_button", () -> new ButtonBlock(Properties.of().noCollission().strength(0.5F).sound(SoundType.WOOD), BlockSetType.OAK, 30, false)
 	{
 	});
-	public static final Block RUBBER_DOOR = Ic2rBlocks.register("rubber_door", new DoorBlock(Properties.of().mapColor(RUBBER_PLANKS.defaultMapColor()).strength(3.0F).sound(SoundType.WOOD).noOcclusion(), BlockSetType.OAK)
+	public static final RegistryObject<Block> RUBBER_DOOR = EnvProxyForge.BLOCKS.register("rubber_door", () -> new DoorBlock(Properties.of().mapColor(MapColor.PODZOL).strength(3.0F).sound(SoundType.WOOD).noOcclusion(), BlockSetType.OAK)
 	{
 	});
-	public static final Block RUBBER_FENCE = Ic2rBlocks.register("rubber_fence", new FenceBlock(Properties.of().mapColor(RUBBER_PLANKS.defaultMapColor()).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
-	public static final Block RUBBER_FENCE_GATE = Ic2rBlocks.register("rubber_fence_gate", new FenceGateBlock(Properties.of().mapColor(RUBBER_PLANKS.defaultMapColor()).strength(2.0F, 3.0F).sound(SoundType.WOOD), WoodType.OAK));
-	public static final Block RUBBER_PRESSURE_PLATE = Ic2rBlocks.register("rubber_pressure_plate", new PressurePlateBlock(Sensitivity.EVERYTHING, Properties.of().mapColor(RUBBER_PLANKS.defaultMapColor()).noCollission().strength(0.5F).sound(SoundType.WOOD), BlockSetType.OAK)
+	public static final RegistryObject<Block> RUBBER_FENCE = EnvProxyForge.BLOCKS.register("rubber_fence", () -> new FenceBlock(Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+	public static final RegistryObject<Block> RUBBER_FENCE_GATE = EnvProxyForge.BLOCKS.register("rubber_fence_gate", () -> new FenceGateBlock(Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD), WoodType.OAK));
+	public static final RegistryObject<Block> RUBBER_PRESSURE_PLATE = EnvProxyForge.BLOCKS.register("rubber_pressure_plate", () -> new PressurePlateBlock(Sensitivity.EVERYTHING, Properties.of().mapColor(MapColor.PODZOL).noCollission().strength(0.5F).sound(SoundType.WOOD), BlockSetType.OAK)
 	{
 	});
-	public static final Block RUBBER_SIGN = Ic2rBlocks.register("rubber_sign", new Ic2rSignBlock(Properties.of().mapColor(RUBBER_LOG.defaultMapColor()).noCollission().strength(1.0F).sound(SoundType.WOOD), Ic2rSignType.RUBBER));
-	public static final Block RUBBER_WALL_SIGN = Ic2rBlocks.register("rubber_wall_sign", new Ic2rWallSignBlock(Properties.of().mapColor(RUBBER_LOG.defaultMapColor()).noCollission().strength(1.0F).sound(SoundType.WOOD).lootFrom(BuiltInRegistries.BLOCK.getResourceKey(RUBBER_SIGN).flatMap(BuiltInRegistries.BLOCK::getHolder).orElseThrow()), Ic2rSignType.RUBBER));
-	public static final Block RUBBER_SLAB = Ic2rBlocks.register("rubber_slab", new SlabBlock(Properties.of().mapColor(MapColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
-	public static final Block RUBBER_STAIRS = Ic2rBlocks.register("rubber_stairs", new StairBlock(RUBBER_PLANKS::defaultBlockState, Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD))
+	public static final RegistryObject<Block> RUBBER_SIGN = EnvProxyForge.BLOCKS.register("rubber_sign", () -> new Ic2rSignBlock(Properties.of().mapColor(MapColor.PODZOL).noCollission().strength(1.0F).sound(SoundType.WOOD), Ic2rSignType.RUBBER));
+	public static final RegistryObject<Block> RUBBER_WALL_SIGN = EnvProxyForge.BLOCKS.register("rubber_wall_sign", () -> new Ic2rWallSignBlock(Properties.of().mapColor(MapColor.PODZOL).noCollission().strength(1.0F).sound(SoundType.WOOD).lootFrom(BuiltInRegistries.BLOCK.getResourceKey(RUBBER_SIGN.get()).flatMap(BuiltInRegistries.BLOCK::getHolder).orElseThrow()), Ic2rSignType.RUBBER));
+	public static final RegistryObject<Block> RUBBER_SLAB = EnvProxyForge.BLOCKS.register("rubber_slab", () -> new SlabBlock(Properties.of().mapColor(MapColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+	public static final RegistryObject<Block> RUBBER_STAIRS = EnvProxyForge.BLOCKS.register("rubber_stairs", () -> new StairBlock(() -> RUBBER_PLANKS.get().defaultBlockState(), Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD))
 	{
 	});
-	public static final Block RUBBER_TRAPDOOR = Ic2rBlocks.register("rubber_trapdoor", new TrapDoorBlock(Properties.of().mapColor(MapColor.PODZOL).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn(Ic2rBlocks::never), BlockSetType.OAK)
+	public static final RegistryObject<Block> RUBBER_TRAPDOOR = EnvProxyForge.BLOCKS.register("rubber_trapdoor", () -> new TrapDoorBlock(Properties.of().mapColor(MapColor.PODZOL).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn(Ic2rBlocks::never), BlockSetType.OAK)
 	{
 	});
-	public static final Block IRON_FENCE = Ic2rBlocks.register("iron_fence", new Ic2rFenceBlock(Properties.of().strength(5.0F, 10.0F), true));
-	public static final Block RESIN_SHEET = Ic2rBlocks.register("resin_sheet", new Ic2rSheetBlock(Properties.of().strength(1.6F, 0.5F)));
-	public static final Block RUBBER_SHEET = Ic2rBlocks.register("rubber_sheet", new Ic2rSheetBlock(Properties.of().strength(0.8F, 2.0F)));
-	public static final Block WOOL_SHEET = Ic2rBlocks.register("wool_sheet", new Ic2rSheetBlock(Properties.of().strength(0.8F, 0.8F)));
-	public static final Block REINFORCED_GLASS = Ic2rBlocks.register("reinforced_glass", new Ic2rGlassBlock(Properties.of().noOcclusion().strength(5.0F, 180.0F).sound(SoundType.GLASS).isValidSpawn((state, world, pos, type) -> false)));
-	public static final Block FOAM = Ic2rBlocks.register("foam", new FoamBlock(Properties.of().noOcclusion().strength(0.01F, 10.0F).randomTicks().sound(SoundType.WOOL)));
-	public static final Block MINING_PIPE = Ic2rBlocks.register("mining_pipe", new MiningPipeBlock(Properties.of().strength(6.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-	public static final Block MINING_PIPE_TIP = Ic2rBlocks.register("mining_pipe_tip", new Block(Properties.of().strength(6.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-	public static final Block REINFORCED_DOOR = Ic2rBlocks.register("reinforced_door", new DoorBlock(Properties.of().strength(50.0F, 150.0F).sound(SoundType.METAL), BlockSetType.IRON)
+	public static final RegistryObject<Block> IRON_FENCE = EnvProxyForge.BLOCKS.register("iron_fence", () -> new Ic2rFenceBlock(Properties.of().strength(5.0F, 10.0F), true));
+	public static final RegistryObject<Block> RESIN_SHEET = EnvProxyForge.BLOCKS.register("resin_sheet", () -> new Ic2rSheetBlock(Properties.of().strength(1.6F, 0.5F)));
+	public static final RegistryObject<Block> RUBBER_SHEET = EnvProxyForge.BLOCKS.register("rubber_sheet", () -> new Ic2rSheetBlock(Properties.of().strength(0.8F, 2.0F)));
+	public static final RegistryObject<Block> WOOL_SHEET = EnvProxyForge.BLOCKS.register("wool_sheet", () -> new Ic2rSheetBlock(Properties.of().strength(0.8F, 0.8F)));
+	public static final RegistryObject<Block> REINFORCED_GLASS = EnvProxyForge.BLOCKS.register("reinforced_glass", () -> new Ic2rGlassBlock(Properties.of().noOcclusion().strength(5.0F, 180.0F).sound(SoundType.GLASS).isValidSpawn((state, world, pos, type) -> false)));
+	public static final RegistryObject<Block> FOAM = EnvProxyForge.BLOCKS.register("foam", () -> new FoamBlock(Properties.of().noOcclusion().strength(0.01F, 10.0F).randomTicks().sound(SoundType.WOOL)));
+	public static final RegistryObject<Block> MINING_PIPE = EnvProxyForge.BLOCKS.register("mining_pipe", () -> new MiningPipeBlock(Properties.of().strength(6.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+	public static final RegistryObject<Block> MINING_PIPE_TIP = EnvProxyForge.BLOCKS.register("mining_pipe_tip", () -> new Block(Properties.of().strength(6.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+	public static final RegistryObject<Block> REINFORCED_DOOR = EnvProxyForge.BLOCKS.register("reinforced_door", () -> new DoorBlock(Properties.of().strength(50.0F, 150.0F).sound(SoundType.METAL), BlockSetType.IRON)
 	{
 	});
-	public static final Block ITNT = Ic2rBlocks.register("itnt", Ic2rTileEntityBlock.create(Properties.of().strength(0.0F, 0.0F).sound(SoundType.GRASS), TileEntityITnt.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
-	public static final Block NUKE = Ic2rBlocks.register("nuke", Ic2rTileEntityBlock.create(Properties.of().strength(0.0F, 0.0F).sound(SoundType.GRASS), TileEntityNuke.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
-	public static final Block DYNAMITE = Ic2rBlocks.register("dynamite", new BlockDynamite());
+	public static final RegistryObject<Block> ITNT = EnvProxyForge.BLOCKS.register("itnt", () -> Ic2rTileEntityBlock.create(Properties.of().strength(0.0F, 0.0F).sound(SoundType.GRASS), TileEntityITnt.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
+	public static final RegistryObject<Block> NUKE = EnvProxyForge.BLOCKS.register("nuke", () -> Ic2rTileEntityBlock.create(Properties.of().strength(0.0F, 0.0F).sound(SoundType.GRASS), TileEntityNuke.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
+	public static final RegistryObject<Block> DYNAMITE = EnvProxyForge.BLOCKS.register("dynamite", () -> new BlockDynamite());
 	private static final Properties wallSettings = Properties.of().strength(3.0F, 30.0F).requiresCorrectToolForDrops().sound(SoundType.STONE);
-	public static final Block WHITE_WALL = Ic2rBlocks.register("white_wall", new WallBlock(wallSettings, DyeColor.WHITE));
-	public static final Block ORANGE_WALL = Ic2rBlocks.register("orange_wall", new WallBlock(wallSettings, DyeColor.ORANGE));
-	public static final Block MAGENTA_WALL = Ic2rBlocks.register("magenta_wall", new WallBlock(wallSettings, DyeColor.MAGENTA));
-	public static final Block LIGHT_BLUE_WALL = Ic2rBlocks.register("light_blue_wall", new WallBlock(wallSettings, DyeColor.LIGHT_BLUE));
-	public static final Block YELLOW_WALL = Ic2rBlocks.register("yellow_wall", new WallBlock(wallSettings, DyeColor.YELLOW));
-	public static final Block LIME_WALL = Ic2rBlocks.register("lime_wall", new WallBlock(wallSettings, DyeColor.LIME));
-	public static final Block PINK_WALL = Ic2rBlocks.register("pink_wall", new WallBlock(wallSettings, DyeColor.PINK));
-	public static final Block GRAY_WALL = Ic2rBlocks.register("gray_wall", new WallBlock(wallSettings, DyeColor.GRAY));
-	public static final Block LIGHT_GRAY_WALL = Ic2rBlocks.register("light_gray_wall", new WallBlock(wallSettings, DyeColor.LIGHT_GRAY));
-	public static final Block CYAN_WALL = Ic2rBlocks.register("cyan_wall", new WallBlock(wallSettings, DyeColor.CYAN));
-	public static final Block PURPLE_WALL = Ic2rBlocks.register("purple_wall", new WallBlock(wallSettings, DyeColor.PURPLE));
-	public static final Block BLUE_WALL = Ic2rBlocks.register("blue_wall", new WallBlock(wallSettings, DyeColor.BLUE));
-	public static final Block BROWN_WALL = Ic2rBlocks.register("brown_wall", new WallBlock(wallSettings, DyeColor.BROWN));
-	public static final Block GREEN_WALL = Ic2rBlocks.register("green_wall", new WallBlock(wallSettings, DyeColor.GREEN));
-	public static final Block RED_WALL = Ic2rBlocks.register("red_wall", new WallBlock(wallSettings, DyeColor.RED));
-	public static final Block BLACK_WALL = Ic2rBlocks.register("black_wall", new WallBlock(wallSettings, DyeColor.BLACK));
-	public static final Block OBSCURED_WALL = Ic2rBlocks.register("obscured_wall", Ic2rTileEntityBlock.create(wallSettings, TileEntityWall.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
+	public static final RegistryObject<Block> WHITE_WALL = EnvProxyForge.BLOCKS.register("white_wall", () -> new WallBlock(wallSettings, DyeColor.WHITE));
+	public static final RegistryObject<Block> ORANGE_WALL = EnvProxyForge.BLOCKS.register("orange_wall", () -> new WallBlock(wallSettings, DyeColor.ORANGE));
+	public static final RegistryObject<Block> MAGENTA_WALL = EnvProxyForge.BLOCKS.register("magenta_wall", () -> new WallBlock(wallSettings, DyeColor.MAGENTA));
+	public static final RegistryObject<Block> LIGHT_BLUE_WALL = EnvProxyForge.BLOCKS.register("light_blue_wall", () -> new WallBlock(wallSettings, DyeColor.LIGHT_BLUE));
+	public static final RegistryObject<Block> YELLOW_WALL = EnvProxyForge.BLOCKS.register("yellow_wall", () -> new WallBlock(wallSettings, DyeColor.YELLOW));
+	public static final RegistryObject<Block> LIME_WALL = EnvProxyForge.BLOCKS.register("lime_wall", () -> new WallBlock(wallSettings, DyeColor.LIME));
+	public static final RegistryObject<Block> PINK_WALL = EnvProxyForge.BLOCKS.register("pink_wall", () -> new WallBlock(wallSettings, DyeColor.PINK));
+	public static final RegistryObject<Block> GRAY_WALL = EnvProxyForge.BLOCKS.register("gray_wall", () -> new WallBlock(wallSettings, DyeColor.GRAY));
+	public static final RegistryObject<Block> LIGHT_GRAY_WALL = EnvProxyForge.BLOCKS.register("light_gray_wall", () -> new WallBlock(wallSettings, DyeColor.LIGHT_GRAY));
+	public static final RegistryObject<Block> CYAN_WALL = EnvProxyForge.BLOCKS.register("cyan_wall", () -> new WallBlock(wallSettings, DyeColor.CYAN));
+	public static final RegistryObject<Block> PURPLE_WALL = EnvProxyForge.BLOCKS.register("purple_wall", () -> new WallBlock(wallSettings, DyeColor.PURPLE));
+	public static final RegistryObject<Block> BLUE_WALL = EnvProxyForge.BLOCKS.register("blue_wall", () -> new WallBlock(wallSettings, DyeColor.BLUE));
+	public static final RegistryObject<Block> BROWN_WALL = EnvProxyForge.BLOCKS.register("brown_wall", () -> new WallBlock(wallSettings, DyeColor.BROWN));
+	public static final RegistryObject<Block> GREEN_WALL = EnvProxyForge.BLOCKS.register("green_wall", () -> new WallBlock(wallSettings, DyeColor.GREEN));
+	public static final RegistryObject<Block> RED_WALL = EnvProxyForge.BLOCKS.register("red_wall", () -> new WallBlock(wallSettings, DyeColor.RED));
+	public static final RegistryObject<Block> BLACK_WALL = EnvProxyForge.BLOCKS.register("black_wall", () -> new WallBlock(wallSettings, DyeColor.BLACK));
+	public static final RegistryObject<Block> OBSCURED_WALL = EnvProxyForge.BLOCKS.register("obscured_wall", () -> Ic2rTileEntityBlock.create(wallSettings, TileEntityWall.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
 
-	static
-	{
-		IC2R.envProxy.registerFlammableBlock(RUBBER_LEAVES, 20, 30);
-		IC2R.envProxy.registerFlammableBlock(RUBBER_LOG, 20, 4);
-	}
 }

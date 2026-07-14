@@ -61,12 +61,6 @@ public final class PlatformRegistryForge implements PlatformRegistry
 	}
 
 	@Override
-	public void registerBlock(ResourceLocation id, Block block)
-	{
-		proxy().registerBlock(id, block);
-	}
-
-	@Override
 	public void registerItem(ResourceLocation id, Item item)
 	{
 		proxy().registerItem(id, item);

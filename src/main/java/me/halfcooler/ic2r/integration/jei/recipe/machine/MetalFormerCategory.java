@@ -17,7 +17,7 @@ public class MetalFormerCategory extends DynamicCategory
 
 	public MetalFormerCategory(RecipeType<IORecipeWrapper> recipeType, int mode, IGuiHelper guiHelper)
 	{
-		super(Ic2rBlocks.METAL_FORMER, recipeType, guiHelper);
+		super(Ic2rBlocks.METAL_FORMER.get(), recipeType, guiHelper);
 		this.mode = mode;
 	}
 

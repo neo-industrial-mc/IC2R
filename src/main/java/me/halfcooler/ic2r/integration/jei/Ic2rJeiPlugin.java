@@ -152,17 +152,17 @@ public class Ic2rJeiPlugin implements IModPlugin
 	public void registerCategories(IRecipeCategoryRegistration registration)
 	{
 		IGuiHelper guiHelper = registration.getJeiHelpers().getGuiHelper();
-		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.BLAST_FURNACE, this.BLAST_FURNACE, guiHelper));
-		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.BLOCK_CUTTER, this.BLOCK_CUTTER, guiHelper));
-		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.CENTRIFUGE, this.CENTRIFUGE, guiHelper));
-		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.COMPRESSOR, this.COMPRESSOR, guiHelper));
-		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.EXTRACTOR, this.EXTRACTOR, guiHelper));
-		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.MACERATOR, this.MACERATOR, guiHelper));
+		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.BLAST_FURNACE.get(), this.BLAST_FURNACE, guiHelper));
+		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.BLOCK_CUTTER.get(), this.BLOCK_CUTTER, guiHelper));
+		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.CENTRIFUGE.get(), this.CENTRIFUGE, guiHelper));
+		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.COMPRESSOR.get(), this.COMPRESSOR, guiHelper));
+		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.EXTRACTOR.get(), this.EXTRACTOR, guiHelper));
+		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.MACERATOR.get(), this.MACERATOR, guiHelper));
 		registration.addRecipeCategories(new MetalFormerCategory(this.METAL_FORMER_EXTRUDING, 0, guiHelper));
 		registration.addRecipeCategories(new MetalFormerCategory(this.METAL_FORMER_ROLLING, 1, guiHelper));
 		registration.addRecipeCategories(new MetalFormerCategory(this.METAL_FORMER_CUTTING, 2, guiHelper));
-		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.ORE_WASHING_PLANT, this.ORE_WASHER, guiHelper));
-		registration.addRecipeCategories(new CannerBottleCategory((me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock) Ic2rBlocks.SOLID_CANNER, this.CANNER_BOTTLE, guiHelper));
+		registration.addRecipeCategories(new DynamicCategory(Ic2rBlocks.ORE_WASHING_PLANT.get(), this.ORE_WASHER, guiHelper));
+		registration.addRecipeCategories(new CannerBottleCategory((me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock) Ic2rBlocks.SOLID_CANNER.get(), this.CANNER_BOTTLE, guiHelper));
 		registration.addRecipeCategories(new CannerEnrichCategory(this.CANNER_ENRICH, guiHelper));
 		registration.addRecipeCategories(new CannerBottleLiquidCategory(this.CANNER_BOTTLE_LIQUID, guiHelper));
 		registration.addRecipeCategories(new CannerEmptyLiquidCategory(this.CANNER_EMPTY_LIQUID));
@@ -170,23 +170,23 @@ public class Ic2rJeiPlugin implements IModPlugin
 
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration)
 	{
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.BLAST_FURNACE), this.BLAST_FURNACE);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.BLOCK_CUTTER), this.BLOCK_CUTTER);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.CENTRIFUGE), this.CENTRIFUGE);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.COMPRESSOR), this.COMPRESSOR);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.EXTRACTOR), this.EXTRACTOR);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.MACERATOR), this.MACERATOR);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.METAL_FORMER), this.METAL_FORMER_CUTTING, this.METAL_FORMER_EXTRUDING, this.METAL_FORMER_ROLLING);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.ORE_WASHING_PLANT), this.ORE_WASHER);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.SOLID_CANNER), this.CANNER_BOTTLE);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.CANNER), this.CANNER_BOTTLE, this.CANNER_ENRICH, this.CANNER_BOTTLE_LIQUID, this.CANNER_EMPTY_LIQUID);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.INDUSTRIAL_WORKBENCH), RecipeTypes.CRAFTING);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.BATCH_CRAFTER), RecipeTypes.CRAFTING);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.BLAST_FURNACE.get()), this.BLAST_FURNACE);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.BLOCK_CUTTER.get()), this.BLOCK_CUTTER);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.CENTRIFUGE.get()), this.CENTRIFUGE);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.COMPRESSOR.get()), this.COMPRESSOR);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.EXTRACTOR.get()), this.EXTRACTOR);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.MACERATOR.get()), this.MACERATOR);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.METAL_FORMER.get()), this.METAL_FORMER_CUTTING, this.METAL_FORMER_EXTRUDING, this.METAL_FORMER_ROLLING);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.ORE_WASHING_PLANT.get()), this.ORE_WASHER);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.SOLID_CANNER.get()), this.CANNER_BOTTLE);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.CANNER.get()), this.CANNER_BOTTLE, this.CANNER_ENRICH, this.CANNER_BOTTLE_LIQUID, this.CANNER_EMPTY_LIQUID);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.INDUSTRIAL_WORKBENCH.get()), RecipeTypes.CRAFTING);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.BATCH_CRAFTER.get()), RecipeTypes.CRAFTING);
 
 		// Furnace-class machines use vanilla smelting (and fuel for the iron furnace firebox).
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.IRON_FURNACE), RecipeTypes.SMELTING, RecipeTypes.FUELING);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.ELECTRIC_FURNACE), RecipeTypes.SMELTING);
-		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.INDUCTION_FURNACE), RecipeTypes.SMELTING);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.IRON_FURNACE.get()), RecipeTypes.SMELTING, RecipeTypes.FUELING);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.ELECTRIC_FURNACE.get()), RecipeTypes.SMELTING);
+		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.INDUCTION_FURNACE.get()), RecipeTypes.SMELTING);
 	}
 
 	/**

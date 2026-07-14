@@ -368,7 +368,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 				}
 				else
 				{
-					if (world.getBlockState(cPos).getBlock() != Ic2rBlocks.REFRACTORY_BRICKS)
+					if (world.getBlockState(cPos).getBlock() != Ic2rBlocks.REFRACTORY_BRICKS.get())
 					{
 						return false;
 					}
@@ -398,7 +398,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 				}
 				else
 				{
-					if (world.getBlockState(cPos).getBlock() != Ic2rBlocks.REFRACTORY_BRICKS)
+					if (world.getBlockState(cPos).getBlock() != Ic2rBlocks.REFRACTORY_BRICKS.get())
 					{
 						return false;
 					}
@@ -421,7 +421,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 				}
 				else
 				{
-					if (world.getBlockState(cPos).getBlock() != Ic2rBlocks.REFRACTORY_BRICKS)
+					if (world.getBlockState(cPos).getBlock() != Ic2rBlocks.REFRACTORY_BRICKS.get())
 					{
 						return false;
 					}

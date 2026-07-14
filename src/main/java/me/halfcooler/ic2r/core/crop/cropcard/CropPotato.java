@@ -20,7 +20,7 @@ public class CropPotato extends Ic2rCropCard
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.POTATO_CROP;
+		return Ic2rBlocks.POTATO_CROP.get();
 	}
 
 	@Override

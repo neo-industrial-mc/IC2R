@@ -174,7 +174,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 		{
 			Level world = this.getLevel();
 			BlockState state = world.getBlockState(operatingPos);
-			if (state.getBlock() != Ic2rBlocks.MINING_PIPE_TIP)
+			if (state.getBlock() != Ic2rBlocks.MINING_PIPE_TIP.get())
 			{
 				return operatingPos.getY() > world.getMinBuildHeight() && this.digDown(operatingPos, state, false);
 			} else
@@ -201,7 +201,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 		MutableBlockPos ret = this.worldPosition.mutable().move(Direction.DOWN);
 		Level world = this.getLevel();
 		int bottom = world.getMinBuildHeight();
-		BlockState pipeState = Ic2rBlocks.MINING_PIPE.defaultBlockState();
+		BlockState pipeState = Ic2rBlocks.MINING_PIPE.get().defaultBlockState();
 
 		while (ret.getY() >= bottom)
 		{
@@ -225,7 +225,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 			this.progress = 0;
 		}
 
-		if (operatingPos.getY() < this.level.getMinBuildHeight() || this.level.getBlockState(operatingPos).getBlock() != Ic2rBlocks.MINING_PIPE_TIP)
+		if (operatingPos.getY() < this.level.getMinBuildHeight() || this.level.getBlockState(operatingPos).getBlock() != Ic2rBlocks.MINING_PIPE_TIP.get())
 		{
 			operatingPos.move(Direction.UP);
 		}
@@ -279,7 +279,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 		{
 			if (removeTipAbove)
 			{
-				this.getLevel().setBlockAndUpdate(operatingPos.setY(this.level.getMinBuildHeight()), Ic2rBlocks.MINING_PIPE.defaultBlockState());
+				this.getLevel().setBlockAndUpdate(operatingPos.setY(this.level.getMinBuildHeight()), Ic2rBlocks.MINING_PIPE.get().defaultBlockState());
 			}
 
 			return false;
@@ -292,11 +292,11 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 				{
 					if (removeTipAbove)
 					{
-						this.getLevel().setBlockAndUpdate(operatingPos.above(), Ic2rBlocks.MINING_PIPE.defaultBlockState());
+						this.getLevel().setBlockAndUpdate(operatingPos.above(), Ic2rBlocks.MINING_PIPE.get().defaultBlockState());
 					}
 
 					this.pipeSlot.consume(1);
-					this.getLevel().setBlockAndUpdate(operatingPos, Ic2rBlocks.MINING_PIPE_TIP.defaultBlockState());
+					this.getLevel().setBlockAndUpdate(operatingPos, Ic2rBlocks.MINING_PIPE_TIP.get().defaultBlockState());
 				}
 
 				return true;
@@ -304,7 +304,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 			{
 				if (removeTipAbove)
 				{
-					this.getLevel().setBlockAndUpdate(operatingPos.move(Direction.UP), Ic2rBlocks.MINING_PIPE.defaultBlockState());
+					this.getLevel().setBlockAndUpdate(operatingPos.move(Direction.UP), Ic2rBlocks.MINING_PIPE.get().defaultBlockState());
 				}
 
 				return false;
@@ -610,7 +610,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 			return true;
 		}
 
-		if (block != Ic2rBlocks.MINING_PIPE && block != Ic2rBlocks.MINING_PIPE_TIP && block != Blocks.CHEST)
+		if (block != Ic2rBlocks.MINING_PIPE.get() && block != Ic2rBlocks.MINING_PIPE_TIP.get() && block != Blocks.CHEST)
 		{
 			if ((block == Blocks.WATER || block == Blocks.LAVA || FluidHandler.getWorldFluid(state) != null) && this.isPumpConnected(target))
 			{

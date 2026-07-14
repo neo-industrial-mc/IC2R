@@ -22,7 +22,7 @@ public class CropStickyReed extends Ic2rCropCard
 	@Override
 	public Block getCropBlock()
 	{
-		return Ic2rBlocks.STICKY_REED_CROP;
+		return Ic2rBlocks.STICKY_REED_CROP.get();
 	}
 
 	@Override

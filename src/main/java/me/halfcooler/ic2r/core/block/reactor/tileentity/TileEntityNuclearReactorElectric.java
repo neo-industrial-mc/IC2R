@@ -166,7 +166,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	private static boolean isFluidChamberBlock(BlockGetter world, BlockPos pos)
 	{
 		BlockState state = world.getBlockState(pos);
-		if (state.getBlock() == Ic2rBlocks.REACTOR_VESSEL)
+		if (state.getBlock() == Ic2rBlocks.REACTOR_VESSEL.get())
 		{
 			return true;
 		}

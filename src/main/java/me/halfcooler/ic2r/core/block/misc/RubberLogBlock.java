@@ -100,10 +100,10 @@ public class RubberLogBlock extends RotatedPillarBlock
 		BlockPos.MutableBlockPos top = new BlockPos.MutableBlockPos();
 		top.set(pos);
 
-		while (world.getBlockState(top).is(Ic2rBlocks.RUBBER_LOG))
+		while (world.getBlockState(top).is(Ic2rBlocks.RUBBER_LOG.get()))
 		{
 			BlockPos above = top.above();
-			if (world.getBlockState(above).is(Ic2rBlocks.RUBBER_LOG))
+			if (world.getBlockState(above).is(Ic2rBlocks.RUBBER_LOG.get()))
 			{
 				top.set(above);
 			} else
@@ -123,7 +123,7 @@ public class RubberLogBlock extends RotatedPillarBlock
 			return super.use(state, world, pos, player, hand, hit);
 		}
 
-		WorldUtil.strip(state, world, pos, player, mainHandItem, Ic2rBlocks.STRIPPED_RUBBER_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, state.getValue(RotatedPillarBlock.AXIS)));
+		WorldUtil.strip(state, world, pos, player, mainHandItem, Ic2rBlocks.STRIPPED_RUBBER_LOG.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, state.getValue(RotatedPillarBlock.AXIS)));
 		RubberLogBlock.RubberWoodState resinState = state.getValue(stateProperty);
 		if (resinState == RubberLogBlock.RubberWoodState.wet_north || resinState == RubberLogBlock.RubberWoodState.wet_south || resinState == RubberLogBlock.RubberWoodState.wet_west || resinState == RubberLogBlock.RubberWoodState.wet_east)
 		{
