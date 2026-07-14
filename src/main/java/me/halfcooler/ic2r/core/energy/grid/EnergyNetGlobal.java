@@ -209,19 +209,13 @@ public class EnergyNetGlobal implements IEnergyNet
 	@Override
 	public double getPowerFromTier(int tier)
 	{
-		if (tier < 14)
-		{
-			return 8 << tier * 2;
-		} else
-		{
-			return tier < 30 ? 8.0 * Math.pow(4.0, tier) : 9.223372E18F;
-		}
+		return EnergyTransferMath.icPowerFromTier(tier);
 	}
 
 	@Override
 	public int getTierFromPower(double power)
 	{
-		return power <= 0.0 ? 0 : (int) Math.ceil(Math.log(power / 8.0) / Math.log(4.0));
+		return EnergyTransferMath.icTierFromPower(power);
 	}
 
 	@Override

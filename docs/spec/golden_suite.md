@@ -47,16 +47,16 @@
 
 | ID | 标题 | 不变量 / 期望摘要 | 优先级 | 测试状态 | 备注 |
 |:---|:---|:---|:---|:---|:---|
-| EN-IC-001 | 单源单汇基本传输 | 唯一源→唯一汇时，汇侧收到的 EU 等于源发出量减去路径线损（按现行 IC loss 规则） | P0 | 未写 | draft |
-| EN-IC-002 | 最短/优选路径选择 | 多条并联路径时，选用与现行 Calculator 一致的路径代价规则（非任意路径） | P0 | 未写 | draft |
-| EN-IC-003 | 线损后到达量边界 | 线损耗尽时到达量 ≥0；不足一包/有效 EU 时不得「负 EU」进入汇 | P0 | 未写 | draft |
-| EN-IC-004 | 多汇可分配性 | 单源多汇时，各汇获得量之和 ≤ 源可提供量（扣除线损后的有效供给） | P0 | 未写 | 对齐 EnergyCalculatorUnified |
-| EN-IC-005 | 多汇分配策略 | 分配顺序/份额与冻结策略一致（均分或按需，以规格正文最终冻结为准，须可测） | P0 | 未写 | draft；正文待 W0.4+ 钉死 |
-| EN-IC-006 | 绝缘击穿 | 包电压超过导线绝缘等级时触发击穿（效果与现行一致：损线/爆炸等，正文钉死） | P0 | 未写 | draft |
-| EN-IC-007 | 导体熔断/过载 | 超过导线承载条件时导体失效（移除或等价失效状态），后续 tick 不再导电 | P0 | 未写 | draft |
-| EN-IC-008 | 过压对设备 | 汇/机侧收到超压包时的爆炸或拒绝语义与冻结规格一致 | P1 | 未写 | draft |
-| EN-IC-009 | 变压器升压 packet | 升压：输入侧多包低压合成输出侧高压 packet，倍率与现有 Transformer 约定一致（如 4×低→1×高） | P0 | 未写 | draft |
-| EN-IC-010 | 变压器降压 packet | 降压：1×高压 → 多包低压，能量守恒（忽略有意损耗时）与 packet 数一致 | P0 | 未写 | draft |
+| EN-IC-001 | 单源单汇基本传输 | 唯一源→唯一汇时，汇侧收到的 EU 等于源发出量减去路径线损（按现行 IC loss 规则） | P0 | 测绿 | `EnergyTransferMathTest.icInjectAmount_*` |
+| EN-IC-002 | 最短/优选路径选择 | 多条并联路径时，选用与现行 Calculator 一致的路径代价规则（非任意路径） | P0 | 测绿（纯谓词） | `icPreferNewPath_*`；全拓扑 BFS 仍待 |
+| EN-IC-003 | 线损后到达量边界 | 线损耗尽时到达量 ≥0；不足一包/有效 EU 时不得「负 EU」进入汇 | P0 | 测绿 | `icInjectAmount_lossExceedsOrEqualsOffer_*` |
+| EN-IC-004 | 多汇可分配性 | 单源多汇时，各汇获得量之和 ≤ 源可提供量（扣除线损后的有效供给） | P0 | 测绿 | `icDistributeSequential_totalDelivered_*` |
+| EN-IC-005 | 多汇分配策略 | 固定路径顺序按需填满（非均分）；前序路径优先，后序吃 residual | P0 | 测绿 | `icDistributeSequential_earlierPathPriority_*`；shuffle 随机序未覆盖 |
+| EN-IC-006 | 绝缘击穿 | 包能量超过绝缘击穿阈值且未达导体熔断时 strip（`amount > insulation && ≤ conductor`） | P0 | 测绿（纯谓词） | `icInsulationBreakdown_*`；世界效果未测 |
+| EN-IC-007 | 导体熔断/过载 | 超过 `capacity+1` 时导体失效（移除或等价） | P0 | 测绿（纯谓词） | `icConductorBreakdown_*`；方块移除未测 |
+| EN-IC-008 | 过压对设备 | 包电压 &gt; sink tier 额定功率 → 超压（爆炸路径另测） | P1 | 测绿（纯谓词） | `icSinkOverVoltage_*` |
+| EN-IC-009 | 变压器升压 packet | 升压：4×低压侧 → 1×高压 packet，相邻档位能量守恒 | P0 | 测绿 | `icTransformer_stepUp_*` |
+| EN-IC-010 | 变压器降压 packet | 降压：1×高压 → 4×低压 packet，能量守恒 | P0 | 测绿 | `icTransformer_stepDown_*` |
 
 ---
 
@@ -79,15 +79,15 @@
 
 | ID | 标题 | 不变量 / 期望摘要 | 优先级 | 测试状态 | 备注 |
 |:---|:---|:---|:---|:---|:---|
-| EN-GT-001 | 1A 包不可拆分 | 1A 在给定电压等级携带固定 EU（线损前）；不得拆成多份小数安注入多个汇 | P0 | 未写 | GTEU invariant |
-| EN-GT-002 | 线损后整包注入 | 线损只减少包内 EU；仍按整安交付，不可把损耗「拆安」 | P0 | 未写 | GTEU_GT_Reference |
-| EN-GT-003 | 空闲仅请求 1A | 机器未处理配方（空闲）时，缓冲有空位最多请求 1A 维持 | P0 | 未写 | GTEU invariant |
-| EN-GT-004 | maxAmps 公式 | 工作时 `maxAmps = ⌊2 × recipeEU/t / tierVoltage⌋ + 1`（与 GTEU 文档一致） | P0 | 未写 | 例：16 EU/t LV→2A |
-| EN-GT-005 | maxAmps 下界 | 极低 EU/t 配方仍至少可请求 1A（公式结果 ≥1） | P1 | 未写 | draft |
-| EN-GT-006 | 导线超压熔断 | 包电压 > 导线 maxVoltage → 熔断（删方块或等价），与 IC 模式「仅 EU 包 capacity」语义区分 | P0 | 未写 | IC2R/GT 差异须标注 |
-| EN-GT-007 | 导线超流熔断 | 路径安培超过导线 maxAmps → 熔断 | P0 | 未写 | GTEU invariant |
+| EN-GT-001 | 1A 包不可拆分 | 1A 在给定电压等级携带固定 EU（线损前）；不得拆成多份小数安注入多个汇 | P0 | 测绿 | `gtDeliverableAmps_*` |
+| EN-GT-002 | 线损后整包注入 | 线损只减少包内 EU；仍按整安交付，不可把损耗「拆安」 | P0 | 测绿 | `gtPacketEuAfterPathLoss_*` |
+| EN-GT-003 | 空闲仅请求 1A | 机器未处理配方（空闲）时，缓冲有空位最多请求 1A 维持 | P0 | 测绿 | `ElectricalProfileMaxAmpsTest` idle |
+| EN-GT-004 | maxAmps 公式 | 工作时 `maxAmps = ⌊2 × recipeEU/t / tierVoltage⌋ + 1`（与 GTEU 文档一致） | P0 | 测绿 | `ElectricalProfileMaxAmpsTest` |
+| EN-GT-005 | maxAmps 下界 | 极低 EU/t 配方仍至少可请求 1A（公式结果 ≥1） | P1 | 测绿 | `ElectricalProfileMaxAmpsTest` |
+| EN-GT-006 | 导线超压熔断 | 包电压 > 导线 maxVoltage → 熔断（删方块或等价），与 IC 模式「仅 EU 包 capacity」语义区分 | P0 | 测绿（纯谓词） | `gtCableOverVoltage_*` |
+| EN-GT-007 | 导线超流熔断 | 路径安培超过导线 maxAmps → 熔断 | P0 | 测绿（纯谓词） | `gtCableOverCurrent_*` |
 | EN-GT-008 | 方向优先级推送 | 源侧按方向优先级（目标：D-U-N-S-W-E；可分阶段用 BFS 近似，但须文档化）分配整安，非「最近机器优先」 | P1 | 未写 | PR-4 可近似；见 GTEU 参考 |
-| EN-GT-009 | 源满 1A 才输出 | GT 模式发电机/储电输出：内部攒满 1A 才 `offer`；与 IC「可吐全部 storage」隔离 | P0 | 未写 | IC2R 差异 |
+| EN-GT-009 | 源满 1A 才输出 | GT 模式发电机/储电输出：内部攒满 1A 才 `offer`；与 IC「可吐全部 storage」隔离 | P0 | 测绿 | `gtOfferAmps_partialBufferBelowOneAmp_*` |
 | EN-GT-010 | IC/GT Calculator 不串味 | 同一拓扑在 IC 与 GT 配置下结果符合各自 invariants；无跨模式状态泄漏 | P0 | 未写 | 双 Calculator |
 
 ---
@@ -217,3 +217,4 @@
 |:---|:---|:---|
 | 2026-07-14 | 0.1-skeleton | W0.2：章节骨架就位，条目表留空待 W0.3 |
 | 2026-07-14 | 0.2-outline | W0.3：填入 EN-IC/EN-GT/SM/RC/NS 条目表与高风险预留 ID |
+| 2026-07-14 | 0.3-g1.3 | G1.3：EN-IC 多汇/保护/变压器 + EN-GT-009 纯逻辑测绿；`EnergyTransferMath` 切口回接 |

@@ -1,17 +1,11 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** G1.1  
+**last_completed:** G1.3  
 **updated:** 2026-07-14  
 
 > 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
-> **§A 原队列 W0.1–W3.5 已 done。** 当前专题：**G1 阶段 1 gap 迁移**（见 [phase1_closeout.md](spec/phase1_closeout.md)）。
-
-## Queue（§A 历史）
-
-| ID | status | last_notes |
-|----|--------|------------|
-| W0.1–W3.5 | done | 阶段收口含 G1/G2/G3 gap |
+> 当前专题：**G1 阶段 1 gap 迁移**。
 
 ## Queue（G1 迁移）
 
@@ -19,19 +13,19 @@
 |----|--------|------------|
 | G1.1 | done | TeUpdate 写/读优先 BlockEntitySync；legacy 名兼容；标准机 guiProgress/active；test 69/69 |
 | G1.2 | pending | 核心包覆盖率（随 G1.3/G1.4 抬升，收口再测） |
-| G1.3 | pending | EnergyNet 主体可测切口 + Golden EN 测例 |
+| G1.3 | done | EnergyTransferMath 扩：多汇/保护/变压器/GT offer；16 energy 测；test 79/79 绿 |
 | G1.4 | pending | 标准机加工循环半纯逻辑测例（SM-*） |
 | G1.5 | pending | snake_case 扩域（naming_audit P0 批） |
-| G1.6 | pending | recipe 匹配器测例加深（W2.3 已部分覆盖，收口确认） |
+| G1.6 | pending | recipe 匹配器测例加深 |
 | G1.7 | pending | Spotless/Checkstyle（可 skip） |
 | G1.8 | pending | Blocks 拆分 / hygiene（P2） |
 
 ## Last session
 
-- unit: G1.1
+- unit: G1.3
 - result: done / PASS
-- suggested_commit: `feat(network): TeUpdate prefers BlockEntitySync for standard-machine fields`
+- suggested_commit: `test: expand EnergyNet pure math for multi-sink protection and transformers`
 - verify_log: |
-    - DoD: writeFieldData/tryGetValue + TeUpdate.apply/trySetValue ✅
-    - legacy guiProgress/active 线名兼容；未映射仍反射
-    - 仅 TileEntityStandardMachine 注册 Sync；test 69/69
+    - DoD: ≥4 新有意义电网测（实际 EnergyTransferMathTest 16）✅
+    - EN-IC-002–010 / EN-GT-009 等对齐；Calculator 仅委托
+    - gradlew test 79/79 绿

@@ -41,13 +41,7 @@ public final class ElectricalNodes
 		IElectricalNode node = resolve(source);
 		if (node != null)
 		{
-			int voltage = node.getWorkingVoltage().getVoltage();
-			if (voltage <= 0 || offered < voltage)
-			{
-				return 0;
-			}
-
-			return Math.min(node.getMaxSourceAmperage(), (int) Math.floor(offered / voltage));
+			return EnergyTransferMath.gtOfferAmpsCapped(offered, node.getWorkingVoltage().getVoltage(), node.getMaxSourceAmperage());
 		}
 
 		int tier = source.getSourceTier();
@@ -57,12 +51,7 @@ public final class ElectricalNodes
 		}
 
 		int voltage = (int) EnergyNet.instance.getPowerFromTier(tier);
-		if (voltage <= 0 || offered < voltage)
-		{
-			return 0;
-		}
-
-		return (int) Math.floor(offered / voltage);
+		return EnergyTransferMath.gtOfferAmps(offered, voltage);
 	}
 
 	public static int getGtDemandAmps(IEnergySink sink)

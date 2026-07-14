@@ -62,11 +62,11 @@ public final class EnergyNetExplosions
 
 	public static boolean isOverVoltage(IEnergySink sink, double packetVoltage)
 	{
-		return packetVoltage > EnergyNet.instance.getPowerFromTier(sink.getSinkTier());
+		return EnergyTransferMath.icSinkOverVoltage(packetVoltage, EnergyNet.instance.getPowerFromTier(sink.getSinkTier()));
 	}
 
 	public static int getExplosionTier(double maxPower)
 	{
-		return EnergyNet.instance.getTierFromPower(maxPower);
+		return EnergyTransferMath.icTierFromPower(maxPower);
 	}
 }

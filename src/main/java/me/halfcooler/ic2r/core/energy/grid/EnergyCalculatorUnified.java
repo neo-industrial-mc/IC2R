@@ -587,14 +587,14 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 			return 0.0;
 		}
 
-		double injectAmount = EnergyTransferMath.icInjectAmount(offer, path.loss);
-		if (injectAmount <= 0.0)
+		MutableDouble sinkDemand = data.activeSinks.get(path.target);
+		if (sinkDemand == null)
 		{
 			return 0.0;
 		}
 
-		MutableDouble sinkDemand = data.activeSinks.get(path.target);
-		if (sinkDemand == null)
+		double injectAmount = EnergyTransferMath.icInjectAmount(offer, path.loss);
+		if (injectAmount <= 0.0)
 		{
 			return 0.0;
 		}
@@ -607,6 +607,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 			return 0.0;
 		}
 
+		// delivered = amount - rejected; source pays delivered + path.loss (see EnergyTransferMath.icSourceConsumed)
 		double effectiveAmount = Math.max(0.0, amount - rejected + path.loss);
 		if (path.lastCalcId != calcId)
 		{
@@ -653,11 +654,14 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 					{
 						Tile tile = node.getTile();
 						IEnergyConductor conductor = (IEnergyConductor) tile.getMainTile();
-						if (amount > conductor.getConductorBreakdownEnergy())
+						double conductorLimit = conductor.getConductorBreakdownEnergy();
+						double insulationLimit = conductor.getInsulationBreakdownEnergy();
+						if (EnergyTransferMath.icConductorBreakdown(amount, conductorLimit))
 						{
 							cablesToRemove.add(tile);
-						} else if (amount > conductor.getInsulationBreakdownEnergy())
+						} else if (EnergyTransferMath.icInsulationBreakdown(amount, insulationLimit, conductorLimit))
 						{
+							// else-if: strip only when not already melting the conductor
 							cablesToStrip.add(tile);
 						}
 					}
