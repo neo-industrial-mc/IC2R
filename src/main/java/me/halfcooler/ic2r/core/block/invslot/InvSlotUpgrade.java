@@ -10,9 +10,9 @@ import me.halfcooler.ic2r.api.upgrade.ITransformerUpgrade;
 import me.halfcooler.ic2r.api.upgrade.IUpgradableBlock;
 import me.halfcooler.ic2r.api.upgrade.IUpgradeItem;
 import me.halfcooler.ic2r.core.block.IInventorySlotHolder;
-import me.halfcooler.ic2r.core.block.comp.Process;
 import me.halfcooler.ic2r.core.block.comp.Redstone;
 import me.halfcooler.ic2r.core.block.comp.TileEntityComponent;
+import me.halfcooler.ic2r.core.block.machine.tileentity.StandardMachineCycleMath;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
 import java.util.ArrayList;
@@ -130,46 +130,37 @@ public class InvSlotUpgrade extends InvSlot
 
 	public int getOperationsPerTick(int defaultOperationLength)
 	{
-		return defaultOperationLength == 0 ? 64 : this.getOpsPerTick(this.getStackOpLen(defaultOperationLength));
+		return StandardMachineCycleMath.operationsPerTick(
+			defaultOperationLength, this.extraProcessTime, this.processTimeMultiplier
+		);
 	}
 
 	public int getOperationLength(int defaultOperationLength)
 	{
-		if (defaultOperationLength == 0)
-		{
-			return 1;
-		}
-
-		double stackOpLen = this.getStackOpLen(defaultOperationLength);
-		int opsPerTick = this.getOpsPerTick(stackOpLen);
-		return Math.max(1, (int) Math.round(stackOpLen * opsPerTick / 64.0));
-	}
-
-	private double getStackOpLen(int defaultOperationLength)
-	{
-		return ((double) defaultOperationLength + this.extraProcessTime) * 64.0 * this.processTimeMultiplier;
-	}
-
-	private int getOpsPerTick(double stackOpLen)
-	{
-		return (int) Math.min(Math.ceil(64.0 / stackOpLen), 2.147483647E9);
+		return StandardMachineCycleMath.operationLength(
+			defaultOperationLength, this.extraProcessTime, this.processTimeMultiplier
+		);
 	}
 
 	public int getEnergyDemand(int defaultEnergyDemand)
 	{
-		return Process.applyModifier(defaultEnergyDemand, this.extraEnergyDemand, this.energyDemandMultiplier);
+		return StandardMachineCycleMath.energyDemand(
+			defaultEnergyDemand, this.extraEnergyDemand, this.energyDemandMultiplier
+		);
 	}
 
 	public int getEnergyStorage(int defaultEnergyStorage, int defaultOperationLength, int defaultEnergyDemand)
 	{
 		int opLen = this.getOperationLength(defaultOperationLength);
 		int energyDemand = this.getEnergyDemand(defaultEnergyDemand);
-		return Process.applyModifier(defaultEnergyStorage, this.extraEnergyStorage + opLen * energyDemand, this.energyStorageMultiplier);
+		return StandardMachineCycleMath.applyModifier(
+			defaultEnergyStorage, this.extraEnergyStorage + opLen * energyDemand, this.energyStorageMultiplier
+		);
 	}
 
 	public int getTier(int defaultTier)
 	{
-		return Process.applyModifier(defaultTier, this.extraTier, 1.0);
+		return StandardMachineCycleMath.applyModifier(defaultTier, this.extraTier, 1.0);
 	}
 
 	public int getRemoteRange(int existingRange)

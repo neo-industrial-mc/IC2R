@@ -10,6 +10,7 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlotOutput;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotProcessable;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotProcessableGeneric;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
+import me.halfcooler.ic2r.core.block.machine.tileentity.StandardMachineCycleMath;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityElectricMachine;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.recipe.SmeltingRecipeManager;
@@ -193,8 +194,7 @@ public class Process extends TileEntityComponent
 
 	public static int applyModifier(int base, int extra, double multiplier)
 	{
-		double ret = Math.round(((double) base + extra) * multiplier);
-		return ret > 2.147483647E9 ? Integer.MAX_VALUE : (int) ret;
+		return StandardMachineCycleMath.applyModifier(base, extra, multiplier);
 	}
 
 	public void readFromNBT(CompoundTag nbt)

@@ -284,7 +284,7 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		}
 
 		needsInvUpdate |= this.upgradeSlot.tickNoMark();
-		this.guiProgress = (float) this.progress / this.operationLength;
+		this.guiProgress = StandardMachineCycleMath.guiProgress(this.progress, this.operationLength);
 		if (needsInvUpdate)
 		{
 			super.setChanged();
@@ -294,7 +294,7 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	public void setOverclockRates()
 	{
 		this.upgradeSlot.onChanged();
-		double previousProgress = (double) this.progress / this.operationLength;
+		int previousLength = this.operationLength;
 		this.operationsPerTick = this.upgradeSlot.getOperationsPerTick(this.defaultOperationLength);
 		this.operationLength = this.upgradeSlot.getOperationLength(this.defaultOperationLength);
 		this.energyConsume = this.upgradeSlot.getEnergyDemand(this.defaultEnergyConsume);
@@ -302,13 +302,19 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		this.energy.setSinkTier(tier);
 		this.dischargeSlot.setTier(tier);
 		this.energy.setCapacity(this.upgradeSlot.getEnergyStorage(this.defaultEnergyStorage, this.defaultOperationLength, this.defaultEnergyConsume));
-		this.progress = (short) Math.floor(previousProgress * this.operationLength + 0.1);
+		this.progress = StandardMachineCycleMath.rescaleProgress(this.progress, previousLength, this.operationLength);
 		this.energy.syncConsumerProfile(this.energyConsume * this.operationsPerTick);
 	}
 
 	private boolean canOperate()
 	{
-		return this.recipeResult != null && this.energy.useEnergy(this.energyConsume);
+		// Energy gate: consume only when recipe path is open (same as pure CycleMath + useEnergy).
+		if (!StandardMachineCycleMath.canOperate(this.recipeResult != null, this.energy.getEnergy(), this.energyConsume))
+		{
+			return false;
+		}
+
+		return this.energy.useEnergy(this.energyConsume);
 	}
 
 	private void operate()
