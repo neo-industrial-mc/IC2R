@@ -255,3 +255,25 @@
 - `docs/spec/phase1_closeout.md`（G1.1 行与 §9 指针）  
 - `docs/Modernization_Progress.md`（G2.7 done）  
 - **无**生产代码功能改动；**无**为凑覆盖率新测；**无** git commit/push  
+
+---
+
+## 9. G3.11 交叉指针（阶段 3 视角 vs G2 债）
+
+> **Work Unit**: G3.11（文档交叉，**非**新实现）  
+> **日期**: 2026-07-14  
+> **全文对照表**: [phase3_closeout.md §19](phase3_closeout.md)  
+> **前序**: 本文件 §1（§7.7）、§3（G2.*）、§8（G2.7）  
+
+| G2.* | G3.11 后登记状态 | 一句话 |
+|:---|:---|:---|
+| G2.1 | **partial + residual** | Math/契约文档化门闩有；**无**真管道/AE2 e2e |
+| G2.2 | **partial + residual** | basic×3 materialize；tick 非直查；非 basic 异构 |
+| G2.3 | **partial + residual** | 冻结+storage_box；guidef **~41**（原 ~47） |
+| G2.4 | **gap** | 窄口径 ~5.90%（G3.3）**≪70%** |
+| G2.5 | **partial + residual** | FluidHandler 契约+Math 测；真流体管 e2e 无 |
+| G2.6 | **partial + residual** | item+block tags；Recipes/Models/Lang 未 DataGen |
+| G2.7 | **partial**（交叉 done） | 见 §8 / G3.10：G1 债未全清 |
+| G2.8 | **partial + residual** | EnergyBridgeMath + Forge 实现；FE e2e/机台暴露无 |
+
+**禁止**：将 G2.4 标为 done、宣称阶段 2 覆盖率门槛已满足，宣称 **§7.7 全勾满**，或伪造管道/AE2 e2e。  

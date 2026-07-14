@@ -144,7 +144,7 @@
 | G3.8 | Architectury **未**引入 | P2 | **skipped / deferred by design（见 §16）**：[g3_8_architectury_decision.md](g3_8_architectury_decision.md)；非缺陷；再评估前置 = NeoForge 最小集 + SPI 稳定 |
 | G3.9 | 巨型 BE / api 面 / Mixin 瘦身（§8.3） | P2 | **partial（见 §17）**：Mixin 清单 done；[api_surface.md](api_surface.md)；`CropGrowthMath` 1 BE 切片 + 测；**未**拆完全部巨型 BE |
 | G3.10 | **继承 G1.\***：TeUpdate 仍默认、snake_case 仅试点、阶段 1 覆盖率 gap | P0 | **partial（交叉对照 done，见 §18）**：G1.6/G1.7/G1.8 **done**；G1.1/G1.3–G1.5 **partial**；**G1.2 仍 gap**。TeUpdate **帧仍默认**；宽口径 ≪60%。**禁止**宣称 G1 全清 |
-| G3.11 | **继承 G2.\***：管道/AE2 e2e 无、配方非全机型直查、~47 guidef、DataGen 窄 | P0–P2 | 见 phase2_closeout |
+| G3.11 | **继承 G2.\***：管道/AE2 e2e 无、配方非全机型直查、~47 guidef、DataGen 窄 | P0–P2 | **partial（交叉对照 done，见 §19）**：G2 队列 Unit **均已推进**；**无**真管道/AE2 e2e；basic materialize 非 tick 直查；guidef **~41**（非 ~47）；DataGen 仍 tags 窄；窄口径 **~5.90% ≪70%**。**禁止**宣称 §7.7 全勾满 |
 
 ### 4.1 与 G1 / G2 继承关系
 
@@ -152,13 +152,15 @@
 G1.*（阶段 1 基础设施缺口）— G3.10 交叉见 §18
   └─ 仍 open：G1.1 TeUpdate 帧默认、G1.2 覆盖率 gap、G1.3–G1.4 包级极低、G1.5 全库命名
   └─ 已关：G1.6 recipe 匹配器、G1.7 Spotless N/A、G1.8 Blocks 域拆
-G2.*（阶段 2 Forge 生态试点缺口）
-  └─ 仍 open：G2.1–G2.6 适配/配方/GUI/DataGen…（G3.11）
+G2.*（阶段 2 Forge 生态试点缺口）— G3.11 交叉见 §19
+  └─ 仍 open / residual：G2.1 e2e、G2.2 非 basic/非直查、G2.3 存量 guidef、G2.4 ≪70%、
+     G2.5 流体 cap residual、G2.6 DataGen 窄、G2.7→G1 债、G2.8 FE e2e/暴露
+  └─ 队列交付 done（文档+切片）：G2.1–G2.8 均有推进产物；**不等于** §7.7 勾满
 G3.*（本文件）
   └─ 叠加：loader 隔离、多 loader 最小集、common 覆盖率 75%、Origin 清零、EnvProxy 退役
 ```
 
-阶段 3 **不能**关闭 G1/G2；关闭条件仍在各自专项。G3.3 与 G1.2/G2.4 **同一覆盖率债**的不同门槛表述。G3.10 仅**登记** G1 债在阶段 3 视角下的真实状态，**不**勾满 §6.3。
+阶段 3 **不能**关闭 G1/G2；关闭条件仍在各自专项。G3.3 与 G1.2/G2.4 **同一覆盖率债**的不同门槛表述。G3.10 / G3.11 仅**登记** G1/G2 债在阶段 3 视角下的真实状态，**不**勾满 §6.3 / §7.7。
 
 ### 4.2 建议优先级（阶段 3 后，非队列强制序）
 
@@ -639,4 +641,90 @@ G3.*（本文件）
 - 可选：[phase1_closeout.md](phase1_closeout.md) 末尾 G3.10 指针  
 - [Modernization_Progress.md](../Modernization_Progress.md) G3.10  
 - **无**生产代码功能改动；**无**为凑覆盖率新测；**无** git commit/push  
+
+---
+
+## 19. G3.11 — 继承 G2.* 交叉对照（阶段 3 视角）
+
+> **Work Unit**: G3.11  
+> **日期**: 2026-07-14  
+> **状态**: **partial**（交叉对照 **done**；所描述 G2 债 **未全部清零**；**§7.7 未勾满**）  
+> **性质**: 只读交叉对照 + 本文件 / 可选 phase2 指针；**无**强制生产代码；**不**为凑覆盖率堆测；**不**伪造 e2e  
+> **对照对象**: 本文件 §4 **G3.11 原始断言** vs G2.\* 迁移后真实状态  
+> **前序**: [phase2_closeout.md](phase2_closeout.md) §1 / §3 / §8；契约 [item_handler_contract.md](item_handler_contract.md) / [fluid_handler_contract.md](fluid_handler_contract.md) / [energy_bridge_contract.md](energy_bridge_contract.md) / [recipe_manager_query_eval.md](recipe_manager_query_eval.md)
+
+### 19.1 W3.5 时的 G3.11 原始断言（冻结）
+
+| 断言（W3.5 登记） | 含义 |
+|:---|:---|
+| **管道 / AE2 e2e 无** | 无真实漏斗/管道模组/AE2 导入总线集成测或 GameTest；仅 Math 文档化门闩 |
+| **配方非全机型直查** | 运行时非每 tick `RecipeManager` 直查；非 basic / 特殊管理器路径异构 |
+| **~47 guidef** | 存量 `assets/ic2r/guidef/*.xml` 仍服务生产 GUI；新 UI 仅冻结+样板 |
+| **DataGen 窄** | 仅 Tags 类起步；Recipes / BlockState / Lang DataGen 未起 |
+| 关联 | 整组 **G2.1–G2.8**；不阻塞阶段 3 名义收口（W3.5 已以 gap 登记） |
+
+### 19.2 原始断言 vs 真实状态（阶段 3 视角）
+
+| 原始断言 / Gap | G2 迁移 + 后续真实状态 | 关闭判定 |
+|:---|:---|:---|
+| **管道 / AE2 e2e 无** | **仍真**。`InvSlotTransferMath` / `InvSlotHandlerMathTest` + [item_handler_contract.md](item_handler_contract.md)；`FluidHandlerMathTest` 镜像 `Ic2rFluidTankHandler`；**无** `src/test` 下 AE2/管道/GameTest。`integration/ae2` 仍无 e2e | **仍 open（residual）** — 文档化测例 **partial**（§7.7 #1）；**禁止**宣称管道/AE2 稳定 e2e |
+| **配方非全机型直查** | **仍大体真**。basic 三 type（macerator / extractor / compressor）JSON→`RecipeManager`→`loadBasic` **materialize** 全链路已文档（[recipe_manager_query_eval.md](recipe_manager_query_eval.md)）；`findMatching` API 已备但 **推荐暂保持 materialize**。tick **未**切直查；centrifuge / ore_washer / metal_former 等非 basic 异构 | **partial** — basic 主路径试点加深；**非**「全机型直查」；§7.7 #2 **未**勾满 |
+| **~47 guidef** | **数字过时**。G2.3 迁 storage_box 全档纯代码 Menu/Screen，删 **6** XML；现存 guidef **41** 份（`assets/ic2r/guidef/*.xml` 枚举）。`GuiParser` / `Dynamic*` 兼容层仍在；生产机台 GUI **多数**仍 XML | **partial** — 冻结+样板+storage_box 切片 done；**存量 ~41 residual** |
+| **DataGen 窄** | **仍真（略扩）**。W2.5：3 item tags；G2.6：+ `Ic2rBlockTagsProvider` → `mineable/wrench` block tag。产物：`src/generated/resources/data/ic2r/tags/{items,blocks}/**`。**Recipes / Models / Lang DataGen 未起步**（配方 JSON 仍手写 `src/main/resources`） | **partial** — tags 两类；**仍窄**；非全 DataGen |
+| **覆盖率 ≪70%**（G2.4 / 断言隐含） | W2.6 窄口径 **~3.53%**；G3.3 窄 **~5.90%**（143/2425）仍 ≪ **70%**。common-ish **~1.79%**。纯 Math 近满，整包 InvSlot/Fluid/v2 拉低 | **仍 open（gap）** — **禁止**宣称阶段 2 适配门槛 70% 或 §7.7 全勾满 |
+
+### 19.3 G2.1–G2.8 逐条状态（阶段 3 登记）
+
+| ID | 主题 | 状态 | 证据一句话 |
+|:---|:---|:---|:---|
+| G2.1 | ITEM_HANDLER / 管道-AE2 交互 | **partial + residual** | 契约+`InvSlotHandlerMathTest` 文档化门闩；**无**真管道/AE2 e2e；Handler/cap 附着本体 0% 路径仍 residual |
+| G2.2 | 配方 RecipeManager 主路径 | **partial + residual** | basic×3 materialize 全链路 + 直查评估文档；tick 非直查；非 basic 异构 |
+| G2.3 | 新 UI 零 XML / guidef | **partial + residual** | 冻结+`CodeGuiSample`+storage_box 代码 GUI；**~41** guidef + Dynamic 仍服务生产 |
+| G2.4 | inv/fluid/recipe 覆盖率 ≥70% | **gap** | 窄口径 G3.3 **~5.90% ≪70%**；与 G3.3/G1.2 同债族 |
+| G2.5 | 流体 FLUID_HANDLER 一等 | **partial + residual** | [fluid_handler_contract.md](fluid_handler_contract.md)+`Ic2rFluidTankHandler`+`FluidHandlerMathTest`；真流体管道 e2e **无** |
+| G2.6 | DataGen 扩面 | **partial + residual** | 3 item tags + 1 block wrench tag；Recipes/Models/Lang **未** DataGen |
+| G2.7 | 继承 G1.\*（TeUpdate/覆盖率） | **partial**（交叉 **done**） | 与 G3.10 / phase2 §8 **一致**：G1.1/3/4/5 partial、**G1.2 gap**、G1.6–1.8 已关 |
+| G2.8 | FE/RF 能量桥 | **partial + residual** | `EnergyBridgeMath`+`PlatformEnergyBridgeForge`+契约+测；config 开关 / IC 机暴露 FE / FE e2e **无** |
+
+### 19.4 一句话总判（G3.11）
+
+| 项 | 值 |
+|:---|:---|
+| **G3.11 状态** | **partial**（交叉对照 **done**；G2 债 **未全清**） |
+| 相对 G3.11 原始四断言 | 管道/AE2 e2e **仍无**；配方全机型直查 **仍无**；guidef **~47→~41**（部分关闭字面）；DataGen **仍窄** |
+| 相对 phase2 §3 G2.\* | G2 队列 Unit **均已交付推进**；状态多为 **partial + residual**；**仅 G2.4 为明确 gap**；无一条可宣称 §7.7 全标 done |
+| 已缓解（切片） | ITEM/FLUID Math 契约与测；basic×3 RecipeManager 链路；GUI 冻结+storage_box；Tags DataGen；FE bridge Math；G2.7 交叉 |
+| **仍 open** | 真 e2e；tick 直查 / 非 basic；~41 guidef；**窄口径 ≪70%**；DataGen 配方/模型/语言；FE 暴露与 e2e |
+| 覆盖率诚实句 | 阶段 2 门槛 **未达**；窄口径约 **6%** 量级，**不是** 70%；common-ish **~1.79%**；**不得**宣称 §7.7 全勾满或 G2 全清 |
+
+### 19.5 与 §7.7 / §8.5 / G3.3 关系
+
+| §7.7 标准 | 阶段 3 视角判定 | 说明 |
+|:---|:---|:---|
+| #1 管道/AE2 文档化测例 | **partial** | Math 测例有；真 e2e **无** |
+| #2 配方主路径 RecipeManager | **partial** | basic materialize 试点；非全机型直查 |
+| #3 新 UI 零 XML | **partial** | 新增冻结；存量 guidef **~41** |
+| #4 覆盖率 ≥70% 适配 | **gap** | 窄 **~5.90%** |
+| DataGen（§7.6，非 §7.7 勾选项） | **partial / 窄** | tags only |
+
+- G3.11 **不**重新跑 JaCoCo；覆盖数字引用本文件 **§12（G3.3）** 与 [phase2_closeout.md](phase2_closeout.md) §2。  
+- G3.3 抬窄口径 **3.53%→5.90% 不**关闭 G2.4；关闭条件仍是阶段 2 窄口径 **≥70%**（或项目另行改口径）。  
+- §8.5 **未**因 G3.11 勾满；G3.11 **不**替代 G3.1–G3.9 架构债。  
+
+### 19.6 建议后续（**非本 G3.11**；勿空转 / 勿伪造 e2e）
+
+1. **G2.1 / G2.5**：可选 GameTest 或轻量 mock Handler 行覆盖；**禁止**本交叉 Unit 引入 AE2 硬依赖测。  
+2. **G2.2**：非 basic 管理器对齐 materialize 或事件化动态配方后，再评估 tick 直查。  
+3. **G2.3**：按机台分批迁代码 Menu/Screen；删 guidef 与 Dynamic 需产品节奏。  
+4. **G2.4**：在有意义 InvSlot/Fluid/Serializer 行累积后再复测；**~6% 禁止勾 done**。  
+5. **G2.6**：至少 1 类 recipe 或 models DataGen（非手写复制）。  
+6. **G2.8**：config 比率 + 可选 IC 机 FE cap 暴露；e2e 后置。  
+7. **不要**：为勾 G3.11 / §7.7 堆无断言测、伪造 AE2 e2e、或宣称 70% 已达。  
+
+### 19.7 变更范围（G3.11）
+
+- 本文件 §4 G3.11 行 + §4.1 + **§19**  
+- 可选：[phase2_closeout.md](phase2_closeout.md) 末尾 G3.11 指针  
+- [Modernization_Progress.md](../Modernization_Progress.md) G3.11  
+- **无**生产代码功能改动；**无**为凑覆盖率新测；**无**伪造 e2e；**无** git commit/push  
 
