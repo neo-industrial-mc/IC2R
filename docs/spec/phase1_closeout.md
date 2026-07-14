@@ -92,7 +92,7 @@
 | G1.3 | `energy.grid` 主体（`EnergyCalculatorUnified`/`GT`、路径、爆炸）0% | P0 | 延续 W0.4 切口：IC loss/分配纯函数、GT 求解器可测端口（对齐 EN-IC/EN-GT Golden） |
 | G1.4 | 标准机加工循环（进度、耗电、升级）无行为单测 | P0 | 可测切口：进度 tick 纯逻辑 / 耗电公式；对齐 SM-\* Golden；再抬 `machine.tileentity` 覆盖率 |
 | G1.5 | snake_case 仅试点；全库网络/NBT/配置 camelCase | P1 | 按 `naming_audit` P0→P2 分批 + `id_migrations`；与切主同步避免双名地狱 |
-| G1.6 | recipe 匹配器覆盖率未建立（阶段 0 定义的一部分） | P1 | W2.3 RecipeManager 试点时同步补 RC-\* 测例 |
+| G1.6 | recipe 匹配器覆盖率未建立（阶段 0 定义的一部分） | P1 | **done（G1.6）**：`MachineRecipeMatchMath` 加深 item/tag/名单纯门闩 + `MachineRecipeMatchMathTest`（13 测）；RC-001…005 部分绿；运行时 ItemStack 匹配仍依赖 registries |
 | G1.7 | Spotless/Checkstyle 未启用 | P2 | 若启用再纳入 CI；当前 N/A |
 | G1.8 | Blocks 未按域拆分（W1.6 仅 Items）；import `*` / 现代 Java 风格未强制 | P2 | 可挂后续 hygiene Unit；阶段 1 §6.1.3 未做全库清零 |
 

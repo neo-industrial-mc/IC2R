@@ -11,6 +11,7 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotProcessableGeneric;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.recipe.BasicListRecipeManager;
+import me.halfcooler.ic2r.core.recipe.MachineRecipeMatchMath;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
@@ -71,7 +72,12 @@ public class TileEntityRecycler extends TileEntityStandardMachine<IRecipeInput, 
 
 	public static boolean getIsItemBlacklisted(ItemStack aStack)
 	{
-		return Recipes.recyclerWhitelist.isEmpty() ? Recipes.recyclerBlacklist.contains(aStack) : !Recipes.recyclerWhitelist.contains(aStack);
+		// Pure gate RC-004/RC-005; list membership still via IListRecipeManager.contains(ItemStack).
+		return MachineRecipeMatchMath.isRecyclerRejected(
+			Recipes.recyclerWhitelist.isEmpty(),
+			Recipes.recyclerBlacklist.contains(aStack),
+			Recipes.recyclerWhitelist.contains(aStack)
+		);
 	}
 
 	@Override

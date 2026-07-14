@@ -1,16 +1,21 @@
 package me.halfcooler.ic2r.core.recipe;
 
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 /**
- * Pure matching / amount gates for basic machine recipes (W2.3 / RC-*).
+ * Pure matching / amount gates for basic machine recipes (W2.3 / G1.6 / RC-*).
  * No Minecraft types — unit-testable without registry or {@code RecipeManager} bootstrap.
  * <p>
  * Runtime path (datapack → serializer → vanilla {@code RecipeManager} →
  * {@link me.halfcooler.ic2r.core.recipe.v2.RecipeManagerMachineBridge} →
  * {@link BasicMachineRecipeManager}) uses the same amount rules as
  * {@link BasicMachineRecipeManager#getOutputFor}.
+ * <p>
+ * Item/tag/ore identity here is expressed as id tokens or pre-resolved membership flags so tests
+ * avoid {@code BuiltInRegistries}; adapters map {@code ItemStack}/{@code Ingredient} into these gates.
  */
 public final class MachineRecipeMatchMath
 {
@@ -42,6 +47,100 @@ public final class MachineRecipeMatchMath
 		}
 
 		return !hasRecipeRemainder || stackCount == recipeAmount;
+	}
+
+	/**
+	 * Combined accept gate used by recipe scan: identity/tag already matched, then amount/remainder.
+	 * Mirrors {@link me.halfcooler.ic2r.core.recipe.v2.RecipeManagerMachineBridge#findMatching}.
+	 */
+	public static boolean acceptsMatchedInput(
+		boolean itemMatches,
+		int stackCount,
+		int recipeAmount,
+		boolean hasRecipeRemainder
+	)
+	{
+		return itemMatches && canApplyInput(stackCount, recipeAmount, hasRecipeRemainder);
+	}
+
+	/**
+	 * RC-001 item identity: exact registry-id (or test token) equality.
+	 * Empty/null required or subject never matches.
+	 */
+	public static boolean matchesExactItem(String requiredId, String subjectId)
+	{
+		return requiredId != null
+			&& !requiredId.isEmpty()
+			&& subjectId != null
+			&& requiredId.equals(subjectId);
+	}
+
+	/**
+	 * RC-001 NBT/component partial match: every required key must be present on subject with equal value.
+	 * Empty/null required map always accepts (same spirit as no required NBT on {@code RecipeInputItemStack}).
+	 * Null subject fails only when required is non-empty.
+	 */
+	public static boolean matchesRequiredKeys(Map<String, String> required, Map<String, String> subject)
+	{
+		if (required == null || required.isEmpty())
+		{
+			return true;
+		}
+
+		if (subject == null)
+		{
+			return false;
+		}
+
+		for (Map.Entry<String, String> entry : required.entrySet())
+		{
+			if (!subject.containsKey(entry.getKey()))
+			{
+				return false;
+			}
+
+			if (!Objects.equals(subject.get(entry.getKey()), entry.getValue()))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * RC-002 tag / RC-003 ore / multi-input: subject accepted if it equals any candidate id.
+	 * Mirrors {@code Ingredient}/{@code RecipeInputMultiple} any-of membership without registries.
+	 */
+	public static boolean matchesAnyCandidate(String subjectId, Iterable<String> candidates)
+	{
+		if (subjectId == null || subjectId.isEmpty() || candidates == null)
+		{
+			return false;
+		}
+
+		for (String candidate : candidates)
+		{
+			if (subjectId.equals(candidate))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * RC-004 / RC-005 recycler filter (see {@code TileEntityRecycler#getIsItemBlacklisted}):
+	 * <ul>
+	 *   <li>Whitelist empty → blacklist mode: reject only if {@code inBlacklist}</li>
+	 *   <li>Whitelist non-empty → whitelist mode: reject unless {@code inWhitelist}</li>
+	 * </ul>
+	 * When rejected, recycler yields no scrap.
+	 */
+	public static boolean isRecyclerRejected(boolean whitelistEmpty, boolean inBlacklist, boolean inWhitelist)
+	{
+		return whitelistEmpty ? inBlacklist : !inWhitelist;
 	}
 
 	/**

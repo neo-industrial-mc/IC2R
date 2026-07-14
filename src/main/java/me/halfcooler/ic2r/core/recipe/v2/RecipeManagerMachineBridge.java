@@ -80,8 +80,12 @@ public final class RecipeManagerMachineBridge
 		{
 			MachineRecipe<IRecipeInput, Collection<ItemStack>> recipe = holder.recipe();
 			IRecipeInput recipeInput = recipe.getInput();
-			return recipeInput.matches(input)
-				&& MachineRecipeMatchMath.canApplyInput(count, recipeInput.getAmount(), hasRecipeRemainder);
+			return MachineRecipeMatchMath.acceptsMatchedInput(
+				recipeInput.matches(input),
+				count,
+				recipeInput.getAmount(),
+				hasRecipeRemainder
+			);
 		});
 		return matched != null ? matched.recipe() : null;
 	}
