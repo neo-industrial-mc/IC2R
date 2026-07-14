@@ -15,18 +15,24 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * W2.3 pilot bridge: vanilla {@link RecipeManager} ↔ IC2R basic machine managers.
+ * Vanilla {@link RecipeManager} ↔ IC2R basic machine managers (W2.3 pilot; G2.2 multi-type evidence).
  * <p>
- * <b>Full chain (macerator)</b>:
+ * <b>Full chain (all basic types share this bridge)</b> — documented for macerator + extractor + compressor:
  * <ol>
- *   <li>JSON under {@code data/ic2r/recipes/macerator/*.json} with {@code "type":"ic2r:macerator"}</li>
- *   <li>{@link me.halfcooler.ic2r.core.ref.Ic2rRecipeTypes#MACERATOR} +
- *       {@link me.halfcooler.ic2r.core.ref.Ic2rRecipeSerializers#MACERATOR}</li>
+ *   <li>JSON under {@code data/ic2r/recipes/<path>/*.json} with {@code "type":"ic2r:<id>"}
+ *       (e.g. {@code macerator}, {@code extractor}, {@code compressor})</li>
+ *   <li>{@link me.halfcooler.ic2r.core.ref.Ic2rRecipeTypes} +
+ *       {@link me.halfcooler.ic2r.core.ref.Ic2rRecipeSerializers}
+ *       ({@code BasicMachineRecipeSerializer} or weighted for macerator)</li>
  *   <li>Vanilla loads into {@link RecipeManager}</li>
  *   <li>{@link #loadBasic} materializes a {@link BasicMachineRecipeManager} (cached per manager via
- *       {@link RecipeManagerGetter})</li>
- *   <li>Machines query via {@code Recipes.macerator.get(level)}</li>
+ *       {@link RecipeManagerGetter}); wired in {@code Rezepte#basicRecipe} for every basic type</li>
+ *   <li>Machines query via {@code Recipes.macerator|extractor|compressor|…}.get(level)}</li>
  * </ol>
+ * <p>
+ * <b>Runtime match path today</b>: materialize-once then {@link BasicMachineRecipeManager} scan
+ * (not per-tick {@link #findMatching} on {@code RecipeManager}). Direct-query helpers exist for
+ * evaluation / future cutover — see {@code docs/spec/recipe_manager_query_eval.md}.
  * <p>
  * <b>Fallback</b>: when no {@code Level}/{@code RecipeManager} is available (unit tests, early init),
  * callers must not use {@link RecipeManagerGetter}; pure match rules live in

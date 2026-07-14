@@ -79,9 +79,14 @@ public class Rezepte
 		loadRecipes();
 	}
 
+	/**
+	 * Shared basic-machine wiring (G2.2): every type uses the same
+	 * JSON → Serializer → RecipeManager → {@link RecipeManagerMachineBridge#loadBasic} →
+	 * {@link RecipeManagerGetter} → {@link Recipes}.* path.
+	 * Evidence types: macerator (W2.3), extractor, compressor, plus other basic fields above.
+	 */
 	private static RecipeManagerGetter<IBasicMachineRecipeManager> basicRecipe(RecipeType<RecipeHolder<IRecipeInput, Collection<ItemStack>>> recipeType)
 	{
-		// W2.3: materialize from vanilla RecipeManager (JSON + Serializer) via explicit bridge.
 		return new RecipeManagerGetter<>(recipeManager -> RecipeManagerMachineBridge.loadBasic(recipeManager, recipeType));
 	}
 }

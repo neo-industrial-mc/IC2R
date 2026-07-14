@@ -16,11 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Pure-logic recipe match gates + macerator pilot datapack smoke (W2.3 / G1.6 / RC-*).
+ * Pure-logic recipe match gates + basic-machine datapack smoke (W2.3 / G1.6 / G2.2 / RC-*).
  * No Level / RecipeManager bootstrap.
  * <p>
  * Runtime bridge (documented on {@code RecipeManagerMachineBridge}):
- * JSON {@code ic2r:macerator} → Serializer → RecipeManager → loadBasic → Recipes.macerator.
+ * JSON {@code ic2r:macerator|extractor|compressor} → Serializer → RecipeManager →
+ * {@code loadBasic} → {@code Recipes.*} (shared {@code Rezepte#basicRecipe}).
+ * Direct-query path: {@code findMatching} / pure {@link MachineRecipeMatchMath#findMatchingIndex}.
  */
 class MachineRecipeMatchMathTest
 {
@@ -82,26 +84,47 @@ class MachineRecipeMatchMathTest
 		assertNull(MachineRecipeMatchMath.firstMatch(null, s -> true));
 	}
 
-	// --- RC-006 (partial): pilot JSON exists and declares type id ---
+	// --- RC-006 (partial): datapack JSON exists and declares type id ---
 
 	@Test
 	void macerator_datapack_json_declares_pilot_type() throws Exception
 	{
-		String resource = "data/ic2r/recipes/macerator/cobblestone_to_sand.json";
-		try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource))
-		{
-			assertNotNull(in, "expected classpath resource " + resource);
-			String json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-			assertTrue(
-				json.contains("\"type\": \"ic2r:macerator\"") || json.contains("\"type\":\"ic2r:macerator\""),
-				"JSON must declare type ic2r:macerator"
-			);
-			assertTrue(json.contains("minecraft:cobblestone"));
-			assertTrue(json.contains("minecraft:sand"));
-		}
-
+		assertDatapackDeclaresType(
+			"data/ic2r/recipes/macerator/cobblestone_to_sand.json",
+			MachineRecipeMatchMath.MACERATOR_RECIPE_TYPE_ID,
+			"minecraft:cobblestone",
+			"minecraft:sand"
+		);
 		assertEquals("ic2r:macerator", MachineRecipeMatchMath.MACERATOR_RECIPE_TYPE_ID);
 		assertEquals("macerator", MachineRecipeMatchMath.MACERATOR_RECIPE_PATH);
+	}
+
+	/** G2.2 / RC-006: second basic type (extractor) shares JSON→type id chain with macerator. */
+	@Test
+	void extractor_datapack_json_declares_type() throws Exception
+	{
+		assertDatapackDeclaresType(
+			"data/ic2r/recipes/extractor/resin_to_rubber.json",
+			MachineRecipeMatchMath.EXTRACTOR_RECIPE_TYPE_ID,
+			"ic2r:resin",
+			"ic2r:rubber"
+		);
+		assertEquals("ic2r:extractor", MachineRecipeMatchMath.EXTRACTOR_RECIPE_TYPE_ID);
+		assertEquals("extractor", MachineRecipeMatchMath.EXTRACTOR_RECIPE_PATH);
+	}
+
+	/** G2.2 / RC-006: compressor JSON type smoke (third basic type, same bridge). */
+	@Test
+	void compressor_datapack_json_declares_type() throws Exception
+	{
+		assertDatapackDeclaresType(
+			"data/ic2r/recipes/compressor/sand_to_sandstone.json",
+			MachineRecipeMatchMath.COMPRESSOR_RECIPE_TYPE_ID,
+			"minecraft:sand",
+			"minecraft:sandstone"
+		);
+		assertEquals("ic2r:compressor", MachineRecipeMatchMath.COMPRESSOR_RECIPE_TYPE_ID);
+		assertEquals("compressor", MachineRecipeMatchMath.COMPRESSOR_RECIPE_PATH);
 	}
 
 	// ========== G1.6 deepen: RC-001 … RC-005 pure gates ==========
@@ -217,5 +240,106 @@ class MachineRecipeMatchMathTest
 			List.of(new Recipe("minecraft:iron_ingot", 8)),
 			r -> MachineRecipeMatchMath.acceptsMatchedInput(true, 2, r.amount(), false)
 		));
+	}
+
+	/**
+	 * G2.2: pure stand-in for {@code RecipeManagerMachineBridge#findMatching} —
+	 * first-wins + {@link MachineRecipeMatchMath#acceptsMatchedInput} (amount + remainder).
+	 * Mirrors compressor-style multi-count inputs (e.g. 4 sand → sandstone).
+	 */
+	@Test
+	void findMatchingIndex_first_wins_with_amount_and_remainder()
+	{
+		// candidates: wrong item; sand needs 4; sand needs 1 (later — must not win when 4 matches)
+		String[] ids = {
+			"minecraft:cobblestone",
+			"minecraft:sand",
+			"minecraft:sand"
+		};
+		int[] amounts = {1, 4, 1};
+
+		// enough sand for amount-4 recipe → index 1
+		assertEquals(1, MachineRecipeMatchMath.findMatchingIndex(
+			"minecraft:sand", 4, false, ids, amounts
+		));
+		// only 2 sand → skip amount-4, hit amount-1 at index 2
+		assertEquals(2, MachineRecipeMatchMath.findMatchingIndex(
+			"minecraft:sand", 2, false, ids, amounts
+		));
+		// empty / unknown → -1
+		assertEquals(-1, MachineRecipeMatchMath.findMatchingIndex(
+			"minecraft:dirt", 8, false, ids, amounts
+		));
+		assertEquals(-1, MachineRecipeMatchMath.findMatchingIndex(
+			null, 4, false, ids, amounts
+		));
+
+		// remainder: stack must equal recipe amount
+		assertEquals(1, MachineRecipeMatchMath.findMatchingIndex(
+			"minecraft:sand", 4, true, ids, amounts
+		));
+		// 5 sand + remainder → neither sand recipe (4≠5, and after skip 1≠5) if we only had those;
+		// with amount-1 still failing exact 5 → -1 for remainder path on both sand entries
+		assertEquals(-1, MachineRecipeMatchMath.findMatchingIndex(
+			"minecraft:sand", 5, true, ids, amounts
+		));
+		// exact 1 → hits index 2 (index 1 needs exact 4)
+		assertEquals(2, MachineRecipeMatchMath.findMatchingIndex(
+			"minecraft:sand", 1, true, ids, amounts
+		));
+
+		// length mismatch / null arrays
+		assertEquals(-1, MachineRecipeMatchMath.findMatchingIndex(
+			"minecraft:sand", 1, false, ids, new int[] {1}
+		));
+		assertEquals(-1, MachineRecipeMatchMath.findMatchingIndex(
+			"minecraft:sand", 1, false, null, amounts
+		));
+	}
+
+	/** G2.2: findMatching + acceptsMatchedInput combo for extractor single-item spirit (amount 1). */
+	@Test
+	void findMatchingIndex_extractor_style_single_acceptsMatchedInput()
+	{
+		String[] ids = {"ic2r:resin", "ic2r:rubber_log"};
+		int[] amounts = {1, 1};
+
+		assertEquals(0, MachineRecipeMatchMath.findMatchingIndex(
+			"ic2r:resin", 3, false, ids, amounts
+		));
+		assertTrue(MachineRecipeMatchMath.acceptsMatchedInput(
+			MachineRecipeMatchMath.matchesExactItem("ic2r:resin", "ic2r:resin"),
+			3, 1, false
+		));
+		assertFalse(MachineRecipeMatchMath.acceptsMatchedInput(
+			MachineRecipeMatchMath.matchesExactItem("ic2r:resin", "ic2r:rubber"),
+			3, 1, false
+		));
+		assertEquals(1, MachineRecipeMatchMath.findMatchingIndex(
+			"ic2r:rubber_log", 1, false, ids, amounts
+		));
+		assertEquals(-1, MachineRecipeMatchMath.findMatchingIndex(
+			"ic2r:rubber", 1, false, ids, amounts
+		));
+	}
+
+	private static void assertDatapackDeclaresType(
+		String resource,
+		String typeId,
+		String inputToken,
+		String outputToken
+	) throws Exception
+	{
+		try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource))
+		{
+			assertNotNull(in, "expected classpath resource " + resource);
+			String json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+			assertTrue(
+				json.contains("\"type\": \"" + typeId + "\"") || json.contains("\"type\":\"" + typeId + "\""),
+				"JSON must declare type " + typeId
+			);
+			assertTrue(json.contains(inputToken), "expected input token " + inputToken);
+			assertTrue(json.contains(outputToken), "expected output token " + outputToken);
+		}
 	}
 }

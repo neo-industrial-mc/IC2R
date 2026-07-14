@@ -6,6 +6,7 @@
 > **索引**：[docs/spec/README.md](README.md)  
 > **阶段 1 摘要（W1.8）**：NS-001…003/005 与部分 energy 切口已绿；EN/SM/RC 主体仍 draft；覆盖率与 TeUpdate 切主见 [phase1_closeout.md](phase1_closeout.md)。  
 > **阶段 2 摘要（W2.6）**：inv/fluid 适配纯逻辑测 + macerator RecipeManager 试点 + GUI 冻结样板 + Tags DataGen；§7.7 partial/gap 见 [phase2_closeout.md](phase2_closeout.md)。  
+> **G2.2**：extractor/compressor 与 macerator 共用 bridge 全链路文档 + 直查 vs materialize 评估（[recipe_manager_query_eval.md](recipe_manager_query_eval.md)）；RC-006 JSON 烟测加深。  
 > **阶段 3 摘要（W3.5）**：platform SPI + lifecycle 首迁 + EnvProxy 切片 + NeoForge 文档计划；§8.5 多为 gap/deferred、无新 Golden 绿项；见 [phase3_closeout.md](phase3_closeout.md)。
 
 本文件冻结「必须先规格与测试、再动实现」的模块与用例大纲。条目 ID 建议格式：`{域}-{子域}-{序号}`（例：`EN-IC-001`），测试可用 `@Spec("EN-IC-001")` 对齐（§4.7）。
@@ -144,7 +145,7 @@
 | RC-003 | ore/等价语义 | ore 字典或项目约定的等价输入语义与加载数据一致 | P1 | 部分绿 | G1.6：与 tag 共用 any-of 门闩；完整 ore 桥加载一致性未测 |
 | RC-004 | 白名单接受 | 白名单内输入可匹配；名单外拒绝 | P0 | 部分绿 | G1.6：`isRecyclerRejected` 白名单模式；`TileEntityRecycler#getIsItemBlacklisted` 接线 |
 | RC-005 | 黑名单拒绝 | 黑名单内输入永不匹配，即使满足其它输入描述 | P0 | 部分绿 | G1.6：`isRecyclerRejected` 黑名单模式（whitelist empty） |
-| RC-006 | JSON 反序列化往返 | 合法配方 JSON → 内存模型 → 再序列化关键字段稳定（或规范化后相等） | P0 | 部分绿 | W2.3：macerator 数据包 JSON type 存在性烟测；完整 codec 往返需 RecipeManager boot |
+| RC-006 | JSON 反序列化往返 | 合法配方 JSON → 内存模型 → 再序列化关键字段稳定（或规范化后相等） | P0 | 部分绿 | W2.3 macerator + **G2.2** extractor/compressor 数据包 JSON type 烟测；`findMatchingIndex` 对齐 bridge 直查门闩；完整 codec 往返需 RecipeManager boot |
 | RC-007 | 非法 JSON 失败 | 缺字段/类型错误时加载失败且不注册半残配方 | P1 | 未写 | draft |
 
 ---

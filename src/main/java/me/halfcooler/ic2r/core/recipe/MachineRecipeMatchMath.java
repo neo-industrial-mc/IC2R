@@ -202,11 +202,51 @@ public final class MachineRecipeMatchMath
 	}
 
 	/**
-	 * Datapack type id for the macerator pilot ({@code ic2r:macerator}).
-	 * Kept here so pure tests can lock the pilot type string without loading registries.
+	 * Datapack type ids for basic machines sharing {@code RecipeManagerMachineBridge#loadBasic}
+	 * (W2.3 macerator pilot; G2.2 extractor/compressor multi-type evidence).
+	 * Kept here so pure tests can lock type strings without loading registries.
 	 */
 	public static final String MACERATOR_RECIPE_TYPE_ID = "ic2r:macerator";
 
-	/** Path segment under {@code data/ic2r/recipes/} for the pilot type. */
+	/** Path segment under {@code data/ic2r/recipes/} for macerator. */
 	public static final String MACERATOR_RECIPE_PATH = "macerator";
+
+	/** Second basic type full-chain evidence ({@code ic2r:extractor}). */
+	public static final String EXTRACTOR_RECIPE_TYPE_ID = "ic2r:extractor";
+
+	public static final String EXTRACTOR_RECIPE_PATH = "extractor";
+
+	/** Third basic type full-chain evidence ({@code ic2r:compressor}). */
+	public static final String COMPRESSOR_RECIPE_TYPE_ID = "ic2r:compressor";
+
+	public static final String COMPRESSOR_RECIPE_PATH = "compressor";
+
+	/**
+	 * Pure stand-in for {@code RecipeManagerMachineBridge#findMatching} without Minecraft types.
+	 * Each candidate is (itemId, recipeAmount); first that {@link #acceptsMatchedInput} wins.
+	 *
+	 * @return index of first match, or {@code -1}
+	 */
+	public static int findMatchingIndex(
+		String subjectItemId,
+		int stackCount,
+		boolean hasRecipeRemainder,
+		String[] candidateItemIds,
+		int[] candidateAmounts
+	)
+	{
+		if (subjectItemId == null || subjectItemId.isEmpty()
+			|| candidateItemIds == null || candidateAmounts == null
+			|| candidateItemIds.length != candidateAmounts.length)
+		{
+			return -1;
+		}
+
+		return firstMatchIndex(candidateItemIds.length, i -> acceptsMatchedInput(
+			matchesExactItem(candidateItemIds[i], subjectItemId),
+			stackCount,
+			candidateAmounts[i],
+			hasRecipeRemainder
+		));
+	}
 }
