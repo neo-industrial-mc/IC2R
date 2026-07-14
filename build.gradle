@@ -70,6 +70,9 @@ static def resolveAddonModId(addonProject) {
             'Set mod_id or *_mod_id in the addon gradle.properties.')
 }
 
+// W2.5 DataGen: generated JSON under src/generated/resources
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
 minecraft {
     mappings channel: mapping_channel, version: mapping_version
     copyIdeResources = true
@@ -100,6 +103,11 @@ minecraft {
         }
         gameTestServer {
             property 'forge.enabledGameTestNamespaces', mod_id
+        }
+        // W2.5: Forge data generation (Tags/Recipes/…); output to src/generated/resources
+        data {
+            workingDirectory project.file('run')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
         }
     }
 }
