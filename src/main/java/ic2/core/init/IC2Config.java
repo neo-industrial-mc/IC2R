@@ -42,8 +42,8 @@ public class IC2Config {
       b.push("worldgen");
       b.comment(
           "Enable generation of rubber trees in the world.",
-          "If you want to control the rubber tree generation on forge side,",
-          "you need to modify the files under resources/ic2/data/forge/biome_modifier.");
+          "If you want to control the rubber tree generation on NeoForge side,",
+          "you need to modify the files under data/ic2/neoforge/biome_modifier.");
       rubberTree = b.define("rubberTree", true);
       b.comment(
           "Comma separated list of dimensions to not generate rubber trees in. Does nothing if rubber tree generation is disabled.");
