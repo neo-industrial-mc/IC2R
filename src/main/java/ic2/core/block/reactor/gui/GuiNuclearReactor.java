@@ -9,6 +9,7 @@ import ic2.core.gui.LinkedGauge;
 import ic2.core.gui.TankGauge;
 import ic2.core.gui.TextLabel;
 import ic2.core.gui.dynamic.TextProvider;
+import java.util.Locale;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -38,7 +39,10 @@ public class GuiNuclearReactor extends Ic2Gui<ContainerNuclearReactor> {
                     () ->
                         Component.translatable(
                                 "ic2.NuclearReactor.gui.info.temp",
-                                GuiNuclearReactor.this.menu.base.getGuiValue("heat") * 100.0)
+                                String.format(
+                                    Locale.ROOT,
+                                    "%.2f",
+                                    GuiNuclearReactor.this.menu.base.getGuiValue("heat") * 100.0))
                             .getString()));
     this.addElement(
         TextLabel.create(
