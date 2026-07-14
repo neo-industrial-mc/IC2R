@@ -15,8 +15,9 @@ import java.util.function.Supplier;
 /**
  * Per-block-entity registry of {@link SyncedField}s for the modern sync path.
  * <p>
- * Skeleton only (W1.1): machines still use {@code getNetworkedFields()} + reflection until W1.2 dual-write.
- * Encode/decode helpers support golden-style round-trips and future {@code TeUpdate} integration.
+ * W1.2 dual-write: standard machines register {@code gui_progress}/{@code active} here while live packets
+ * still use {@code getNetworkedFields()} + reflection. Encode/decode supports golden round-trips (NS-005)
+ * and future {@code TeUpdate} integration that prefers this table.
  */
 public final class BlockEntitySync
 {

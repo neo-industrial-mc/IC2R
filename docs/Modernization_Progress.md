@@ -1,12 +1,11 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W1.1  
+**last_completed:** W1.2  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
-> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
-> **阶段 0 done**；阶段 1 进行中（last: W1.1）。
+> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。
 
 ## Queue
 
@@ -19,7 +18,7 @@
 | W0.5 | done | naming_audit.md：网络/NBT camelCase 大面积 + 注册/lang 抽样 + P0–P2 修复序 |
 | W0.6 | done | origin.md：核心包 residual/rewritten/original/mixed 初版 |
 | W1.1 | done | SyncKey/Codec/BlockEntitySync 骨架 + BE 空钩子；反射路径保留；18 tests 绿 |
-| W1.2 | pending | 标准机同步试点 |
+| W1.2 | done | 标准机 gui_progress/active 双写注册；NS-005 往返测；test 24/24 绿；TeUpdate 未切主 |
 | W1.3 | pending | 去反射 Tick |
 | W1.4 | pending | 清理致命味道 |
 | W1.5 | pending | NBT/网络字面量 snake_case 试点 |
@@ -40,11 +39,10 @@
 
 ## Last session
 
-- unit: W1.1
+- unit: W1.2
 - result: done / PASS
-- suggested_commit: `feat: add BlockEntitySync skeleton with SyncKey codecs`
+- suggested_commit: `feat(sync): dual-write standard machine gui_progress and active`
 - verify_log: |
-    - DoD: SyncKey+Codec ✅；反射路径 NetworkManager/TeUpdate/getNetworkedFields 保留 ✅
-    - Ic2rTileEntity.registerSyncedData 默认空
-    - SyncCodecRoundTripTest 5 项；全量 test 18/18 绿
-    - 新路径尚未接入 TeUpdate（W1.2 双写）
+    - DoD: registerSyncedData gui_progress/active ✅；反射 getNetworkedFields 保留 ✅
+    - StandardMachineSyncRoundTripTest 6/6；全量 test 24/24 绿
+    - 未切 TeUpdate；未做 W1.3 Tick / W1.5 NBT

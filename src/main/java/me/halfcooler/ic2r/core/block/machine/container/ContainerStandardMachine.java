@@ -48,11 +48,15 @@ public class ContainerStandardMachine<T extends TileEntityStandardMachine<?, ?, 
 		}
 	}
 
+	/**
+	 * Dual-write (W1.2): keep legacy camelCase field name for reflection {@code NetworkManager}
+	 * until TeUpdate cutover. Modern path uses SyncKey {@code gui_progress} on the TE.
+	 */
 	@Override
 	public List<String> getNetworkedFields()
 	{
 		List<String> ret = super.getNetworkedFields();
-		ret.add("guiProgress");
+		ret.add(TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD);
 		return ret;
 	}
 }

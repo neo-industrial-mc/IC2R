@@ -14,10 +14,15 @@ import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
 import me.halfcooler.ic2r.core.gui.dynamic.IGuiValueProvider;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.network.GuiSynced;
+import me.halfcooler.ic2r.core.network.sync.BlockEntitySync;
+import me.halfcooler.ic2r.core.network.sync.SyncCodecs;
+import me.halfcooler.ic2r.core.network.sync.SyncKey;
 import me.halfcooler.ic2r.core.sound.Sound;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
 import java.util.Collection;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -38,6 +43,22 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	protected static final int EventInterrupt = 1;
 	protected static final int EventFinish = 2;
 	protected static final int EventStop = 3;
+
+	/**
+	 * Modern SyncKey for GUI progress (wire: {@code gui_progress}).
+	 * Dual-write: legacy reflection still uses {@link #LEGACY_GUI_PROGRESS_FIELD}.
+	 */
+	public static final SyncKey<Float> KEY_GUI_PROGRESS = SyncKey.of("gui_progress", SyncCodecs.FLOAT);
+	/**
+	 * Modern SyncKey for machine active state (wire: {@code active}).
+	 * Dual-write: legacy reflection still uses {@link #LEGACY_ACTIVE_FIELD}.
+	 */
+	public static final SyncKey<Boolean> KEY_ACTIVE = SyncKey.of("active", SyncCodecs.BOOLEAN);
+	/** Legacy {@code getNetworkedFields()} / NetworkManager reflection field name for progress. */
+	public static final String LEGACY_GUI_PROGRESS_FIELD = "guiProgress";
+	/** Legacy {@code getNetworkedFields()} / NetworkManager reflection field name for active. */
+	public static final String LEGACY_ACTIVE_FIELD = "active";
+
 	public final int defaultEnergyConsume;
 	public final int defaultOperationLength;
 	public final int defaultTier;
@@ -120,6 +141,45 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	public float getProgress()
 	{
 		return this.guiProgress;
+	}
+
+	/**
+	 * W1.2 dual-write pilot: registers modern SyncKeys bound to real machine state.
+	 * Live packets still use {@code getNetworkedFields()} + reflection ({@link #LEGACY_GUI_PROGRESS_FIELD},
+	 * {@link #LEGACY_ACTIVE_FIELD}) until TeUpdate prefers the Sync table.
+	 */
+	@Override
+	protected void registerSyncedData(BlockEntitySync sync)
+	{
+		super.registerSyncedData(sync);
+		bindStandardMachineSync(
+			sync,
+			this::getActive,
+			this::applySyncedActive,
+			this::getProgress,
+			this::setGuiProgressSynced
+		);
+	}
+
+	/**
+	 * Registers standard-machine pilot SyncKeys. Shared by BE registration and pure unit tests (NS-005).
+	 */
+	public static void bindStandardMachineSync(
+		BlockEntitySync sync,
+		Supplier<Boolean> activeGetter,
+		Consumer<Boolean> activeSetter,
+		Supplier<Float> guiProgressGetter,
+		Consumer<Float> guiProgressSetter
+	)
+	{
+		sync.add(KEY_ACTIVE, activeGetter, activeSetter);
+		sync.add(KEY_GUI_PROGRESS, guiProgressGetter, guiProgressSetter);
+	}
+
+	/** Apply GUI progress from modern sync decode (no side effects). */
+	protected void setGuiProgressSynced(float value)
+	{
+		this.guiProgress = value;
 	}
 
 	@Override

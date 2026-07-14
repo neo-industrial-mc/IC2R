@@ -166,7 +166,7 @@
 | NS-002 | 新旧键并存读 | 同时存在旧键与新键时，优先级规则确定（通常新键优先）且结果可测 | P1 | 未写 | draft |
 | NS-003 | 新键 snake_case 写出 | 新写出 NBT 使用 `snake_case` 键（如 `energy_buffer`），不再只写旧驼峰键 | P0 | 未写 | 见主文档 §3 |
 | NS-004 | 兼容期双写策略 | 若规格要求兼容期双写，读路径仍以迁移表为准；双写集合可枚举 | P1 | 未写 | 可选阶段策略 |
-| NS-005 | 同步字段编解码往返 | 标准机关键同步字段（进度、active、能量显示等）encode→decode 后相等 | P0 | 未写 | W1.2 试点对齐 |
+| NS-005 | 同步字段编解码往返 | 标准机关键同步字段（进度、active、能量显示等）encode→decode 后相等 | P0 | 绿 | W1.2：`gui_progress`+`active` via `TileEntityStandardMachine.bindStandardMachineSync`；能量显示待后续 |
 | NS-006 | 同步不破坏服务端权威 | 客户端解码结果不得在无校验下写回篡改服务端权威状态（契约级） | P1 | 未写 | draft |
 
 ---

@@ -347,8 +347,8 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 	}
 
 	/**
-	 * Modern sync registry (W1.1 skeleton). Default is empty; does not replace
-	 * {@link #getNetworkedFields()} / reflection until dual-write (W1.2+).
+	 * Modern sync registry (W1.1+). Subclasses register SyncKeys via {@link #registerSyncedData};
+	 * {@link #getNetworkedFields()} + reflection remains the live wire path until TeUpdate cutover (dual-write).
 	 */
 	public final BlockEntitySync getBlockEntitySync()
 	{
@@ -363,11 +363,20 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 	}
 
 	/**
-	 * Override to register {@link me.halfcooler.ic2r.core.network.sync.SyncKey}-based fields.
-	 * Default no-op — no behaviour change vs reflection-only path.
+	 * Override to register {@link me.halfcooler.ic2r.core.network.sync.SyncKey}-based fields
+	 * (snake_case wire names). Default no-op. Does not replace reflection until protocol cutover.
 	 */
 	protected void registerSyncedData(BlockEntitySync sync)
 	{
+	}
+
+	/**
+	 * Apply {@code active} from modern sync decode without network re-broadcast
+	 * (mirrors client-side reflection field write).
+	 */
+	protected void applySyncedActive(boolean active)
+	{
+		this.active = active;
 	}
 
 	@Override
