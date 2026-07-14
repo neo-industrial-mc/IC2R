@@ -583,7 +583,8 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
     Level world = this.getLevel();
     int humidity =
         Crops.instance.getHumidityBiomeBonus(BiomeUtil.getBiome(world, this.worldPosition));
-    if (world.getBlockState(this.worldPosition.below()).getValue(FarmBlock.MOISTURE) >= 7) {
+    BlockState below = world.getBlockState(this.worldPosition.below());
+    if (below.getBlock() instanceof FarmBlock && below.getValue(FarmBlock.MOISTURE) >= 7) {
       humidity += 2;
     }
 

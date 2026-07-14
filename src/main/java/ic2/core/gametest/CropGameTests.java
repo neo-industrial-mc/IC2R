@@ -640,6 +640,31 @@ public class CropGameTests {
     helper.succeed();
   }
 
+  // humidity updates must tolerate a crop stick whose supporting farmland was replaced; a
+  // non-farmland block contributes no moisture bonus, just like dry farmland
+  @GameTest(template = EMPTY)
+  public static void humidityUpdateIgnoresNonFarmlandBelow(GameTestHelper helper) {
+    helper.setBlock(CROP_POS.below(), Blocks.DIRT);
+    helper.setBlock(
+        CROP_POS,
+        Ic2Blocks.CROP_STICK.defaultBlockState().setValue(Ic2TileEntityBlock.CROSSING_BASE, false));
+    TileEntityCrop crop = cropAt(helper, CROP_POS);
+    crop.setStorageWater(0);
+
+    crop.updateTerrainHumidity();
+    int dirtHumidity = crop.getTerrainHumidity();
+
+    helper.setBlock(
+        CROP_POS.below(), Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 0));
+    crop = cropAt(helper, CROP_POS);
+    crop.setStorageWater(0);
+    crop.updateTerrainHumidity();
+    helper.assertValueEqual(
+        dirtHumidity, crop.getTerrainHumidity(), "humidity above dirt compared to dry farmland");
+
+    helper.succeed();
+  }
+
   // air quality drops by 2 when the 2x2 neighbourhood is walled in and by 4 without sky access
   @GameTest(template = EMPTY)
   public static void airQualityRespondsToEnclosureAndSky(GameTestHelper helper) {
