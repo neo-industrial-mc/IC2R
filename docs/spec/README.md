@@ -50,6 +50,8 @@
 | [naming_audit.md](naming_audit.md) | **已产出**（W0.5）：抽样 + 优先级 | W0.5 | 命名扫描报告与修复优先级 |
 | [origin.md](origin.md) | **已产出**（W0.6）：核心包初版标注 | W0.6 | 模块 Origin：residual / rewritten / original / mixed |
 | [id_migrations.md](id_migrations.md) | **已起步**（W1.5 试点） | 命名/NBT 迁移相关 Unit | 注册 ID / NBT 键 / 网络字段迁移表 |
+| [phase1_closeout.md](phase1_closeout.md) | **已产出**（W1.8） | W1.8 | 阶段 1 §6.3 勾选、JaCoCo 覆盖率证据与 gap 列表 |
+| [smell_exemptions_w1_4.md](smell_exemptions_w1_4.md) | **已产出**（W1.4） | W1.4 | 味道清理豁免登记 |
 
 ### 编写约定（摘要）
 
@@ -69,3 +71,4 @@
 | Golden 条目表 | **已完成（W0.3）**：EN-IC/GT、SM、RC、NS 可引用 ID；正文后续 |
 | 命名审计 | **已完成（W0.5）**：见 `naming_audit.md` |
 | Origin | **已完成（W0.6）**：见 `origin.md`（初版；随 W1+ 更新） |
+| 阶段 1 收口 | **已完成（W1.8）**：见 `phase1_closeout.md`（§6.3 partial/gap 已登记；覆盖率未达 60%） |

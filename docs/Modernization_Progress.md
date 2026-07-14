@@ -1,11 +1,12 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W1.7  
+**last_completed:** W1.8  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
-> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。
+> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
+> **阶段 1 Work Unit（W1.1–W1.8）已全部 done**；§6.3 多项为 partial/gap（见 `docs/spec/phase1_closeout.md`）。下一 pending：**W2.1**。
 
 ## Queue
 
@@ -24,7 +25,7 @@
 | W1.5 | done | Energy storage/energyBuffer→energy_buffer + LegacyNbt；标准机 progress；迁移测 38 tests 绿 |
 | W1.6 | done | Ic2rItems 按 8 域拆分 + 门面保留；511 字段；compile+test 绿；Blocks 未拆 |
 | W1.7 | done | SoundEvent 全类 DeferredRegister+RegistryObject；FmlMod bus 挂载；test 38/38 绿 |
-| W1.8 | pending | 阶段 1 收口 |
+| W1.8 | done | phase1_closeout：§6.3 对照；覆盖率 ~2.7% 记 gap；test+jacoco 绿 |
 | W2.1 | pending | InvSlot → Handler 委托试点 |
 | W2.2 | pending | 流体适配收窄试点 |
 | W2.3 | pending | 配方 RecipeManager 试点 |
@@ -39,12 +40,10 @@
 
 ## Last session
 
-- unit: W1.7
+- unit: W1.8
 - result: done / PASS
-- suggested_commit: `feat(registry): deferred-register SoundEvents as Holder pilot`
+- suggested_commit: `docs: phase 1 closeout with coverage gaps`
 - verify_log: |
-    - DoD: Ic2rSoundEvents 全 RegistryObject + DeferredRegister ✅
-    - FmlMod 挂 bus；即时 registerSoundEvent 已禁用
-    - path 抽查 item.treetap.use 等不变
-    - Items/Blocks 仍即时注册（范围正确）
-    - compileJava + test 38/38 绿
+    - DoD: phase1_closeout.md 含 §6.3 / 覆盖率 / G1.1–G1.8 gaps ✅
+    - jacoco：宽口径 ~2.7% ≪ 60%，已诚实记 gap
+    - test 38/38；仅 docs 变更；无 W2 实现
