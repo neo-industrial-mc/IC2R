@@ -1,12 +1,12 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W1.8  
+**last_completed:** W2.1  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
 > 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
-> **阶段 1 Work Unit（W1.1–W1.8）已全部 done**；§6.3 多项为 partial/gap（见 `docs/spec/phase1_closeout.md`）。下一 pending：**W2.1**。
+> **阶段 1 done**；阶段 2：last W2.1。
 
 ## Queue
 
@@ -26,7 +26,7 @@
 | W1.6 | done | Ic2rItems 按 8 域拆分 + 门面保留；511 字段；compile+test 绿；Blocks 未拆 |
 | W1.7 | done | SoundEvent 全类 DeferredRegister+RegistryObject；FmlMod bus 挂载；test 38/38 绿 |
 | W1.8 | done | phase1_closeout：§6.3 对照；覆盖率 ~2.7% 记 gap；test+jacoco 绿 |
-| W2.1 | pending | InvSlot → Handler 委托试点 |
+| W2.1 | done | InvSlotItemHandler 适配 + TileEntityInventory ITEM_HANDLER；14 测；test 52/52 绿 |
 | W2.2 | pending | 流体适配收窄试点 |
 | W2.3 | pending | 配方 RecipeManager 试点 |
 | W2.4 | pending | 冻结 XML / 代码 GUI 样板 |
@@ -40,10 +40,11 @@
 
 ## Last session
 
-- unit: W1.8
+- unit: W2.1
 - result: done / PASS
-- suggested_commit: `docs: phase 1 closeout with coverage gaps`
+- suggested_commit: `feat(inv): expose ITEM_HANDLER via InvSlot adapter on inventory BEs`
 - verify_log: |
-    - DoD: phase1_closeout.md 含 §6.3 / 覆盖率 / G1.1–G1.8 gaps ✅
-    - jacoco：宽口径 ~2.7% ≪ 60%，已诚实记 gap
-    - test 38/38；仅 docs 变更；无 W2 实现
+    - DoD: TileEntityInventory（含 Macerator）ITEM_HANDLER ✅
+    - InvSlotItemHandler + InvSlotTransferMath；内部仍 InvSlot
+    - InvSlotHandlerMathTest 14/14；全量 test 52/52 绿
+    - 未做 W2.2；未删除 InvSlot 树

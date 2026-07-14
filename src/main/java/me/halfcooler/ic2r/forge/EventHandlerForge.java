@@ -7,6 +7,7 @@ import me.halfcooler.ic2r.api.event.RetextureEvent;
 import me.halfcooler.ic2r.api.tile.RetexturableBlock;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
+import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.command.CommandIc2r;
 import me.halfcooler.ic2r.core.event.EventHandler;
 import me.halfcooler.ic2r.core.event.TickHandler;
@@ -413,7 +414,32 @@ public final class EventHandlerForge
 				event.addCapability(fluidCapId, new LazyBlockFluidCapImpl(be));
 			}
 
-			if (be instanceof WorldlyContainer)
+			// W2.1: TileEntityInventory (standard machines e.g. Macerator) expose ITEM_HANDLER via
+			// InvSlotItemHandler combined view (facing == null) + sided WorldlyContainer wrappers.
+			if (be instanceof TileEntityInventory teInv)
+			{
+				event.addCapability(itemCapId, new ICapabilityProvider()
+				{
+					private final LazyOptional<IItemHandlerModifiable>[] sided =
+						SidedInvWrapper.create(teInv, Util.ALL_DIRS);
+
+					@Override
+					public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing)
+					{
+						if (capability != ForgeCapabilities.ITEM_HANDLER)
+						{
+							return LazyOptional.empty();
+						}
+
+						if (facing == null)
+						{
+							return teInv.getInvSlotItemHandlerCap().cast();
+						}
+
+						return (LazyOptional<T>) this.sided[facing.ordinal()];
+					}
+				});
+			} else if (be instanceof WorldlyContainer)
 			{
 				event.addCapability(itemCapId, new ICapabilityProvider()
 				{

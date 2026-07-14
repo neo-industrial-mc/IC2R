@@ -27,6 +27,8 @@ public class InvSlot implements Iterable<ItemStack>
 	protected final InvSlot.Access access;
 	private final ItemStack[] contents;
 	private int stackSizeLimit;
+	/** Lazy Forge IItemHandler adapter (W2.1); storage stays in {@link #contents}. */
+	private InvSlotItemHandler itemHandler;
 
 	public InvSlot(IInventorySlotHolder<?> base, String name, InvSlot.Access access, int count)
 	{
@@ -270,6 +272,20 @@ public class InvSlot implements Iterable<ItemStack>
 	public void setStackSizeLimit(int stackSizeLimit)
 	{
 		this.stackSizeLimit = stackSizeLimit;
+	}
+
+	/**
+	 * Forge item-handler view of this slot group (W2.1). Domain code may keep using get/put;
+	 * automation should prefer this adapter (access + accepts enforced on insert/extract).
+	 */
+	public InvSlotItemHandler getItemHandler()
+	{
+		if (this.itemHandler == null)
+		{
+			this.itemHandler = new InvSlotItemHandler(this);
+		}
+
+		return this.itemHandler;
 	}
 
 	@Override

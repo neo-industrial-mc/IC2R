@@ -3,11 +3,13 @@ package me.halfcooler.ic2r.core.block.tileentity;
 import me.halfcooler.ic2r.core.block.IInventorySlotHolder;
 import me.halfcooler.ic2r.core.block.comp.ComparatorEmitter;
 import me.halfcooler.ic2r.core.block.invslot.InvSlot;
+import me.halfcooler.ic2r.core.block.invslot.InvSlotItemHandler;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -18,11 +20,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
+/**
+ * Inventory-bearing TE. InvSlots keep domain APIs; Forge {@code ITEM_HANDLER} is exposed via
+ * {@link #getInvSlotItemHandler()} (combined InvSlot adapters) and sided wrappers in
+ * {@code EventHandlerForge} (W2.1 pilot — covers standard machines such as Macerator).
+ */
 public abstract class TileEntityInventory extends Ic2rTileEntity implements WorldlyContainer, IInventorySlotHolder<TileEntityInventory>
 {
 	protected final ComparatorEmitter comparator = this.addComponent(new ComparatorEmitter(this));
 	private final List<InvSlot> invSlots = new ArrayList<>();
+	/** Cached combined InvSlot → IItemHandler view (null side / full inventory). */
+	private LazyOptional<IItemHandler> invSlotItemHandlerCap = LazyOptional.empty();
 
 	public TileEntityInventory(BlockEntityType<? extends TileEntityInventory> type, BlockPos pos, BlockState state)
 	{
@@ -378,6 +391,62 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	{
 		assert this.invSlots.stream().noneMatch(slot -> slot.name.equals(inventorySlot.name));
 		this.invSlots.add(inventorySlot);
+		// Slot list changed after construction is rare; drop combined-handler cache if present.
+		this.invalidateInvSlotItemHandlerCap();
+	}
+
+	/**
+	 * Unmodifiable view of registered InvSlots (construction order = combined handler order).
+	 */
+	public List<InvSlot> getInvSlots()
+	{
+		return Collections.unmodifiableList(this.invSlots);
+	}
+
+	/**
+	 * Combined Forge item handler over all InvSlots via {@link InvSlotItemHandler} (W2.1).
+	 * Insert/extract respect each slot's access and accepts; machines keep using InvSlot APIs.
+	 */
+	public IItemHandler createInvSlotItemHandler()
+	{
+		if (this.invSlots.isEmpty())
+		{
+			return new CombinedInvWrapper();
+		}
+
+		IItemHandlerModifiable[] handlers = new IItemHandlerModifiable[this.invSlots.size()];
+		for (int i = 0; i < this.invSlots.size(); i++)
+		{
+			handlers[i] = this.invSlots.get(i).getItemHandler();
+		}
+
+		return new CombinedInvWrapper(handlers);
+	}
+
+	/**
+	 * LazyOptional of {@link #createInvSlotItemHandler()} for capability attachment (null facing).
+	 */
+	public LazyOptional<IItemHandler> getInvSlotItemHandlerCap()
+	{
+		if (!this.invSlotItemHandlerCap.isPresent())
+		{
+			this.invSlotItemHandlerCap = LazyOptional.of(this::createInvSlotItemHandler);
+		}
+
+		return this.invSlotItemHandlerCap;
+	}
+
+	@Override
+	public void invalidateCaps()
+	{
+		super.invalidateCaps();
+		this.invalidateInvSlotItemHandlerCap();
+	}
+
+	private void invalidateInvSlotItemHandlerCap()
+	{
+		this.invSlotItemHandlerCap.invalidate();
+		this.invSlotItemHandlerCap = LazyOptional.empty();
 	}
 
 	private int locateInvSlot(int extIndex)
