@@ -316,10 +316,10 @@ DoD：{…}
 
 > 主 Agent 每完成 Unit 更新本表。也可同步抄录到 `Modernization_Progress.md` 顶部，避免双源时 **以用户指定文件为准**；若只维护一处，**优先本文件 §7**。
 
-**active_unit:** A40.2  
-**last_completed:** A40.1  
+**active_unit:** none  
+**last_completed:** A40.3  
 **track:** A  
-**updated:** 2026-07-14（A40.2 in_progress）  
+**updated:** 2026-07-15（A40.3 done）  
 **release_gate:** not_run  
 
 ### 7.1 Track A Queue
@@ -329,7 +329,7 @@ DoD：{…}
 | A40.0 | done | 基线 20.1.40；core 31 + api 6 = 37 文件 forge import；清单已冻结 |
 | A40.1 | done | EN-IC-001…010 GWT 摘要 + EnergyNetIcSolverTest(11 宿主边界测) + EN-GT-010 4 条 IC/GT 对照测绿；residual-world 登记 |
 | A40.2 | in_progress | core 31→7 files (24 cleared: 22 de-forged + 2 exemptions); 5 non-exempt remaining: InvSlotItemHandler/TileEntityInventory/3×Config; created 5 forge/ adapters; .\gradlew.bat test PASS |
-| A40.3 | pending | IC 求解 residual 现代化回接 |
+| A40.3 | done | IcEnergySolver 作为 IC 默认求解器；EnergyTransferMath 单一真源；EnergyCalculatorUnified @Deprecated；EnergyCalculatorGT 切至 IcEnergySolver；origin.md 回写；test PASS |
 | A40.4 | pending | Release Gate 预检文档 |
 
 ### 7.2 Track B Queue

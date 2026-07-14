@@ -42,7 +42,7 @@
 | G1–G3 增量 | 多处 **rewritten 切片** 与 **mixed** 子系统；GT 电网 / platform SPI / 集成等 **original** 保持 |
 | **禁止** | 将整表 P0 核心包改写为 `original`；宣称「核心 residual 清零」 |
 
-**仍主导 residual 的 P0 核心（未清零）**：EnergyNet **IC 路径**（`EnergyCalculatorUnified` + 图模型主体）、标准机 **TE 循环本体**、`network` **反射/TeUpdate 帧默认**、`InvSlot` **树主体**、核电/作物等高风险玩法域。
+**仍主导 residual 的 P0 核心（未清零）**：EnergyNet **图模型主体**（`Grid`/`Node`/`EnergyPath`，IC 求解已重写为 `IcEnergySolver`）、标准机 **TE 循环本体**、`network` **反射/TeUpdate 帧默认**、`InvSlot` **树主体**、核电/作物等高风险玩法域。
 
 ---
 
@@ -56,7 +56,8 @@
 | `core/energy/EnergyNetMode` | **original** | `IC2R`/`GT` 配置切换枚举，项目自有双模策略 | 保持；Golden `EN-GT`/`EN-IC` 对齐 |
 | `core/energy/EnergyBridgeMath` | **rewritten**（切片） | G2.8：EU↔FE 纯转换库 + 契约 [energy_bridge_contract.md](energy_bridge_contract.md)；非 IC 源码结构，工程侧现代化表达 | 保持测护；config 开关 / e2e FE 后置 |
 | `core/energy/grid/EnergyCalculatorGT` | **original** | GT 1A 包、方向优先级、超压/超流等按 GTEU 规格实现的求解器 | Golden EN-GT-*；与 path cache 委托边界写清 |
-| `core/energy/grid/EnergyCalculatorUnified` | **residual** | IC 模式路径/分配/线损等核心求解，类职责与历史统一计算器同构；**未**域重写 | 规格+测驱动干净室重写 |
+| `core/energy/grid/EnergyCalculatorUnified` | **rewritten**（deprecated） | A40.3：标记 `@Deprecated`，仅保留为 GT path-cache 兼容层；IC 默认求解切至 `IcEnergySolver` | 后续可安全删除 |
+| `core/energy/grid/IcEnergySolver` | **rewritten**（A40.3） | IC 模式现代求解器：复用 BFS+OptimizedGraph 路径设施，distribution/cable effects 以 `EnergyTransferMath` 为单一真源；控制流/命名与历史 `EnergyCalculatorUnified` 可区分 | 测护（EN-IC-* 全绿）；回接为 IC 默认 Calculator |
 | `core/energy/grid/EnergyTransferMath` | **rewritten**（切片） | W0.4 / G1.3 / G3.3：inject/loss/distribute 纯逻辑切口 + 高测覆盖；**回接** IC 路径，非替换 Calculator 本体 | 继续扩边界测；主体仍 residual |
 | `core/energy/grid/*`（`Grid`/`Node`/`EnergyNetLocal`/`ChangeHandler`/`EnergyPath` 等） | **residual** | 图模型、变更队列、本地网实例等控制流仍明显同源；已挂 GT 分支与配置钩子 | 拓扑可保留**语义**不变量，表达须重写 |
 | `core/energy/profile/*` | **mixed** | 档位/电缆展示部分服务双模式；结构仍贴机端用电侧 | 与 VoltageTier API 一并现代化 |

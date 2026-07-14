@@ -37,6 +37,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.mutable.MutableDouble;
 
+/**
+ * @deprecated Replaced by {@link IcEnergySolver} (A40.3). Retained for GT path-cache delegate.
+ */
+@Deprecated
 public class EnergyCalculatorUnified implements IEnergyCalculator
 {
 	private static Collection<EnergyPath> getPaths(Node node, GridData data)

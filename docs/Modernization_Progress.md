@@ -18,7 +18,7 @@
 | A40.0 | done | 基线 20.1.40；core 31 + api 6 = 37 文件 forge import；清单已冻结 |
 | A40.1 | done | EN-IC-001…010 GWT 摘要 + EnergyNetIcSolverTest(11 宿主边界测) + EN-GT-010 对照测绿 |
 | A40.2 | in_progress | core 31→7 files; 22 de-forged+2 exemptions; 5 forge/ adapters created; test PASS |
-| A40.3 | pending | IC 求解 residual 现代化回接 |
+| A40.3 | done | IcEnergySolver 默认 IC 求解器；EnergyTransferMath 单一真源；Unified @Deprecated；origin.md 已回写 |
 | A40.4 | pending | Release Gate 预检文档 |
 
 **release_gate:** not_run  

@@ -41,7 +41,7 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 		Direction.EAST
 	};
 
-	private final EnergyCalculatorUnified pathCacheDelegate = new EnergyCalculatorUnified();
+	private final IEnergyCalculator pathCacheDelegate = new IcEnergySolver();
 
 	@Override
 	public void handleGridChange(Grid grid)
