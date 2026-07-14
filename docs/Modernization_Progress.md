@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W3.2  
+**last_completed:** W3.3  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -33,17 +33,16 @@
 | W2.6 | done | phase2_closeout：§7.7 partial/gap；窄口径~3.5%≪70%；test 66/66+jacoco 绿 |
 | W3.1 | done | platform.services 8 SPI + PlatformServices；platform_spi.md；compile+test 绿 |
 | W3.2 | done | EventHandler.onInitLate → PlatformLifecycle.isClient；ForgePlatformServices.install；双轨 EnvProxy |
-| W3.3 | pending | EnvProxy 瘦身切片 |
+| W3.3 | done | 删除 EnvProxy.isClientEnv；全库改 PlatformLifecycle.isClient；compile+test 绿 |
 | W3.4 | pending | NeoForge 骨架或计划 |
 | W3.5 | pending | 阶段 3 收口 |
 
 ## Last session
 
-- unit: W3.2
+- unit: W3.3
 - result: done / PASS
-- suggested_commit: `feat(platform): wire first common call site to PlatformLifecycle SPI`
+- suggested_commit: `refactor: remove EnvProxy.isClientEnv in favor of PlatformLifecycle`
 - verify_log: |
-    - DoD: EventHandler 1 处 PlatformServices.lifecycle().isClient() ✅
-    - PlatformLifecycleForge + ForgePlatformServices.install in FmlMod
-    - 其它 isClientEnv 仍 EnvProxy 双轨
-    - compileJava + test 绿
+    - DoD: isClientEnv 从 EnvProxy/EnvProxyForge 删除 ✅
+    - 5 处调用点 → PlatformServices.lifecycle().isClient()
+    - 其余 EnvProxy API 保留；compileJava + test 绿

@@ -62,7 +62,7 @@ import net.minecraft.world.phys.Vec3;
 
 public interface EnvProxy
 {
-	boolean isClientEnv();
+	// W3.3: isClientEnv removed — use PlatformServices.lifecycle().isClient()
 
 	boolean isFabricEnv();
 

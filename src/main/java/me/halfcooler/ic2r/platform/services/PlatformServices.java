@@ -7,9 +7,9 @@ import java.util.function.Supplier;
 /**
  * Access point for platform SPI implementations.
  * <p>
- * W3.2: Forge entry calls {@link #install} via {@code ForgePlatformServices.install()}.
- * First migrated common call site uses {@link #lifecycle()}; other facets may still be stubs.
- * Remaining runtime largely uses {@code IC2R.envProxy} / {@code IC2R.sideProxy} (dual-track).
+ * W3.2+: Forge entry and {@code IC2R} static both call {@code ForgePlatformServices.install()} (idempotent).
+ * W3.3: all client-env checks use {@link #lifecycle()}{@code .isClient()}; {@code EnvProxy#isClientEnv} removed.
+ * Other facets may still be stubs; remaining runtime dual-tracks {@code IC2R.envProxy} / {@code IC2R.sideProxy}.
  * ServiceLoader remains a fallback when {@link #install} was not called.
  */
 public final class PlatformServices

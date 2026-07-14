@@ -21,6 +21,7 @@ import me.halfcooler.ic2r.core.item.InfiniteElectricItemManager;
 import me.halfcooler.ic2r.core.item.PriorityUsableItem;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -178,7 +179,7 @@ public class ItemDebug extends Item implements PriorityUsableItem, ISpecialElect
 
 	private static String getPlatform(Level world)
 	{
-		if (IC2R.envProxy.isClientEnv())
+		if (PlatformServices.lifecycle().isClient())
 		{
 			if (!world.isClientSide)
 			{

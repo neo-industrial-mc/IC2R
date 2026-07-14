@@ -1,7 +1,7 @@
 # Platform SPI 草案（W3.1）
 
-> **状态**：W3.2 — SPI 已 install；**首迁调用点**：`EventHandler.onInitLate` 的 `isClientEnv` → `PlatformServices.lifecycle().isClient()`（`PlatformLifecycleForge`）。其余运行时仍双轨 `IC2R.envProxy` / `IC2R.sideProxy`。  
-> **下一 Unit**：W3.3 EnvProxy 瘦身切片。  
+> **状态**：W3.3 — **EnvProxy 瘦身切片**：删除 `EnvProxy#isClientEnv`（及 `EnvProxyForge` 实现）；全库 client 环境判定改走 `PlatformServices.lifecycle().isClient()`。`IC2R` 静态初始化在创建 `sideProxy` 前调用 `ForgePlatformServices.install()`（与 `FmlMod` 双入口，幂等）。其余 `EnvProxy` 方法仍双轨。  
+> **下一 Unit**：W3.4 NeoForge 骨架（或后续继续瘦身 `isForgeEnv`/`isFabricEnv`/`getServer` 等）。  
 > **主文档**：[Modernization_Project.md](../Modernization_Project.md) §2.2–2.3、§8.2。
 
 ---
@@ -72,8 +72,9 @@ platform-impl  ──may use──►  common / core domain types
 | `createFluidStackHandler`（及 EnvFluidHandler 实现细节） | **PlatformFluidBridge** |
 | `createItemHandler`（及 EnvItemHandler 实现细节） | **PlatformItemTransfer** |
 | `openHandledScreen` | **PlatformPlayerUi** |
-| `isClientEnv` / `isForgeEnv` / `isFabricEnv` / `getServer` | **PlatformLifecycle** |
-| `announce*` 事件、假玩家、burn time、biome types、blast resistance… | **暂留 EnvProxy**（W3.3 再切或删） |
+| ~~`isClientEnv`~~（**W3.3 已删**） | **PlatformLifecycle#isClient**（全库已切） |
+| `isForgeEnv` / `isFabricEnv` / `getServer` | **PlatformLifecycle**（`getLoaderKind` / `getServer` 已有；调用点待切） |
+| `announce*` 事件、假玩家、burn time、biome types、blast resistance… | **暂留 EnvProxy**（后续再切或删） |
 
 ### 4.2 `SideProxy` → SPI
 
@@ -146,13 +147,23 @@ forge.PlatformLifecycleForge + ForgePlatformServices（其它 facet stub）
 ## 7. 验证与非目标
 
 **W3.1 验证**：`.\gradlew.bat compileJava` 通过；既有 test 不破。  
-**W3.2 验证**：`.\gradlew.bat compileJava test`；首迁调用点不直调 `envProxy.isClientEnv()`。
+**W3.2 验证**：`.\gradlew.bat compileJava test`；首迁调用点不直调 `envProxy.isClientEnv()`。  
+**W3.3 验证**：`.\gradlew.bat compileJava test`；`EnvProxy`/`EnvProxyForge` 无 `isClientEnv`；common 调用点均用 `PlatformServices.lifecycle().isClient()`。
+
+### W3.3 切片记录（一组方法）
+
+| 动作 | 方法 | 说明 |
+|:---|:---|:---|
+| **删除** | `EnvProxy#isClientEnv` / `EnvProxyForge#isClientEnv` | 表面从上帝代理移除 |
+| **迁移** | 调用点 → `PlatformLifecycle#isClient` | `IC2R.createSideProxy`、`SideGateway`、`WorldData`、`ItemDebug`（`EventHandler.onInitLate` 已在 W3.2） |
+| **内部** | `EnvProxyForge#createFluidStackHandler` | 改用本类静态 `isClient`（Forge dist），不再经接口 |
+| **安装** | `IC2R` static + `FmlMod` | 双入口 `ForgePlatformServices.install()`（幂等），保证 class-init 可用 SPI |
 
 **非目标（禁止扩 scope）**：
 
-- W3.2 只迁 **1** 个调用点；不全库替换  
-- 不删除/缩 EnvProxy 方法（W3.3）  
+- W3.3 只瘦 **一组**（client 环境判定）；不全库拆 EnvProxy  
 - 不拆多模块 / Architectury  
+- 不做 W3.4 NeoForge 骨架  
 - 不把全部 SPI facet 做成完整委托实现（lifecycle 以外可 stub）
 
 ---

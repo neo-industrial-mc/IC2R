@@ -8,9 +8,10 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Process / side lifecycle and environment detection.
  * <p>
- * Draft SPI. Consolidates environment bits of {@code EnvProxy}
- * ({@code isClientEnv}, {@code isForgeEnv}, {@code getServer}) and side lifecycle from
- * {@code SideProxy} ({@code preInit}, {@code onPostInit}, {@code onServerAvailable},
+ * Draft SPI. Consolidates environment bits formerly on {@code EnvProxy}
+ * ({@code isClientEnv} removed in W3.3 → {@link #isClient()}; {@code isForgeEnv}/{@code getServer}
+ * still dual-track) and side lifecycle from {@code SideProxy}
+ * ({@code preInit}, {@code onPostInit}, {@code onServerAvailable},
  * {@code requestTick}, {@code isSimulating}/{@code isRendering}).
  */
 public interface PlatformLifecycle

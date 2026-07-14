@@ -1,7 +1,7 @@
 package me.halfcooler.ic2r.core.util;
 
-import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.network.NetworkManager;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 
 public final class SideGateway
 {
@@ -12,7 +12,7 @@ public final class SideGateway
 	{
 		try
 		{
-			if (IC2R.envProxy.isClientEnv())
+			if (PlatformServices.lifecycle().isClient())
 			{
 				this.clientInstance = (NetworkManager) Class.forName("me.halfcooler.ic2r.core.network.NetworkManagerClient").getConstructor().newInstance();
 			} else

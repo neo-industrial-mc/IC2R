@@ -128,12 +128,6 @@ public final class EnvProxyForge implements EnvProxy
 	}
 
 	@Override
-	public boolean isClientEnv()
-	{
-		return isClient;
-	}
-
-	@Override
 	public boolean isFabricEnv()
 	{
 		return false;
@@ -357,7 +351,7 @@ public final class EnvProxyForge implements EnvProxy
 
 	public EnvFluidHandler createFluidStackHandler()
 	{
-		if (this.isClientEnv())
+		if (isClient)
 		{
 			try
 			{

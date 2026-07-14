@@ -1,11 +1,11 @@
 package me.halfcooler.ic2r.core.event;
 
-import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.WindSim;
 import me.halfcooler.ic2r.core.block.personal.TradingMarket;
 import me.halfcooler.ic2r.core.energy.grid.EnergyNetLocal;
 import me.halfcooler.ic2r.core.network.TeUpdateDataServer;
 import me.halfcooler.ic2r.core.util.Util;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongSet;
@@ -33,7 +33,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 
 public class WorldData
 {
-	private static ConcurrentMap<ResourceLocation, WorldData> idxClient = IC2R.envProxy.isClientEnv() ? new ConcurrentHashMap<>() : null;
+	private static ConcurrentMap<ResourceLocation, WorldData> idxClient = PlatformServices.lifecycle().isClient() ? new ConcurrentHashMap<>() : null;
 	private static ConcurrentMap<ResourceLocation, WorldData> idxServer = new ConcurrentHashMap<>();
 	public final EnergyNetLocal energyNet;
 	public final Map<BlockEntity, TeUpdateDataServer> tesToUpdate = new IdentityHashMap<>();

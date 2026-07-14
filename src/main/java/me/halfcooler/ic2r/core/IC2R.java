@@ -10,6 +10,8 @@ import me.halfcooler.ic2r.core.util.Log;
 import me.halfcooler.ic2r.core.util.PriorityExecutor;
 import me.halfcooler.ic2r.core.util.SideGateway;
 import me.halfcooler.ic2r.forge.EnvProxyForge;
+import me.halfcooler.ic2r.forge.ForgePlatformServices;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -45,6 +47,8 @@ public class IC2R
 	static
 	{
 		envProxy = createEnvProxy();
+		// W3.3: ensure SPI is available before sideProxy / SideGateway (may run before FmlMod ctor)
+		ForgePlatformServices.install();
 		sideProxy = createSideProxy();
 		log = new Log(LogManager.getLogger("ic2r"));
 		network = new SideGateway();
@@ -105,6 +109,6 @@ public class IC2R
 
 	private static SideProxy createSideProxy()
 	{
-		return envProxy.isClientEnv() ? new SideProxyClient() : new SideProxyServer();
+		return PlatformServices.lifecycle().isClient() ? new SideProxyClient() : new SideProxyServer();
 	}
 }
