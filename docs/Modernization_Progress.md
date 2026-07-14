@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W2.3  
+**last_completed:** W2.4  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -28,7 +28,7 @@
 | W2.1 | done | InvSlotItemHandler 适配 + TileEntityInventory ITEM_HANDLER；14 测；test 52/52 绿 |
 | W2.2 | done | FluidTransferMath fill/empty + Ic2rFluidTank 委托；8 测；test 60/60 绿 |
 | W2.3 | done | macerator Type/Serializer/JSON + RecipeManagerMachineBridge + MatchMath 测；test 66/66 绿 |
-| W2.4 | pending | 冻结 XML / 代码 GUI 样板 |
+| W2.4 | done | gui_modernization.md 冻结 XML；CodeGuiSample Menu/Screen 注册；compile+test 绿 |
 | W2.5 | pending | DataGen 起步 |
 | W2.6 | pending | 阶段 2 收口 |
 | W3.1 | pending | platform SPI 草案 |
@@ -39,11 +39,11 @@
 
 ## Last session
 
-- unit: W2.3
+- unit: W2.4
 - result: done / PASS
-- suggested_commit: `feat(recipe): macerator RecipeManager bridge and match math tests`
+- suggested_commit: `feat(gui): freeze guidef XML and add code Menu/Screen sample`
 - verify_log: |
-    - DoD: ic2r:macerator Type+Serializer+JSON+RecipeManager bridge 全链路 ✅
-    - MachineRecipeMatchMath + RecipeManagerMachineBridge；Rezepte 委托
-    - MachineRecipeMatchMathTest 6/6；全量 test 66/66
-    - 未全量重写所有机型；未做 W2.4
+    - DoD: gui_modernization.md 冻结+代码化+兼容 ✅
+    - CodeGuiSampleMenu/Screen + CODE_GUI_SAMPLE 注册 ✅
+    - 现有 guidef 未删；compileJava + test 绿
+    - 未做 W2.5

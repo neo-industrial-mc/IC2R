@@ -50,6 +50,7 @@ import me.halfcooler.ic2r.core.block.wiring.GuiTransformer;
 import me.halfcooler.ic2r.core.entity.render.BoatEntityRenderer;
 import me.halfcooler.ic2r.core.entity.render.ExplosiveBlockRenderer;
 import me.halfcooler.ic2r.core.entity.render.LaserBulletEntityRenderer;
+import me.halfcooler.ic2r.core.gui.code.CodeGuiSampleScreen;
 import me.halfcooler.ic2r.core.gui.dynamic.DynamicGui;
 import me.halfcooler.ic2r.core.item.tool.GuiContainmentbox;
 import me.halfcooler.ic2r.core.item.tool.GuiMiningFilter;
@@ -159,6 +160,8 @@ public final class SideProxyClient implements SideProxy
 		envProxy.registerScreen(Ic2rScreenHandlers.METER, GuiToolMeter::new);
 		envProxy.registerScreen(Ic2rScreenHandlers.CROP_ANALYZER, GuiCropAnalyzer::new);
 		envProxy.registerScreen(Ic2rScreenHandlers.SOLAR_GENERATOR, GuiSolarGenerator::new);
+		// W2.4 sample: pure-code Menu/Screen (no guidef); not opened from a block by default
+		envProxy.registerScreen(Ic2rScreenHandlers.CODE_GUI_SAMPLE, CodeGuiSampleScreen::new);
 		envProxy.registerColorProvider((state, world, post, tintIndex) -> 6723908, Ic2rBlocks.RUBBER_LEAVES);
 		envProxy.registerColorProvider((var1, var2) -> 6723908, Ic2rItems.RUBBER_LEAVES);
 		envProxy.registerColorProvider(SideProxyClient::getFluidCellTintColor,

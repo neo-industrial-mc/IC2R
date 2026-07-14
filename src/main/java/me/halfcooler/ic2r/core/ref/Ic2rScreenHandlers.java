@@ -48,6 +48,7 @@ import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.block.wiring.ContainerChargepadBlock;
 import me.halfcooler.ic2r.core.block.wiring.ContainerElectricBlock;
 import me.halfcooler.ic2r.core.block.wiring.ContainerTransformer;
+import me.halfcooler.ic2r.core.gui.code.CodeGuiSampleMenu;
 import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
 import me.halfcooler.ic2r.core.item.IHandHeldInventory;
 import me.halfcooler.ic2r.core.item.IHandHeldSubInventory;
@@ -137,6 +138,12 @@ public final class Ic2rScreenHandlers
 	public static final MenuType<ContainerContainmentbox> CONTAINMENT_BOX = registerManagedItem("containment_box");
 	public static final MenuType<ContainerAnalyzer> CROP_ANALYZER = registerManagedItem("crop_analyzer");
 	public static final MenuType<ContainerMiningFilter> MINING_FILTER = registerManagedItem("mining_filter");
+
+	/**
+	 * W2.4 pure-code GUI sample (no guidef XML, no real block). See {@link CodeGuiSampleMenu}
+	 * and {@code docs/spec/gui_modernization.md}. Not opened in-game by default.
+	 */
+	public static final MenuType<CodeGuiSampleMenu> CODE_GUI_SAMPLE = register("code_gui_sample", CodeGuiSampleMenu::create);
 
 	public static void init()
 	{
