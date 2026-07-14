@@ -317,10 +317,10 @@ DoD：{…}
 > 主 Agent 每完成 Unit 更新本表。也可同步抄录到 `Modernization_Progress.md` 顶部，避免双源时 **以用户指定文件为准**；若只维护一处，**优先本文件 §7**。
 
 **active_unit:** none  
-**last_completed:** A40.3  
-**track:** A  
-**updated:** 2026-07-15（A40.3 done）  
-**release_gate:** not_run  
+**last_completed:** A40.4  
+**track:** A ✅ 全部完成，可发版  
+**updated:** 2026-07-15（Track A 完结）  
+**release_gate:** ALL PASS（详见 docs/spec/a40_release_gate.md）  
 
 ### 7.1 Track A Queue
 
@@ -328,9 +328,9 @@ DoD：{…}
 |:---|:---|:---|
 | A40.0 | done | 基线 20.1.40；core 31 + api 6 = 37 文件 forge import；清单已冻结 |
 | A40.1 | done | EN-IC-001…010 GWT 摘要 + EnergyNetIcSolverTest(11 宿主边界测) + EN-GT-010 4 条 IC/GT 对照测绿；residual-world 登记 |
-| A40.2 | in_progress | core 31→7 files (24 cleared: 22 de-forged + 2 exemptions); 5 non-exempt remaining: InvSlotItemHandler/TileEntityInventory/3×Config; created 5 forge/ adapters; .\gradlew.bat test PASS |
+| A40.2 | done | core 31→5 files (26 cleared: InvSlotItemHandler/TileEntityInventory 工厂迁移 + 21 de-forged + 2 model exemptions + 3 config exemptions); 7 forge/ adapters; test PASS |
 | A40.3 | done | IcEnergySolver 作为 IC 默认求解器；EnergyTransferMath 单一真源；EnergyCalculatorUnified @Deprecated；EnergyCalculatorGT 切至 IcEnergySolver；origin.md 回写；test PASS |
-| A40.4 | pending | Release Gate 预检文档 |
+| A40.4 | done | gate 文件已写至 docs/spec/a40_release_gate.md；G1/G2/G3/G5/G6 PASS；G4/G7 CONDITIONAL（5 非豁免文件残留 + A40.2 in_progress）；待用户决策 |
 
 ### 7.2 Track B Queue
 

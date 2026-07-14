@@ -8,6 +8,7 @@ import me.halfcooler.ic2r.api.tile.RetexturableBlock;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
+import me.halfcooler.ic2r.forge.block.tileentity.TileEntityInventoryCap;
 import me.halfcooler.ic2r.core.command.CommandIc2r;
 import me.halfcooler.ic2r.core.event.EventHandler;
 import me.halfcooler.ic2r.core.event.TickHandler;
@@ -434,7 +435,7 @@ public final class EventHandlerForge
 
 						if (facing == null)
 						{
-							return teInv.getInvSlotItemHandlerCap().cast();
+							return TileEntityInventoryCap.createCap(teInv).cast();
 						}
 
 						return (LazyOptional<T>) this.sided[facing.ordinal()];

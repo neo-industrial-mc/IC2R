@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** A40.1  
+**last_completed:** A40.4 (Track A 完结)  
 **updated:** 2026-07-14  
 
 > **G3 阶段 3 gap 队列（G3.1–G3.11，G3.8=skipped）已全部收口。**  
@@ -17,11 +17,11 @@
 |:---|:---|:---|
 | A40.0 | done | 基线 20.1.40；core 31 + api 6 = 37 文件 forge import；清单已冻结 |
 | A40.1 | done | EN-IC-001…010 GWT 摘要 + EnergyNetIcSolverTest(11 宿主边界测) + EN-GT-010 对照测绿 |
-| A40.2 | in_progress | core 31→7 files; 22 de-forged+2 exemptions; 5 forge/ adapters created; test PASS |
+| A40.2 | done | core 31→5 files (26 cleared); InvSlotItemHandler/TileEntityInventory 工厂迁移; 7 forge/ adapters; test PASS |
 | A40.3 | done | IcEnergySolver 默认 IC 求解器；EnergyTransferMath 单一真源；Unified @Deprecated；origin.md 已回写 |
 | A40.4 | pending | Release Gate 预检文档 |
 
-**release_gate:** not_run  
+**release_gate:** ALL PASS（a40_release_gate.md）  
 **基线 mod_version:** 20.1.40  
 **forge import 快照:** [a40_core_forge_imports.md](spec/a40_core_forge_imports.md)
 

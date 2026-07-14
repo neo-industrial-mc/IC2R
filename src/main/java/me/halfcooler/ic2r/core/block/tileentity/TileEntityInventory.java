@@ -3,7 +3,6 @@ package me.halfcooler.ic2r.core.block.tileentity;
 import me.halfcooler.ic2r.core.block.IInventorySlotHolder;
 import me.halfcooler.ic2r.core.block.comp.ComparatorEmitter;
 import me.halfcooler.ic2r.core.block.invslot.InvSlot;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotItemHandler;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
@@ -20,10 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 /**
  * Inventory-bearing TE. InvSlots keep domain APIs; Forge {@code ITEM_HANDLER} is exposed via
@@ -37,7 +32,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	protected final ComparatorEmitter comparator = this.addComponent(new ComparatorEmitter(this));
 	private final List<InvSlot> invSlots = new ArrayList<>();
 	/** Cached combined InvSlot → IItemHandler view (null side / full inventory). */
-	private LazyOptional<IItemHandler> invSlotItemHandlerCap = LazyOptional.empty();
+	private transient List<Object> cachedHandlerList;
 
 	public TileEntityInventory(BlockEntityType<? extends TileEntityInventory> type, BlockPos pos, BlockState state)
 	{
@@ -394,7 +389,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		assert this.invSlots.stream().noneMatch(slot -> slot.name.equals(inventorySlot.name));
 		this.invSlots.add(inventorySlot);
 		// Slot list changed after construction is rare; drop combined-handler cache if present.
-		this.invalidateInvSlotItemHandlerCap();
+		this.cachedHandlerList = null;
 	}
 
 	/**
@@ -413,20 +408,18 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	 * machines keep using InvSlot domain APIs. No {@code preferredSide} filter here — that applies
 	 * only on the sided {@code WorldlyContainer} path (non-null facing).
 	 */
-	public IItemHandler createInvSlotItemHandler()
+	public List<Object> getInvSlotHandlerList()
 	{
-		if (this.invSlots.isEmpty())
+		if (this.cachedHandlerList == null || this.cachedHandlerList.size() != this.invSlots.size())
 		{
-			return new CombinedInvWrapper();
+			List<Object> handlers = new java.util.ArrayList<>(this.invSlots.size());
+			for (int i = 0; i < this.invSlots.size(); i++)
+			{
+				handlers.add(this.invSlots.get(i).getItemHandler());
+			}
+			this.cachedHandlerList = java.util.Collections.unmodifiableList(handlers);
 		}
-
-		IItemHandlerModifiable[] handlers = new IItemHandlerModifiable[this.invSlots.size()];
-		for (int i = 0; i < this.invSlots.size(); i++)
-		{
-			handlers[i] = this.invSlots.get(i).getItemHandler();
-		}
-
-		return new CombinedInvWrapper(handlers);
+		return this.cachedHandlerList;
 	}
 
 	/**
@@ -434,28 +427,16 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	 * {@code facing == null}. Invalidated on slot-list change and {@link #invalidateCaps()}.
 	 * Cap wiring itself is runtime-only (no unit coverage without BE bootstrap).
 	 */
-	public LazyOptional<IItemHandler> getInvSlotItemHandlerCap()
-	{
-		if (!this.invSlotItemHandlerCap.isPresent())
-		{
-			this.invSlotItemHandlerCap = LazyOptional.of(this::createInvSlotItemHandler);
-		}
-
-		return this.invSlotItemHandlerCap;
-	}
+	
 
 	@Override
 	public void invalidateCaps()
 	{
 		super.invalidateCaps();
-		this.invalidateInvSlotItemHandlerCap();
+		this.cachedHandlerList = null;
 	}
 
-	private void invalidateInvSlotItemHandlerCap()
-	{
-		this.invSlotItemHandlerCap.invalidate();
-		this.invSlotItemHandlerCap = LazyOptional.empty();
-	}
+	
 
 	private int locateInvSlot(int extIndex)
 	{

@@ -1,10 +1,11 @@
-package me.halfcooler.ic2r.core.block.invslot;
+package me.halfcooler.ic2r.forge.block.invslot;
 
+import me.halfcooler.ic2r.core.block.invslot.InvSlot;
+import me.halfcooler.ic2r.core.block.invslot.InvSlotTransferMath;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -63,7 +64,7 @@ public final class InvSlotItemHandler implements IItemHandlerModifiable
 
 		ItemStack existing = this.slot.get(index);
 		int existingCount = StackUtil.isEmpty(existing) ? 0 : StackUtil.getSize(existing);
-		boolean compatible = existingCount == 0 || ItemHandlerHelper.canItemStacksStack(existing, stack);
+		boolean compatible = existingCount == 0 || (ItemStack.isSameItemSameTags(existing, stack) && existing.getCount() < existing.getMaxStackSize());
 		int insertable = InvSlotTransferMath.insertableCount(
 			existingCount,
 			stack.getCount(),
@@ -80,7 +81,7 @@ public final class InvSlotItemHandler implements IItemHandlerModifiable
 		{
 			if (existingCount == 0)
 			{
-				this.slot.put(index, ItemHandlerHelper.copyStackWithSize(stack, insertable));
+				ItemStack copy1 = stack.copy(); copy1.setCount(insertable); this.slot.put(index, copy1);
 			} else
 			{
 				this.slot.put(index, StackUtil.incSize(existing, insertable));
@@ -88,7 +89,7 @@ public final class InvSlotItemHandler implements IItemHandlerModifiable
 		}
 
 		int remaining = InvSlotTransferMath.remainingAfterInsert(stack.getCount(), insertable);
-		return remaining == 0 ? ItemStack.EMPTY : ItemHandlerHelper.copyStackWithSize(stack, remaining);
+		if (remaining == 0) return ItemStack.EMPTY; ItemStack result1 = stack.copy(); result1.setCount(remaining); return result1;
 	}
 
 	@Override
@@ -109,7 +110,7 @@ public final class InvSlotItemHandler implements IItemHandlerModifiable
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack result = ItemHandlerHelper.copyStackWithSize(existing, extractable);
+		ItemStack result = existing.copy(); result.setCount(extractable);
 		if (!simulate)
 		{
 			int left = InvSlotTransferMath.remainingAfterExtract(existingCount, extractable);
