@@ -1,0 +1,23 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "RRR",
+    "CIC",
+    "RRR"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2r:dense_copper_plate"
+    },
+    "R": {
+      "item": "ic2r:thick_neutron_reflector"
+    },
+    "I": {
+      "item": "ic2r:iridium"
+    }
+  },
+  "group": "iridium_neutron_reflector",
+  "result": {
+    "item": "ic2r:iridium_neutron_reflector"
+  }
+}

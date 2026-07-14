@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "minecraft:deepslate"
+  },
+  "result": {
+    "item": "minecraft:cobbled_deepslate"
+  }
+}

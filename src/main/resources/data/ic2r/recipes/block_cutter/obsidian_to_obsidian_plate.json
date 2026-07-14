@@ -1,0 +1,11 @@
+{
+  "type": "ic2r:block_cutter",
+  "ingredient": {
+    "item": "minecraft:obsidian"
+  },
+  "result": {
+    "item": "ic2r:obsidian_plate",
+    "count": 9
+  },
+  "hardness": 8
+}

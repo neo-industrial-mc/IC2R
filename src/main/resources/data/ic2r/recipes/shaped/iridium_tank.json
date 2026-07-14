@@ -1,0 +1,20 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PUP",
+    "U U",
+    "PUP"
+  ],
+  "key": {
+    "U": {
+      "item": "ic2r:facade_cell"
+    },
+    "P": {
+      "item": "ic2r:iridium"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:iridium_tank"
+  }
+}

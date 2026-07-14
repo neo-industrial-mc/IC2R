@@ -1,0 +1,20 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "GGG",
+    "AGA",
+    "GGG"
+  ],
+  "key": {
+    "G": {
+      "tag": "forge:glass"
+    },
+    "A": {
+      "item": "ic2r:alloy"
+    }
+  },
+  "result": {
+    "item": "ic2r:reinforced_glass",
+    "count": 7
+  }
+}

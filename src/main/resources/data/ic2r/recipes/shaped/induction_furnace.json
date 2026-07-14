@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CCC",
+    "CFC",
+    "CMC"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "F": {
+      "item": "ic2r:electric_furnace"
+    },
+    "M": {
+      "item": "ic2r:advanced_machine"
+    }
+  },
+  "result": {
+    "item": "ic2r:induction_furnace"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "III",
+    "CCC",
+    "IGI"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2r:facade_cell"
+    },
+    "G": {
+      "item": "ic2r:heat_conductor"
+    },
+    "I": {
+      "item": "ic2r:iron_casing"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:fermenter"
+  }
+}

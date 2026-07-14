@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:extractor",
+  "ingredient": {
+    "item": "minecraft:snow_block"
+  },
+  "result": {
+    "item": "minecraft:snowball",
+    "count": 4
+  }
+}

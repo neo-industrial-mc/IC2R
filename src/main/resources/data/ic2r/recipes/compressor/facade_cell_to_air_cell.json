@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "item": "ic2r:facade_cell"
+  },
+  "result": {
+    "item": "ic2r:air_cell"
+  }
+}

@@ -1,0 +1,24 @@
+package me.halfcooler.ic2r.api.recipe;
+
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluid;
+
+public interface IRecipeInputFactory
+{
+	IRecipeInput forItem(ItemLike var1);
+
+	IRecipeInput forStack(ItemStack var1);
+
+	IRecipeInput forStack(ItemStack var1, int var2);
+
+	IRecipeInput forTag(String var1, int var2);
+
+	IRecipeInput forFluidContainer(Fluid var1, int var2);
+
+	IRecipeInput forIngredient(Ingredient var1, int var2);
+
+	@Deprecated
+	Ingredient getIngredient(IRecipeInput var1);
+}

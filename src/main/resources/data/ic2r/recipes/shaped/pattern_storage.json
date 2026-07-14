@@ -1,0 +1,28 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "AAA",
+    "BCB",
+    "EDE"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:reinforced_stone"
+    },
+    "B": {
+      "item": "ic2r:crystal_memory"
+    },
+    "C": {
+      "item": "ic2r:advanced_machine"
+    },
+    "D": {
+      "item": "ic2r:advanced_circuit"
+    },
+    "E": {
+      "item": "ic2r:mining_laser"
+    }
+  },
+  "result": {
+    "item": "ic2r:pattern_storage"
+  }
+}

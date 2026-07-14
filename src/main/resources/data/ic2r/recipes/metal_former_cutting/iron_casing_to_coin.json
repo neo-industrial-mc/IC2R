@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:metal_former_cutting",
+  "ingredient": {
+    "item": "ic2r:iron_casing"
+  },
+  "result": {
+    "item": "ic2r:coin"
+  }
+}

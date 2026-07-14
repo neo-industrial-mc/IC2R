@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:ore_washer",
+  "ingredient": {
+    "item": "ic2r:crushed_tin"
+  },
+  "result": [
+    {
+      "item": "ic2r:purified_tin"
+    },
+    {
+      "item": "ic2r:small_tin_dust",
+      "count": 2
+    },
+    {
+      "item": "ic2r:stone_dust"
+    }
+  ],
+  "amount": 1000
+}

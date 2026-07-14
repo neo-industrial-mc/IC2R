@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/generator/heat/solid_heat_generator_left",
+    "down": "ic2r:block/generator/heat/solid_heat_generator_bottom",
+    "up": "ic2r:block/generator/heat/solid_heat_generator_top",
+    "north": "ic2r:block/generator/heat/solid_heat_generator_front",
+    "east": "ic2r:block/generator/heat/solid_heat_generator_left",
+    "south": "ic2r:block/generator/heat/solid_heat_generator_back",
+    "west": "ic2r:block/generator/heat/solid_heat_generator_right"
+  }
+}

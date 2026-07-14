@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/steam/refractory_bricks",
+    "down": "ic2r:block/steam/refractory_bricks",
+    "up": "ic2r:block/steam/refractory_bricks",
+    "north": "ic2r:block/steam/coke_kiln_active",
+    "east": "ic2r:block/steam/refractory_bricks",
+    "south": "ic2r:block/steam/refractory_bricks",
+    "west": "ic2r:block/steam/refractory_bricks"
+  }
+}

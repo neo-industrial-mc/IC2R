@@ -1,0 +1,21 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "RRR",
+    "CMC"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "tag": "forge:chests/wooden"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    }
+  },
+  "result": {
+    "item": "ic2r:trade_o_mat"
+  }
+}

@@ -1,0 +1,34 @@
+package me.halfcooler.ic2r.core.item.reactor;
+
+import me.halfcooler.ic2r.api.reactor.IReactor;
+import me.halfcooler.ic2r.api.reactor.IReactorComponent;
+import me.halfcooler.ic2r.core.profile.NotClassic;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item.Properties;
+
+@NotClassic
+public class ItemReactorIridiumReflector extends AbstractReactorComponent
+{
+	public ItemReactorIridiumReflector(Properties settings)
+	{
+		super(settings);
+	}
+
+	@Override
+	public boolean acceptUraniumPulse(ItemStack stack, IReactor reactor, ItemStack pulsingStack, int youX, int youY, int pulseX, int pulseY, boolean heatrun)
+	{
+		if (!heatrun)
+		{
+			IReactorComponent source = (IReactorComponent) pulsingStack.getItem();
+			source.acceptUraniumPulse(pulsingStack, reactor, stack, pulseX, pulseY, youX, youY, heatrun);
+		}
+
+		return true;
+	}
+
+	@Override
+	public float influenceExplosion(ItemStack stack, IReactor reactor)
+	{
+		return -1.0F;
+	}
+}

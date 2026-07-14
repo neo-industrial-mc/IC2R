@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:extractor",
+  "ingredient": {
+    "item": "minecraft:bamboo"
+  },
+  "result": {
+    "item": "minecraft:stick"
+  }
+}

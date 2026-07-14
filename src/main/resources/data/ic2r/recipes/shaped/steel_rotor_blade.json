@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PSP",
+    "PSP",
+    "PSP"
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:plates/steel"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "result": {
+    "item": "ic2r:steel_rotor_blade"
+  }
+}

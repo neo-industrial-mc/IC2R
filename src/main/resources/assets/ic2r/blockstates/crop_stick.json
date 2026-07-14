@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "crossing_base=false": {
+      "model": "ic2r:block/crop/crop"
+    },
+    "crossing_base=true": {
+      "model": "ic2r:block/crop/stick_upgraded"
+    }
+  }
+}

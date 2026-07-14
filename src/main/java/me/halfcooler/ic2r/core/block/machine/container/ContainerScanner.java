@@ -1,0 +1,30 @@
+package me.halfcooler.ic2r.core.block.machine.container;
+
+import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityScanner;
+import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
+import me.halfcooler.ic2r.core.slot.SlotInvSlot;
+
+import java.util.List;
+
+import net.minecraft.world.entity.player.Inventory;
+
+public class ContainerScanner extends ContainerElectricMachine<TileEntityScanner>
+{
+	public ContainerScanner(int syncId, Inventory playerInventory, TileEntityScanner be)
+	{
+		super(Ic2rScreenHandlers.UU_SCANNER, syncId, playerInventory, be, 166, 8, 43);
+		this.addSlot(new SlotInvSlot(be.inputSlot, 0, 55, 35));
+		this.addSlot(new SlotInvSlot(be.diskSlot, 0, 152, 65));
+	}
+
+	@Override
+	public List<String> getNetworkedFields()
+	{
+		List<String> ret = super.getNetworkedFields();
+		ret.add("state");
+		ret.add("progress");
+		ret.add("patternEu");
+		ret.add("patternUu");
+		return ret;
+	}
+}

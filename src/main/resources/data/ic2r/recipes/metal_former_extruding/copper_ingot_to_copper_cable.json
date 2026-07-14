@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:metal_former_extruding",
+  "ingredient": {
+    "item": "minecraft:copper_ingot"
+  },
+  "result": {
+    "item": "ic2r:copper_cable",
+    "count": 3
+  }
+}

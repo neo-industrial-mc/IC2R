@@ -1,0 +1,14 @@
+{
+  "type": "ic2r:canner_enrich",
+  "input_ingredient": {
+    "fluid": "minecraft:water",
+    "amount": 1000
+  },
+  "additive_ingredient": {
+    "item": "ic2r:bio_chaff"
+  },
+  "result": {
+    "fluid": "ic2r:biomass",
+    "amount": 1000
+  }
+}

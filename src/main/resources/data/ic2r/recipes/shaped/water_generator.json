@@ -1,0 +1,23 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "SPS",
+    "PGP",
+    "SPS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "G": {
+      "item": "ic2r:generator"
+    }
+  },
+  "result": {
+    "item": "ic2r:water_generator",
+    "count": 2
+  }
+}

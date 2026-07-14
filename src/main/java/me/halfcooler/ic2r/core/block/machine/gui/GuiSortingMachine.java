@@ -1,0 +1,64 @@
+package me.halfcooler.ic2r.core.block.machine.gui;
+
+import me.halfcooler.ic2r.core.Ic2rGui;
+import me.halfcooler.ic2r.core.block.machine.container.ContainerSortingMachine;
+import me.halfcooler.ic2r.core.gui.CustomButton;
+import me.halfcooler.ic2r.core.gui.EnergyGauge;
+import me.halfcooler.ic2r.core.gui.FixedSizeOverlaySupplier;
+import me.halfcooler.ic2r.core.gui.Image;
+import me.halfcooler.ic2r.core.util.StackUtil;
+import me.halfcooler.ic2r.core.util.Util;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+
+public class GuiSortingMachine extends Ic2rGui<ContainerSortingMachine>
+{
+	private static final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath("ic2r", "textures/gui/guisortingmachine.png");
+
+	public GuiSortingMachine(ContainerSortingMachine container, Inventory playerInventory, Component title)
+	{
+		super(container, playerInventory, title, 212, 243);
+		this.addElement(EnergyGauge.asBolt(this, 174, 220, container.base));
+
+		for (Direction dir : Util.ALL_DIRS)
+		{
+			final Direction cDir = dir;
+			this.addElement(Image.create(this, 60, 18 + dir.ordinal() * 20, 18, 18, texture, 256, 256, new FixedSizeOverlaySupplier(18)
+			{
+				@Override
+				public int getUS()
+				{
+					return 212;
+				}
+
+				@Override
+				public int getVS()
+				{
+					return StackUtil.ENV.getAdjacentInventory(container.base, cDir) != null ? 15 : 33;
+				}
+			}));
+			this.addElement(new CustomButton(this, 42, 18 + dir.ordinal() * 20, 18, 18, new FixedSizeOverlaySupplier(18)
+			{
+				@Override
+				public int getUS()
+				{
+					return 230;
+				}
+
+				@Override
+				public int getVS()
+				{
+					return container.base.defaultRoute != cDir ? 15 : 33;
+				}
+			}, texture, this.createEventSender(dir.ordinal())).withTooltip(() -> container.base.defaultRoute != cDir ? "ic2r.SortingMachine.whitelist" : "ic2r.SortingMachine.default"));
+		}
+	}
+
+	@Override
+	protected ResourceLocation getTextureLocation()
+	{
+		return texture;
+	}
+}

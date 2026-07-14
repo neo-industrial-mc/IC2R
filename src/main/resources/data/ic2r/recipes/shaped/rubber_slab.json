@@ -1,0 +1,15 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "ic2r:rubber_planks"
+    }
+  },
+  "result": {
+    "item": "ic2r:rubber_slab",
+    "count": 6
+  }
+}

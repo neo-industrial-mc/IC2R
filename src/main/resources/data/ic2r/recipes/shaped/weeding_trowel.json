@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "A A",
+    " A ",
+    "BAB"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "ic2r:rubber"
+    }
+  },
+  "result": {
+    "item": "ic2r:weeding_trowel"
+  }
+}

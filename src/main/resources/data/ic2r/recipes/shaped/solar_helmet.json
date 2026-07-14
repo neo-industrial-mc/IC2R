@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "III",
+    "ISI",
+    "CCC"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "S": {
+      "item": "ic2r:solar_generator"
+    },
+    "C": {
+      "item": "ic2r:insulated_copper_cable"
+    }
+  },
+  "result": {
+    "item": "ic2r:solar_helmet"
+  }
+}

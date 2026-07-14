@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " A ",
+    "BCB",
+    "B B"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "B": {
+      "item": "ic2r:insulated_copper_cable"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:meter"
+  }
+}

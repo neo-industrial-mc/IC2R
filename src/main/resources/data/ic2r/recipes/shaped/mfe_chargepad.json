@@ -1,0 +1,24 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CPC",
+    "RBR"
+  ],
+  "key": {
+    "B": {
+      "item": "ic2r:mfe"
+    },
+    "R": {
+      "item": "ic2r:rubber"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    },
+    "P": {
+      "item": "minecraft:stone_pressure_plate"
+    }
+  },
+  "result": {
+    "item": "ic2r:mfe_chargepad"
+  }
+}

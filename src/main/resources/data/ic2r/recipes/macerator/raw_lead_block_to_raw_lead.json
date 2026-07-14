@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:raw_lead_block"
+  },
+  "result": {
+    "item": "ic2r:raw_lead",
+    "count": 9
+  }
+}

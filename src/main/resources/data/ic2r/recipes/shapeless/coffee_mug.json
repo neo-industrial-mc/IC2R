@@ -1,0 +1,17 @@
+{
+  "type": "ic2r:shapeless",
+  "ingredients": [
+    {
+      "item": "ic2r:dark_coffee_mug"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:milk_bucket"
+    }
+  ],
+  "result": {
+    "item": "ic2r:coffee_mug"
+  }
+}

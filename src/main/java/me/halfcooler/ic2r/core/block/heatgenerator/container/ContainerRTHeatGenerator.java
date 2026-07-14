@@ -1,0 +1,37 @@
+package me.halfcooler.ic2r.core.block.heatgenerator.container;
+
+import me.halfcooler.ic2r.core.ContainerFullInv;
+import me.halfcooler.ic2r.core.block.heatgenerator.tileentity.TileEntityRTHeatGenerator;
+import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
+import me.halfcooler.ic2r.core.slot.SlotInvSlot;
+
+import java.util.List;
+
+import net.minecraft.world.entity.player.Inventory;
+
+public class ContainerRTHeatGenerator extends ContainerFullInv<TileEntityRTHeatGenerator>
+{
+	public ContainerRTHeatGenerator(int syncId, Inventory playerInventory, TileEntityRTHeatGenerator be)
+	{
+		super(Ic2rScreenHandlers.RT_HEAT_GENERATOR, syncId, playerInventory, be, 166);
+
+		for (int i = 0; i < 3; i++)
+		{
+			this.addSlot(new SlotInvSlot(be.fuelSlot, i, 62 + i * 18, 27));
+		}
+
+		for (int i = 3; i < 6; i++)
+		{
+			this.addSlot(new SlotInvSlot(be.fuelSlot, i, 62 + (i - 3) * 18, 45));
+		}
+	}
+
+	@Override
+	public List<String> getNetworkedFields()
+	{
+		List<String> ret = super.getNetworkedFields();
+		ret.add("transmitHeat");
+		ret.add("maxHeatEmitpeerTick");
+		return ret;
+	}
+}

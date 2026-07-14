@@ -1,0 +1,26 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "ICI",
+    "IFI",
+    "R R"
+  ],
+  "key": {
+    "I": {
+      "item": "ic2r:iron_casing"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    },
+    "F": {
+      "item": "ic2r:facade_cell"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:jetpack"
+  }
+}

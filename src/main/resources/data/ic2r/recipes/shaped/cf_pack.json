@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "C C"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:foam_sprayer"
+    },
+    "B": {
+      "item": "ic2r:circuit"
+    },
+    "C": {
+      "item": "ic2r:facade_cell"
+    },
+    "D": {
+      "item": "ic2r:iron_casing"
+    }
+  },
+  "result": {
+    "item": "ic2r:cf_pack"
+  }
+}

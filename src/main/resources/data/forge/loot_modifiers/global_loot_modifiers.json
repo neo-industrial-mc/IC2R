@@ -1,6 +1,6 @@
 {
   "replace": false,
   "entries": [
-    "ic2:inject"
+    "ic2r:inject"
   ]
 }

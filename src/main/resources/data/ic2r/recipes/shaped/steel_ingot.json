@@ -1,0 +1,15 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "B"
+  ],
+  "key": {
+    "B": {
+      "item": "ic2r:steel_block"
+    }
+  },
+  "result": {
+    "item": "ic2r:steel_ingot",
+    "count": 9
+  }
+}

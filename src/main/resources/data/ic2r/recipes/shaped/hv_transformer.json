@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " c ",
+    "CEB",
+    " c "
+  ],
+  "key": {
+    "E": {
+      "item": "ic2r:mv_transformer"
+    },
+    "c": {
+      "item": "ic2r:double_insulated_gold_cable"
+    },
+    "B": {
+      "item": "ic2r:advanced_re_battery"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:hv_transformer"
+  }
+}

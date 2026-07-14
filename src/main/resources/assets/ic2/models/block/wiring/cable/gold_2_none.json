@@ -1,7 +1,0 @@
-{
-  "loader": "ic2:cable",
-  "type": "gold",
-  "insulation": 2,
-  "foam": "none",
-  "active": false
-}

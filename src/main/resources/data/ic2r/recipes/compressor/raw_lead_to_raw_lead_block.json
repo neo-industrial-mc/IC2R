@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "item": "ic2r:raw_lead",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:raw_lead_block"
+  }
+}

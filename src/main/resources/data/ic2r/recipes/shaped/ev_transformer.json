@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " c ",
+    "CED",
+    " c "
+  ],
+  "key": {
+    "E": {
+      "item": "ic2r:hv_transformer"
+    },
+    "c": {
+      "item": "ic2r:triple_insulated_iron_cable"
+    },
+    "D": {
+      "item": "ic2r:lapotron_crystal"
+    },
+    "C": {
+      "item": "ic2r:advanced_circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:ev_transformer"
+  }
+}

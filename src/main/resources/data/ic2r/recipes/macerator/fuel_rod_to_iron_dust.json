@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:fuel_rod"
+  },
+  "result": {
+    "item": "ic2r:iron_dust"
+  }
+}

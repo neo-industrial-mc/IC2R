@@ -1,0 +1,14 @@
+package me.halfcooler.ic2r.api.item;
+
+import net.minecraft.world.item.ItemStack;
+
+public interface IElectricItem
+{
+	boolean canProvideEnergy(ItemStack var1);
+
+	double getMaxCharge(ItemStack var1);
+
+	int getTier(ItemStack var1);
+
+	double getTransferLimit(ItemStack var1);
+}

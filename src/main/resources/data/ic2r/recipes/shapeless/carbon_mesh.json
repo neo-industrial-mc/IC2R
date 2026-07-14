@@ -1,0 +1,14 @@
+{
+  "type": "ic2r:shapeless",
+  "ingredients": [
+    {
+      "item": "ic2r:carbon_fibre"
+    },
+    {
+      "item": "ic2r:carbon_fibre"
+    }
+  ],
+  "result": {
+    "item": "ic2r:carbon_mesh"
+  }
+}

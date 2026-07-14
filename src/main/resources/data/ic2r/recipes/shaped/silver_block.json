@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "MMM",
+    "MMM",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "tag": "forge:ingots/silver"
+    }
+  },
+  "result": {
+    "item": "ic2r:silver_block"
+  }
+}

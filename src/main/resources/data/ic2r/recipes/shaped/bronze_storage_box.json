@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PCP",
+    "C C",
+    "PCP"
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:plates/bronze"
+    },
+    "C": {
+      "item": "ic2r:bronze_casing"
+    }
+  },
+  "result": {
+    "item": "ic2r:bronze_storage_box"
+  }
+}

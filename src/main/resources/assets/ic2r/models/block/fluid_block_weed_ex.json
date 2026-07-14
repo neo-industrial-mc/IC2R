@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "ic2r:block/fluid/weed_ex_still"
+  }
+}

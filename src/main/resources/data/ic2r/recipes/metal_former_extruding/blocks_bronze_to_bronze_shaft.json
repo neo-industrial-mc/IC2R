@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:metal_former_extruding",
+  "ingredient": {
+    "tag": "forge:blocks/bronze"
+  },
+  "result": {
+    "item": "ic2r:bronze_shaft"
+  }
+}

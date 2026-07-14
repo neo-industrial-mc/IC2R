@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "AAB",
+    "CCD",
+    " CC"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:redstone"
+    },
+    "B": {
+      "item": "ic2r:energy_crystal"
+    },
+    "C": {
+      "item": "ic2r:alloy"
+    },
+    "D": {
+      "item": "ic2r:advanced_circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:mining_laser"
+  }
+}

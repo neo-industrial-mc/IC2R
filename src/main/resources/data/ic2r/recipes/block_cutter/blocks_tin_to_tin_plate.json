@@ -1,0 +1,11 @@
+{
+  "type": "ic2r:block_cutter",
+  "ingredient": {
+    "tag": "forge:blocks/tin"
+  },
+  "result": {
+    "item": "ic2r:tin_plate",
+    "count": 9
+  },
+  "hardness": 2
+}

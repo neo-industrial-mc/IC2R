@@ -1,0 +1,20 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "I I",
+    "I I",
+    "ITI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:plates/iron"
+    },
+    "T": {
+      "item": "ic2r:treetap"
+    }
+  },
+  "result": {
+    "item": "ic2r:mining_pipe",
+    "count": 16
+  }
+}

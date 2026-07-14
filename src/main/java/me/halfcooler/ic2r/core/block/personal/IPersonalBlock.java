@@ -1,0 +1,15 @@
+package me.halfcooler.ic2r.core.block.personal;
+
+import com.mojang.authlib.GameProfile;
+import net.minecraft.world.Container;
+
+public interface IPersonalBlock
+{
+	boolean permitsAccess(GameProfile var1);
+
+	Container getPrivilegedInventory(GameProfile var1);
+
+	GameProfile getOwner();
+
+	void setOwner(GameProfile var1);
+}

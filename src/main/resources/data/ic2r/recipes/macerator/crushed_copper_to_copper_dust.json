@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:crushed_copper"
+  },
+  "result": {
+    "item": "ic2r:copper_dust"
+  }
+}

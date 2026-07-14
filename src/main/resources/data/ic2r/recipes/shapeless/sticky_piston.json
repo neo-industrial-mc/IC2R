@@ -1,0 +1,15 @@
+{
+  "type": "ic2r:shapeless",
+  "hidden": true,
+  "ingredients": [
+    {
+      "item": "minecraft:piston"
+    },
+    {
+      "item": "ic2r:resin"
+    }
+  ],
+  "result": {
+    "item": "minecraft:sticky_piston"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:weed",
+    "count": 32
+  },
+  "result": {
+    "item": "ic2r:bio_chaff"
+  }
+}

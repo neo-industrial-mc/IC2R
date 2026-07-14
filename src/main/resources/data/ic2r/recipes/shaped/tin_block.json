@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "MMM",
+    "MMM",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "tag": "forge:ingots/tin"
+    }
+  },
+  "result": {
+    "item": "ic2r:tin_block"
+  }
+}

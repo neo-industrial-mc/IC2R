@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "MMM",
+    "MMM",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "tag": "forge:raw_materials/lead"
+    }
+  },
+  "result": {
+    "item": "ic2r:raw_lead_block"
+  }
+}

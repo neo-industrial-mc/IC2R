@@ -1,0 +1,60 @@
+package me.halfcooler.ic2r.core.ref;
+
+import java.util.function.Supplier;
+
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.NotNull;
+
+public enum Ic2rToolMaterials implements Tier
+{
+	BRONZE(2, 350, 6.0F, 2.0F, () -> Ingredient.of(Ic2rItems.BRONZE_INGOT)),
+	CHAINSAW(3, 250, 12.0F, 9.0F, Ingredient::of);
+
+	private final int miningLevel;
+	private final int itemDurability;
+	private final float miningSpeed;
+	private final float attackDamage;
+	private final int enchantAbility;
+	private final Supplier<Ingredient> repairIngredient;
+
+	Ic2rToolMaterials(int miningLevel, int itemDurability, float miningSpeed, float attackDamage, Supplier<Ingredient> repairIngredient)
+	{
+		this.miningLevel = miningLevel;
+		this.itemDurability = itemDurability;
+		this.miningSpeed = miningSpeed;
+		this.attackDamage = attackDamage;
+		this.enchantAbility = 14;
+		this.repairIngredient = repairIngredient;
+	}
+
+	public int getUses()
+	{
+		return this.itemDurability;
+	}
+
+	public float getSpeed()
+	{
+		return this.miningSpeed;
+	}
+
+	public float getAttackDamageBonus()
+	{
+		return this.attackDamage;
+	}
+
+	public int getLevel()
+	{
+		return this.miningLevel;
+	}
+
+	public int getEnchantmentValue()
+	{
+		return this.enchantAbility;
+	}
+
+	public @NotNull Ingredient getRepairIngredient()
+	{
+		return this.repairIngredient.get();
+	}
+}

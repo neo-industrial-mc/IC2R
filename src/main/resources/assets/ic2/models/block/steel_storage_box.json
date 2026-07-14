@@ -1,7 +1,0 @@
-{
-  "parent": "ic2:block/storage_box",
-  "textures": {
-    "particle": "ic2:block/steel_storage_box",
-    "all": "ic2:block/steel_storage_box"
-  }
-}

@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "III",
+    "IBI",
+    "IGI"
+  ],
+  "key": {
+    "G": {
+      "item": "ic2r:heat_conductor"
+    },
+    "B": {
+      "item": "ic2r:copper_boiler"
+    },
+    "I": {
+      "item": "ic2r:iron_casing"
+    }
+  },
+  "result": {
+    "item": "ic2r:steam_generator"
+  }
+}

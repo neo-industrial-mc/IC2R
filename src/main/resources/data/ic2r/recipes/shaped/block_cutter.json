@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "C",
+    "B",
+    "M"
+  ],
+  "key": {
+    "B": {
+      "item": "ic2r:machine"
+    },
+    "M": {
+      "item": "ic2r:electric_motor"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:block_cutter"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "SSS",
+    "SAS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:stone"
+    },
+    "A": {
+      "item": "ic2r:alloy"
+    }
+  },
+  "result": {
+    "item": "ic2r:reinforced_stone"
+  }
+}

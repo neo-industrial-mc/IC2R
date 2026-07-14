@@ -1,0 +1,11 @@
+{
+  "parent": "ic2r:block/machine/fluid/steam_repressurizer",
+  "textures": {
+    "down": "ic2r:block/machine/fluid/tank_bottom",
+    "up": "ic2r:block/machine/fluid/tank_top",
+    "north": "ic2r:block/machine/fluid/tank_side",
+    "east": "ic2r:block/machine/fluid/tank_side",
+    "south": "ic2r:block/machine/fluid/tank_side",
+    "west": "ic2r:block/machine/fluid/tank_side"
+  }
+}

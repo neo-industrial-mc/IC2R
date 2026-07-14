@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/machine/processing/basic/compressor_leftrightback",
+    "down": "ic2r:block/machine/processing/basic/compressor_bottom",
+    "up": "ic2r:block/machine/processing/basic/compressor_top",
+    "north": "ic2r:block/machine/processing/basic/compressor_front_active",
+    "east": "ic2r:block/machine/processing/basic/compressor_leftrightback",
+    "south": "ic2r:block/machine/processing/basic/compressor_leftrightback",
+    "west": "ic2r:block/machine/processing/basic/compressor_leftrightback"
+  }
+}

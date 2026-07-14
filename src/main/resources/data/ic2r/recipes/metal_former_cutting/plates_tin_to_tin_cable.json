@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:metal_former_cutting",
+  "ingredient": {
+    "tag": "forge:plates/tin"
+  },
+  "result": {
+    "item": "ic2r:tin_cable",
+    "count": 3
+  }
+}

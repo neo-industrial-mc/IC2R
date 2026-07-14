@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/machine/chunk_loader_side_active",
+    "down": "ic2r:block/machine/chunk_loader_bottom",
+    "up": "ic2r:block/machine/chunk_loader_top",
+    "north": "ic2r:block/machine/chunk_loader_side_active",
+    "east": "ic2r:block/machine/chunk_loader_side_active",
+    "south": "ic2r:block/machine/chunk_loader_side_active",
+    "west": "ic2r:block/machine/chunk_loader_side_active"
+  }
+}

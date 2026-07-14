@@ -1,0 +1,23 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "UUU",
+    "UMU",
+    "CCC"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "U": {
+      "item": "ic2r:fluid_ejector_upgrade"
+    },
+    "C": {
+      "item": "ic2r:facade_cell"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:fluid_distributor"
+  }
+}

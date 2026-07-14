@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:raw_uranium_block"
+  },
+  "result": {
+    "item": "ic2r:raw_uranium",
+    "count": 9
+  }
+}

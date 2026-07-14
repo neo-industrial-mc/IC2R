@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "III",
+    "MES",
+    "III"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:generator"
+    },
+    "S": {
+      "item": "ic2r:iron_shaft"
+    },
+    "E": {
+      "item": "ic2r:electric_motor"
+    },
+    "I": {
+      "item": "ic2r:iron_casing"
+    }
+  },
+  "result": {
+    "item": "ic2r:kinetic_generator"
+  }
+}

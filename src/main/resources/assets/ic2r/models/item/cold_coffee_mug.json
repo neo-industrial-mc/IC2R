@@ -1,0 +1,6 @@
+{
+  "parent": "ic2r:item/default",
+  "textures": {
+    "layer0": "ic2r:item/brewing/mug_cold_coffee"
+  }
+}

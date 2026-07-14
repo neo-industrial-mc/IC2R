@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "item": "ic2r:coal_ball"
+  },
+  "result": {
+    "item": "ic2r:coal_block"
+  }
+}

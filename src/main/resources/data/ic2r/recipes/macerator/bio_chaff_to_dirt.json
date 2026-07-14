@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:bio_chaff"
+  },
+  "result": {
+    "item": "minecraft:dirt"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CC",
+    "CC"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:dusts/coal"
+    }
+  },
+  "result": {
+    "item": "ic2r:carbon_fibre"
+  }
+}

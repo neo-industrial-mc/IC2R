@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "SAS",
+    "SCS",
+    "SAS"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:sand"
+    },
+    "C": {
+      "item": "minecraft:clay_ball"
+    },
+    "S": {
+      "tag": "forge:dusts/stone"
+    }
+  },
+  "result": {
+    "item": "ic2r:cf_powder"
+  }
+}

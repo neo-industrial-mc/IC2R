@@ -1,0 +1,28 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CBC",
+    "MAT",
+    "CBC"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:advanced_machine"
+    },
+    "B": {
+      "item": "ic2r:miner"
+    },
+    "C": {
+      "item": "ic2r:alloy"
+    },
+    "T": {
+      "item": "ic2r:teleporter"
+    },
+    "M": {
+      "item": "ic2r:mfe"
+    }
+  },
+  "result": {
+    "item": "ic2r:advanced_miner"
+  }
+}

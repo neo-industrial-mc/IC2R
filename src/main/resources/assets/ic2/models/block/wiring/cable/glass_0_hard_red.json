@@ -1,7 +1,0 @@
-{
-  "loader": "ic2:cable",
-  "type": "glass",
-  "insulation": 0,
-  "foam": "hard_red",
-  "active": false
-}

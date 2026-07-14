@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "ABA",
+    "B B",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:circuit"
+    },
+    "B": {
+      "item": "ic2r:re_battery"
+    }
+  },
+  "result": {
+    "item": "ic2r:charging_re_battery"
+  }
+}

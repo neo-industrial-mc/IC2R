@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "tag": "forge:plates/lapis",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:dense_lapis_plate"
+  }
+}

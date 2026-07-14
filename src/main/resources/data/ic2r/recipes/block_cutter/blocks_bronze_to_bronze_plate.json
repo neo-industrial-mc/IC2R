@@ -1,0 +1,11 @@
+{
+  "type": "ic2r:block_cutter",
+  "ingredient": {
+    "tag": "forge:blocks/bronze"
+  },
+  "result": {
+    "item": "ic2r:bronze_plate",
+    "count": 9
+  },
+  "hardness": 2
+}

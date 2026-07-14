@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "RFR",
+    "RMR",
+    "RFR"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "F": {
+      "item": "ic2r:iron_fence"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    }
+  },
+  "result": {
+    "item": "ic2r:magnetizer"
+  }
+}

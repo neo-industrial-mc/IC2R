@@ -1,0 +1,122 @@
+package me.halfcooler.ic2r.core.world;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import me.halfcooler.ic2r.core.IC2R;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
+import org.jetbrains.annotations.NotNull;
+
+public final class RubberTreeFoliagePlacer extends FoliagePlacer
+{
+	public static final RubberTreeFoliagePlacer INSTANCE = new RubberTreeFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0));
+	public static final Codec<RubberTreeFoliagePlacer> CODEC = RecordCodecBuilder.create(instance ->
+		instance.group(
+			IntProvider.CODEC.fieldOf("radius").forGetter(placer -> placer.radius),
+			IntProvider.CODEC.fieldOf("offset").forGetter(placer -> placer.offset)
+		).apply(instance, RubberTreeFoliagePlacer::new)
+	);
+	public static final FoliagePlacerType<?> TYPE = registerFoliagePlacer();
+
+	RubberTreeFoliagePlacer(IntProvider radius, IntProvider offset)
+	{
+		super(radius, offset);
+	}
+
+	public static void init()
+	{
+	}
+
+	private static <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer()
+	{
+		return IC2R.envProxy.registerFoliagePlacer(IC2R.getIdentifier("rubber_tree"), (Codec<T>) RubberTreeFoliagePlacer.CODEC);
+	}
+
+	protected @NotNull FoliagePlacerType<?> type()
+	{
+		return TYPE;
+	}
+
+	protected void createFoliage(
+		@NotNull LevelSimulatedReader world,
+		@NotNull FoliageSetter replacer,
+		@NotNull RandomSource random,
+		@NotNull TreeConfiguration config,
+		int trunkHeight,
+		@NotNull FoliageAttachment treeNode,
+		int foliageHeight,
+		int radius,
+		int offset
+	)
+	{
+		int startY;
+		if (trunkHeight < 4)
+		{
+			startY = 0;
+		} else if (trunkHeight < 7)
+		{
+			startY = 2;
+		} else
+		{
+			startY = 3;
+		}
+
+		BlockPos center = treeNode.pos();
+		MutableBlockPos pos = new MutableBlockPos();
+
+		for (int y = startY; y < trunkHeight; y++)
+		{
+			for (int x = -radius; x <= radius; x++)
+			{
+				for (int z = -radius; z <= radius; z++)
+				{
+					pos.setWithOffset(center, x, y - trunkHeight, z);
+					int chance = y + 4 - trunkHeight;
+					int dx = Math.abs(x);
+					int dz = Math.abs(z);
+					if (dx <= 1 && dz <= 1 || dx <= 1 && (chance <= 1 || random.nextInt(chance) == 0) || dz <= 1 && (chance <= 1 || random.nextInt(chance) == 0)
+					)
+					{
+						FoliagePlacer.tryPlaceLeaf(world, replacer, random, config, pos);
+					}
+				}
+			}
+		}
+
+		for (int x = -1; x <= 1; x++)
+		{
+			for (int z = -1; z <= 1; z++)
+			{
+				if (x == 0 || z == 0)
+				{
+					pos.setWithOffset(center, x, 0, z);
+					FoliagePlacer.tryPlaceLeaf(world, replacer, random, config, pos);
+				}
+			}
+		}
+
+		for (int i = 0; i < foliageHeight; i++)
+		{
+			pos.setWithOffset(center, 0, i + 1, 0);
+			FoliagePlacer.tryPlaceLeaf(world, replacer, random, config, pos);
+		}
+	}
+
+	public int foliageHeight(RandomSource random, int trunkHeight, @NotNull TreeConfiguration config)
+	{
+		return 1 + trunkHeight / 4 + random.nextInt(2);
+	}
+
+	protected boolean shouldSkipLocation(@NotNull RandomSource random, int dx, int y, int dz, int radius, boolean giantTrunk)
+	{
+		return false;
+	}
+}

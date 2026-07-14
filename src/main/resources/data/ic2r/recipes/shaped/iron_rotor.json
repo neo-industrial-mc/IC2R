@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:iron_rotor_blade"
+    },
+    "B": {
+      "item": "ic2r:iron_shaft"
+    }
+  },
+  "result": {
+    "item": "ic2r:iron_rotor"
+  }
+}

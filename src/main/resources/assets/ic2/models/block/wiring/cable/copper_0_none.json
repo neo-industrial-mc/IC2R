@@ -1,7 +1,0 @@
-{
-  "loader": "ic2:cable",
-  "type": "copper",
-  "insulation": 0,
-  "foam": "none",
-  "active": false
-}

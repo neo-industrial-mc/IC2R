@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CCC",
+    "C C",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2r:copper_casing"
+    }
+  },
+  "result": {
+    "item": "ic2r:copper_boiler"
+  }
+}

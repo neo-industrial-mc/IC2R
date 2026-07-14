@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "ops": [
+                {
+                  "op": "replace",
+                  "source": "energy",
+                  "target": "energy"
+                }
+              ],
+              "source": {
+                "type": "ic2r:block_nbt"
+              }
+            }
+          ],
+          "name": "ic2r:cesu_chargepad"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

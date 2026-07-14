@@ -1,0 +1,17 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "SMS"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "S": {
+      "item": "ic2r:iron_shaft"
+    }
+  },
+  "result": {
+    "item": "ic2r:wind_kinetic_generator"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "M"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:machine"
+    }
+  },
+  "group": "iron_ingot",
+  "result": {
+    "item": "minecraft:iron_ingot",
+    "count": 8
+  }
+}

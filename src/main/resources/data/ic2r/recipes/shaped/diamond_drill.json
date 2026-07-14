@@ -1,0 +1,18 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " D ",
+    "DdD"
+  ],
+  "key": {
+    "D": {
+      "tag": "forge:gems/diamond"
+    },
+    "d": {
+      "item": "ic2r:drill"
+    }
+  },
+  "result": {
+    "item": "ic2r:diamond_drill"
+  }
+}

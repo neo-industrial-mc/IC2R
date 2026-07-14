@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:dense_bronze_plate"
+  },
+  "result": {
+    "item": "ic2r:bronze_dust",
+    "count": 9
+  }
+}

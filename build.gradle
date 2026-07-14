@@ -21,8 +21,8 @@ java {
 }
 
 mixin {
-    add sourceSets.main, "ic2.refmap.json"
-    config "ic2.mixins.json"
+    add sourceSets.main, "ic2r.refmap.json"
+    config "ic2r.mixins.json"
 }
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"

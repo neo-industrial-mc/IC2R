@@ -1,0 +1,14 @@
+{
+  "parent": "ic2r:item/default",
+  "textures": {
+    "layer0": "ic2r:item/cell/facade_cell"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ic2r:has_fluid": 1
+      },
+      "model": "ic2r:item/fluid_cell_tinted"
+    }
+  ]
+}

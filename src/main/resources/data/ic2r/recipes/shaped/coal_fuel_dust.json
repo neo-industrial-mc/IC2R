@@ -1,0 +1,21 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CCC",
+    "CWC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:dusts/coal"
+    },
+    "W": {
+      "fluid": "minecraft:water",
+      "amount": 1000
+    }
+  },
+  "result": {
+    "item": "ic2r:coal_fuel_dust",
+    "count": 8
+  }
+}

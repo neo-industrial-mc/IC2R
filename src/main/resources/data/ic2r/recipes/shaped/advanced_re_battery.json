@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CTC",
+    "TST",
+    "TLT"
+  ],
+  "key": {
+    "T": {
+      "item": "ic2r:bronze_casing"
+    },
+    "S": {
+      "tag": "forge:dusts/sulfur"
+    },
+    "L": {
+      "tag": "forge:dusts/lead"
+    },
+    "C": {
+      "item": "ic2r:insulated_copper_cable"
+    }
+  },
+  "result": {
+    "item": "ic2r:advanced_re_battery"
+  }
+}

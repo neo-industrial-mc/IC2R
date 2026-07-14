@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "TCT",
+    "TcT",
+    "TCT"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2r:triple_reactor_coolant_cell"
+    },
+    "T": {
+      "tag": "forge:plates/tin"
+    },
+    "c": {
+      "tag": "forge:plates/iron"
+    }
+  },
+  "result": {
+    "item": "ic2r:sextuple_reactor_coolant_cell"
+  }
+}

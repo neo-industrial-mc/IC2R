@@ -1,0 +1,21 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " C ",
+    "RFR"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2r:circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "F": {
+      "item": "ic2r:iron_furnace"
+    }
+  },
+  "result": {
+    "item": "ic2r:electric_furnace"
+  }
+}

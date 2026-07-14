@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " C ",
+    "TRT",
+    "TRT"
+  ],
+  "key": {
+    "T": {
+      "item": "ic2r:tin_casing"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "ic2r:insulated_tin_cable"
+    }
+  },
+  "result": {
+    "item": "ic2r:re_battery"
+  }
+}

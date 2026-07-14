@@ -1,0 +1,42 @@
+package me.halfcooler.ic2r.core.block.machine.container;
+
+import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityAdvMiner;
+import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
+import me.halfcooler.ic2r.core.slot.SlotInvSlot;
+
+import java.util.List;
+
+import net.minecraft.world.entity.player.Inventory;
+
+public class ContainerAdvMiner extends ContainerElectricMachine<TileEntityAdvMiner>
+{
+	public ContainerAdvMiner(int syncId, Inventory playerInventory, TileEntityAdvMiner be)
+	{
+		super(Ic2rScreenHandlers.ADVANCED_MINER, syncId, playerInventory, be, 203, 8, 80);
+		this.addSlot(new SlotInvSlot(be.scannerSlot, 0, 8, 26));
+		this.addSlot(new SlotInvSlot(be.cardSlot, 0, 152, 8));
+
+		for (int i = 0; i < 4; i++)
+		{
+			this.addSlot(new SlotInvSlot(be.upgradeSlot, i, 152, 26 + i * 18));
+		}
+
+		for (int row = 0; row < 3; row++)
+		{
+			for (int col = 0; col < 5; col++)
+			{
+				this.addSlot(new SlotInvSlot(be.filterSlot, col + row * 5, 36 + col * 18, 44 + row * 18));
+			}
+		}
+	}
+
+	@Override
+	public List<String> getNetworkedFields()
+	{
+		List<String> ret = super.getNetworkedFields();
+		ret.add("mineTarget");
+		ret.add("blacklist");
+		ret.add("silkTouch");
+		return ret;
+	}
+}

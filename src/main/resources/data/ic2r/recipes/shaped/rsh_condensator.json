@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "RRR",
+    "RVR",
+    "RSR"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "V": {
+      "item": "ic2r:heat_vent"
+    },
+    "S": {
+      "item": "ic2r:heat_exchanger"
+    }
+  },
+  "result": {
+    "item": "ic2r:rsh_condensator"
+  }
+}

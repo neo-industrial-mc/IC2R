@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ic2r:block/generator/reactor/reactor_redstone_port"
+    }
+  }
+}

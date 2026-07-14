@@ -1,0 +1,28 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "MLM",
+    "InI",
+    "G G"
+  ],
+  "key": {
+    "n": {
+      "item": "ic2r:nano_leggings"
+    },
+    "I": {
+      "item": "ic2r:iridium"
+    },
+    "L": {
+      "item": "ic2r:lapotron_crystal"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    }
+  },
+  "result": {
+    "item": "ic2r:quantum_leggings"
+  }
+}

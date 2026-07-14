@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "tag": "forge:plates/tin"
+  },
+  "result": {
+    "item": "ic2r:tin_dust"
+  }
+}

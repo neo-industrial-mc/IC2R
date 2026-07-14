@@ -1,0 +1,11 @@
+{
+  "type": "ic2r:block_cutter",
+  "ingredient": {
+    "tag": "forge:blocks/steel"
+  },
+  "result": {
+    "item": "ic2r:steel_plate",
+    "count": 9
+  },
+  "hardness": 8
+}

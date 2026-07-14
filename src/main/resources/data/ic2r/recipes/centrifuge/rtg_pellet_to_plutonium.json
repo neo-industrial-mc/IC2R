@@ -1,0 +1,17 @@
+{
+  "type": "ic2r:centrifuge",
+  "ingredient": {
+    "item": "ic2r:rtg_pellet"
+  },
+  "result": [
+    {
+      "item": "ic2r:plutonium",
+      "count": 3
+    },
+    {
+      "item": "ic2r:iron_dust",
+      "count": 54
+    }
+  ],
+  "minHeat": 5000
+}

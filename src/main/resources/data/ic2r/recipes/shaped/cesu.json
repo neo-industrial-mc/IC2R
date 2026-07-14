@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PCP",
+    "BBB",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:plates/bronze"
+    },
+    "C": {
+      "item": "ic2r:insulated_copper_cable"
+    },
+    "B": {
+      "item": "ic2r:advanced_re_battery"
+    }
+  },
+  "result": {
+    "item": "ic2r:cesu"
+  }
+}

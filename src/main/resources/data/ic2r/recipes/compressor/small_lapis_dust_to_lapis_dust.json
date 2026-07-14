@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "item": "ic2r:small_lapis_dust",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:lapis_dust"
+  }
+}

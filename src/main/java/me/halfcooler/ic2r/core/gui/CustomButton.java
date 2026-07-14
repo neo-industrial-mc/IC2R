@@ -1,0 +1,58 @@
+package me.halfcooler.ic2r.core.gui;
+
+import net.minecraft.client.gui.GuiGraphics;
+import me.halfcooler.ic2r.core.Ic2rGui;
+import net.minecraft.resources.ResourceLocation;
+
+public class CustomButton extends Button<CustomButton>
+{
+	private final ResourceLocation texture;
+	private final IOverlaySupplier overlaySupplier;
+
+	public CustomButton(Ic2rGui<?> gui, int x, int y, int width, int height, IClickHandler handler)
+	{
+		this(gui, x, y, width, height, 0, 0, null, handler);
+	}
+
+	public CustomButton(Ic2rGui<?> gui, int x, int y, int width, int height, int overlayX, int overlayY, ResourceLocation texture, IClickHandler handler)
+	{
+		this(gui, x, y, width, height, new OverlaySupplier(overlayX, overlayY, overlayX + width, overlayY + height), texture, handler);
+	}
+
+	public CustomButton(Ic2rGui<?> gui, int x, int y, int width, int height, IOverlaySupplier overlaySupplier, ResourceLocation texture, IClickHandler handler)
+	{
+		super(gui, x, y, width, height, handler);
+		this.texture = texture;
+		this.overlaySupplier = overlaySupplier;
+	}
+
+	@Override
+	public void drawBackground(GuiGraphics guiGraphics, int mouseX, int mouseY)
+	{
+		if (this.texture != null)
+		{
+			bindTexture(this.texture);
+			double scale = 0.00390625;
+			this.gui
+				.drawTexturedRect(
+					guiGraphics.pose(),
+					this.x,
+					this.y,
+					this.width,
+					this.height,
+					this.overlaySupplier.getUS() * scale,
+					this.overlaySupplier.getVS() * scale,
+					this.overlaySupplier.getUE() * scale,
+					this.overlaySupplier.getVE() * scale,
+					false
+				);
+		}
+
+		if (this.contains(mouseX, mouseY))
+		{
+			this.gui.drawColoredRect(guiGraphics.pose(), this.x, this.y, this.width, this.height, -2130706433);
+		}
+
+		super.drawBackground(guiGraphics, mouseX, mouseY);
+	}
+}

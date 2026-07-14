@@ -1,0 +1,23 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "ICI",
+    "CGC",
+    "ICI"
+  ],
+  "key": {
+    "G": {
+      "item": "ic2r:heat_conductor"
+    },
+    "C": {
+      "item": "ic2r:facade_cell"
+    },
+    "I": {
+      "item": "ic2r:iron_casing"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:fluid_heat_generator"
+  }
+}

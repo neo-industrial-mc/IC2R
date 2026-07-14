@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "tag": "forge:plates/tin",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:dense_tin_plate"
+  }
+}

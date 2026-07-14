@@ -1,0 +1,18 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "A",
+    "B"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:insulated_copper_cable"
+    },
+    "B": {
+      "item": "ic2r:circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:frequency_transmitter"
+  }
+}

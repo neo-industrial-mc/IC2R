@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "item": "ic2r:small_silver_dust",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:silver_dust"
+  }
+}

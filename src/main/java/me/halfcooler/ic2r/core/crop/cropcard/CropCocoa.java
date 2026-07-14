@@ -1,0 +1,72 @@
+package me.halfcooler.ic2r.core.crop.cropcard;
+
+import me.halfcooler.ic2r.api.crops.CropProperties;
+import me.halfcooler.ic2r.api.crops.ICropTile;
+import me.halfcooler.ic2r.api.crops.ICropType;
+import me.halfcooler.ic2r.core.crop.Ic2rCropCard;
+import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+
+public class CropCocoa extends Ic2rCropCard
+{
+	public CropCocoa(ICropType cropType)
+	{
+		super(cropType);
+	}
+
+	@Override
+	public Block getCropBlock()
+	{
+		return Ic2rBlocks.COCOA_CROP;
+	}
+
+	@Override
+	public String getDiscoveredBy()
+	{
+		return "Notch";
+	}
+
+	@Override
+	public CropProperties getProperties()
+	{
+		return new CropProperties(3, 1, 3, 0, 4, 0);
+	}
+
+	@Override
+	public String[] getAttributes()
+	{
+		return new String[] { "Brown", "Food", "Stem" };
+	}
+
+	@Override
+	public boolean canGrow(ICropTile crop)
+	{
+		return crop.getCurrentAge() <= this.getMaxAge() - 1 && crop.getStorageNutrients() >= 3;
+	}
+
+	@Override
+	public int getWeightInfluences(ICropTile crop, int humidity, int nutrients, int air)
+	{
+		return (int) (humidity * 0.8 + nutrients * 1.3 + air * 0.9);
+	}
+
+	@Override
+	public ItemStack getGain(ICropTile crop)
+	{
+		return new ItemStack(Items.COCOA_BEANS);
+	}
+
+	@Override
+	public int getGrowthDuration(ICropTile crop)
+	{
+		return crop.getCurrentAge() == this.getMaxAge() - 1 ? 900 : 400;
+	}
+
+	@Override
+	public int getAgeAfterHarvest(ICropTile crop)
+	{
+		return this.getMaxAge() - 1;
+	}
+}

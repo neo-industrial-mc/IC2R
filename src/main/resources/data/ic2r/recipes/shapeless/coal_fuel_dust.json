@@ -1,0 +1,15 @@
+{
+  "type": "ic2r:shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:dusts/coal"
+    },
+    {
+      "fluid": "minecraft:water",
+      "amount": 1000
+    }
+  ],
+  "result": {
+    "item": "ic2r:coal_fuel_dust"
+  }
+}

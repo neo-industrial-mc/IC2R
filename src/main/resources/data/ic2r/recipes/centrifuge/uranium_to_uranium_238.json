@@ -1,0 +1,18 @@
+{
+  "type": "ic2r:centrifuge",
+  "ingredient": {
+    "item": "ic2r:uranium",
+    "count": 20
+  },
+  "result": [
+    {
+      "item": "ic2r:uranium_238",
+      "count": 112
+    },
+    {
+      "item": "ic2r:uranium_235",
+      "count": 7
+    }
+  ],
+  "minHeat": 4000
+}

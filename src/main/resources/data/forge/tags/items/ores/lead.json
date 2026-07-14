@@ -1,6 +1,6 @@
 {
   "values": [
-    "ic2:lead_ore",
-    "ic2:deepslate_lead_ore"
+    "ic2r:lead_ore",
+    "ic2r:deepslate_lead_ore"
   ]
 }

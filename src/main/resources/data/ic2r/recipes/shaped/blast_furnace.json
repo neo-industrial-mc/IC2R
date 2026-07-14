@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "III",
+    "IBI",
+    "IGI"
+  ],
+  "key": {
+    "G": {
+      "item": "ic2r:heat_conductor"
+    },
+    "B": {
+      "item": "ic2r:machine"
+    },
+    "I": {
+      "item": "ic2r:iron_casing"
+    }
+  },
+  "result": {
+    "item": "ic2r:blast_furnace"
+  }
+}

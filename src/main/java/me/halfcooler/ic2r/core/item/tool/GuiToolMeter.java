@@ -1,0 +1,112 @@
+package me.halfcooler.ic2r.core.item.tool;
+
+import net.minecraft.client.gui.GuiGraphics;
+import me.halfcooler.ic2r.core.Ic2rGui;
+import me.halfcooler.ic2r.core.gui.CustomButton;
+import me.halfcooler.ic2r.core.gui.IClickHandler;
+import me.halfcooler.ic2r.core.util.Util;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+
+public class GuiToolMeter extends Ic2rGui<ContainerMeter>
+{
+	public GuiToolMeter(ContainerMeter container, Inventory playerInventory, Component title)
+	{
+		super(container, playerInventory, title, 217);
+		this.addElement(new CustomButton(this, 112, 55, 20, 20, this.createModeSetter(ContainerMeter.Mode.EnergyIn)).withTooltip("ic2r.meter.mode.switch\nic2.meter.mode.EnergyIn"));
+		this.addElement(new CustomButton(this, 132, 55, 20, 20, this.createModeSetter(ContainerMeter.Mode.EnergyOut)).withTooltip("ic2r.meter.mode.switch\nic2.meter.mode.EnergyOut"));
+		this.addElement(new CustomButton(this, 112, 75, 20, 20, this.createModeSetter(ContainerMeter.Mode.EnergyGain)).withTooltip("ic2r.meter.mode.switch\nic2.meter.mode.EnergyGain"));
+		this.addElement(new CustomButton(this, 132, 75, 20, 20, this.createModeSetter(ContainerMeter.Mode.Voltage)).withTooltip("ic2r.meter.mode.switch\nic2.meter.mode.Voltage"));
+		this.addElement(new CustomButton(this, 152, 65, 20, 20, this.createModeSetter(ContainerMeter.Mode.Amperage)).withTooltip("ic2r.meter.mode.switch\nic2.meter.mode.Amperage"));
+	}
+
+	private IClickHandler createModeSetter(ContainerMeter.Mode mode)
+	{
+		return button -> this.getContainer().setMode(mode);
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
+	{
+		int xMin = (this.width - this.imageWidth) / 2;
+		int yMin = (this.height - this.imageHeight) / 2;
+		int x = (int) (mouseX - xMin);
+		int y = (int) (mouseY - yMin);
+		if (x >= 26 && y >= 111 && x <= 83 && y <= 123)
+		{
+			this.getContainer().reset();
+		}
+
+		return super.mouseClicked(mouseX, mouseY, mouseButton);
+	}
+
+	@Override
+	protected void drawForegroundLayer(GuiGraphics guiGraphics, int mouseX, int mouseY)
+	{
+		super.drawForegroundLayer(guiGraphics, mouseX, mouseY);
+		ContainerMeter container = this.getContainer();
+		String unit = switch (container.getMode())
+		{
+			case Voltage -> Component.translatable("ic2r.generic.text.v").getString();
+			case Amperage -> Component.translatable("ic2r.generic.text.a").getString();
+			default -> Component.translatable("ic2r.generic.text.EUt").getString();
+		};
+		this.drawString(guiGraphics, 115, 43, Component.translatable("ic2r.meter.mode").getString(), 2157374);
+		this.drawString(guiGraphics, 15, 42, Component.translatable("ic2r.meter.avg").getString(), 2157374);
+		this.drawString(guiGraphics, 15, 52, Util.toSiString(container.getResultAvg(), 6) + unit, 2157374);
+		this.drawString(guiGraphics, 15, 66, Component.translatable("ic2r.meter.max/min").getString(), 2157374);
+		this.drawString(guiGraphics, 15, 76, Util.toSiString(container.getResultMax(), 6) + unit, 2157374);
+		this.drawString(guiGraphics, 15, 86, Util.toSiString(container.getResultMin(), 6) + unit, 2157374);
+		this.drawString(guiGraphics, 15, 100, Component.translatable("ic2r.meter.cycle", container.getResultCount() / 20).getString(), 2157374);
+		this.drawString(guiGraphics, 39, 114, Component.translatable("ic2r.meter.mode.reset").getString(), 2157374);
+		switch (container.getMode())
+		{
+			case EnergyIn:
+				this.drawString(guiGraphics, 105, 1236, Component.translatable("ic2r.meter.mode.EnergyIn").getString(), 2157374);
+				break;
+			case EnergyOut:
+				this.drawString(guiGraphics, 105, 1236, Component.translatable("ic2r.meter.mode.EnergyOut").getString(), 2157374);
+				break;
+			case EnergyGain:
+				this.drawString(guiGraphics, 105, 1236, Component.translatable("ic2r.meter.mode.EnergyGain").getString(), 2157374);
+				break;
+			case Voltage:
+				this.drawString(guiGraphics, 105, 1236, Component.translatable("ic2r.meter.mode.Voltage").getString(), 2157374);
+				break;
+			case Amperage:
+				this.drawString(guiGraphics, 105, 1236, Component.translatable("ic2r.meter.mode.Amperage").getString(), 2157374);
+		}
+	}
+
+	@Override
+	protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY)
+	{
+		super.renderBg(guiGraphics, delta, mouseX, mouseY);
+		this.bindTexture();
+		ContainerMeter container = this.getContainer();
+		switch (container.getMode())
+		{
+			case EnergyIn:
+				this.drawTexturedRect(guiGraphics.pose(), 112.0, 55.0, 40.0, 40.0, 176.0, 0.0);
+				break;
+			case EnergyOut:
+				this.drawTexturedRect(guiGraphics.pose(), 112.0, 55.0, 40.0, 40.0, 176.0, 40.0);
+				break;
+			case EnergyGain:
+				this.drawTexturedRect(guiGraphics.pose(), 112.0, 55.0, 40.0, 40.0, 176.0, 120.0);
+				break;
+			case Voltage:
+				this.drawTexturedRect(guiGraphics.pose(), 112.0, 55.0, 40.0, 40.0, 176.0, 80.0);
+				break;
+			case Amperage:
+				this.drawTexturedRect(guiGraphics.pose(), 152.0, 65.0, 20.0, 20.0, 176.0, 80.0);
+		}
+	}
+
+	@Override
+	protected ResourceLocation getTextureLocation()
+	{
+		return ResourceLocation.fromNamespaceAndPath("ic2r", "textures/gui/guitooleumeter.png");
+	}
+}

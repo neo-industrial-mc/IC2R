@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:plant_ball"
+  },
+  "result": {
+    "item": "ic2r:bio_chaff"
+  }
+}

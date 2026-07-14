@@ -1,0 +1,12 @@
+{
+  "type": "ic2r:shapeless",
+  "ingredients": [
+    {
+      "tag": "ic2r:rubber_logs"
+    }
+  ],
+  "result": {
+    "item": "ic2r:rubber_planks",
+    "count": 4
+  }
+}

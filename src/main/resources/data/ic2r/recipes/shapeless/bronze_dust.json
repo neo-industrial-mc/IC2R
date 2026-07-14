@@ -1,0 +1,53 @@
+{
+  "type": "ic2r:shapeless",
+  "ingredients": [
+    [
+      {
+        "tag": "forge:dusts/tin"
+      },
+      {
+        "item": "ic2r:crushed_tin"
+      },
+      {
+        "item": "ic2r:purified_tin"
+      }
+    ],
+    [
+      {
+        "tag": "forge:dusts/copper"
+      },
+      {
+        "item": "ic2r:crushed_copper"
+      },
+      {
+        "item": "ic2r:purified_copper"
+      }
+    ],
+    [
+      {
+        "tag": "forge:dusts/copper"
+      },
+      {
+        "item": "ic2r:crushed_copper"
+      },
+      {
+        "item": "ic2r:purified_copper"
+      }
+    ],
+    [
+      {
+        "tag": "forge:dusts/copper"
+      },
+      {
+        "item": "ic2r:crushed_copper"
+      },
+      {
+        "item": "ic2r:purified_copper"
+      }
+    ]
+  ],
+  "result": {
+    "item": "ic2r:bronze_dust",
+    "count": 4
+  }
+}

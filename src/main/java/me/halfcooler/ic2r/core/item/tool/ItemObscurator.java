@@ -1,0 +1,407 @@
+package me.halfcooler.ic2r.core.item.tool;
+
+import me.halfcooler.ic2r.api.item.ElectricItem;
+import me.halfcooler.ic2r.api.tile.RetexturableBlock;
+import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.block.state.BlockStateUtil;
+import me.halfcooler.ic2r.core.item.BaseElectricItem;
+import me.halfcooler.ic2r.core.item.PriorityUsableItem;
+import me.halfcooler.ic2r.core.model.ModelUtil;
+import me.halfcooler.ic2r.core.network.IPlayerItemDataListener;
+import me.halfcooler.ic2r.core.proxy.ClientEnvProxy;
+import me.halfcooler.ic2r.core.proxy.SideProxyClient;
+import me.halfcooler.ic2r.core.util.StackUtil;
+import me.halfcooler.ic2r.core.util.Util;
+import me.halfcooler.ic2r.core.util.Vector3;
+
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.ModelData;
+
+public class ItemObscurator extends BaseElectricItem implements PriorityUsableItem, IPlayerItemDataListener
+{
+	private static final int[] noTint = new int[] { -1 };
+	private static final int[] zeroTint = new int[] { 0 };
+	private static final int[] defaultColorMultiplier = new int[] { 16777215 };
+	private static final int[] colorMultiplierOpaqueWhite = new int[] { -1 };
+
+	public ItemObscurator(Properties settings)
+	{
+		super(settings, 100000.0, 250.0, 2);
+	}
+
+	public static BlockState getState(CompoundTag nbt)
+	{
+		String blockName = nbt.getString("refBlock");
+		if (blockName.isEmpty())
+		{
+			return null;
+		}
+
+		Block block = Util.getBlock(blockName);
+		if (block == null)
+		{
+			return null;
+		}
+
+		String variant = getVariant(nbt);
+		return BlockStateUtil.getState(block, variant);
+	}
+
+	public static String getVariant(CompoundTag nbt)
+	{
+		return nbt.getString("refVariant");
+	}
+
+	private static void setState(CompoundTag nbt, Block block, String variant)
+	{
+		nbt.putString("refBlock", Util.getName(block).toString());
+		nbt.putString("refVariant", variant);
+	}
+
+	public static Direction getSide(CompoundTag nbt)
+	{
+		int ordinal = nbt.getByte("refSide");
+		return ordinal >= 0 && ordinal < Util.ALL_DIRS.length ? Util.ALL_DIRS[ordinal] : null;
+	}
+
+	private static void setSide(CompoundTag nbt, int side)
+	{
+		nbt.putByte("refSide", (byte) side);
+	}
+
+	public static int[] getColorMultipliers(CompoundTag nbt)
+	{
+		int[] ret = nbt.getIntArray("refColorMuls");
+		return ret.length == 0 ? null : internColorMultipliers(ret);
+	}
+
+	public static void setColorMultipliers(CompoundTag nbt, int[] colorMultipliers)
+	{
+		if (colorMultipliers.length == 0)
+		{
+			throw new IllegalArgumentException();
+		}
+
+		nbt.putIntArray("refColorMuls", colorMultipliers);
+	}
+
+	private static void clear(CompoundTag nbt)
+	{
+		nbt.remove("refBlock");
+		nbt.remove("refVariant");
+		nbt.remove("refSide");
+		nbt.remove("refColorMuls");
+	}
+
+	public static ItemObscurator.ObscuredRenderInfo getRenderInfo(BlockState state, Direction side)
+	{
+		if (ItemBlockRenderTypes.getChunkRenderType(state) == RenderType.translucent())
+		{
+			return null;
+		}
+
+		BakedModel model = ModelUtil.getBlockModel(state);
+		if (model == null)
+		{
+			return null;
+		}
+
+		RandomSource rand = RandomSource.create(42L);
+		List<BakedQuad> faceQuads = model.getQuads(state, side, rand, ModelData.EMPTY, null);
+		if (faceQuads.isEmpty())
+		{
+			return null;
+		}
+
+		float[] uvs = new float[faceQuads.size() * 4];
+		int uvsOffset = 0;
+		int[] tints = new int[faceQuads.size()];
+		TextureAtlasSprite[] sprites = new TextureAtlasSprite[faceQuads.size()];
+
+		for (BakedQuad faceQuad : faceQuads)
+		{
+			ClientEnvProxy.QuadData data = SideProxyClient.envProxy.getQuadData(faceQuad);
+			float[] positions = normalizeBlockPositions(data.positions());
+			int dx = side.getStepX();
+			int dy = side.getStepY();
+			int dz = side.getStepZ();
+			float xS = (float) (dx + 1) / 2;
+			float yS = (float) (dy + 1) / 2;
+			float zS = (float) (dz + 1) / 2;
+			int firstVertex = -1;
+
+			for (int v = 0; v < 4; v++)
+			{
+				int vo = v * 3;
+				if (Util.isSimilar(positions[vo], xS) && Util.isSimilar(positions[vo + 1], yS) && Util.isSimilar(positions[vo + 2], zS))
+				{
+					firstVertex = v;
+					break;
+				}
+			}
+
+			if (firstVertex != -1)
+			{
+				Vector3 v1 = new Vector3(positions[3] - positions[0], positions[4] - positions[1], positions[5] - positions[2]);
+				if (Util.isSimilar(v1.lengthSquared(), 1.0))
+				{
+					Vector3 v4 = new Vector3(positions[9] - positions[0], positions[10] - positions[1], positions[11] - positions[2]);
+					if (Util.isSimilar(v4.lengthSquared(), 1.0))
+					{
+						Vector3 v3 = new Vector3(positions[9] - positions[6], positions[10] - positions[7], positions[11] - positions[8]);
+						if (Util.isSimilar(v3.copy().add(v1).lengthSquared(), 0.0))
+						{
+							Vector3 normal = v1.copy().cross(v4);
+							if (Util.isSimilar(normal.copy().sub(dx, dy, dz).lengthSquared(), 0.0))
+							{
+								tints[uvsOffset / 4] = data.tint();
+								sprites[uvsOffset / 4] = data.sprite();
+								float[] uvsIn = data.uvs();
+								uvs[uvsOffset++] = uvsIn[firstVertex * 2];
+								uvs[uvsOffset++] = uvsIn[firstVertex * 2 + 1];
+								uvs[uvsOffset++] = uvsIn[(firstVertex + 2) % 4 * 2];
+								uvs[uvsOffset++] = uvsIn[(firstVertex + 2) % 4 * 2 + 1];
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (uvsOffset == 0)
+		{
+			return getRenderInfoFallback(faceQuads);
+		}
+
+		if (uvsOffset < uvs.length)
+		{
+			int quadCount = uvsOffset / 4;
+			uvs = Arrays.copyOf(uvs, uvsOffset);
+			tints = Arrays.copyOf(tints, quadCount);
+			sprites = Arrays.copyOf(sprites, quadCount);
+		}
+
+		tints = internTints(tints);
+		return new ItemObscurator.ObscuredRenderInfo(uvs, tints, sprites);
+	}
+
+	private static ItemObscurator.ObscuredRenderInfo getRenderInfoFallback(List<BakedQuad> faceQuads)
+	{
+		float[] uvs = new float[faceQuads.size() * 4];
+		int[] tints = new int[faceQuads.size()];
+		TextureAtlasSprite[] sprites = new TextureAtlasSprite[faceQuads.size()];
+
+		for (int i = 0; i < faceQuads.size(); i++)
+		{
+			ClientEnvProxy.QuadData data = SideProxyClient.envProxy.getQuadData(faceQuads.get(i));
+			float[] uvsIn = data.uvs();
+			uvs[i * 4] = uvsIn[0];
+			uvs[i * 4 + 1] = uvsIn[1];
+			uvs[i * 4 + 2] = uvsIn[4];
+			uvs[i * 4 + 3] = uvsIn[5];
+			tints[i] = data.tint();
+			sprites[i] = data.sprite();
+		}
+
+		return new ItemObscurator.ObscuredRenderInfo(uvs, internTints(tints), sprites);
+	}
+
+	private static float[] normalizeBlockPositions(float[] positions)
+	{
+		float[] ret = new float[positions.length];
+
+		for (int i = 0; i < positions.length; i++)
+		{
+			ret[i] = positions[i] / 16.0f;
+		}
+
+		return ret;
+	}
+
+	public static int[] internTints(int[] tints)
+	{
+		if (tints.length == 1)
+		{
+			if (tints[0] == noTint[0])
+			{
+				return noTint;
+			}
+
+			if (tints[0] == zeroTint[0])
+			{
+				return zeroTint;
+			}
+		}
+
+		return tints;
+	}
+
+	public static int[] internColorMultipliers(int[] colorMultipliers)
+	{
+		if (colorMultipliers.length == 1)
+		{
+			if (colorMultipliers[0] == defaultColorMultiplier[0])
+			{
+				return defaultColorMultiplier;
+			}
+
+			if (colorMultipliers[0] == colorMultiplierOpaqueWhite[0])
+			{
+				return colorMultiplierOpaqueWhite;
+			}
+		}
+
+		return colorMultipliers;
+	}
+
+	@Override
+	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context)
+	{
+		Level world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		Direction side = context.getClickedFace();
+		Player player = context.getPlayer();
+		if (player == null)
+		{
+			return InteractionResult.PASS;
+		}
+
+		if (!player.isCrouching() && !world.isClientSide && ElectricItem.manager.canUse(stack, 5000.0))
+		{
+			CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
+			BlockState refState;
+			Direction refSide;
+			int[] colorMultipliers;
+			if ((refState = getState(nbt)) != null && (refSide = getSide(nbt)) != null && (colorMultipliers = getColorMultipliers(nbt)) != null)
+			{
+				BlockState state = world.getBlockState(pos);
+				Block block = state.getBlock();
+				String refVariant = getVariant(nbt);
+				boolean applied;
+				if (block instanceof RetexturableBlock)
+				{
+					applied = ((RetexturableBlock) block).retexture(state, world, pos, side, player, refState, refVariant, refSide, colorMultipliers);
+				} else
+				{
+					applied = IC2R.envProxy.announceRetexture(world, pos, state, side, player, refState, refVariant, refSide, colorMultipliers);
+				}
+
+				if (applied)
+				{
+					ElectricItem.manager.use(stack, 5000.0, player);
+					return InteractionResult.SUCCESS;
+				} else
+				{
+					return InteractionResult.PASS;
+				}
+			} else
+			{
+				clear(nbt);
+				return InteractionResult.PASS;
+			}
+		} else if (player.isCrouching() && world.isClientSide && ElectricItem.manager.canUse(stack, 20000.0))
+		{
+			return this.scanBlock(stack, player, world, pos, side) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+		} else
+		{
+			return InteractionResult.PASS;
+		}
+	}
+
+	private boolean scanBlock(ItemStack stack, Player player, Level world, BlockPos pos, Direction side)
+	{
+		assert world.isClientSide;
+		BlockState state = world.getBlockState(pos);
+		if (state.isAir())
+		{
+			return false;
+		}
+
+		ItemObscurator.ObscuredRenderInfo renderInfo = getRenderInfo(state, side);
+		if (renderInfo == null)
+		{
+			return false;
+		}
+
+		String variant = BlockStateUtil.getVariantString(state);
+		int[] colorMultipliers = new int[renderInfo.tints.length];
+
+		for (int i = 0; i < renderInfo.tints.length; i++)
+		{
+			colorMultipliers[i] = SideProxyClient.mc.getBlockColors().getColor(state, world, pos, renderInfo.tints[i]);
+		}
+
+		CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
+		if (getState(nbt) == state && variant.equals(getVariant(nbt)) && getSide(nbt) == side && Arrays.equals(getColorMultipliers(nbt), colorMultipliers))
+		{
+			return false;
+		}
+
+		IC2R.network.get(false).sendPlayerItemData(player, player.getInventory().selected, state.getBlock(), variant, side.ordinal(), colorMultipliers);
+		return true;
+	}
+
+	@Override
+	public void onPlayerItemNetworkData(Player player, int slot, Object... data)
+	{
+		if (data.length < 4 || !(data[0] instanceof Block block) || !(data[1] instanceof String variant) || !(data[3] instanceof int[] colorMultipliers))
+		{
+			return;
+		}
+
+		int sideOrdinal = -1;
+		if (data[2] instanceof Integer ordinal)
+		{
+			sideOrdinal = ordinal;
+		} else if (data[2] instanceof Direction direction)
+		{
+			sideOrdinal = direction.ordinal();
+		}
+
+		if (sideOrdinal < 0 || sideOrdinal >= Util.ALL_DIRS.length)
+		{
+			return;
+		}
+
+		ItemStack stack = player.getInventory().items.get(slot);
+		if (ElectricItem.manager.use(stack, 20000.0, player))
+		{
+			CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
+			setState(nbt, block, variant);
+			setSide(nbt, sideOrdinal);
+			setColorMultipliers(nbt, colorMultipliers);
+		}
+	}
+
+	public static class ObscuredRenderInfo
+	{
+		public final float[] uvs;
+		public final int[] tints;
+		public final TextureAtlasSprite[] sprites;
+
+		private ObscuredRenderInfo(float[] uvs, int[] tints, TextureAtlasSprite[] sprites)
+		{
+			this.uvs = uvs;
+			this.tints = tints;
+			this.sprites = sprites;
+		}
+	}
+}

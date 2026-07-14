@@ -1,0 +1,18 @@
+{
+  "type": "ic2r:centrifuge",
+  "ingredient": {
+    "item": "ic2r:crushed_iron"
+  },
+  "result": [
+    {
+      "item": "ic2r:iron_dust"
+    },
+    {
+      "item": "ic2r:small_gold_dust"
+    },
+    {
+      "item": "ic2r:stone_dust"
+    }
+  ],
+  "minHeat": 1500
+}

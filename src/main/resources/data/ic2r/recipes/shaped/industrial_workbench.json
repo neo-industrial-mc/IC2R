@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " T ",
+    "HMC"
+  ],
+  "key": {
+    "H": {
+      "item": "ic2r:forge_hammer"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "C": {
+      "item": "ic2r:cutter"
+    },
+    "T": {
+      "item": "minecraft:crafting_table"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:industrial_workbench"
+  }
+}

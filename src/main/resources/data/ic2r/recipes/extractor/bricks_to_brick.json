@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:extractor",
+  "ingredient": {
+    "item": "minecraft:bricks"
+  },
+  "result": {
+    "item": "minecraft:brick",
+    "count": 4
+  }
+}

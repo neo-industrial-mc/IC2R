@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "SSS",
+    "SSS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "ic2r:scrap"
+    }
+  },
+  "result": {
+    "item": "ic2r:scrap_box"
+  }
+}

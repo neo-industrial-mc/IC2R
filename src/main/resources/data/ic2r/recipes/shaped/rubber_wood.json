@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "LL",
+    "LL"
+  ],
+  "key": {
+    "L": {
+      "item": "ic2r:rubber_log"
+    }
+  },
+  "result": {
+    "item": "ic2r:rubber_wood",
+    "count": 3
+  }
+}

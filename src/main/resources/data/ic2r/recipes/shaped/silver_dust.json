@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "XXX",
+    "XXX",
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "ic2r:small_silver_dust"
+    }
+  },
+  "result": {
+    "item": "ic2r:silver_dust"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "RDR",
+    "DRD",
+    "RDR"
+  ],
+  "key": {
+    "D": {
+      "tag": "forge:dusts/diamond"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "ic2r:energium_dust",
+    "count": 9
+  }
+}

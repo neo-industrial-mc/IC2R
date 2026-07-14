@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "S S",
+    " M ",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "item": "ic2r:iron_shaft"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    }
+  },
+  "result": {
+    "item": "ic2r:water_kinetic_generator"
+  }
+}

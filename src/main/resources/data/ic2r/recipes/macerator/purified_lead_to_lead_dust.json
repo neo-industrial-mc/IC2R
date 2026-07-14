@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:purified_lead"
+  },
+  "result": {
+    "item": "ic2r:lead_dust"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "ic2r:item/default",
+  "textures": {
+    "layer0": "ic2r:item/cell/fluid_cell",
+    "layer1": "ic2r:item/cell/fluid_cell_window"
+  }
+}

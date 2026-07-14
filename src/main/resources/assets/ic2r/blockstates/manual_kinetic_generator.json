@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "ic2r:block/generator/kinetic/manual_kinetic_generator",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "ic2r:block/generator/kinetic/manual_kinetic_generator"
+    },
+    "facing=south": {
+      "model": "ic2r:block/generator/kinetic/manual_kinetic_generator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ic2r:block/generator/kinetic/manual_kinetic_generator",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "ic2r:block/generator/kinetic/manual_kinetic_generator",
+      "x": -90
+    },
+    "facing=down": {
+      "model": "ic2r:block/generator/kinetic/manual_kinetic_generator",
+      "x": 90
+    }
+  }
+}

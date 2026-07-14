@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:metal_former_extruding",
+  "ingredient": {
+    "tag": "forge:blocks/steel"
+  },
+  "result": {
+    "item": "ic2r:steel_shaft"
+  }
+}

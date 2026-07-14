@@ -1,0 +1,23 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " C ",
+    "TXT",
+    " C "
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "ic2r:coil"
+    },
+    "T": {
+      "item": "ic2r:tin_casing"
+    }
+  },
+  "group": "electric_motor",
+  "result": {
+    "item": "ic2r:electric_motor"
+  }
+}

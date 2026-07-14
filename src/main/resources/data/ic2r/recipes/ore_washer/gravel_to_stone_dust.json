@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:ore_washer",
+  "ingredient": {
+    "item": "minecraft:gravel"
+  },
+  "result": {
+    "item": "ic2r:stone_dust"
+  },
+  "amount": 1000
+}

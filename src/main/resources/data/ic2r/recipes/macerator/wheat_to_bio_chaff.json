@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "minecraft:wheat",
+    "count": 8
+  },
+  "result": {
+    "item": "ic2r:bio_chaff"
+  }
+}

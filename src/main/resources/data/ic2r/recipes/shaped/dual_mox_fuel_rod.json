@@ -1,0 +1,18 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "UIU"
+  ],
+  "key": {
+    "U": {
+      "item": "ic2r:mox_fuel_rod",
+      "data": {"use": 0}
+    },
+    "I": {
+      "tag": "forge:plates/iron"
+    }
+  },
+  "result": {
+    "item": "ic2r:dual_mox_fuel_rod"
+  }
+}

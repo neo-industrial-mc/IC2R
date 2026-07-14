@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "group": "lead_ingot",
+  "category": "misc",
+  "ingredient": {
+    "item": "ic2r:purified_lead"
+  },
+  "result": "ic2r:lead_ingot",
+  "experience": 0.0,
+  "cookingtime": 200
+}

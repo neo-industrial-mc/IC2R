@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "tag": "forge:ingots/bronze",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:bronze_block"
+  }
+}

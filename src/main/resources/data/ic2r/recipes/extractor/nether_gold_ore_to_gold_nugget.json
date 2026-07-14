@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:extractor",
+  "ingredient": {
+    "item": "minecraft:nether_gold_ore"
+  },
+  "result": {
+    "item": "minecraft:gold_nugget",
+    "count": 9
+  }
+}

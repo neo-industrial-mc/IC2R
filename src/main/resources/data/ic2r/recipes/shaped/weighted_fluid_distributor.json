@@ -1,0 +1,26 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CUC",
+    "UMU",
+    "CIC"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "C": {
+      "item": "ic2r:facade_cell"
+    },
+    "U": {
+      "item": "ic2r:fluid_ejector_upgrade"
+    },
+    "I": {
+      "item": "ic2r:fluid_pulling_upgrade"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:weighted_fluid_distributor"
+  }
+}

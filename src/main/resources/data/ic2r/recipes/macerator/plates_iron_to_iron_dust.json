@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "tag": "forge:plates/iron"
+  },
+  "result": {
+    "item": "ic2r:iron_dust"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "item": "ic2r:carbon_mesh"
+  },
+  "result": {
+    "item": "ic2r:carbon_plate"
+  }
+}

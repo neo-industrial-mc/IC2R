@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "RRR",
+    "RRR"
+  ],
+  "key": {
+    "R": {
+      "item": "ic2r:resin"
+    }
+  },
+  "result": {
+    "item": "ic2r:resin_sheet",
+    "count": 3
+  }
+}

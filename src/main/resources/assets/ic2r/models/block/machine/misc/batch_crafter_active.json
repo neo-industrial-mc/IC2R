@@ -1,0 +1,11 @@
+{
+  "parent": "ic2r:block/machine/misc/batch_crafter",
+  "textures": {
+    "down": "ic2r:block/machine/misc/industrial_workbench_bottom",
+    "up": "ic2r:block/machine/misc/industrial_workbench_top",
+    "north": "ic2r:block/machine/misc/industrial_workbench_front",
+    "east": "ic2r:block/machine/misc/industrial_workbench_right",
+    "south": "ic2r:block/machine/misc/industrial_workbench_back",
+    "west": "ic2r:block/machine/misc/industrial_workbench_left"
+  }
+}

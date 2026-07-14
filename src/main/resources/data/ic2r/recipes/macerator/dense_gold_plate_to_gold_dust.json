@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:dense_gold_plate"
+  },
+  "result": {
+    "item": "ic2r:gold_dust",
+    "count": 9
+  }
+}

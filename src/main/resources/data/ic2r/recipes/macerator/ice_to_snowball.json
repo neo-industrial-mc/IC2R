@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "minecraft:ice"
+  },
+  "result": {
+    "item": "minecraft:snowball"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "cCc",
+    "CMC",
+    "cCc"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "c": {
+      "item": "ic2r:double_insulated_gold_cable"
+    },
+    "C": {
+      "item": "ic2r:energy_crystal"
+    }
+  },
+  "result": {
+    "item": "ic2r:mfe"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "R",
+    "I"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:stick"
+    },
+    "R": {
+      "item": "ic2r:resin"
+    }
+  },
+  "hidden": true,
+  "result": {
+    "item": "minecraft:torch",
+    "count": 4
+  }
+}

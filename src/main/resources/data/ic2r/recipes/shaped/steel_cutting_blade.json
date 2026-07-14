@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:steel_plate"
+    },
+    "B": {
+      "item": "ic2r:iron_cutting_blade"
+    }
+  },
+  "result": {
+    "item": "ic2r:steel_cutting_blade"
+  }
+}

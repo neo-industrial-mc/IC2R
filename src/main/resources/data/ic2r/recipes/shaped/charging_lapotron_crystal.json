@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:advanced_heat_exchanger"
+    },
+    "B": {
+      "item": "ic2r:lapotron_crystal"
+    },
+    "C": {
+      "item": "ic2r:charging_energy_crystal"
+    }
+  },
+  "result": {
+    "item": "ic2r:charging_lapotron_crystal"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "ic2r:shapeless",
+  "ingredients": [
+    {
+      "item": "ic2r:facade_cell"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "ic2r:grin_powder"
+    }
+  ],
+  "result": {
+    "item": "ic2r:weed_ex_cell"
+  }
+}

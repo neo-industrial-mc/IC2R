@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/bronze_tank_cap",
+    "down": "ic2r:block/bronze_tank_cap",
+    "up": "ic2r:block/bronze_tank_cap",
+    "north": "ic2r:block/bronze_tank_side",
+    "east": "ic2r:block/bronze_tank_side",
+    "south": "ic2r:block/bronze_tank_side",
+    "west": "ic2r:block/bronze_tank_side"
+  }
+}

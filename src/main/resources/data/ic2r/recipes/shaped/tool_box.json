@@ -1,0 +1,18 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "ICI",
+    "III"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:chests/wooden"
+    },
+    "I": {
+      "item": "ic2r:bronze_casing"
+    }
+  },
+  "result": {
+    "item": "ic2r:tool_box"
+  }
+}

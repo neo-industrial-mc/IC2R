@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "tag": "forge:plates/obsidian"
+  },
+  "result": {
+    "item": "ic2r:obsidian_dust"
+  }
+}

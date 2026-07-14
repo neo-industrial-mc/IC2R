@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "tag": "forge:ingots/steel"
+  },
+  "result": {
+    "item": "ic2r:iron_dust"
+  }
+}

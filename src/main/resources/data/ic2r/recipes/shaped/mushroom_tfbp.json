@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "mMm",
+    "M#M",
+    "mMm"
+  ],
+  "key": {
+    "#": {
+      "item": "ic2r:blank_tfbp"
+    },
+    "M": {
+      "item": "minecraft:brown_mushroom"
+    },
+    "m": {
+      "item": "minecraft:mycelium"
+    }
+  },
+  "result": {
+    "item": "ic2r:mushroom_tfbp"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:ore_washer",
+  "ingredient": {
+    "item": "ic2r:crushed_copper"
+  },
+  "result": [
+    {
+      "item": "ic2r:purified_copper"
+    },
+    {
+      "item": "ic2r:small_copper_dust",
+      "count": 2
+    },
+    {
+      "item": "ic2r:stone_dust"
+    }
+  ],
+  "amount": 1000
+}

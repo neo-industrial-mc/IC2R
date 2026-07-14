@@ -1,0 +1,26 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CIC",
+    "CAC",
+    "IBI"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2r:facade_cell"
+    },
+    "I": {
+      "item": "ic2r:iron_casing"
+    },
+    "B": {
+      "item": "ic2r:circuit"
+    },
+    "A": {
+      "item": "ic2r:machine"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:condenser"
+  }
+}

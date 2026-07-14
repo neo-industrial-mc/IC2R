@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:dense_iron_plate"
+    },
+    "B": {
+      "tag": "forge:stone"
+    }
+  },
+  "result": {
+    "item": "ic2r:iron_cutting_blade"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:dense_iron_plate"
+  },
+  "result": {
+    "item": "ic2r:iron_dust",
+    "count": 9
+  }
+}

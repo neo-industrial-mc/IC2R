@@ -1,0 +1,29 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "cBc",
+    "UMU",
+    "CCC"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "C": {
+      "item": "ic2r:crop_stick"
+    },
+    "c": {
+      "item": "ic2r:circuit"
+    },
+    "B": {
+      "tag": "forge:chests/wooden"
+    },
+    "U": {
+      "item": "ic2r:facade_cell"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:cropmatron"
+  }
+}

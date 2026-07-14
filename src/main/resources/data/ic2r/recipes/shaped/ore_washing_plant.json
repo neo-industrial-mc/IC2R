@@ -1,0 +1,28 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "III",
+    "BAB",
+    "EWE"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:machine"
+    },
+    "E": {
+      "item": "ic2r:electric_motor"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "W": {
+      "item": "ic2r:circuit"
+    },
+    "I": {
+      "tag": "forge:plates/iron"
+    }
+  },
+  "result": {
+    "item": "ic2r:ore_washing_plant"
+  }
+}

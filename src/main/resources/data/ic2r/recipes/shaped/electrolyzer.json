@@ -1,0 +1,26 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "c c",
+    "cCc",
+    "EME"
+  ],
+  "key": {
+    "E": {
+      "item": "ic2r:facade_cell"
+    },
+    "c": {
+      "item": "ic2r:insulated_copper_cable"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:electrolyzer"
+  }
+}

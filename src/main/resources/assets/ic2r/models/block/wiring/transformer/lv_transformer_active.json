@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/wiring/transformer/lv_transformer_side_active",
+    "down": "ic2r:block/wiring/transformer/lv_transformer_side_active",
+    "up": "ic2r:block/wiring/transformer/lv_transformer_side_active",
+    "north": "ic2r:block/wiring/transformer/lv_transformer_front_active",
+    "east": "ic2r:block/wiring/transformer/lv_transformer_side_active",
+    "south": "ic2r:block/wiring/transformer/lv_transformer_side_active",
+    "west": "ic2r:block/wiring/transformer/lv_transformer_side_active"
+  }
+}

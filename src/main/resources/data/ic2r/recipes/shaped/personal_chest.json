@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "c",
+    "M",
+    "C"
+  ],
+  "key": {
+    "c": {
+      "item": "ic2r:circuit"
+    },
+    "C": {
+      "tag": "forge:chests/wooden"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    }
+  },
+  "result": {
+    "item": "ic2r:personal_chest"
+  }
+}

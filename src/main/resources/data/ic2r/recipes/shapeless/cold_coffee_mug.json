@@ -1,0 +1,18 @@
+{
+  "type": "ic2r:shapeless",
+  "ingredients": [
+    {
+      "item": "ic2r:empty_mug"
+    },
+    {
+      "item": "ic2r:coffee_powder"
+    },
+    {
+      "fluid": "minecraft:water",
+      "amount": 1000
+    }
+  ],
+  "result": {
+    "item": "ic2r:cold_coffee_mug"
+  }
+}

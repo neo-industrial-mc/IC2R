@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:extractor",
+  "ingredient": {
+    "tag": "minecraft:wool"
+  },
+  "result": {
+    "item": "minecraft:white_wool"
+  }
+}

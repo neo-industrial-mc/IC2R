@@ -1,0 +1,15 @@
+{
+  "type": "ic2r:centrifuge",
+  "ingredient": {
+    "item": "ic2r:purified_gold"
+  },
+  "result": [
+    {
+      "item": "ic2r:gold_dust"
+    },
+    {
+      "item": "ic2r:small_silver_dust"
+    }
+  ],
+  "minHeat": 2000
+}

@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "MMM",
+    "MMM",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "tag": "forge:raw_materials/tin"
+    }
+  },
+  "result": {
+    "item": "ic2r:raw_tin_block"
+  }
+}

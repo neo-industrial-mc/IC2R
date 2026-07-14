@@ -1,0 +1,11 @@
+{
+  "type": "ic2r:block_cutter",
+  "ingredient": {
+    "item": "minecraft:lapis_block"
+  },
+  "result": {
+    "item": "ic2r:lapis_plate",
+    "count": 9
+  },
+  "hardness": 5
+}

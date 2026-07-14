@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:iron_bars"
+    },
+    "B": {
+      "item": "ic2r:tin_plate"
+    },
+    "C": {
+      "item": "ic2r:heat_vent"
+    }
+  },
+  "result": {
+    "item": "ic2r:component_heat_vent"
+  }
+}

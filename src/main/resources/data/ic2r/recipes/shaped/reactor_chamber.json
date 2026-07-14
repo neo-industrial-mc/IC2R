@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " I ",
+    "ICI",
+    " I "
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:plates/lead"
+    },
+    "C": {
+      "item": "ic2r:machine"
+    }
+  },
+  "result": {
+    "item": "ic2r:reactor_chamber"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_copper_boiler": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:copper_boiler"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_heat_conductor": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:heat_conductor"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_iron_casing": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:iron_casing"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_iron_tank": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:iron_tank"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ic2r:shaped/steam_repressurizer_from_iron_tank"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_iron_casing",
+      "has_iron_tank",
+      "has_copper_boiler",
+      "has_heat_conductor",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ic2r:shaped/steam_repressurizer_from_iron_tank"
+    ]
+  },
+  "sends_telemetry_event": true
+}

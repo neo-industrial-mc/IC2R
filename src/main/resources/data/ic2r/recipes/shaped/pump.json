@@ -1,0 +1,29 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "cCc",
+    "cMc",
+    "PTP"
+  ],
+  "key": {
+    "c": {
+      "item": "ic2r:facade_cell"
+    },
+    "T": {
+      "item": "ic2r:treetap"
+    },
+    "P": {
+      "item": "ic2r:mining_pipe"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:pump"
+  }
+}

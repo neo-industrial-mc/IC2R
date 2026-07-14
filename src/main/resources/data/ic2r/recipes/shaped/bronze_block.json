@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "MMM",
+    "MMM",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "tag": "forge:ingots/bronze"
+    }
+  },
+  "result": {
+    "item": "ic2r:bronze_block"
+  }
+}

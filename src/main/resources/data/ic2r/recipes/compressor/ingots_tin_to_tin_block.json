@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "tag": "forge:ingots/tin",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:tin_block"
+  }
+}

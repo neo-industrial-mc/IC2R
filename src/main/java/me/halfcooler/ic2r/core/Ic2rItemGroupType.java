@@ -1,0 +1,14 @@
+package me.halfcooler.ic2r.core;
+
+public enum Ic2rItemGroupType
+{
+	GENERAL,
+	GENERATORS_AND_WIRING,
+	REACTOR,
+	MACHINES,
+	TOOLS_AND_UTILITIES,
+	FLUID_CELLS,
+	COMBAT,
+	MATERIALS,
+	FARMING
+}

@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " B ",
+    "III",
+    " F "
+  ],
+  "key": {
+    "B": {
+      "item": "ic2r:heat_conductor"
+    },
+    "F": {
+      "item": "ic2r:iron_furnace"
+    },
+    "I": {
+      "tag": "forge:plates/iron"
+    }
+  },
+  "result": {
+    "item": "ic2r:solid_heat_generator"
+  }
+}

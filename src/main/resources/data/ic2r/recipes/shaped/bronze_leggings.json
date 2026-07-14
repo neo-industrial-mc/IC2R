@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "BBB",
+    "B B",
+    "B B"
+  ],
+  "key": {
+    "B": {
+      "tag": "forge:ingots/bronze"
+    }
+  },
+  "result": {
+    "item": "ic2r:bronze_leggings"
+  }
+}

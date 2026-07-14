@@ -14,4 +14,4 @@ ${mod_description}
 '''
 
 [[mixin]]
-config="ic2.mixins.json"
+config="ic2r.mixins.json"

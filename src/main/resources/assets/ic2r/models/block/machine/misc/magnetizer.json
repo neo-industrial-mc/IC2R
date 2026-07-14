@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/machine/misc/magnetizer_leftrightback",
+    "down": "ic2r:block/machine/misc/magnetizer_bottomtop",
+    "up": "ic2r:block/machine/misc/magnetizer_bottomtop",
+    "north": "ic2r:block/machine/misc/magnetizer_front",
+    "east": "ic2r:block/machine/misc/magnetizer_leftrightback",
+    "south": "ic2r:block/machine/misc/magnetizer_leftrightback",
+    "west": "ic2r:block/machine/misc/magnetizer_leftrightback"
+  }
+}

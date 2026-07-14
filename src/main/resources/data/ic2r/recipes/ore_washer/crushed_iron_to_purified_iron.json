@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:ore_washer",
+  "ingredient": {
+    "item": "ic2r:crushed_iron"
+  },
+  "result": [
+    {
+      "item": "ic2r:purified_iron"
+    },
+    {
+      "item": "ic2r:small_iron_dust",
+      "count": 2
+    },
+    {
+      "item": "ic2r:stone_dust"
+    }
+  ],
+  "amount": 1000
+}

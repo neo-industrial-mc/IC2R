@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " C ",
+    " A ",
+    "R R"
+  ],
+  "key": {
+    "C": {
+      "item": "ic2r:circuit"
+    },
+    "A": {
+      "item": "ic2r:advanced_circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "ic2r:blank_tfbp"
+  }
+}

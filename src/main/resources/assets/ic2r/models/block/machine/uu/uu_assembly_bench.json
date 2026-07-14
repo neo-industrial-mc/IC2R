@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/machine/uu/uu_assembly_bench_bottom",
+    "down": "ic2r:block/machine/uu/uu_assembly_bench_bottom",
+    "up": "ic2r:block/machine/uu/uu_assembly_bench_top",
+    "north": "ic2r:block/machine/uu/uu_assembly_bench_side",
+    "east": "ic2r:block/machine/uu/uu_assembly_bench_side",
+    "south": "ic2r:block/machine/uu/uu_assembly_bench_side",
+    "west": "ic2r:block/machine/uu/uu_assembly_bench_side"
+  }
+}

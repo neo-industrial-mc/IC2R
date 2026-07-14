@@ -1,0 +1,17 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PPP",
+    "P P",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:wheat_seeds"
+    }
+  },
+  "group": "plant_ball",
+  "result": {
+    "item": "ic2r:plant_ball"
+  }
+}

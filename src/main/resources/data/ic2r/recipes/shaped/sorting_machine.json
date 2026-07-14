@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "UBU",
+    "UMU",
+    "UCU"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "U": {
+      "item": "ic2r:ejector_upgrade"
+    },
+    "B": {
+      "item": "ic2r:circuit"
+    },
+    "C": {
+      "tag": "forge:chests/wooden"
+    }
+  },
+  "result": {
+    "item": "ic2r:sorting_machine"
+  }
+}

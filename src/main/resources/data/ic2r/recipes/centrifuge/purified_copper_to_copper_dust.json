@@ -1,0 +1,15 @@
+{
+  "type": "ic2r:centrifuge",
+  "ingredient": {
+    "item": "ic2r:purified_copper"
+  },
+  "result": [
+    {
+      "item": "ic2r:copper_dust"
+    },
+    {
+      "item": "ic2r:small_tin_dust"
+    }
+  ],
+  "minHeat": 500
+}

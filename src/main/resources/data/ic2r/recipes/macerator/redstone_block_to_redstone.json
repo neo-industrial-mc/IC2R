@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "minecraft:redstone_block"
+  },
+  "result": {
+    "item": "minecraft:redstone",
+    "count": 9
+  }
+}

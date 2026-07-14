@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "minecraft:lapis_block"
+  },
+  "result": {
+    "item": "ic2r:lapis_dust",
+    "count": 9
+  }
+}

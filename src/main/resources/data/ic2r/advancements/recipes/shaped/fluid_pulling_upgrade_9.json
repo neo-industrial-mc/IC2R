@@ -1,0 +1,61 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dense_tin_plate": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:dense_tin_plate"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_electric_motor": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:electric_motor"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ic2r:shaped/fluid_pulling_upgrade_9"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_treetap": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:treetap"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_electric_motor",
+      "has_dense_tin_plate",
+      "has_treetap",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ic2r:shaped/fluid_pulling_upgrade_9"
+    ]
+  },
+  "sends_telemetry_event": true
+}

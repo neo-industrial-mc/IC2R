@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:centrifuge",
+  "ingredient": {
+    "item": "ic2r:slag"
+  },
+  "result": [
+    {
+      "item": "ic2r:small_gold_dust"
+    },
+    {
+      "item": "ic2r:coal_dust",
+      "count": 5
+    }
+  ],
+  "minHeat": 1500
+}

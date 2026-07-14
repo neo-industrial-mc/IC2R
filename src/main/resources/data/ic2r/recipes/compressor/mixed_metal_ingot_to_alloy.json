@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "item": "ic2r:mixed_metal_ingot"
+  },
+  "result": {
+    "item": "ic2r:alloy"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "ic2r:block/cable/shape/core_8",
+  "textures": {
+    "texture": "ic2r:block/wiring/cable/iron_cable_1_light_blue"
+  }
+}

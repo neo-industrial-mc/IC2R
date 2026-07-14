@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "B",
+    "M",
+    "F"
+  ],
+  "key": {
+    "B": {
+      "item": "ic2r:re_battery"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    }
+  },
+  "result": {
+    "item": "ic2r:generator"
+  }
+}

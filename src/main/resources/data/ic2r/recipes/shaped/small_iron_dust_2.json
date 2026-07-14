@@ -1,0 +1,21 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "TCT",
+    "CTC",
+    "TCT"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:dusts/copper"
+    },
+    "T": {
+      "tag": "forge:dusts/tin"
+    }
+  },
+  "hidden": true,
+  "group": "small_iron_dust",
+  "result": {
+    "item": "ic2r:small_iron_dust"
+  }
+}

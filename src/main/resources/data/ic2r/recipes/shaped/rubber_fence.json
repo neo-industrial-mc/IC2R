@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PIP",
+    "PIP"
+  ],
+  "key": {
+    "P": {
+      "item": "ic2r:rubber_planks"
+    },
+    "I": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "ic2r:rubber_fence",
+    "count": 3
+  }
+}

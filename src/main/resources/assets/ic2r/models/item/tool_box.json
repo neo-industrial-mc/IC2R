@@ -1,0 +1,20 @@
+{
+  "parent": "ic2r:item/tool/default",
+  "textures": {
+    "layer0": "ic2r:item/tool/tool_box"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ic2r:tool_box_open": 0
+      },
+      "model": "ic2r:item/tool/tool_box/close"
+    },
+    {
+      "predicate": {
+        "ic2r:tool_box_open": 1
+      },
+      "model": "ic2r:item/tool/tool_box/open"
+    }
+  ]
+}

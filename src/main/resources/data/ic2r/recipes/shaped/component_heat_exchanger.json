@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:gold_plate"
+    },
+    "B": {
+      "item": "ic2r:heat_exchanger"
+    }
+  },
+  "result": {
+    "item": "ic2r:component_heat_exchanger"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "parent": "ic2r:ic2r/build_generator/build_batbox/build_mfeu/build_mfsu/build_teleporter",
+  "display": {
+    "icon": {
+      "item": "ic2r:teleporter"
+    },
+    "title": {
+      "translate": "advancements.ic2r.teleport_far_away"
+    },
+    "description": {
+      "translate": "advancements.ic2r.teleport_far_away.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  }
+}

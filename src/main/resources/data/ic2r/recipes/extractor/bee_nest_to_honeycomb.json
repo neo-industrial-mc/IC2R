@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:extractor",
+  "ingredient": {
+    "item": "minecraft:bee_nest"
+  },
+  "result": {
+    "item": "minecraft:honeycomb",
+    "count": 2
+  }
+}

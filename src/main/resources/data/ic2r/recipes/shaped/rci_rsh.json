@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "ECE",
+    "CMC",
+    "EBE"
+  ],
+  "key": {
+    "E": {
+      "item": "ic2r:ejector_upgrade"
+    },
+    "C": {
+      "item": "ic2r:rsh_condensator"
+    },
+    "M": {
+      "item": "ic2r:advanced_machine"
+    },
+    "B": {
+      "item": "ic2r:item_buffer"
+    }
+  },
+  "result": {
+    "item": "ic2r:rci_rsh"
+  }
+}

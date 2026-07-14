@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:dense_tin_plate"
+  },
+  "result": {
+    "item": "ic2r:tin_dust",
+    "count": 9
+  }
+}

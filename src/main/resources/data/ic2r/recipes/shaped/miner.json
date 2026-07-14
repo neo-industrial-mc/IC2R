@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " X ",
+    "CMC",
+    " P "
+  ],
+  "key": {
+    "P": {
+      "item": "ic2r:mining_pipe"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    },
+    "X": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "item": "ic2r:miner"
+  }
+}

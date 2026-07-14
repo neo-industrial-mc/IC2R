@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:dense_obsidian_plate"
+  },
+  "result": {
+    "item": "ic2r:obsidian_dust",
+    "count": 9
+  }
+}

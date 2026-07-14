@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "A  ",
+    " A ",
+    " BA"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:iron_casing"
+    },
+    "B": {
+      "item": "ic2r:facade_cell"
+    }
+  },
+  "result": {
+    "item": "ic2r:foam_sprayer"
+  }
+}

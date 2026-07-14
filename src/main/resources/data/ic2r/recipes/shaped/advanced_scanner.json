@@ -1,0 +1,31 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PDP",
+    "GCG",
+    "cSc"
+  ],
+  "key": {
+    "S": {
+      "item": "ic2r:scanner"
+    },
+    "c": {
+      "item": "ic2r:double_insulated_gold_cable"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "C": {
+      "item": "ic2r:advanced_circuit"
+    },
+    "P": {
+      "item": "ic2r:gold_casing"
+    },
+    "D": {
+      "item": "ic2r:energy_crystal"
+    }
+  },
+  "result": {
+    "item": "ic2r:advanced_scanner"
+  }
+}

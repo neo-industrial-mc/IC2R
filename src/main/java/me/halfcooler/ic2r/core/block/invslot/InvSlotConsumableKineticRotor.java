@@ -1,0 +1,43 @@
+package me.halfcooler.ic2r.core.block.invslot;
+
+import me.halfcooler.ic2r.api.item.IKineticRotor;
+import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.block.IInventorySlotHolder;
+import net.minecraft.world.item.ItemStack;
+
+public class InvSlotConsumableKineticRotor extends InvSlotConsumableClass
+{
+	private final String updateName;
+	private final IKineticRotor.GearboxType type;
+
+	public InvSlotConsumableKineticRotor(
+		IInventorySlotHolder<?> base1, String name1, InvSlot.Access access1, int count, InvSlot.InvSide preferredSide1, IKineticRotor.GearboxType type
+	)
+	{
+		this(base1, name1, access1, count, preferredSide1, type, null);
+	}
+
+	public InvSlotConsumableKineticRotor(
+		IInventorySlotHolder<?> base, String name, InvSlot.Access access, int count, InvSlot.InvSide preferredSide, IKineticRotor.GearboxType type, String field
+	)
+	{
+		super(base, name, access, count, preferredSide, IKineticRotor.class);
+		this.type = type;
+		this.updateName = field;
+	}
+
+	@Override
+	public boolean accepts(ItemStack stack)
+	{
+		return super.accepts(stack) ? ((IKineticRotor) stack.getItem()).isAcceptedType(stack, this.type) : false;
+	}
+
+	@Override
+	public void onChanged()
+	{
+		if (this.updateName != null && this.base.getParent().hasLevel() && !this.base.getParent().getLevel().isClientSide)
+		{
+			IC2R.network.get(true).updateTileEntityField(this.base.getParent(), this.updateName);
+		}
+	}
+}

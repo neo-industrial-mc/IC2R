@@ -1,0 +1,25 @@
+package me.halfcooler.ic2r.api.recipe;
+
+import net.minecraft.world.item.ItemStack;
+
+public interface ICannerBottleRecipeManager extends IMachineRecipeManager<ICannerBottleRecipeManager.Input, ItemStack, ICannerBottleRecipeManager.RawInput>
+{
+	@Deprecated
+	void addRecipe(IRecipeInput var1, IRecipeInput var2, ItemStack var3);
+
+	@Deprecated
+	RecipeOutput getOutputFor(ItemStack var1, ItemStack var2, boolean var3, boolean var4);
+
+	record Input(IRecipeInput container, IRecipeInput fill)
+		{
+
+			public boolean matches(ItemStack container, ItemStack fill)
+			{
+				return this.container.matches(container) && this.fill.matches(fill);
+			}
+		}
+
+	record RawInput(ItemStack container, ItemStack fill)
+		{
+		}
+}

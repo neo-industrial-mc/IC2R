@@ -1,0 +1,17 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "UUU",
+    "UUU",
+    "UUU"
+  ],
+  "key": {
+    "U": {
+      "tag": "forge:ingots/uranium"
+    }
+  },
+  "group": "uranium_block",
+  "result": {
+    "item": "ic2r:uranium_block"
+  }
+}

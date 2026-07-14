@@ -1,0 +1,17 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "UUU",
+    "UUU",
+    "UUU"
+  ],
+  "key": {
+    "U": {
+      "item": "ic2r:uranium_238"
+    }
+  },
+  "group": "uranium_block",
+  "result": {
+    "item": "ic2r:uranium_block"
+  }
+}

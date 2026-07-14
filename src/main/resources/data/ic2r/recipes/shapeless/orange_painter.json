@@ -1,0 +1,15 @@
+{
+  "type": "ic2r:shapeless",
+  "ingredients": [
+    {
+      "item": "ic2r:painter"
+    },
+    {
+      "item": "minecraft:orange_dye"
+    }
+  ],
+  "consuming": true,
+  "result": {
+    "item": "ic2r:orange_painter"
+  }
+}

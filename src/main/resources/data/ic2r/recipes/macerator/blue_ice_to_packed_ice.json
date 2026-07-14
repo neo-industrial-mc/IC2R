@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "minecraft:blue_ice"
+  },
+  "result": {
+    "item": "minecraft:packed_ice",
+    "count": 9
+  }
+}

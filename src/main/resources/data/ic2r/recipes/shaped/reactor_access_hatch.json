@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "VVV",
+    "VHV",
+    "VVV"
+  ],
+  "key": {
+    "V": {
+      "item": "ic2r:reactor_vessel"
+    },
+    "H": {
+      "tag": "minecraft:trapdoors"
+    }
+  },
+  "result": {
+    "item": "ic2r:reactor_access_hatch"
+  }
+}

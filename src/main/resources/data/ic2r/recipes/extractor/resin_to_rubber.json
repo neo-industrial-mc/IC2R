@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:extractor",
+  "ingredient": {
+    "item": "ic2r:resin"
+  },
+  "result": {
+    "item": "ic2r:rubber",
+    "count": 3
+  }
+}

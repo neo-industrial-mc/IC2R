@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CRC",
+    "RCR",
+    "CRC"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:plates/copper"
+    },
+    "R": {
+      "item": "ic2r:neutron_reflector"
+    }
+  },
+  "result": {
+    "item": "ic2r:thick_neutron_reflector"
+  }
+}

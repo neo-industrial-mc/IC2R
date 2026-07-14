@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "I I",
+    "ISI",
+    "CCC"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "S": {
+      "tag": "minecraft:wool"
+    },
+    "C": {
+      "item": "ic2r:insulated_copper_cable"
+    }
+  },
+  "result": {
+    "item": "ic2r:static_boots"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:uranium_block"
+  },
+  "result": {
+    "item": "ic2r:uranium_ingot",
+    "count": 9
+  }
+}

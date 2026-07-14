@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "III",
+    "ICI",
+    "IGI"
+  ],
+  "key": {
+    "I": {
+      "item": "ic2r:iron_casing"
+    },
+    "C": {
+      "item": "ic2r:reactor_chamber"
+    },
+    "G": {
+      "item": "ic2r:generator"
+    }
+  },
+  "result": {
+    "item": "ic2r:rt_generator"
+  }
+}

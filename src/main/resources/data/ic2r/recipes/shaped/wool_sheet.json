@@ -1,0 +1,17 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "WRW"
+  ],
+  "key": {
+    "W": {
+      "tag": "minecraft:wool_carpets"
+    },
+    "R": {
+      "item": "ic2r:resin_sheet"
+    }
+  },
+  "result": {
+    "item": "ic2r:wool_sheet"
+  }
+}

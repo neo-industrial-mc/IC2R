@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " T ",
+    " T ",
+    "CMC"
+  ],
+  "key": {
+    "T": {
+      "item": "ic2r:tin_can"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:solid_canner"
+  }
+}

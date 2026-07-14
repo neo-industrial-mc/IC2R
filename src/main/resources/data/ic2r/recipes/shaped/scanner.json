@@ -1,0 +1,28 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PGP",
+    "CBC",
+    "ccc"
+  ],
+  "key": {
+    "B": {
+      "item": "ic2r:advanced_re_battery"
+    },
+    "c": {
+      "item": "ic2r:insulated_copper_cable"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    },
+    "P": {
+      "item": "ic2r:gold_casing"
+    }
+  },
+  "result": {
+    "item": "ic2r:scanner"
+  }
+}

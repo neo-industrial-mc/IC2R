@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:metal_former_cutting",
+  "ingredient": {
+    "tag": "forge:plates/iron"
+  },
+  "result": {
+    "item": "ic2r:iron_cable",
+    "count": 4
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "parent": "ic2r:ic2r/root",
+  "display": {
+    "icon": {
+      "item": "ic2r:raw_tin"
+    },
+    "title": {
+      "translate": "advancements.ic2r.mine_ore"
+    },
+    "description": {
+      "translate": "advancements.ic2r.mine_ore.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "minecraft:raw_copper": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:raw_copper"
+            ]
+          }
+        ]
+      }
+    },
+    "minecraft:copper_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:copper_ore"
+            ]
+          }
+        ]
+      }
+    },
+    "minecraft:deepslate_copper_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:deepslate_copper_ore"
+            ]
+          }
+        ]
+      }
+    },
+    "ic2r:raw_tin": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:raw_tin"
+            ]
+          }
+        ]
+      }
+    },
+    "ic2r:tin_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:tin_ore"
+            ]
+          }
+        ]
+      }
+    },
+    "ic2r:deepslate_tin_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:deepslate_tin_ore"
+            ]
+          }
+        ]
+      }
+    },
+    "ic2r:raw_lead": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:raw_lead"
+            ]
+          }
+        ]
+      }
+    },
+    "ic2r:lead_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:lead_ore"
+            ]
+          }
+        ]
+      }
+    },
+    "ic2r:deepslate_lead_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:deepslate_lead_ore"
+            ]
+          }
+        ]
+      }
+    },
+    "ic2r:raw_uranium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:raw_uranium"
+            ]
+          }
+        ]
+      }
+    },
+    "ic2r:uranium_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:uranium_ore"
+            ]
+          }
+        ]
+      }
+    },
+    "ic2r:deepslate_uranium_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:deepslate_uranium_ore"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "minecraft:raw_copper",
+      "minecraft:copper_ore",
+      "minecraft:deepslate_copper_ore",
+      "ic2r:raw_tin",
+      "ic2r:tin_ore",
+      "ic2r:deepslate_tin_ore",
+      "ic2r:raw_lead",
+      "ic2r:lead_ore",
+      "ic2r:deepslate_lead_ore",
+      "ic2r:raw_uranium",
+      "ic2r:uranium_ore",
+      "ic2r:deepslate_uranium_ore"
+    ]
+  ]
+}

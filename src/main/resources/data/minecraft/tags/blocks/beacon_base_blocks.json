@@ -1,9 +1,9 @@
 {
   "replace": false,
   "values": [
-    "ic2:steel_block",
-    "ic2:bronze_block",
-    "ic2:lead_block",
-    "ic2:uranium_block"
+    "ic2r:steel_block",
+    "ic2r:bronze_block",
+    "ic2r:lead_block",
+    "ic2r:uranium_block"
   ]
 }

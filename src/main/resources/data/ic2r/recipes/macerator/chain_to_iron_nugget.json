@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "minecraft:chain"
+  },
+  "result": {
+    "item": "minecraft:iron_nugget",
+    "count": 11
+  }
+}

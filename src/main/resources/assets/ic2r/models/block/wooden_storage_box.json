@@ -1,0 +1,7 @@
+{
+  "parent": "ic2r:block/storage_box",
+  "textures": {
+    "particle": "ic2r:block/wooden_storage_box",
+    "all": "ic2r:block/wooden_storage_box"
+  }
+}

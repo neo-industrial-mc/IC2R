@@ -1,0 +1,24 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " U ",
+    "CIC",
+    " U "
+  ],
+  "key": {
+    "U": {
+      "item": "ic2r:dual_uranium_fuel_rod",
+      "data": {"use": 0}
+    },
+    "I": {
+      "tag": "forge:plates/iron"
+    },
+    "C": {
+      "tag": "forge:plates/copper"
+    }
+  },
+  "group": "quad_uranium_fuel_rod",
+  "result": {
+    "item": "ic2r:quad_uranium_fuel_rod"
+  }
+}

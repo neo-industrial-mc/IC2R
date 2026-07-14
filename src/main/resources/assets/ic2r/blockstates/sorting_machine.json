@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ic2r:block/machine/misc/sorting_machine"
+    }
+  }
+}

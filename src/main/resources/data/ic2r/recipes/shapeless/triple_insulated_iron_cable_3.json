@@ -1,0 +1,14 @@
+{
+  "type": "ic2r:shapeless",
+  "ingredients": [
+    {
+      "item": "ic2r:rubber"
+    },
+    {
+      "item": "ic2r:double_insulated_iron_cable"
+    }
+  ],
+  "result": {
+    "item": "ic2r:triple_insulated_iron_cable"
+  }
+}

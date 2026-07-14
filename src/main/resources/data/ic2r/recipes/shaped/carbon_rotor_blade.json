@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PSP",
+    "PSP",
+    "PSP"
+  ],
+  "key": {
+    "P": {
+      "item": "ic2r:carbon_plate"
+    },
+    "S": {
+      "item": "ic2r:carbon_mesh"
+    }
+  },
+  "result": {
+    "item": "ic2r:carbon_rotor_blade"
+  }
+}

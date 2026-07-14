@@ -1,0 +1,28 @@
+{
+  "parent": "ic2r:ic2r/build_generator/root",
+  "display": {
+    "icon": {
+      "item": "ic2r:machine"
+    },
+    "title": {
+      "translate": "advancements.ic2r.explode_machine"
+    },
+    "description": {
+      "translate": "advancements.ic2r.explode_machine.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

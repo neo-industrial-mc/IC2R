@@ -1,0 +1,20 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "VVV",
+    "VCV",
+    "VVV"
+  ],
+  "key": {
+    "V": {
+      "item": "ic2r:reactor_vessel"
+    },
+    "C": {
+      "item": "ic2r:facade_cell"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:reactor_fluid_port"
+  }
+}

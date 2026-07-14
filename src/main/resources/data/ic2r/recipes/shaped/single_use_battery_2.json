@@ -1,0 +1,23 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "C",
+    "D",
+    "R"
+  ],
+  "key": {
+    "D": {
+      "tag": "forge:dusts/coal"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "ic2r:insulated_copper_cable"
+    }
+  },
+  "result": {
+    "item": "ic2r:single_use_battery",
+    "count": 5
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "item": "ic2r:small_lead_dust",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:lead_dust"
+  }
+}

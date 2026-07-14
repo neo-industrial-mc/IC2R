@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/machine/processing/basic/canner_leftright",
+    "down": "ic2r:block/machine/processing/basic/canner_bottom",
+    "up": "ic2r:block/machine/processing/basic/canner_top",
+    "north": "ic2r:block/machine/processing/basic/canner_front",
+    "east": "ic2r:block/machine/processing/basic/canner_leftright",
+    "south": "ic2r:block/machine/processing/basic/canner_back",
+    "west": "ic2r:block/machine/processing/basic/canner_leftright"
+  }
+}

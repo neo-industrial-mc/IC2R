@@ -1,0 +1,6 @@
+package me.halfcooler.ic2r.api.energy.tile;
+
+public interface IDischargingSlot
+{
+	double discharge(double var1, boolean var3);
+}

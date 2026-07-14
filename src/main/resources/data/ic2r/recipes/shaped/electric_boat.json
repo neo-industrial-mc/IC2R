@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "AAA",
+    "RBR",
+    "RMR"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:insulated_copper_cable"
+    },
+    "R": {
+      "item": "ic2r:iron_plate"
+    },
+    "B": {
+      "item": "ic2r:electric_motor"
+    },
+    "M": {
+      "item": "ic2r:iron_rotor"
+    }
+  },
+  "result": {
+    "item": "ic2r:electric_boat"
+  }
+}

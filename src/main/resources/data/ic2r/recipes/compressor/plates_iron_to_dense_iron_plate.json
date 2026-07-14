@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "tag": "forge:plates/iron",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:dense_iron_plate"
+  }
+}

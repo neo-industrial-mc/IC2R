@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:purified_iron"
+  },
+  "result": {
+    "item": "ic2r:iron_dust"
+  }
+}

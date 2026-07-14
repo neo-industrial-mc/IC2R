@@ -1,0 +1,31 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "GnG",
+    "ILI",
+    "CNC"
+  ],
+  "key": {
+    "N": {
+      "item": "ic2r:hazmat_helmet"
+    },
+    "n": {
+      "item": "ic2r:nano_helmet"
+    },
+    "I": {
+      "item": "ic2r:iridium"
+    },
+    "L": {
+      "item": "ic2r:lapotron_crystal"
+    },
+    "G": {
+      "item": "ic2r:reinforced_glass"
+    },
+    "C": {
+      "item": "ic2r:advanced_circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:quantum_helmet"
+  }
+}

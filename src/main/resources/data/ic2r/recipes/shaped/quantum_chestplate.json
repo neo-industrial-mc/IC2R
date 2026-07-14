@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "AnA",
+    "ILI",
+    "IAI"
+  ],
+  "key": {
+    "n": {
+      "item": "ic2r:nano_chestplate"
+    },
+    "I": {
+      "item": "ic2r:iridium"
+    },
+    "L": {
+      "item": "ic2r:lapotron_crystal"
+    },
+    "A": {
+      "item": "ic2r:alloy"
+    }
+  },
+  "result": {
+    "item": "ic2r:quantum_chestplate"
+  }
+}

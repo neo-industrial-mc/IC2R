@@ -1,0 +1,15 @@
+{
+  "type": "ic2r:centrifuge",
+  "ingredient": {
+    "item": "ic2r:crushed_silver"
+  },
+  "result": [
+    {
+      "item": "ic2r:silver_dust"
+    },
+    {
+      "item": "ic2r:stone_dust"
+    }
+  ],
+  "minHeat": 2000
+}

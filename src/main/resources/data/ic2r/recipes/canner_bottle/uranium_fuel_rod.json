@@ -1,0 +1,12 @@
+{
+  "type": "ic2r:canner_bottle",
+  "container_ingredient": {
+    "item": "ic2r:fuel_rod"
+  },
+  "fill_ingredient": {
+    "item": "ic2r:uranium"
+  },
+  "result": {
+    "item": "ic2r:uranium_fuel_rod"
+  }
+}

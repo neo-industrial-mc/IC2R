@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "III",
+    "CMC",
+    "III"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "C": {
+      "tag": "forge:chests/wooden"
+    },
+    "I": {
+      "item": "ic2r:iron_casing"
+    }
+  },
+  "result": {
+    "item": "ic2r:item_buffer"
+  }
+}

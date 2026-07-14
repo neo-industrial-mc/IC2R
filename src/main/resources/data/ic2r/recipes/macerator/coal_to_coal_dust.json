@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "minecraft:coal"
+  },
+  "result": {
+    "item": "ic2r:coal_dust"
+  }
+}

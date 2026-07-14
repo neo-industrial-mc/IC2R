@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:centrifuge",
+  "ingredient": {
+    "item": "minecraft:cobblestone"
+  },
+  "result": {
+    "item": "ic2r:stone_dust"
+  },
+  "minHeat": 100
+}

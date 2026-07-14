@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "UUU",
+    "UUU",
+    "UUU"
+  ],
+  "key": {
+    "U": {
+      "item": "ic2r:small_plutonium"
+    }
+  },
+  "result": {
+    "item": "ic2r:plutonium"
+  }
+}

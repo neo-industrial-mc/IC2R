@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " C ",
+    "TLT",
+    " F "
+  ],
+  "key": {
+    "C": {
+      "item": "ic2r:insulated_copper_cable"
+    },
+    "T": {
+      "item": "ic2r:tin_casing"
+    },
+    "L": {
+      "tag": "forge:dusts/lapis"
+    },
+    "F": {
+      "item": "ic2r:frequency_transmitter"
+    }
+  },
+  "result": {
+    "item": "ic2r:remote"
+  }
+}

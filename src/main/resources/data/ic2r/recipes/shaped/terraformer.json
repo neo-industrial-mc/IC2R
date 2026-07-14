@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "GTG",
+    "DMD",
+    "GDG"
+  ],
+  "key": {
+    "T": {
+      "item": "ic2r:blank_tfbp"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "D": {
+      "item": "minecraft:dirt"
+    },
+    "M": {
+      "item": "ic2r:advanced_machine"
+    }
+  },
+  "result": {
+    "item": "ic2r:terraformer"
+  }
+}

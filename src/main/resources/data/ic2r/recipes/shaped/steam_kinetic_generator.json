@@ -1,0 +1,26 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CCC",
+    "BSS",
+    "ECC"
+  ],
+  "key": {
+    "S": {
+      "item": "ic2r:iron_shaft"
+    },
+    "B": {
+      "item": "ic2r:copper_boiler"
+    },
+    "C": {
+      "item": "ic2r:steel_casing"
+    },
+    "E": {
+      "item": "ic2r:facade_cell"
+    }
+  },
+  "consuming": true,
+  "result": {
+    "item": "ic2r:steam_kinetic_generator"
+  }
+}

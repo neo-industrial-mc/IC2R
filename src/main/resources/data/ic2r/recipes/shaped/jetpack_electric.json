@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "ABA",
+    "ACA",
+    "D D"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:iron_casing"
+    },
+    "B": {
+      "item": "ic2r:advanced_circuit"
+    },
+    "C": {
+      "item": "ic2r:batbox"
+    },
+    "D": {
+      "item": "minecraft:glowstone_dust"
+    }
+  },
+  "result": {
+    "item": "ic2r:jetpack_electric"
+  }
+}

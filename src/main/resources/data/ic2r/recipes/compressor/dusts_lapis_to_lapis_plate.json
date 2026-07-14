@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "tag": "forge:dusts/lapis"
+  },
+  "result": {
+    "item": "ic2r:lapis_plate"
+  }
+}

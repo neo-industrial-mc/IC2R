@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "particle": "ic2r:block/general/machine_side",
+    "front": "ic2r:block/machine/processing/basic/macerator_front",
+    "top": "ic2r:block/machine/processing/basic/macerator_top",
+    "bottom": "ic2r:block/general/machine_bottom",
+    "side": "ic2r:block/general/machine_side"
+  }
+}

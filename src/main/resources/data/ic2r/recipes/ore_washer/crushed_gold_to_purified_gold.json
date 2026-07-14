@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:ore_washer",
+  "ingredient": {
+    "item": "ic2r:crushed_gold"
+  },
+  "result": [
+    {
+      "item": "ic2r:purified_gold"
+    },
+    {
+      "item": "ic2r:small_gold_dust",
+      "count": 2
+    },
+    {
+      "item": "ic2r:stone_dust"
+    }
+  ],
+  "amount": 1000
+}

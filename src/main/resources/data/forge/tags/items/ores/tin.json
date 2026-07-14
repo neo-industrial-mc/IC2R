@@ -1,6 +1,6 @@
 {
   "values": [
-    "ic2:tin_ore",
-    "ic2:deepslate_tin_ore"
+    "ic2r:tin_ore",
+    "ic2r:deepslate_tin_ore"
   ]
 }

@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:blast_furnace",
+  "ingredient": {
+    "tag": "forge:dusts/iron"
+  },
+  "result": [
+    {
+      "item": "ic2r:steel_ingot"
+    },
+    {
+      "item": "ic2r:slag"
+    }
+  ],
+  "fluid": 1,
+  "duration": 6000
+}

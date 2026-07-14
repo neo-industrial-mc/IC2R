@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:centrifuge",
+  "ingredient": {
+    "item": "ic2r:depleted_mox_fuel_rod"
+  },
+  "result": [
+    {
+      "item": "ic2r:small_plutonium"
+    },
+    {
+      "item": "ic2r:plutonium",
+      "count": 3
+    },
+    {
+      "item": "ic2r:iron_dust"
+    }
+  ],
+  "minHeat": 5000
+}

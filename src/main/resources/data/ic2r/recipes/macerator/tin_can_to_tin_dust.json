@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:tin_can",
+    "count": 2
+  },
+  "result": {
+    "item": "ic2r:tin_dust"
+  }
+}

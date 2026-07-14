@@ -1,0 +1,31 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EFE"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:advanced_heat_exchanger"
+    },
+    "B": {
+      "item": "ic2r:advanced_re_battery"
+    },
+    "C": {
+      "item": "ic2r:luminator"
+    },
+    "D": {
+      "item": "ic2r:reinforced_glass"
+    },
+    "E": {
+      "item": "ic2r:rubber"
+    },
+    "F": {
+      "item": "ic2r:advanced_circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:night_vision_goggles"
+  }
+}

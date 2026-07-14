@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "IBI",
+    "ICI",
+    "IGI"
+  ],
+  "key": {
+    "I": {
+      "item": "ic2r:iron_casing"
+    },
+    "B": {
+      "item": "ic2r:re_battery"
+    },
+    "G": {
+      "item": "ic2r:heat_conductor"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:electric_heat_generator"
+  }
+}

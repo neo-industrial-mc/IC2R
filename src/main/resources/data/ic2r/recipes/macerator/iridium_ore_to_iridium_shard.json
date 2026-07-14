@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "item": "ic2r:iridium_ore"
+  },
+  "result": {
+    "item": "ic2r:iridium_shard",
+    "count": 9
+  }
+}

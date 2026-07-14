@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " E ",
+    "TMT",
+    "KKK"
+  ],
+  "key": {
+    "E": {
+      "item": "ic2r:circuit"
+    },
+    "T": {
+      "item": "ic2r:tool_box"
+    },
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "K": {
+      "item": "ic2r:coil"
+    }
+  },
+  "result": {
+    "item": "ic2r:metal_former"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:extractor",
+  "ingredient": {
+    "item": "ic2r:hydrated_tin_dust"
+  },
+  "result": {
+    "item": "ic2r:iodine"
+  }
+}

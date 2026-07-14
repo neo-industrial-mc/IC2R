@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CUC",
+    "UMU",
+    "CIC"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "U": {
+      "item": "ic2r:ejector_upgrade"
+    },
+    "I": {
+      "item": "ic2r:pulling_upgrade"
+    }
+  },
+  "result": {
+    "item": "ic2r:weighted_item_distributor"
+  }
+}

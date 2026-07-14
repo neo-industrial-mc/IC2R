@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "tag": "forge:dusts/obsidian"
+  },
+  "result": {
+    "item": "ic2r:obsidian_plate"
+  }
+}

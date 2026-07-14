@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "side": "ic2r:block/generator/kinetic/manual_kinetic_generator_sides",
+    "bottom": "ic2r:block/generator/kinetic/manual_kinetic_generator_bottom",
+    "top": "ic2r:block/generator/kinetic/manual_kinetic_generator_top"
+  }
+}

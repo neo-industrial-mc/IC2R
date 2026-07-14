@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/machine/processing/advanced/induction_furnace_leftright",
+    "down": "ic2r:block/machine/processing/advanced/induction_furnace_bottomtop",
+    "up": "ic2r:block/machine/processing/advanced/induction_furnace_bottomtop",
+    "north": "ic2r:block/machine/processing/advanced/induction_furnace_front",
+    "east": "ic2r:block/machine/processing/advanced/induction_furnace_leftright",
+    "south": "ic2r:block/machine/processing/advanced/induction_furnace_back",
+    "west": "ic2r:block/machine/processing/advanced/induction_furnace_leftright"
+  }
+}

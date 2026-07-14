@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    " AC"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:tin_casing"
+    },
+    "B": {
+      "item": "ic2r:bronze_casing"
+    },
+    "C": {
+      "item": "ic2r:small_power_unit"
+    }
+  },
+  "result": {
+    "item": "ic2r:wind_meter"
+  }
+}

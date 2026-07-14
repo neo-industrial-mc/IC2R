@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "GcG",
+    "SCS",
+    "GcG"
+  ],
+  "key": {
+    "S": {
+      "item": "ic2r:heat_exchanger"
+    },
+    "C": {
+      "tag": "forge:plates/copper"
+    },
+    "G": {
+      "tag": "forge:plates/lapis"
+    },
+    "c": {
+      "item": "ic2r:circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:advanced_heat_exchanger"
+  }
+}

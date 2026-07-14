@@ -1,0 +1,20 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "UUU",
+    "CCC",
+    "UUU"
+  ],
+  "key": {
+    "U": {
+      "tag": "forge:ingots/uranium"
+    },
+    "C": {
+      "item": "ic2r:plutonium"
+    }
+  },
+  "group": "mox",
+  "result": {
+    "item": "ic2r:mox"
+  }
+}

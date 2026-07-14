@@ -1,0 +1,37 @@
+{
+  "parent": "ic2r:ic2r/build_generator/build_batbox/build_mfeu",
+  "display": {
+    "icon": {
+      "item": "ic2r:mfsu"
+    },
+    "title": {
+      "translate": "advancements.ic2r.build_mfsu"
+    },
+    "description": {
+      "translate": "advancements.ic2r.build_mfsu.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ic2r:mfsu": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:mfsu"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ic2r:mfsu"
+    ]
+  ]
+}

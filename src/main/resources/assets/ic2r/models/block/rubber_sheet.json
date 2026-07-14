@@ -1,0 +1,6 @@
+{
+  "parent": "ic2r:block/sheet_base",
+  "textures": {
+    "texture": "ic2r:block/rubber_sheet"
+  }
+}

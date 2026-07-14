@@ -1,8 +1,0 @@
-{
-  "type": "ic2:gradual",
-  "item": "ic2:rsh_condensator",
-  "charge_material": {
-    "item": "minecraft:redstone"
-  },
-  "amount": 10000
-}

@@ -1,8 +1,0 @@
-{
-  "parent": "ic2:block/personal/personal_chest_shape",
-  "textures": {
-    "bottomtop": "ic2:block/personal/personal_chest_case_bottomtop",
-    "leftrightback": "ic2:block/personal/personal_chest_case_leftrightback",
-    "front": "ic2:block/personal/personal_chest_front"
-  }
-}

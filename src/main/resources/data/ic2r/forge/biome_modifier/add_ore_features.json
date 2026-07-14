@@ -1,0 +1,14 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "ic2r:lead_ore",
+    "ic2r:lead_ore_lower",
+    "ic2r:tin_ore_upper",
+    "ic2r:tin_ore_small",
+    "ic2r:uranium_ore",
+    "ic2r:uranium_ore_buried",
+    "ic2r:uranium_ore_large"
+  ],
+  "step": "underground_ores"
+}

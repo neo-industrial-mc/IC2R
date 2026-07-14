@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "tag": "forge:ingots/steel",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:steel_block"
+  }
+}

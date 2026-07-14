@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/machine/fluid/pump_leftright_active",
+    "down": "ic2r:block/machine/fluid/pump_bottom",
+    "up": "ic2r:block/machine/fluid/pump_top",
+    "north": "ic2r:block/machine/fluid/pump_front_active",
+    "east": "ic2r:block/machine/fluid/pump_leftright_active",
+    "south": "ic2r:block/machine/fluid/pump_back",
+    "west": "ic2r:block/machine/fluid/pump_leftright_active"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:ore_washer",
+  "ingredient": {
+    "item": "ic2r:crushed_uranium"
+  },
+  "result": [
+    {
+      "item": "ic2r:purified_uranium"
+    },
+    {
+      "item": "ic2r:small_lead_dust",
+      "count": 2
+    },
+    {
+      "item": "ic2r:stone_dust"
+    }
+  ],
+  "amount": 1000
+}

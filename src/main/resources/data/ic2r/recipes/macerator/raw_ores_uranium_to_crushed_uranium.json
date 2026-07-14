@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:macerator",
+  "ingredient": {
+    "tag": "forge:raw_materials/uranium"
+  },
+  "result": {
+    "item": "ic2r:crushed_uranium",
+    "count": 2
+  }
+}

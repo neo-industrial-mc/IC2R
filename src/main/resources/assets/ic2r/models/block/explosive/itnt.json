@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "side": "ic2r:block/explosive/itnt_sides",
+    "bottom": "ic2r:block/explosive/itnt_bottom",
+    "top": "ic2r:block/explosive/itnt_top"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:extractor",
+  "ingredient": {
+    "item": "ic2r:air_cell"
+  },
+  "result": {
+    "item": "ic2r:facade_cell"
+  }
+}

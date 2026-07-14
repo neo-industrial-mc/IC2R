@@ -1,0 +1,22 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "item": "ic2r:component_heat_exchanger"
+    },
+    "B": {
+      "item": "ic2r:energy_crystal"
+    },
+    "C": {
+      "item": "ic2r:advanced_charging_re_battery"
+    }
+  },
+  "result": {
+    "item": "ic2r:charging_energy_crystal"
+  }
+}

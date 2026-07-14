@@ -1,0 +1,23 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "RCR",
+    "RMR",
+    "RCR"
+  ],
+  "key": {
+    "R": {
+      "item": "ic2r:thick_neutron_reflector"
+    },
+    "C": {
+      "item": "ic2r:advanced_circuit"
+    },
+    "M": {
+      "item": "ic2r:advanced_machine"
+    }
+  },
+  "hidden": true,
+  "result": {
+    "item": "ic2r:nuke"
+  }
+}

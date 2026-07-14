@@ -1,0 +1,16 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PPP",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "ic2r:rubber_planks"
+    }
+  },
+  "result": {
+    "item": "ic2r:rubber_trapdoor",
+    "count": 2
+  }
+}

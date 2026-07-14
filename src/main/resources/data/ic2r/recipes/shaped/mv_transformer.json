@@ -1,0 +1,19 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "C",
+    "M",
+    "C"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:machine"
+    },
+    "C": {
+      "item": "ic2r:insulated_copper_cable"
+    }
+  },
+  "result": {
+    "item": "ic2r:mv_transformer"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "ic2r:extractor",
+  "ingredient": {
+    "tag": "minecraft:candles"
+  },
+  "result": {
+    "item": "minecraft:honeycomb"
+  }
+}

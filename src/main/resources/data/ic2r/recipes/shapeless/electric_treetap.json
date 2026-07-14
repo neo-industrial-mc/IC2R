@@ -1,0 +1,14 @@
+{
+  "type": "ic2r:shapeless",
+  "ingredients": [
+    {
+      "item": "ic2r:treetap"
+    },
+    {
+      "item": "ic2r:small_power_unit"
+    }
+  ],
+  "result": {
+    "item": "ic2r:electric_treetap"
+  }
+}

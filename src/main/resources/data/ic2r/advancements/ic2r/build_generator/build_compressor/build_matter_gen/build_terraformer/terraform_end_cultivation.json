@@ -1,0 +1,31 @@
+{
+  "parent": "ic2r:ic2r/build_generator/build_compressor/build_matter_gen/build_terraformer",
+  "display": {
+    "icon": {
+      "item": "ic2r:cultivation_tfbp"
+    },
+    "title": {
+      "translate": "advancements.ic2r.terraform_end_cultivation"
+    },
+    "description": {
+      "translate": "advancements.ic2r.terraform_end_cultivation.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "item": "ic2r:small_uranium_235",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:uranium_235"
+  }
+}

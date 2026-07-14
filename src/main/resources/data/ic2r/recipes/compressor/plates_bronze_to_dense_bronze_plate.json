@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "tag": "forge:plates/bronze",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:dense_bronze_plate"
+  }
+}

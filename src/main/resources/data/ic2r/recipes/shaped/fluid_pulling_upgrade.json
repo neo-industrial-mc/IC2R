@@ -1,0 +1,23 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "TXT",
+    " E ",
+    "T T"
+  ],
+  "key": {
+    "E": {
+      "item": "ic2r:electric_motor"
+    },
+    "T": {
+      "tag": "forge:plates/tin"
+    },
+    "X": {
+      "item": "ic2r:treetap"
+    }
+  },
+  "group": "fluid_pulling_upgrade",
+  "result": {
+    "item": "ic2r:fluid_pulling_upgrade"
+  }
+}
