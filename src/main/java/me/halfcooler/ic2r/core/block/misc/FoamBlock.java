@@ -60,12 +60,12 @@ public class FoamBlock extends Block
 		builder.add(typeProperty);
 	}
 
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
+	public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context)
 	{
 		return Shapes.empty();
 	}
 
-	public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random)
+	public void randomTick(@NotNull BlockState state, ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource random)
 	{
 		int tickSpeed = world.getGameRules().getInt(GameRules.RULE_RANDOMTICKING);
 		if (tickSpeed <= 0)
@@ -81,7 +81,7 @@ public class FoamBlock extends Block
 		}
 	}
 
-	public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit)
 	{
 		if (StackUtil.consume(player, hand, StackUtil.sameItem(Blocks.SAND), 1))
 		{

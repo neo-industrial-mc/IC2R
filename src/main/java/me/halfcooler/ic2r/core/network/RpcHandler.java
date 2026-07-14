@@ -11,8 +11,8 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class RpcHandler
 {
-	private static ConcurrentMap<String, IRpcProvider<?>> providers = new ConcurrentHashMap<>();
-	private static ConcurrentMap<Integer, Rpc<?>> pending = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<String, IRpcProvider<?>> providers = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<Integer, Rpc<?>> pending = new ConcurrentHashMap<>();
 
 	public static boolean registerProvider(IRpcProvider<?> provider)
 	{

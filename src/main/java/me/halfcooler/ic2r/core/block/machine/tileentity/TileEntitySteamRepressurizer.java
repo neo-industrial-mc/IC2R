@@ -30,8 +30,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 
-import java.util.Objects;
-
 @NotClassic
 public class TileEntitySteamRepressurizer extends TileEntityInventory implements IHasGui, ServerTicker
 {

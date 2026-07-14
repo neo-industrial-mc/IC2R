@@ -8,8 +8,8 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemTinCan extends Item
 {
@@ -18,7 +18,7 @@ public class ItemTinCan extends Item
 		super(settings);
 	}
 
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
+	public @NotNull InteractionResultHolder<ItemStack> use(Level world, @NotNull Player player, @NotNull InteractionHand hand)
 	{
 		ItemStack stack = StackUtil.get(player, hand);
 		return !world.isClientSide && player.getFoodData().needsFood() ? this.onEaten(player, stack) : new InteractionResultHolder<>(InteractionResult.PASS, stack);

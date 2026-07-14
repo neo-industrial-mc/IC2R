@@ -20,6 +20,7 @@ import net.minecraft.server.level.TicketType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.saveddata.SavedData;
+import org.jetbrains.annotations.NotNull;
 
 public final class ChunkLoaderLogic
 {
@@ -220,7 +221,7 @@ public final class ChunkLoaderLogic
 			}
 		}
 
-		public CompoundTag save(CompoundTag nbt)
+		public @NotNull CompoundTag save(CompoundTag nbt)
 		{
 			ListTag loaders = new ListTag();
 			nbt.put("loaders", loaders);

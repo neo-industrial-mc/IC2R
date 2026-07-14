@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityIndustrialWorkbench>
 {
@@ -39,7 +40,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 		}
 
 		@Override
-		public ItemStack removeItem(int index, int amount)
+		public @NotNull ItemStack removeItem(int index, int amount)
 		{
 			ItemStack stack = super.removeItem(index, amount);
 			ContainerIndustrialWorkbench.this.slotsChanged(this);
@@ -68,7 +69,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 		this.indexOutput = this.slots.size();
 		this.outputs[0] = this.addSlot(new Ic2rCraftingResultSlot(this.player, this.craftMatrix, this.craftResult, 0, 124, 61)
 		{
-			protected void checkTakeAchievements(ItemStack stack)
+			protected void checkTakeAchievements(@NotNull ItemStack stack)
 			{
 				if (IC2R.sideProxy.isRendering())
 				{
@@ -156,7 +157,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 		super.onContainerEvent(event);
 	}
 
-	public void slotsChanged(Container inventory)
+	public void slotsChanged(@NotNull Container inventory)
 	{
 		Level world = this.base.getLevel();
 		if (world != null)
@@ -170,7 +171,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 		}
 	}
 
-	public boolean canTakeItemForPickAll(ItemStack stack, Slot slot)
+	public boolean canTakeItemForPickAll(@NotNull ItemStack stack, @NotNull Slot slot)
 	{
 		for (Slot output : this.outputs)
 		{

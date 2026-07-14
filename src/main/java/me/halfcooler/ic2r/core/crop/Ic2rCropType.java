@@ -8,6 +8,7 @@ import me.halfcooler.ic2r.core.util.Util;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 public enum Ic2rCropType implements StringRepresentable, ICropType
 {
@@ -97,7 +98,7 @@ public enum Ic2rCropType implements StringRepresentable, ICropType
 		return valueOf(Util.toCamel(cropCard.getId()));
 	}
 
-	public String getSerializedName()
+	public @NotNull String getSerializedName()
 	{
 		return this.name;
 	}

@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
+import org.jetbrains.annotations.NotNull;
 
 public class SteamBlock extends LiquidBlock
 {
@@ -18,7 +19,7 @@ public class SteamBlock extends LiquidBlock
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity)
+	public void entityInside(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Entity entity)
 	{
 		if (!world.isClientSide && entity instanceof LivingEntity living)
 		{

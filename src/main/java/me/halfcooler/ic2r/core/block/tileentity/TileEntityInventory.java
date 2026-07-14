@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Inventory-bearing TE. InvSlots keep domain APIs; Forge {@code ITEM_HANDLER} is exposed via
@@ -135,13 +136,13 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		return true;
 	}
 
-	public ItemStack getItem(int index)
+	public @NotNull ItemStack getItem(int index)
 	{
 		int loc = this.locateInvSlot(index);
 		return loc == -1 ? StackUtil.emptyStack : this.getStackAt(loc);
 	}
 
-	public ItemStack removeItem(int index, int amount)
+	public @NotNull ItemStack removeItem(int index, int amount)
 	{
 		int loc = this.locateInvSlot(index);
 		if (loc == -1)
@@ -176,7 +177,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		return StackUtil.setSize(ret, amount);
 	}
 
-	public ItemStack removeItemNoUpdate(int index)
+	public @NotNull ItemStack removeItemNoUpdate(int index)
 	{
 		int loc = this.locateInvSlot(index);
 		if (loc == -1)
@@ -193,7 +194,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		return ret;
 	}
 
-	public void setItem(int index, ItemStack stack)
+	public void setItem(int index, @NotNull ItemStack stack)
 	{
 		int loc = this.locateInvSlot(index);
 		if (loc == -1)
@@ -232,16 +233,16 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		return max;
 	}
 
-	public boolean stillValid(Player player)
+	public boolean stillValid(@NotNull Player player)
 	{
 		return !this.isRemoved() && player.distanceToSqr(this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 0.5, this.worldPosition.getZ() + 0.5) <= 64.0;
 	}
 
-	public void startOpen(Player player)
+	public void startOpen(@NotNull Player player)
 	{
 	}
 
-	public void stopOpen(Player player)
+	public void stopOpen(@NotNull Player player)
 	{
 	}
 
@@ -256,7 +257,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		return invSlot != null && invSlot.canInput() && invSlot.accepts(stack);
 	}
 
-	public int[] getSlotsForFace(Direction side)
+	public int @NotNull [] getSlotsForFace(@NotNull Direction side)
 	{
 		int[] ret = new int[this.getContainerSize()];
 		int i = 0;
@@ -269,7 +270,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		return ret;
 	}
 
-	public boolean canPlaceItemThroughFace(int index, ItemStack stack, Direction side)
+	public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack stack, Direction side)
 	{
 		if (StackUtil.isEmpty(stack))
 		{
@@ -308,7 +309,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		}
 	}
 
-	public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction side)
+	public boolean canTakeItemThroughFace(int index, @NotNull ItemStack stack, @NotNull Direction side)
 	{
 		InvSlot targetSlot = this.getInventorySlot(index);
 		if (targetSlot != null && targetSlot.canOutput())

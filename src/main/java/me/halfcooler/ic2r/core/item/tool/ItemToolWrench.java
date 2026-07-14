@@ -224,13 +224,13 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	 * {@code requiresCorrectToolForDrops} is set.
 	 */
 	@Override
-	public boolean isCorrectToolForDrops(BlockState state)
+	public boolean isCorrectToolForDrops(@NotNull BlockState state)
 	{
 		return isWrenchTarget(state);
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
 		if (this.isCorrectToolForDrops(state))
 		{
@@ -293,7 +293,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return false;
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Level world, List<Component> info, @NotNull TooltipFlag flag)
+	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> info, @NotNull TooltipFlag flag)
 	{
 		Component attackKey = Minecraft.getInstance().options.keyAttack.getTranslatedKeyMessage();
 		Component useKey = Minecraft.getInstance().options.keyUse.getTranslatedKeyMessage();

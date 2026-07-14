@@ -24,6 +24,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class UUMatterBlock extends LiquidBlock
 {
@@ -33,7 +34,7 @@ public class UUMatterBlock extends LiquidBlock
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity)
+	public void entityInside(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Entity entity)
 	{
 		if (!world.isClientSide && entity instanceof LivingEntity living)
 		{
@@ -42,7 +43,7 @@ public class UUMatterBlock extends LiquidBlock
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit)
 	{
 		ItemStack heldItem = player.getItemInHand(hand);
 		if (heldItem.is(Items.GLASS_BOTTLE) && state.getValue(LiquidBlock.LEVEL) == 0)
@@ -69,7 +70,7 @@ public class UUMatterBlock extends LiquidBlock
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston)
+	public void neighborChanged(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos, boolean movedByPiston)
 	{
 		if (state.getValue(LiquidBlock.LEVEL) != 0) return;
 

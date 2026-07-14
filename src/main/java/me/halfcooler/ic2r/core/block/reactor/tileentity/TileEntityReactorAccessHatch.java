@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 @NotClassic
 public class TileEntityReactorAccessHatch extends TileEntityReactorVessel implements Container
@@ -39,25 +40,25 @@ public class TileEntityReactorAccessHatch extends TileEntityReactorVessel implem
 		return reactor != null ? reactor.isEmpty() : true;
 	}
 
-	public ItemStack getItem(int index)
+	public @NotNull ItemStack getItem(int index)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
 		return reactor != null ? reactor.getItem(index) : null;
 	}
 
-	public ItemStack removeItem(int index, int count)
+	public @NotNull ItemStack removeItem(int index, int count)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
 		return reactor != null ? reactor.removeItem(index, count) : null;
 	}
 
-	public ItemStack removeItemNoUpdate(int index)
+	public @NotNull ItemStack removeItemNoUpdate(int index)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
 		return reactor != null ? reactor.removeItemNoUpdate(index) : null;
 	}
 
-	public void setItem(int index, ItemStack stack)
+	public void setItem(int index, @NotNull ItemStack stack)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
 		if (reactor != null)
@@ -72,13 +73,13 @@ public class TileEntityReactorAccessHatch extends TileEntityReactorVessel implem
 		return reactor != null ? reactor.getMaxStackSize() : 0;
 	}
 
-	public boolean stillValid(Player player)
+	public boolean stillValid(@NotNull Player player)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
 		return reactor != null ? reactor.stillValid(player) : false;
 	}
 
-	public void startOpen(Player player)
+	public void startOpen(@NotNull Player player)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
 		if (reactor != null)
@@ -87,7 +88,7 @@ public class TileEntityReactorAccessHatch extends TileEntityReactorVessel implem
 		}
 	}
 
-	public void stopOpen(Player player)
+	public void stopOpen(@NotNull Player player)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
 		if (reactor != null)
@@ -96,7 +97,7 @@ public class TileEntityReactorAccessHatch extends TileEntityReactorVessel implem
 		}
 	}
 
-	public boolean canPlaceItem(int index, ItemStack stack)
+	public boolean canPlaceItem(int index, @NotNull ItemStack stack)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
 		return reactor != null ? reactor.canPlaceItem(index, stack) : false;

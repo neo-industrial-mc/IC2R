@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import org.apache.commons.lang3.mutable.Mutable;
+import org.jetbrains.annotations.NotNull;
 
 final class ItemFluidCapImpl implements ICapabilityProvider, IFluidHandlerItem, NonNullSupplier<IFluidHandlerItem>, Mutable<ItemStack>
 {
@@ -24,7 +25,7 @@ final class ItemFluidCapImpl implements ICapabilityProvider, IFluidHandlerItem, 
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing)
+	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing)
 	{
 		return capability == ForgeCapabilities.FLUID_HANDLER_ITEM ? (LazyOptional<T>) LazyOptional.of(this) : LazyOptional.empty();
 	}
@@ -48,7 +49,7 @@ final class ItemFluidCapImpl implements ICapabilityProvider, IFluidHandlerItem, 
 	}
 
 	@Override
-	public FluidStack getFluidInTank(int tank)
+	public @NotNull FluidStack getFluidInTank(int tank)
 	{
 		if (tank != 0)
 		{
@@ -61,13 +62,13 @@ final class ItemFluidCapImpl implements ICapabilityProvider, IFluidHandlerItem, 
 	}
 
 	@Override
-	public boolean isFluidValid(int tank, FluidStack fs)
+	public boolean isFluidValid(int tank, @NotNull FluidStack fs)
 	{
 		return tank == 0;
 	}
 
 	@Override
-	public FluidStack drain(int amount, IFluidHandler.FluidAction action)
+	public @NotNull FluidStack drain(int amount, IFluidHandler.FluidAction action)
 	{
 		if (amount > 0 && this.stack.getCount() == 1)
 		{
@@ -80,7 +81,7 @@ final class ItemFluidCapImpl implements ICapabilityProvider, IFluidHandlerItem, 
 	}
 
 	@Override
-	public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action)
+	public @NotNull FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action)
 	{
 		if (resource != null && !resource.isEmpty() && this.stack.getCount() == 1)
 		{
@@ -114,12 +115,12 @@ final class ItemFluidCapImpl implements ICapabilityProvider, IFluidHandlerItem, 
 	}
 
 	@Override
-	public ItemStack getContainer()
+	public @NotNull ItemStack getContainer()
 	{
 		return this.stack;
 	}
 
-	public IFluidHandlerItem get()
+	public @NotNull IFluidHandlerItem get()
 	{
 		return this;
 	}

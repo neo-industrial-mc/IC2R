@@ -33,8 +33,8 @@ import net.minecraft.world.level.chunk.LevelChunk;
 
 public class WorldData
 {
-	private static ConcurrentMap<ResourceLocation, WorldData> idxClient = PlatformServices.lifecycle().isClient() ? new ConcurrentHashMap<>() : null;
-	private static ConcurrentMap<ResourceLocation, WorldData> idxServer = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<ResourceLocation, WorldData> idxClient = PlatformServices.lifecycle().isClient() ? new ConcurrentHashMap<>() : null;
+	private static final ConcurrentMap<ResourceLocation, WorldData> idxServer = new ConcurrentHashMap<>();
 	public final EnergyNetLocal energyNet;
 	public final Map<BlockEntity, TeUpdateDataServer> tesToUpdate = new IdentityHashMap<>();
 	public final TradingMarket tradeMarket;

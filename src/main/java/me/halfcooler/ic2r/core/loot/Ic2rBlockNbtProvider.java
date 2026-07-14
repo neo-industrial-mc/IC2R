@@ -17,6 +17,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.providers.nbt.LootNbtProviderType;
 import net.minecraft.world.level.storage.loot.providers.nbt.NbtProvider;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Ic2rBlockNbtProvider implements NbtProvider
@@ -45,23 +46,23 @@ public class Ic2rBlockNbtProvider implements NbtProvider
 		return null;
 	}
 
-	public Set<LootContextParam<?>> getReferencedContextParams()
+	public @NotNull Set<LootContextParam<?>> getReferencedContextParams()
 	{
 		return ImmutableSet.of();
 	}
 
-	public LootNbtProviderType getType()
+	public @NotNull LootNbtProviderType getType()
 	{
 		return Ic2rLootNbtProviderTypes.BLOCK_NBT;
 	}
 
 	public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<Ic2rBlockNbtProvider>
 	{
-		public void serialize(JsonObject jsonObject, Ic2rBlockNbtProvider ic2BlockNbtProvider, JsonSerializationContext jsonSerializationContext)
+		public void serialize(@NotNull JsonObject jsonObject, @NotNull Ic2rBlockNbtProvider ic2BlockNbtProvider, @NotNull JsonSerializationContext jsonSerializationContext)
 		{
 		}
 
-		public Ic2rBlockNbtProvider deserialize(JsonObject jsonObject, JsonDeserializationContext jsonDeserializationContext)
+		public @NotNull Ic2rBlockNbtProvider deserialize(@NotNull JsonObject jsonObject, @NotNull JsonDeserializationContext jsonDeserializationContext)
 		{
 			return new Ic2rBlockNbtProvider();
 		}

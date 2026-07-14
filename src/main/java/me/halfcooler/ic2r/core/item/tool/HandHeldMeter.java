@@ -2,7 +2,6 @@ package me.halfcooler.ic2r.core.item.tool;
 
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;

@@ -6,8 +6,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemTerraWart extends Item
 {
@@ -16,7 +16,7 @@ public class ItemTerraWart extends Item
 		super(settings);
 	}
 
-	public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity player)
+	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level world, LivingEntity player)
 	{
 		player.removeEffect(MobEffects.CONFUSION);
 		player.removeEffect(MobEffects.DIG_SLOWDOWN);

@@ -5,6 +5,7 @@ import me.halfcooler.ic2r.api.item.ElectricItem;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class SlotDischarge extends Slot
 {
@@ -21,7 +22,7 @@ public class SlotDischarge extends Slot
 		super(par1iInventory, par2, par3, par4);
 	}
 
-	public boolean mayPlace(ItemStack stack)
+	public boolean mayPlace(@NotNull ItemStack stack)
 	{
 		if (stack == null)
 		{

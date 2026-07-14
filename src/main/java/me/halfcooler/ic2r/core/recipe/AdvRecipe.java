@@ -273,7 +273,7 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
+	public @NotNull NonNullList<ItemStack> getRemainingItems(@NotNull CraftingContainer inv)
 	{
 		return this.consuming ? NonNullList.withSize(inv.getContainerSize(), StackUtil.emptyStack) : Ic2rCraftingRecipe.super.getRemainingItems(inv);
 	}

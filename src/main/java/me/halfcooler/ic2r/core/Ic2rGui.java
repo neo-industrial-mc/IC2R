@@ -41,6 +41,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
 public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> extends AbstractContainerScreen<T>
@@ -127,7 +128,7 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 		}
 	}
 
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
+	public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
 	{
 		this.guiGraphics = guiGraphics;
 		this.renderBackground(guiGraphics);
@@ -150,7 +151,7 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 		}
 	}
 
-	protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY)
+	protected void renderBg(@NotNull GuiGraphics guiGraphics, float delta, int mouseX, int mouseY)
 	{
 		mouseX -= this.leftPos;
 		mouseY -= this.topPos;
@@ -180,7 +181,7 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 		this.drawXCenteredString(guiGraphics, this.imageWidth / 2, 6, this.title, 4210752, false);
 	}
 
-	protected final void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY)
+	protected final void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY)
 	{
 		this.drawForegroundLayer(guiGraphics, mouseX - this.leftPos, mouseY - this.topPos);
 		this.flushTooltips(guiGraphics);

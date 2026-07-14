@@ -85,7 +85,7 @@ public class ContainerHandHeldInventory<T extends HandHeldInventory> extends Con
 		}
 	}
 
-	public void removed(Player player)
+	public void removed(@NotNull Player player)
 	{
 		this.base.onScreenClosed(player);
 		super.removed(player);

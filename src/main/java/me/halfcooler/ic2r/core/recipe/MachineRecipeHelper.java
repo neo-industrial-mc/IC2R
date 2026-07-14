@@ -22,6 +22,7 @@ import java.util.Set;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class MachineRecipeHelper<RI, RO> implements IMachineRecipeManager<RI, RO, ItemStack>
 {
@@ -86,7 +87,7 @@ public abstract class MachineRecipeHelper<RI, RO> implements IMachineRecipeManag
 		return new Iterable<>()
 		{
 			@Override
-			public Iterator<MachineRecipe<RI, RO>> iterator()
+			public @NotNull Iterator<MachineRecipe<RI, RO>> iterator()
 			{
 				return new Iterator<>()
 				{

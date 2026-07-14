@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import com.mojang.math.Axis;
 import me.halfcooler.ic2r.api.entity.boat.AbstractBoatEntity;
@@ -43,7 +44,7 @@ public class BoatEntityRenderer extends EntityRenderer<AbstractBoatEntity>
 		return new BoatModel(ctx.bakeLayer(entityModelLayer));
 	}
 
-	public void render(AbstractBoatEntity boatEntity, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i)
+	public void render(AbstractBoatEntity boatEntity, float f, float g, PoseStack matrixStack, @NotNull MultiBufferSource vertexConsumerProvider, int i)
 	{
 		matrixStack.pushPose();
 		matrixStack.translate(0.0, 0.375, 0.0);
@@ -88,7 +89,7 @@ public class BoatEntityRenderer extends EntityRenderer<AbstractBoatEntity>
 		return chest ? "textures/entity/chest_boat/" + type.getName() + ".png" : "textures/entity/boat/" + type.getName() + ".png";
 	}
 
-	public ResourceLocation getTextureLocation(AbstractBoatEntity boatEntity)
+	public @NotNull ResourceLocation getTextureLocation(AbstractBoatEntity boatEntity)
 	{
 		return this.texturesAndModels.get(boatEntity.getOverrideBoatType()).getFirst();
 	}

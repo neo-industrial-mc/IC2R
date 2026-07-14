@@ -1,6 +1,7 @@
 package me.halfcooler.ic2r.core.util;
 
 import com.google.common.collect.Iterators;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractQueue;
 import java.util.ArrayDeque;
@@ -133,7 +134,7 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		}
 
 		@Override
-		public synchronized Iterator<E> iterator()
+		public synchronized @NotNull Iterator<E> iterator()
 		{
 			List<Iterator<E>> iterators = new ArrayList<>(this.queues.size());
 
@@ -146,7 +147,7 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		}
 
 		@Override
-		public synchronized boolean offer(E e)
+		public synchronized boolean offer(@NotNull E e)
 		{
 			Queue<E> queue = this.queues.get(this.getPriority(e));
 			queue.offer(e);
@@ -155,19 +156,19 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		}
 
 		@Override
-		public void put(E e)
+		public void put(@NotNull E e)
 		{
 			this.offer(e);
 		}
 
 		@Override
-		public boolean offer(E e, long timeout, TimeUnit unit)
+		public boolean offer(E e, long timeout, @NotNull TimeUnit unit)
 		{
 			return this.offer(e);
 		}
 
 		@Override
-		public synchronized E take() throws InterruptedException
+		public synchronized @NotNull E take() throws InterruptedException
 		{
 			E ret;
 			for (ret = this.poll(); ret == null; ret = this.poll())
@@ -179,7 +180,7 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		}
 
 		@Override
-		public synchronized E poll(long timeout, TimeUnit unit) throws InterruptedException
+		public synchronized E poll(long timeout, @NotNull TimeUnit unit) throws InterruptedException
 		{
 			E ret = this.poll();
 			if (ret != null)
@@ -211,13 +212,13 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		}
 
 		@Override
-		public int drainTo(Collection<? super E> c)
+		public int drainTo(@NotNull Collection<? super E> c)
 		{
 			return this.drainTo(c, Integer.MAX_VALUE);
 		}
 
 		@Override
-		public synchronized int drainTo(Collection<? super E> c, int maxElements)
+		public synchronized int drainTo(@NotNull Collection<? super E> c, int maxElements)
 		{
 			int ret = 0;
 
@@ -263,7 +264,7 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		}
 
 		@Override
-		public synchronized boolean removeAll(Collection<?> c)
+		public synchronized boolean removeAll(@NotNull Collection<?> c)
 		{
 			boolean ret = false;
 
@@ -279,7 +280,7 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		}
 
 		@Override
-		public synchronized boolean retainAll(Collection<?> c)
+		public synchronized boolean retainAll(@NotNull Collection<?> c)
 		{
 			boolean ret = false;
 
@@ -295,13 +296,13 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		}
 
 		@Override
-		public synchronized Object[] toArray()
+		public synchronized Object @NotNull [] toArray()
 		{
 			return super.toArray();
 		}
 
 		@Override
-		public synchronized <T> T[] toArray(T[] a)
+		public synchronized <T> T @NotNull [] toArray(T @NotNull [] a)
 		{
 			return super.toArray(a);
 		}
@@ -313,7 +314,7 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		}
 
 		@Override
-		public synchronized boolean addAll(Collection<? extends E> c)
+		public synchronized boolean addAll(@NotNull Collection<? extends E> c)
 		{
 			if (c == null)
 			{
@@ -351,7 +352,7 @@ public class PriorityExecutor extends ThreadPoolExecutor
 		}
 
 		@Override
-		public Thread newThread(Runnable r)
+		public Thread newThread(@NotNull Runnable r)
 		{
 			Thread thread = new Thread(this.group, r, "ic2r-poolthread-" + number.getAndIncrement(), 0L);
 			thread.setDaemon(true);

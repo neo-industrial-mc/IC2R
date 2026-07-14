@@ -105,7 +105,7 @@ public class ItemToolCrowbar extends TieredItem implements IEnhancedOverlayProvi
 		return false;
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Level worldIn, List<Component> info, @NotNull TooltipFlag flagIn)
+	public void appendHoverText(@NotNull ItemStack stack, Level worldIn, @NotNull List<Component> info, @NotNull TooltipFlag flagIn)
 	{
 		Ic2rTooltip.add(info, Component.translatable("item.ic2r.crowbar.tooltip.remove", Minecraft.getInstance().options.keyRight.getKey().getDisplayName()));
 	}

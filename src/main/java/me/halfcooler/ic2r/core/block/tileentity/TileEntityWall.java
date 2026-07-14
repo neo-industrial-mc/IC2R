@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityWall extends Ic2rTileEntity
 {
@@ -186,7 +187,7 @@ public class TileEntityWall extends Ic2rTileEntity
 			}
 	
 			@Override
-			public String toString()
+			public @NotNull String toString()
 			{
 				return "WallState<" + this.color + ", " + Arrays.toString(this.obscurations) + ">";
 			}

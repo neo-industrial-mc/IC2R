@@ -17,6 +17,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeHolder<IRecipeInput, Collection<ItemStack>>>
@@ -31,7 +32,7 @@ public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeH
 		this.metaProcessor = metaProcessor;
 	}
 
-	public RecipeHolder<IRecipeInput, Collection<ItemStack>> fromJson(ResourceLocation id, JsonObject json)
+	public @NotNull RecipeHolder<IRecipeInput, Collection<ItemStack>> fromJson(@NotNull ResourceLocation id, JsonObject json)
 	{
 		IRecipeInput input = RecipeIo.parseInput(json.get("ingredient"));
 		RecipeOutputWeighted output = new RecipeOutputWeighted();
@@ -51,7 +52,7 @@ public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeH
 		return new RecipeHolder<>(machineRecipe, id, this, this.recipeType);
 	}
 
-	public RecipeHolder<IRecipeInput, Collection<ItemStack>> fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
+	public RecipeHolder<IRecipeInput, Collection<ItemStack>> fromNetwork(@NotNull ResourceLocation id, FriendlyByteBuf buf)
 	{
 		byte type = buf.readByte();
 		MachineRecipe<IRecipeInput, Collection<ItemStack>> machineRecipe;
@@ -66,7 +67,7 @@ public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeH
 		return new RecipeHolder<>(machineRecipe, id, this, this.recipeType);
 	}
 
-	public void toNetwork(FriendlyByteBuf buf, RecipeHolder<IRecipeInput, Collection<ItemStack>> recipe)
+	public void toNetwork(@NotNull FriendlyByteBuf buf, RecipeHolder<IRecipeInput, Collection<ItemStack>> recipe)
 	{
 		MachineRecipe<IRecipeInput, Collection<ItemStack>> machineRecipe = recipe.recipe();
 		if (machineRecipe instanceof MachineRecipeWeighted<?> machineRecipeWeighted)

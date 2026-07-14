@@ -11,6 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class NukeEntity extends ExplosiveEntity
 {
@@ -24,7 +25,7 @@ public class NukeEntity extends ExplosiveEntity
 		this(world, 0.0, 0.0, 0.0, 1.0F, 1);
 	}
 
-	public InteractionResult interact(Player player, InteractionHand hand)
+	public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand)
 	{
 		ItemStack stack = StackUtil.get(player, hand);
 		if (!StackUtil.isEmpty(stack) && stack.getItem() instanceof ItemToolWrench wrench)

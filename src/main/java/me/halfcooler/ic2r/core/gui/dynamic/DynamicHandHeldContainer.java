@@ -3,7 +3,6 @@ package me.halfcooler.ic2r.core.gui.dynamic;
 import me.halfcooler.ic2r.core.item.tool.HandHeldInventory;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.slot.SlotHologramSlot;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -65,7 +64,7 @@ public class DynamicHandHeldContainer<T extends HandHeldInventory> extends Dynam
 		}
 	}
 
-	public void removed(Player player)
+	public void removed(@NotNull Player player)
 	{
 		this.base.onScreenClosed(player);
 		super.removed(player);

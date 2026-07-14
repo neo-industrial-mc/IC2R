@@ -13,6 +13,7 @@ import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class BasicListRecipeManager extends MachineRecipeHelper<IRecipeInput, Object> implements IListRecipeManager
 {
@@ -48,7 +49,7 @@ public class BasicListRecipeManager extends MachineRecipeHelper<IRecipeInput, Ob
 	}
 
 	@Override
-	public Iterator<IRecipeInput> iterator()
+	public @NotNull Iterator<IRecipeInput> iterator()
 	{
 		return this.recipes.keySet().iterator();
 	}

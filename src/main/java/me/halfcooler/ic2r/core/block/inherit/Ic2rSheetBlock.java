@@ -14,11 +14,11 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Ic2rSheetBlock extends Block
@@ -98,12 +98,12 @@ public class Ic2rSheetBlock extends Block
 		return this.isValidPosition(world, pos, state) ? state : null;
 	}
 
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
+	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context)
 	{
 		return aabb;
 	}
 
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
+	public @NotNull VoxelShape getCollisionShape(BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context)
 	{
 		if (state.getBlock() == Ic2rBlocks.RESIN_SHEET.get())
 		{
@@ -150,7 +150,7 @@ public class Ic2rSheetBlock extends Block
 		return state.getBlock().isCollisionShapeFullBlock(state, world, pos);
 	}
 
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify)
+	public void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block block, @NotNull BlockPos fromPos, boolean notify)
 	{
 		if (!this.isValidPosition(world, pos, state))
 		{
@@ -159,7 +159,7 @@ public class Ic2rSheetBlock extends Block
 		}
 	}
 
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity)
+	public void entityInside(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Entity entity)
 	{
 		if (state.getBlock() == Ic2rBlocks.RESIN_SHEET.get())
 		{

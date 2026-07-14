@@ -20,9 +20,9 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemCropSeed extends Item implements ICropSeed
 {
@@ -45,7 +45,7 @@ public class ItemCropSeed extends Item implements ICropSeed
 		return stack;
 	}
 
-	public String getDescriptionId(ItemStack itemstack)
+	public @NotNull String getDescriptionId(@NotNull ItemStack itemstack)
 	{
 		if (itemstack == null)
 		{
@@ -64,13 +64,13 @@ public class ItemCropSeed extends Item implements ICropSeed
 		}
 	}
 
-	public Component getName(ItemStack stack)
+	public @NotNull Component getName(@NotNull ItemStack stack)
 	{
 		CropCard crop = Crops.instance.getCropCard(stack);
 		return Component.translatable(crop == null ? "ic2r.crop.seeds" : crop.getSeedType(), super.getName(stack));
 	}
 
-	public void appendHoverText(ItemStack stack, Level world, List<Component> info, TooltipFlag debugTooltips)
+	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> info, @NotNull TooltipFlag debugTooltips)
 	{
 		if (this.getScannedFromStack(stack) >= 4)
 		{
@@ -80,7 +80,7 @@ public class ItemCropSeed extends Item implements ICropSeed
 		}
 	}
 
-	public InteractionResult useOn(UseOnContext context)
+	public @NotNull InteractionResult useOn(UseOnContext context)
 	{
 		if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof TileEntityCrop crop)
 		{

@@ -11,7 +11,6 @@ import me.halfcooler.ic2r.core.util.StackUtil;
 import java.util.Collection;
 import java.util.Collections;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;

@@ -5,8 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import org.jetbrains.annotations.NotNull;
 
 public class Ic2rSignBlock extends StandingSignBlock
 {
@@ -15,7 +15,7 @@ public class Ic2rSignBlock extends StandingSignBlock
 		super(settings, signType);
 	}
 
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
+	public @NotNull BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state)
 	{
 		return new Ic2rSignBlockEntity(pos, state);
 	}

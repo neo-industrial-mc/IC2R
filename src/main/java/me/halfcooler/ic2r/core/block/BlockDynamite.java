@@ -27,6 +27,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockDynamite extends Block
@@ -58,7 +59,7 @@ public class BlockDynamite extends Block
 		builder.add(FACING, LINKED);
 	}
 
-	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context)
+	public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context)
 	{
 		return switch (state.getValue(FACING))
 		{
@@ -70,7 +71,7 @@ public class BlockDynamite extends Block
 		};
 	}
 
-	public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos)
+	public boolean canSurvive(BlockState state, @NotNull LevelReader level, @NotNull BlockPos pos)
 	{
 		Direction facing = state.getValue(FACING);
 		if (facing == Direction.DOWN)
@@ -118,18 +119,18 @@ public class BlockDynamite extends Block
 		return null;
 	}
 
-	public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack)
+	public void setPlacedBy(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack)
 	{
 		this.checkPlacement(level, pos, state);
 	}
 
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving)
+	public void neighborChanged(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Block block, @NotNull BlockPos fromPos, boolean isMoving)
 	{
 		this.checkPlacement(level, pos, state);
 	}
 
-	public BlockState updateShape(
-		BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos
+	public @NotNull BlockState updateShape(
+		BlockState state, @NotNull Direction direction, @NotNull BlockState neighborState, @NotNull LevelAccessor level, @NotNull BlockPos pos, @NotNull BlockPos neighborPos
 	)
 	{
 		if (state.getValue(FACING).getOpposite() == direction && !state.canSurvive(level, pos))
@@ -146,7 +147,7 @@ public class BlockDynamite extends Block
 		return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
 	}
 
-	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving)
+	public void onPlace(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState oldState, boolean isMoving)
 	{
 		if (!oldState.is(state.getBlock()))
 		{
@@ -216,7 +217,7 @@ public class BlockDynamite extends Block
 		}
 	}
 
-	public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state)
+	public @NotNull ItemStack getCloneItemStack(@NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull BlockState state)
 	{
 		return new ItemStack(Ic2rItems.DYNAMITE);
 	}
@@ -229,7 +230,7 @@ public class BlockDynamite extends Block
 	}
 
 	@Override
-	public boolean dropFromExplosion(Explosion explosion)
+	public boolean dropFromExplosion(@NotNull Explosion explosion)
 	{
 		return false;
 	}

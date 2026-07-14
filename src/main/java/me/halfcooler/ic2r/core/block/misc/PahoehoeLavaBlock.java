@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
+import org.jetbrains.annotations.NotNull;
 
 public class PahoehoeLavaBlock extends LiquidBlock
 {
@@ -35,7 +36,7 @@ public class PahoehoeLavaBlock extends LiquidBlock
 	}
 
 	@Override
-	public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean movedByPiston)
+	public void onPlace(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState oldState, boolean movedByPiston)
 	{
 		if (state.getValue(LiquidBlock.LEVEL) == 0)
 		{
@@ -44,7 +45,7 @@ public class PahoehoeLavaBlock extends LiquidBlock
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random)
+	public void tick(BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource random)
 	{
 		if (state.getValue(LiquidBlock.LEVEL) == 0)
 		{
@@ -53,7 +54,7 @@ public class PahoehoeLavaBlock extends LiquidBlock
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston)
+	public void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos, boolean movedByPiston)
 	{
 		super.neighborChanged(state, world, pos, neighborBlock, neighborPos, movedByPiston);
 		if (state.getValue(LiquidBlock.LEVEL) == 0 && isTouchingWater(world, pos))
@@ -63,7 +64,7 @@ public class PahoehoeLavaBlock extends LiquidBlock
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity)
+	public void entityInside(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Entity entity)
 	{
 		if (!world.isClientSide)
 		{

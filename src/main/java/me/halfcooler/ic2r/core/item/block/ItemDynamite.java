@@ -33,7 +33,7 @@ public class ItemDynamite extends Item implements IBoxable
 	}
 
 	@NotNull
-	public InteractionResult useOn(UseOnContext context)
+	public InteractionResult useOn(@NotNull UseOnContext context)
 	{
 		if (this.sticky)
 		{
@@ -81,7 +81,7 @@ public class ItemDynamite extends Item implements IBoxable
 	}
 
 	@NotNull
-	public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand)
+	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand)
 	{
 		ItemStack stack = StackUtil.get(player, hand);
 		if (!player.getAbilities().instabuild)

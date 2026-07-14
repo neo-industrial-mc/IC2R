@@ -19,7 +19,7 @@ public class SlotInvSlot extends Slot
 		this.index = index;
 	}
 
-	public boolean mayPlace(ItemStack stack)
+	public boolean mayPlace(@NotNull ItemStack stack)
 	{
 		return this.invSlot.accepts(stack);
 	}
@@ -35,7 +35,7 @@ public class SlotInvSlot extends Slot
 		this.setChanged();
 	}
 
-	public ItemStack remove(int amount)
+	public @NotNull ItemStack remove(int amount)
 	{
 		if (amount <= 0)
 		{
@@ -69,7 +69,7 @@ public class SlotInvSlot extends Slot
 		return this.invSlot.getStackSizeLimit();
 	}
 
-	public void onTake(Player player, ItemStack stack)
+	public void onTake(@NotNull Player player, @NotNull ItemStack stack)
 	{
 		super.onTake(player, stack);
 		this.invSlot.onPickupFromSlot();

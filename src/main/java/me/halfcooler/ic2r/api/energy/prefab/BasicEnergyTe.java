@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class BasicEnergyTe<T extends BasicEnergyTile> extends BlockEntity
 {
@@ -26,12 +27,12 @@ public class BasicEnergyTe<T extends BasicEnergyTile> extends BlockEntity
 		this.energyBuffer.invalidate();
 	}
 
-	public void load(CompoundTag nbt)
+	public void load(@NotNull CompoundTag nbt)
 	{
 		this.energyBuffer.readFromNBT(nbt);
 	}
 
-	protected void saveAdditional(CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
 		this.energyBuffer.writeToNBT(nbt);
 	}

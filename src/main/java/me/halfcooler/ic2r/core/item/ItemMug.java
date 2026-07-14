@@ -12,9 +12,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemMug extends Item implements ItemLike
 {
@@ -26,7 +26,7 @@ public class ItemMug extends Item implements ItemLike
 		this.mugType = mugType;
 	}
 
-	public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving)
+	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity entityLiving)
 	{
 		if (!(entityLiving instanceof Player player))
 		{
@@ -115,19 +115,19 @@ public class ItemMug extends Item implements ItemLike
 		}
 	}
 
-	public int getUseDuration(ItemStack stack)
+	public int getUseDuration(@NotNull ItemStack stack)
 	{
 		ItemMug.MugType type = this.getType(stack);
 		return type != null && type != ItemMug.MugType.empty ? 32 : 0;
 	}
 
-	public UseAnim getUseAnimation(ItemStack stack)
+	public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack)
 	{
 		ItemMug.MugType type = this.getType(stack);
 		return type != null && type != ItemMug.MugType.empty ? UseAnim.DRINK : UseAnim.NONE;
 	}
 
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
+	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand)
 	{
 		ItemMug.MugType type = this.getType(StackUtil.get(player, hand));
 		if (type != null && type != ItemMug.MugType.empty)

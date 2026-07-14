@@ -10,10 +10,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import org.jetbrains.annotations.NotNull;
 
 public class CannerEnrichRecipeSerializer implements RecipeSerializer<RecipeHolder<ICannerEnrichRecipeManager.Input, Ic2rFluidStack>>
 {
-	public RecipeHolder<ICannerEnrichRecipeManager.Input, Ic2rFluidStack> fromJson(ResourceLocation id, JsonObject json)
+	public @NotNull RecipeHolder<ICannerEnrichRecipeManager.Input, Ic2rFluidStack> fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json)
 	{
 		Ic2rFluidStack input = RecipeIo.parseFluidStack(GsonHelper.getAsJsonObject(json, "input_ingredient"));
 		IRecipeInput additive = RecipeIo.parseInput(json.get("additive_ingredient"));
@@ -21,7 +22,7 @@ public class CannerEnrichRecipeSerializer implements RecipeSerializer<RecipeHold
 		return new RecipeHolder<>(new MachineRecipe<>(new ICannerEnrichRecipeManager.Input(input, additive), result), id, this, Ic2rRecipeTypes.CANNER_ENRICH);
 	}
 
-	public RecipeHolder<ICannerEnrichRecipeManager.Input, Ic2rFluidStack> fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
+	public RecipeHolder<ICannerEnrichRecipeManager.Input, Ic2rFluidStack> fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf)
 	{
 		Ic2rFluidStack input = RecipeIo.readFluidStack(buf);
 		IRecipeInput additive = RecipeIo.readInput(buf);
@@ -29,7 +30,7 @@ public class CannerEnrichRecipeSerializer implements RecipeSerializer<RecipeHold
 		return new RecipeHolder<>(new MachineRecipe<>(new ICannerEnrichRecipeManager.Input(input, additive), result), id, this, Ic2rRecipeTypes.CANNER_ENRICH);
 	}
 
-	public void toNetwork(FriendlyByteBuf buf, RecipeHolder<ICannerEnrichRecipeManager.Input, Ic2rFluidStack> recipe)
+	public void toNetwork(@NotNull FriendlyByteBuf buf, RecipeHolder<ICannerEnrichRecipeManager.Input, Ic2rFluidStack> recipe)
 	{
 		RecipeIo.writeFluidStack(buf, recipe.recipe().getInput().fluid());
 		RecipeIo.writeInput(buf, recipe.recipe().getInput().additive());

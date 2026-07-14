@@ -10,6 +10,7 @@ import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Item-tag DataGen (W2.5): tool tags previously handwritten under
@@ -29,7 +30,7 @@ public final class Ic2rItemTagsProvider extends ItemTagsProvider
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider provider)
+	protected void addTags(HolderLookup.@NotNull Provider provider)
 	{
 		// data/ic2r/tags/items/wrenches.json
 		tag(Ic2rItemTags.WRENCHES)

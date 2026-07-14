@@ -89,11 +89,7 @@ public final class ElectricalNodes
 		int voltage = (int) EnergyNet.instance.getPowerFromTier(tier);
 		return voltage > 0 ? (int) Math.floor(demanded / voltage) : 0;
 	}
-
-	/**
-	 * Per-packet EU for sources, or working voltage (V) for sinks used in inject tier lookup.
-	 * Falls back to {@link EnergyNet#getPowerFromTier(int)} when no electrical profile is available.
-	 */
+	
 	public static double getPacketPower(IEnergyTile tile, int packetIndex)
 	{
 		if (tile instanceof IEnergySource source)

@@ -569,7 +569,7 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 		}
 	}
 
-	public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean notify)
+	public void onPlace(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull BlockState oldState, boolean notify)
 	{
 		if (!world.isClientSide)
 		{

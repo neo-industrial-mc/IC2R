@@ -4,6 +4,7 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlot;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class SlotInvSlotReadOnly extends SlotInvSlot
 {
@@ -23,13 +24,13 @@ public class SlotInvSlotReadOnly extends SlotInvSlot
 	{
 	}
 
-	public boolean mayPickup(Player player)
+	public boolean mayPickup(@NotNull Player player)
 	{
 		return false;
 	}
 
 	@Override
-	public ItemStack remove(int par1)
+	public @NotNull ItemStack remove(int par1)
 	{
 		return StackUtil.emptyStack;
 	}

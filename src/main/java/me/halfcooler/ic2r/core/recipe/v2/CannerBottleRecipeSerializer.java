@@ -10,10 +10,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import org.jetbrains.annotations.NotNull;
 
 public class CannerBottleRecipeSerializer implements RecipeSerializer<RecipeHolder<ICannerBottleRecipeManager.Input, ItemStack>>
 {
-	public RecipeHolder<ICannerBottleRecipeManager.Input, ItemStack> fromJson(ResourceLocation id, JsonObject json)
+	public @NotNull RecipeHolder<ICannerBottleRecipeManager.Input, ItemStack> fromJson(@NotNull ResourceLocation id, JsonObject json)
 	{
 		IRecipeInput container = RecipeIo.parseInput(json.get("container_ingredient"));
 		IRecipeInput fill = RecipeIo.parseInput(json.get("fill_ingredient"));
@@ -21,7 +22,7 @@ public class CannerBottleRecipeSerializer implements RecipeSerializer<RecipeHold
 		return new RecipeHolder<>(new MachineRecipe<>(new ICannerBottleRecipeManager.Input(container, fill), output), id, this, Ic2rRecipeTypes.CANNER_BOTTLE);
 	}
 
-	public RecipeHolder<ICannerBottleRecipeManager.Input, ItemStack> fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
+	public RecipeHolder<ICannerBottleRecipeManager.Input, ItemStack> fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf)
 	{
 		IRecipeInput container = RecipeIo.readInput(buf);
 		IRecipeInput fill = RecipeIo.readInput(buf);
@@ -29,7 +30,7 @@ public class CannerBottleRecipeSerializer implements RecipeSerializer<RecipeHold
 		return new RecipeHolder<>(new MachineRecipe<>(new ICannerBottleRecipeManager.Input(container, fill), output), id, this, Ic2rRecipeTypes.CANNER_BOTTLE);
 	}
 
-	public void toNetwork(FriendlyByteBuf buf, RecipeHolder<ICannerBottleRecipeManager.Input, ItemStack> recipe)
+	public void toNetwork(@NotNull FriendlyByteBuf buf, RecipeHolder<ICannerBottleRecipeManager.Input, ItemStack> recipe)
 	{
 		RecipeIo.writeInput(buf, recipe.recipe().getInput().container());
 		RecipeIo.writeInput(buf, recipe.recipe().getInput().fill());

@@ -10,8 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemContainmentbox extends Item implements IHandHeldInventory
 {
@@ -20,7 +20,7 @@ public class ItemContainmentbox extends Item implements IHandHeldInventory
 		super(settings);
 	}
 
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
+	public @NotNull InteractionResultHolder<ItemStack> use(Level world, @NotNull Player player, @NotNull InteractionHand hand)
 	{
 		ItemStack stack = StackUtil.get(player, hand);
 		if (!world.isClientSide)
@@ -46,7 +46,7 @@ public class ItemContainmentbox extends Item implements IHandHeldInventory
 		return true;
 	}
 
-	public Rarity getRarity(ItemStack stack)
+	public @NotNull Rarity getRarity(@NotNull ItemStack stack)
 	{
 		return Rarity.UNCOMMON;
 	}

@@ -3,6 +3,7 @@ package me.halfcooler.ic2r.core.network;
 import me.halfcooler.ic2r.api.network.IGrowingBuffer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,7 +16,7 @@ import java.util.Arrays;
 public class GrowingBuffer extends OutputStream implements IGrowingBuffer
 {
 	private static final Charset utf8 = StandardCharsets.UTF_8;
-	private static byte[] emptyBuffer = new byte[0];
+	private static final byte[] emptyBuffer = new byte[0];
 	private byte[] buffer;
 	private int pos;
 	private int altPos;
@@ -195,7 +196,7 @@ public class GrowingBuffer extends OutputStream implements IGrowingBuffer
 	}
 
 	@Override
-	public void write(byte[] b, int off, int len)
+	public void write(byte @NotNull [] b, int off, int len)
 	{
 		this.ensureCapacity(len);
 		System.arraycopy(b, off, this.buffer, this.pos, len);
@@ -297,13 +298,13 @@ public class GrowingBuffer extends OutputStream implements IGrowingBuffer
 	}
 
 	@Override
-	public void writeBytes(String s)
+	public void writeBytes(@NotNull String s)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void writeChars(String s)
+	public void writeChars(@NotNull String s)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -375,7 +376,7 @@ public class GrowingBuffer extends OutputStream implements IGrowingBuffer
 	}
 
 	@Override
-	public void readFully(byte[] b, int off, int len)
+	public void readFully(byte @NotNull [] b, int off, int len)
 	{
 		if (this.pos + len > this.altPos)
 		{
@@ -533,7 +534,7 @@ public class GrowingBuffer extends OutputStream implements IGrowingBuffer
 	}
 
 	@Override
-	public String readUTF() throws IOException
+	public @NotNull String readUTF() throws IOException
 	{
 		int len = this.readUnsignedShort();
 		if (len == 0)

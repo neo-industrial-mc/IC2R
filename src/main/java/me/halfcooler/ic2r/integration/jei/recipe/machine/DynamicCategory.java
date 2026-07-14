@@ -253,7 +253,7 @@ public class DynamicCategory extends IORecipeCategory<IORecipeWrapper>
 		this.addRecipeSlots(builder, recipe, focuses, this.xOffset, this.yOffset);
 	}
 
-	public void draw(IORecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY)
+	public void draw(@NotNull IORecipeWrapper recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY)
 	{
 		for (Tuple.T2<IDrawable, SlotPosition> element : this.elements)
 		{

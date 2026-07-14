@@ -27,12 +27,11 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.CrossCollisionBlock;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class Ic2rFenceBlock extends FenceBlock
 {
@@ -108,13 +107,13 @@ public class Ic2rFenceBlock extends FenceBlock
 		return CrossCollisionBlock.PROPERTY_BY_DIRECTION;
 	}
 
-	public BlockState getStateForPlacement(BlockPlaceContext ctx)
+	public @NotNull BlockState getStateForPlacement(BlockPlaceContext ctx)
 	{
 		FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
 		return this.getActualState(this.defaultBlockState().setValue(WATERLOGGED, fluidState.is(Fluids.WATER)), ctx.getLevel(), ctx.getClickedPos());
 	}
 
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos)
+	public @NotNull BlockState updateShape(BlockState state, @NotNull Direction direction, @NotNull BlockState neighborState, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockPos neighborPos)
 	{
 		if (state.getValue(WATERLOGGED))
 		{
@@ -182,7 +181,7 @@ public class Ic2rFenceBlock extends FenceBlock
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity)
+	public void entityInside(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Entity entity)
 	{
 		if (this.canBoost)
 		{

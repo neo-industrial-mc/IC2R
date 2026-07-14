@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedModel
@@ -81,12 +82,12 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 		return new Material(atlas, IC2R.getIdentifier(path));
 	}
 
-	public Collection<ResourceLocation> getDependencies()
+	public @NotNull Collection<ResourceLocation> getDependencies()
 	{
 		return Collections.emptyList();
 	}
 
-	public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver)
+	public void resolveParents(@NotNull Function<ResourceLocation, UnbakedModel> resolver)
 	{
 	}
 
@@ -107,7 +108,7 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 		return ret;
 	}
 
-	public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter, ModelState rotationContainer, ResourceLocation modelId)
+	public BakedModel bake(@NotNull ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter, @NotNull ModelState rotationContainer, @NotNull ResourceLocation modelId)
 	{
 		this.blackSprite = textureGetter.apply(getTextureId(this.type, this.insulation, DyeColor.BLACK, this.active));
 		if (!this.foam.isPresent())
@@ -143,7 +144,7 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 		return this;
 	}
 
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource random)
+	public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource random)
 	{
 		return Collections.emptyList();
 	}
@@ -168,17 +169,17 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 		return false;
 	}
 
-	public TextureAtlasSprite getParticleIcon()
+	public @NotNull TextureAtlasSprite getParticleIcon()
 	{
 		return this.particleTexture;
 	}
 
-	public ItemTransforms getTransforms()
+	public @NotNull ItemTransforms getTransforms()
 	{
 		return ItemTransforms.NO_TRANSFORMS;
 	}
 
-	public ItemOverrides getOverrides()
+	public @NotNull ItemOverrides getOverrides()
 	{
 		return ItemOverrides.EMPTY;
 	}

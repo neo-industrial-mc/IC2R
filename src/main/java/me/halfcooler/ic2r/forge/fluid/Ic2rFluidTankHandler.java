@@ -9,32 +9,17 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Forge {@link IFluidHandler} adapter over a single {@link Ic2rFluidTank} (G2.5 / FL-*).
- * <p>
- * Machine domain logic continues to use {@link Ic2rFluidTank#fillMb}/{@link Ic2rFluidTank#drainMb};
- * automation and capability callers use this handler.
- * <p>
- * Moved from {@code core.fluid} to {@code forge.fluid} (A40.2 Batch 3).
- */
-public final class Ic2rFluidTankHandler implements IFluidHandler
+public record Ic2rFluidTankHandler(Ic2rFluidTank tank) implements IFluidHandler
 {
-	private final Ic2rFluidTank tank;
-
-	public Ic2rFluidTankHandler(Ic2rFluidTank tank)
+	public Ic2rFluidTankHandler
 	{
 		if (tank == null)
 		{
 			throw new NullPointerException("tank");
 		}
 
-		this.tank = tank;
 	}
 
-	public Ic2rFluidTank getTank()
-	{
-		return this.tank;
-	}
 
 	@Override
 	public int getTanks()

@@ -12,10 +12,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.Property;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractDetectorCableBlock extends AbstractCableBlock
 {
@@ -29,7 +28,7 @@ public abstract class AbstractDetectorCableBlock extends AbstractCableBlock
 	}
 
 	@Override
-	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(@NotNull Builder<Block, BlockState> builder)
 	{
 		super.createBlockStateDefinition(builder);
 		builder.add(active);
@@ -42,7 +41,7 @@ public abstract class AbstractDetectorCableBlock extends AbstractCableBlock
 		world.scheduleTick(pos, this, world.getRandom().nextInt(32));
 	}
 
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random)
+	public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource random)
 	{
 		this.tickFoamHardening(state, world, pos, random);
 		state = world.getBlockState(pos);
@@ -65,22 +64,22 @@ public abstract class AbstractDetectorCableBlock extends AbstractCableBlock
 		}
 	}
 
-	public boolean isSignalSource(BlockState state)
+	public boolean isSignalSource(@NotNull BlockState state)
 	{
 		return true;
 	}
 
-	public int getSignal(BlockState state, BlockGetter world, BlockPos pos, Direction direction)
+	public int getSignal(BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Direction direction)
 	{
 		return state.getValue(active) ? 15 : 0;
 	}
 
-	public boolean hasAnalogOutputSignal(BlockState state)
+	public boolean hasAnalogOutputSignal(@NotNull BlockState state)
 	{
 		return true;
 	}
 
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos)
+	public int getAnalogOutputSignal(BlockState state, @NotNull Level world, @NotNull BlockPos pos)
 	{
 		if (!(Boolean) state.getValue(active))
 		{

@@ -43,12 +43,12 @@ public class ProgressGauge extends GuiElement<ProgressGauge>
 		type_4(165, 96, 165, 112, 22, 15),
 		type_5(133, 64, 133, 80, 18, 15);
 
-		private int emptyX;
-		private int emptyY;
-		private int fullX;
-		private int fullY;
-		private int w;
-		private int h;
+		private final int emptyX;
+		private final int emptyY;
+		private final int fullX;
+		private final int fullY;
+		private final int w;
+		private final int h;
 
 		ProgressBarType(int emptyX, int emptyY, int fullX, int fullY, int w, int h)
 		{

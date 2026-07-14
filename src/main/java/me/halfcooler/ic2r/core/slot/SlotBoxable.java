@@ -4,6 +4,7 @@ import me.halfcooler.ic2r.api.item.ItemWrapper;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class SlotBoxable extends Slot
 {
@@ -12,7 +13,7 @@ public class SlotBoxable extends Slot
 		super(iinventory, i, j, k);
 	}
 
-	public boolean mayPlace(ItemStack itemstack)
+	public boolean mayPlace(@NotNull ItemStack itemstack)
 	{
 		return itemstack == null ? false : ItemWrapper.canBeStoredInToolbox(itemstack);
 	}

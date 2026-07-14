@@ -52,7 +52,7 @@ public class GradualRecipe implements CraftingRecipe
 	}
 
 	@Override
-	public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, RegistryAccess registryAccess)
+	public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess registryAccess)
 	{
 		ItemStack gridItem = null;
 		int chargeMats = 0;
@@ -175,7 +175,7 @@ public class GradualRecipe implements CraftingRecipe
 	public static class Serializer implements RecipeSerializer<GradualRecipe>
 	{
 		@Override
-		public GradualRecipe fromJson(ResourceLocation id, JsonObject json)
+		public @NotNull GradualRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json)
 		{
 			Item item = GsonHelper.getAsItem(json, "item");
 			if (!(item instanceof AbstractDamageableReactorComponent component))
@@ -190,7 +190,7 @@ public class GradualRecipe implements CraftingRecipe
 		}
 
 		@Override
-		public GradualRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
+		public GradualRecipe fromNetwork(@NotNull ResourceLocation id, FriendlyByteBuf buf)
 		{
 			Item item = BuiltInRegistries.ITEM.byId(buf.readVarInt());
 			if (!(item instanceof AbstractDamageableReactorComponent component))

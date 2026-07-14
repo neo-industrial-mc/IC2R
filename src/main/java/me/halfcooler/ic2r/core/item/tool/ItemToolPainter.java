@@ -248,7 +248,7 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 		}
 	}
 
-	public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player user, LivingEntity entity, InteractionHand hand)
+	public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player user, @NotNull LivingEntity entity, @NotNull InteractionHand hand)
 	{
 		if (this.color == null)
 		{
@@ -264,7 +264,7 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 		}
 	}
 
-	public @NotNull InteractionResultHolder<ItemStack> use(Level world, @NotNull Player player, InteractionHand hand)
+	public @NotNull InteractionResultHolder<ItemStack> use(Level world, @NotNull Player player, @NotNull InteractionHand hand)
 	{
 		ItemStack stack = StackUtil.get(player, hand);
 		if (!world.isClientSide && IC2R.keyboard.isModeSwitchKeyDown(player))

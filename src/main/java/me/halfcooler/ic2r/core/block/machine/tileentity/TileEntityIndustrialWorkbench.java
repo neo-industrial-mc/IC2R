@@ -33,6 +33,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 @NotClassic
 public class TileEntityIndustrialWorkbench extends TileEntityInventory implements IHasGui
@@ -221,7 +222,7 @@ public class TileEntityIndustrialWorkbench extends TileEntityInventory implement
 			}
 
 			@Override
-			public ItemStack removeItem(int index, int amount)
+			public @NotNull ItemStack removeItem(int index, int amount)
 			{
 				ItemStack stack = super.removeItem(index, amount);
 				this.getSlot(index).onChanged();

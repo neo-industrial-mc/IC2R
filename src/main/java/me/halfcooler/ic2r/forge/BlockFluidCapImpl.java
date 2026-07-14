@@ -12,15 +12,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Multi-tank + side-mask {@link IFluidHandler} for BE fluid capability (pipes / automation).
- * <p>
- * Per-tank first-class adapter is {@link me.halfcooler.ic2r.core.fluid.Ic2rFluidTankHandler}
- * ({@link me.halfcooler.ic2r.core.fluid.Ic2rFluidTank#getFluidHandler()}); this class aggregates
- * {@link Ic2rFluidBlock} fill/drain with facing masks (G2.5). Contract:
- * {@code docs/spec/fluid_handler_contract.md}.
- */
 final class BlockFluidCapImpl implements ICapabilityProvider
 {
 	private final Ic2rFluidBlock parent;
@@ -40,7 +33,7 @@ final class BlockFluidCapImpl implements ICapabilityProvider
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing)
+	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing)
 	{
 		if (capability != ForgeCapabilities.FLUID_HANDLER)
 		{
@@ -116,21 +109,21 @@ final class BlockFluidCapImpl implements ICapabilityProvider
 		}
 
 		@Override
-		public FluidStack getFluidInTank(int tank)
+		public @NotNull FluidStack getFluidInTank(int tank)
 		{
 			FluidTankInfo info = this.getTankInfo(tank);
 			return info != null ? EnvFluidHandlerForge.getForgeFs(info.content()) : FluidStack.EMPTY;
 		}
 
 		@Override
-		public boolean isFluidValid(int tank, FluidStack fs)
+		public boolean isFluidValid(int tank, @NotNull FluidStack fs)
 		{
 			FluidTankInfo info = this.getTankInfo(tank);
 			return info != null && info.capacity() > 0;
 		}
 
 		@Override
-		public FluidStack drain(int amount, IFluidHandler.FluidAction action)
+		public @NotNull FluidStack drain(int amount, IFluidHandler.FluidAction action)
 		{
 			return amount <= 0
 				? FluidStack.EMPTY
@@ -140,7 +133,7 @@ final class BlockFluidCapImpl implements ICapabilityProvider
 		}
 
 		@Override
-		public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action)
+		public @NotNull FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action)
 		{
 			if (resource != null && !resource.isEmpty())
 			{
@@ -168,7 +161,7 @@ final class BlockFluidCapImpl implements ICapabilityProvider
 				: 0;
 		}
 
-		public IFluidHandler get()
+		public @NotNull IFluidHandler get()
 		{
 			return this;
 		}

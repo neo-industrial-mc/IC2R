@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 record Ic2rFluidStackImpl(FluidStack parent) implements Ic2rFluidStack
 {
@@ -93,7 +94,7 @@ record Ic2rFluidStackImpl(FluidStack parent) implements Ic2rFluidStack
 	}
 
 	@Override
-	public String toString()
+	public @NotNull String toString()
 	{
 		Fluid fluid = this.parent.getFluid();
 		return String.format(

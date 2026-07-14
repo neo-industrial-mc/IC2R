@@ -20,6 +20,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class HandHeldInventory implements IHasGui
 {
@@ -81,12 +82,12 @@ public abstract class HandHeldInventory implements IHasGui
 		return true;
 	}
 
-	public ItemStack getItem(int slot)
+	public @NotNull ItemStack getItem(int slot)
 	{
 		return StackUtil.wrapEmpty(this.inventory[slot]);
 	}
 
-	public ItemStack removeItem(int index, int amount)
+	public @NotNull ItemStack removeItem(int index, int amount)
 	{
 		ItemStack stack;
 		if (index >= 0 && index < this.inventory.length && !StackUtil.isEmpty(stack = this.inventory[index]))
@@ -110,7 +111,7 @@ public abstract class HandHeldInventory implements IHasGui
 		}
 	}
 
-	public void setItem(int slot, ItemStack stack)
+	public void setItem(int slot, @NotNull ItemStack stack)
 	{
 		if (!StackUtil.isEmpty(stack) && StackUtil.getSize(stack) > this.getMaxStackSize())
 		{
@@ -133,7 +134,7 @@ public abstract class HandHeldInventory implements IHasGui
 		return 64;
 	}
 
-	public boolean canPlaceItem(int slot, ItemStack stack1)
+	public boolean canPlaceItem(int slot, @NotNull ItemStack stack1)
 	{
 		return false;
 	}
@@ -143,12 +144,12 @@ public abstract class HandHeldInventory implements IHasGui
 		this.save();
 	}
 
-	public boolean stillValid(Player player)
+	public boolean stillValid(@NotNull Player player)
 	{
 		return player == this.player && this.getPlayerInventoryIndex() >= -1;
 	}
 
-	public ItemStack removeItemNoUpdate(int index)
+	public @NotNull ItemStack removeItemNoUpdate(int index)
 	{
 		ItemStack ret = this.getItem(index);
 		if (!StackUtil.isEmpty(ret))

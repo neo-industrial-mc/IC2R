@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Lazily wraps BlockFluidCapImpl, resolving the Fluids component on first
@@ -38,7 +39,7 @@ final class LazyBlockFluidCapImpl implements ICapabilityProvider
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing)
+	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing)
 	{
 		BlockFluidCapImpl d = this.resolve();
 		return d != null ? d.getCapability(capability, facing) : LazyOptional.empty();

@@ -6,7 +6,6 @@ import me.halfcooler.ic2r.api.energy.profile.IElectricalNode;
 import me.halfcooler.ic2r.api.energy.tile.IEnergyConductor;
 import me.halfcooler.ic2r.api.energy.tile.IEnergySink;
 import me.halfcooler.ic2r.api.energy.tile.IEnergySource;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
 import me.halfcooler.ic2r.api.energy.tile.IMultiEnergySource;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
@@ -16,7 +15,6 @@ import me.halfcooler.ic2r.core.util.Util;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.IdentityHashMap;

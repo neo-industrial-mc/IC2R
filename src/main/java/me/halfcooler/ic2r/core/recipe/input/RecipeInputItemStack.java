@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

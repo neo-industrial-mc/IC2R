@@ -1,6 +1,5 @@
 package me.halfcooler.ic2r.core.ref;
 
-import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.misc.RubberLogBlock;
 import me.halfcooler.ic2r.core.block.misc.RubberWoodBlock;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;

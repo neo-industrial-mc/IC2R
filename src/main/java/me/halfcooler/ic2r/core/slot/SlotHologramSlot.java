@@ -8,6 +8,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class SlotHologramSlot extends Slot
 {
@@ -30,7 +31,7 @@ public class SlotHologramSlot extends Slot
 		this.changeCallback = changeCallback;
 	}
 
-	public boolean mayPickup(Player player)
+	public boolean mayPickup(@NotNull Player player)
 	{
 		return false;
 	}
@@ -40,17 +41,17 @@ public class SlotHologramSlot extends Slot
 		return this.stackSizeLimit;
 	}
 
-	public boolean mayPlace(ItemStack stack)
+	public boolean mayPlace(@NotNull ItemStack stack)
 	{
 		return false;
 	}
 
-	public ItemStack getItem()
+	public @NotNull ItemStack getItem()
 	{
 		return StackUtil.wrapEmpty(this.stacks[this.index]);
 	}
 
-	public void set(ItemStack stack)
+	public void set(@NotNull ItemStack stack)
 	{
 		this.stacks[this.index] = stack;
 	}
@@ -68,7 +69,7 @@ public class SlotHologramSlot extends Slot
 		}
 	}
 
-	public ItemStack remove(int amount)
+	public @NotNull ItemStack remove(int amount)
 	{
 		return StackUtil.emptyStack;
 	}
@@ -150,22 +151,22 @@ public class SlotHologramSlot extends Slot
 			return false;
 		}
 
-		public ItemStack getItem(int slot)
+		public @NotNull ItemStack getItem(int slot)
 		{
 			return StackUtil.emptyStack;
 		}
 
-		public ItemStack removeItem(int slot, int amount)
+		public @NotNull ItemStack removeItem(int slot, int amount)
 		{
 			return StackUtil.emptyStack;
 		}
 
-		public ItemStack removeItemNoUpdate(int slot)
+		public @NotNull ItemStack removeItemNoUpdate(int slot)
 		{
 			return StackUtil.emptyStack;
 		}
 
-		public void setItem(int slot, ItemStack stack)
+		public void setItem(int slot, @NotNull ItemStack stack)
 		{
 		}
 
@@ -173,7 +174,7 @@ public class SlotHologramSlot extends Slot
 		{
 		}
 
-		public boolean stillValid(Player player)
+		public boolean stillValid(@NotNull Player player)
 		{
 			return true;
 		}

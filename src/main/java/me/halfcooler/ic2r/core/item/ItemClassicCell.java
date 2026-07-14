@@ -89,7 +89,7 @@ public class ItemClassicCell extends Ic2rBucketItem implements Ic2rFluidItem
 	}
 
 	@Override
-	public Component getName(@NotNull ItemStack stack)
+	public @NotNull Component getName(@NotNull ItemStack stack)
 	{
 		if (this.fluid == Fluids.EMPTY)
 		{

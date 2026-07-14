@@ -9,12 +9,13 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public record RecipeHolder<I, O>(MachineRecipe<I, O> recipe, ResourceLocation id, RecipeSerializer<?> serializer,
                                  RecipeType<?> type)
 	implements Recipe<Container>
 {
-	public boolean matches(Container inventory, Level world)
+	public boolean matches(@NotNull Container inventory, @NotNull Level world)
 	{
 		throw new UnsupportedOperationException("Not supported for IC2R machine recipes.");
 	}
@@ -24,7 +25,7 @@ public record RecipeHolder<I, O>(MachineRecipe<I, O> recipe, ResourceLocation id
 		throw new UnsupportedOperationException("Not supported for IC2R machine recipes.");
 	}
 
-	public ItemStack assemble(Container inventory, RegistryAccess registryAccess)
+	public @NotNull ItemStack assemble(@NotNull Container inventory, @NotNull RegistryAccess registryAccess)
 	{
 		throw new UnsupportedOperationException("Not supported for IC2R machine recipes.");
 	}
@@ -39,22 +40,22 @@ public record RecipeHolder<I, O>(MachineRecipe<I, O> recipe, ResourceLocation id
 		return ItemStack.EMPTY;
 	}
 
-	public ItemStack getResultItem(RegistryAccess registryAccess)
+	public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess)
 	{
 		return ItemStack.EMPTY;
 	}
 
-	public ResourceLocation getId()
+	public @NotNull ResourceLocation getId()
 	{
 		return this.id;
 	}
 
-	public RecipeSerializer<?> getSerializer()
+	public @NotNull RecipeSerializer<?> getSerializer()
 	{
 		return this.serializer;
 	}
 
-	public RecipeType<?> getType()
+	public @NotNull RecipeType<?> getType()
 	{
 		return this.type;
 	}

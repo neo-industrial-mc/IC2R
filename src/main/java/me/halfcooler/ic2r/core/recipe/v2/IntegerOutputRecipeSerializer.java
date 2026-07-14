@@ -11,6 +11,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class IntegerOutputRecipeSerializer implements RecipeSerializer<RecipeHolder<IRecipeInput, Integer>>
@@ -25,7 +26,7 @@ public class IntegerOutputRecipeSerializer implements RecipeSerializer<RecipeHol
 		this.metaProcessor = metaProcessor;
 	}
 
-	public RecipeHolder<IRecipeInput, Integer> fromJson(ResourceLocation id, JsonObject json)
+	public @NotNull RecipeHolder<IRecipeInput, Integer> fromJson(@NotNull ResourceLocation id, JsonObject json)
 	{
 		IRecipeInput input = RecipeIo.parseInput(json.get("ingredient"));
 		int output = json.get("result").getAsInt();
@@ -33,7 +34,7 @@ public class IntegerOutputRecipeSerializer implements RecipeSerializer<RecipeHol
 		return new RecipeHolder<>(new MachineRecipe<>(input, output, meta), id, this, this.recipeType);
 	}
 
-	public RecipeHolder<IRecipeInput, Integer> fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
+	public RecipeHolder<IRecipeInput, Integer> fromNetwork(@NotNull ResourceLocation id, FriendlyByteBuf buf)
 	{
 		byte type = buf.readByte();
 		if (type != 0)

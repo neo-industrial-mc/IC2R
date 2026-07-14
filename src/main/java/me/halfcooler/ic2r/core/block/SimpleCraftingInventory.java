@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class SimpleCraftingInventory implements CraftingContainer
 {
@@ -34,17 +35,17 @@ public abstract class SimpleCraftingInventory implements CraftingContainer
 		return this.height;
 	}
 
-	public ItemStack getItem(int index)
+	public @NotNull ItemStack getItem(int index)
 	{
 		return index >= this.size ? StackUtil.emptyStack : StackUtil.wrapEmpty(this.get(index));
 	}
 
-	public void setItem(int index, ItemStack stack)
+	public void setItem(int index, @NotNull ItemStack stack)
 	{
 		this.set(index, stack);
 	}
 
-	public ItemStack removeItemNoUpdate(int index)
+	public @NotNull ItemStack removeItemNoUpdate(int index)
 	{
 		ItemStack ret;
 		if (index < this.size && !StackUtil.isEmpty(ret = this.get(index)))
@@ -57,7 +58,7 @@ public abstract class SimpleCraftingInventory implements CraftingContainer
 		}
 	}
 
-	public ItemStack removeItem(int index, int amount)
+	public @NotNull ItemStack removeItem(int index, int amount)
 	{
 		ItemStack stack;
 		return index < this.size && amount > 0 && !StackUtil.isEmpty(stack = this.get(index)) ? stack.split(amount) : StackUtil.emptyStack;
@@ -84,7 +85,7 @@ public abstract class SimpleCraftingInventory implements CraftingContainer
 		}
 	}
 
-	public void fillStackedContents(StackedContents finder)
+	public void fillStackedContents(@NotNull StackedContents finder)
 	{
 		for (int i = 0; i < this.size; i++)
 		{
@@ -97,7 +98,7 @@ public abstract class SimpleCraftingInventory implements CraftingContainer
 	}
 
 	@Override
-	public NonNullList<ItemStack> getItems()
+	public @NotNull NonNullList<ItemStack> getItems()
 	{
 		NonNullList<ItemStack> list = NonNullList.withSize(this.size, ItemStack.EMPTY);
 		for (int i = 0; i < this.size; i++)
@@ -114,7 +115,7 @@ public abstract class SimpleCraftingInventory implements CraftingContainer
 	}
 
 	@Override
-	public boolean stillValid(Player player)
+	public boolean stillValid(@NotNull Player player)
 	{
 		return true;
 	}

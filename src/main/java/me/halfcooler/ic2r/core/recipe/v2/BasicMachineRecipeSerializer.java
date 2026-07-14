@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BasicMachineRecipeSerializer implements RecipeSerializer<RecipeHolder<IRecipeInput, Collection<ItemStack>>>
@@ -27,7 +28,7 @@ public class BasicMachineRecipeSerializer implements RecipeSerializer<RecipeHold
 		this.metaProcessor = metaProcessor;
 	}
 
-	public RecipeHolder<IRecipeInput, Collection<ItemStack>> fromJson(ResourceLocation id, JsonObject json)
+	public @NotNull RecipeHolder<IRecipeInput, Collection<ItemStack>> fromJson(@NotNull ResourceLocation id, JsonObject json)
 	{
 		IRecipeInput input = RecipeIo.parseInput(json.get("ingredient"));
 		Collection<ItemStack> output = RecipeIo.parseOutputs(json.get("result"), "result");
@@ -35,7 +36,7 @@ public class BasicMachineRecipeSerializer implements RecipeSerializer<RecipeHold
 		return new RecipeHolder<>(new MachineRecipe<>(input, output, meta), id, this, this.recipeType);
 	}
 
-	public RecipeHolder<IRecipeInput, Collection<ItemStack>> fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
+	public RecipeHolder<IRecipeInput, Collection<ItemStack>> fromNetwork(@NotNull ResourceLocation id, FriendlyByteBuf buf)
 	{
 		byte type = buf.readByte();
 		if (!RecipeSerializerMath.isBasicNetworkMarker(type))

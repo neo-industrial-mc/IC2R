@@ -40,6 +40,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityPersonalChest extends TileEntityInventory implements IPersonalBlock, IHasGui, ClientTicker
 {
@@ -145,7 +146,7 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 	}
 
 	@Override
-	public void startOpen(Player player)
+	public void startOpen(@NotNull Player player)
 	{
 		if (!this.getLevel().isClientSide)
 		{
@@ -155,7 +156,7 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 	}
 
 	@Override
-	public void stopOpen(Player player)
+	public void stopOpen(@NotNull Player player)
 	{
 		if (!this.getLevel().isClientSide)
 		{
@@ -214,13 +215,13 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 			}
 
 			@Override
-			public ItemStack getItem(int index)
+			public @NotNull ItemStack getItem(int index)
 			{
 				return TileEntityPersonalChest.this.contentSlot.get(index);
 			}
 
 			@Override
-			public ItemStack removeItem(int index, int amount)
+			public @NotNull ItemStack removeItem(int index, int amount)
 			{
 				ItemStack stack = this.getItem(index);
 				if (StackUtil.isEmpty(stack))
@@ -250,7 +251,7 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 			}
 
 			@Override
-			public ItemStack removeItemNoUpdate(int index)
+			public @NotNull ItemStack removeItemNoUpdate(int index)
 			{
 				ItemStack ret = this.getItem(index);
 				if (!StackUtil.isEmpty(ret))
@@ -321,7 +322,7 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 			Ic2rScreenHandlers.DYNAMIC_BE, syncId, player.getInventory(), this, GuiParser.parse(Util.getName(this.getBlockType()), this.getClass())
 		)
 		{
-			public void removed(Player player)
+			public void removed(@NotNull Player player)
 			{
 				this.base.stopOpen(player);
 				super.removed(player);

@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 
 final class ItemNanoSaberCapImpl implements ICapabilityProvider
 {
@@ -19,7 +20,7 @@ final class ItemNanoSaberCapImpl implements ICapabilityProvider
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing)
+	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing)
 	{
 		return capability == NanoSaberCapabilities.NANO_SABER_STATE ? this.optional.cast() : LazyOptional.empty();
 	}

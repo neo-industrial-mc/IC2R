@@ -14,7 +14,7 @@ final class ItemGroupIconSupplier implements Supplier<ItemStack>
 	private static ItemStack b;
 	private static ItemStack z;
 	private int ticker;
-	private Ic2rItemGroupType groupType;
+	private final Ic2rItemGroupType groupType;
 
 	public ItemGroupIconSupplier(Ic2rItemGroupType groupType)
 	{

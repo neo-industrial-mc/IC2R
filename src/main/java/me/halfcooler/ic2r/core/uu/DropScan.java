@@ -48,6 +48,7 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.ServerLevelData;
+import org.jetbrains.annotations.NotNull;
 
 public class DropScan
 {
@@ -58,12 +59,12 @@ public class DropScan
 	private static final ChunkProgressListener NOOP_PROGRESS = new ChunkProgressListener()
 	{
 		@Override
-		public void updateSpawnPos(ChunkPos pos)
+		public void updateSpawnPos(@NotNull ChunkPos pos)
 		{
 		}
 
 		@Override
-		public void onStatusChange(ChunkPos pos, ChunkStatus status)
+		public void onStatusChange(@NotNull ChunkPos pos, ChunkStatus status)
 		{
 		}
 

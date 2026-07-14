@@ -3,6 +3,7 @@ package me.halfcooler.ic2r.core.block.beam;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,7 +22,7 @@ public class BeamRenderer extends EntityRenderer<ParticleEntity>
 		super(context);
 	}
 
-	public void render(ParticleEntity entity, float yaw, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light)
+	public void render(@NotNull ParticleEntity entity, float yaw, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light)
 	{
 		float u1 = 0.0F;
 		float u2 = 1.0F;
@@ -77,7 +78,7 @@ public class BeamRenderer extends EntityRenderer<ParticleEntity>
 		matrices.popPose();
 	}
 
-	public ResourceLocation getTextureLocation(ParticleEntity entity)
+	public @NotNull ResourceLocation getTextureLocation(@NotNull ParticleEntity entity)
 	{
 		return texture;
 	}

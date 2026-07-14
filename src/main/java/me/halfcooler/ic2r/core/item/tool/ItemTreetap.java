@@ -19,7 +19,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -27,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEvent.Context;
 import net.minecraft.util.RandomSource;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemTreetap extends Item implements IBoxable
 {
@@ -120,7 +120,7 @@ public class ItemTreetap extends Item implements IBoxable
 		return isElectric ? Ic2rSoundEvents.ITEM_TREETAP_ELECTRIC_USE.get() : Ic2rSoundEvents.ITEM_TREETAP_USE.get();
 	}
 
-	public InteractionResult useOn(UseOnContext context)
+	public @NotNull InteractionResult useOn(UseOnContext context)
 	{
 		Level world = context.getLevel();
 		BlockPos pos = context.getClickedPos();

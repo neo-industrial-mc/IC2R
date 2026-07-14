@@ -8,8 +8,8 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ParticleEntity extends Entity
 {
@@ -37,15 +37,15 @@ public class ParticleEntity extends Entity
 	{
 	}
 
-	protected void readAdditionalSaveData(CompoundTag nbttagcompound)
+	protected void readAdditionalSaveData(@NotNull CompoundTag nbttagcompound)
 	{
 	}
 
-	protected void addAdditionalSaveData(CompoundTag nbttagcompound)
+	protected void addAdditionalSaveData(@NotNull CompoundTag nbttagcompound)
 	{
 	}
 
-	public Packet<ClientGamePacketListener> getAddEntityPacket()
+	public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket()
 	{
 		return new ClientboundAddEntityPacket(this);
 	}

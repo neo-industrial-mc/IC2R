@@ -196,7 +196,7 @@ public abstract class Ic2rBucketItem extends BucketItem
 	 * @deprecated Prefer {@link #emptyContents(Player, Level, BlockPos, BlockHitResult, Fluid)}
 	 */
 	@Deprecated
-	public boolean emptyContents(@Nullable Player player, Level world, BlockPos pos, @Nullable BlockHitResult hitResult)
+	public boolean emptyContents(@Nullable Player player, @NotNull Level world, @NotNull BlockPos pos, @Nullable BlockHitResult hitResult)
 	{
 		return this.emptyContents(player, world, pos, hitResult, this.fluid == null ? Fluids.EMPTY : this.fluid);
 	}
@@ -277,7 +277,7 @@ public abstract class Ic2rBucketItem extends BucketItem
 		InteractionResultHolder<ItemStack> onBucketUse(Player user, Level world, ItemStack stack, BlockHitResult hit);
 	}
 
-	public static void setBucketUseHook(BucketUseHook hook)
+	public static void setBucketUseHook(@Nullable BucketUseHook hook)
 	{
 		bucketUseHook = hook;
 	}

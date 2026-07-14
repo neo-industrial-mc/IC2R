@@ -1,7 +1,6 @@
 package me.halfcooler.ic2r.core.proxy;
 
 import me.halfcooler.ic2r.api.tile.IRotorProvider;
-import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.sound.SoundManager;
 import me.halfcooler.ic2r.core.util.Keyboard;
 import me.halfcooler.ic2r.core.util.Util;

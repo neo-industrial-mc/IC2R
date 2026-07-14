@@ -13,6 +13,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class IORecipeCategory<T extends IJeiRecipeWrapper> implements IRecipeCategory<T>
 {
@@ -23,7 +24,7 @@ public abstract class IORecipeCategory<T extends IJeiRecipeWrapper> implements I
 		this.block = block;
 	}
 
-	public Component getTitle()
+	public @NotNull Component getTitle()
 	{
 		return this.getBlockStack().getHoverName();
 	}

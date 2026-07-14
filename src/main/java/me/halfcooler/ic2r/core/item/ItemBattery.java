@@ -10,8 +10,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemBattery extends BaseElectricItem implements INetworkItemEventListener
 {
@@ -26,7 +26,7 @@ public class ItemBattery extends BaseElectricItem implements INetworkItemEventLi
 		return true;
 	}
 
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
+	public @NotNull InteractionResultHolder<ItemStack> use(Level world, @NotNull Player player, @NotNull InteractionHand hand)
 	{
 		ItemStack stack = StackUtil.get(player, hand);
 		if (!world.isClientSide && StackUtil.getSize(stack) == 1)

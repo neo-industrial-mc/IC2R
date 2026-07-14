@@ -8,7 +8,6 @@ import me.halfcooler.ic2r.core.network.NetworkManager;
 import me.halfcooler.ic2r.core.loot.Ic2rLootNbtProviderTypes;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
-import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 
 import me.halfcooler.ic2r.forge.ref.Ic2rSoundEventsForge;
 import me.halfcooler.ic2r.integration.ae2.Ic2rAe2Plugin;

@@ -15,8 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 @NotClassic
 public class ItemWindRotor extends Item implements IKineticRotor
@@ -41,7 +41,7 @@ public class ItemWindRotor extends Item implements IKineticRotor
 		this.water = water;
 	}
 
-	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		Ic2rTooltip.add(tooltip, Component.translatable("ic2r.itemrotor.wind.info", this.minWindStrength, this.maxWindStrength));
 		IKineticRotor.GearboxType type = null;

@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Block-tag DataGen (G2.6): migrates handwritten {@code data/ic2r/tags/blocks/**}.
@@ -25,7 +26,7 @@ public final class Ic2rBlockTagsProvider extends BlockTagsProvider
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider provider)
+	protected void addTags(HolderLookup.@NotNull Provider provider)
 	{
 		// data/ic2r/tags/blocks/mineable/wrench.json
 		// Machines / storage / energy blocks correctly mined with the IC2R wrench.

@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;

@@ -4,21 +4,14 @@ import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.api.item.IBackupElectricItemManager;
 import me.halfcooler.ic2r.api.item.IElectricItem;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
-import me.halfcooler.ic2r.core.util.ReflectionUtil;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
-import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;

@@ -42,6 +42,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class ItemElectricTool extends DiggerItem implements IElectricItem, INetworkItemEventListener, IItemHudInfo
@@ -122,24 +123,24 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		return info;
 	}
 
-	public InteractionResult useOn(UseOnContext context)
+	public @NotNull InteractionResult useOn(UseOnContext context)
 	{
 		ElectricItem.manager.use(context.getItemInHand(), 0.0, context.getPlayer());
 		return super.useOn(context);
 	}
 
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
+	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand)
 	{
 		ElectricItem.manager.use(StackUtil.get(player, hand), 0.0, player);
 		return super.use(world, player, hand);
 	}
 
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
 		return this.isEffective(state) && ElectricItem.manager.canUse(stack, this.operationEnergyCost) ? this.speed : 1.0F;
 	}
 
-	public boolean isCorrectToolForDrops(BlockState state)
+	public boolean isCorrectToolForDrops(@NotNull BlockState state)
 	{
 		int level = this.getTier().getLevel();
 		return (level >= 3 || !state.is(BlockTags.NEEDS_DIAMOND_TOOL)) && (level >= 2 || !state.is(BlockTags.NEEDS_IRON_TOOL)) && (level >= 1 || !state.is(BlockTags.NEEDS_STONE_TOOL)) && this.isEffective(state);
@@ -154,7 +155,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 	 * shows ✕ and mining uses the incorrect-tool penalty (÷100 instead of ÷30).
 	 */
 	@Override
-	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
+	public boolean isCorrectToolForDrops(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
 		return this.isCorrectToolForDrops(state);
 	}
@@ -172,7 +173,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		return false;
 	}
 
-	public boolean hurtEnemy(ItemStack itemstack, LivingEntity entityliving, LivingEntity entityliving1)
+	public boolean hurtEnemy(@NotNull ItemStack itemstack, @NotNull LivingEntity entityliving, @NotNull LivingEntity entityliving1)
 	{
 		return true;
 	}
@@ -206,7 +207,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		return this.transferLimit;
 	}
 
-	public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity user)
+	public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level world, BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity user)
 	{
 		if (state.getDestroySpeed(world, pos) != 0.0F)
 		{
@@ -216,12 +217,12 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		return true;
 	}
 
-	public boolean isEnchantable(ItemStack stack)
+	public boolean isEnchantable(@NotNull ItemStack stack)
 	{
 		return false;
 	}
 
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context)
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag context)
 	{
 		ElectricItemTooltipHandler.addTooltip(stack, tooltip);
 	}
@@ -233,7 +234,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		return ret;
 	}
 
-	public void inventoryTick(ItemStack itemstack, Level world, Entity entity, int i, boolean flag)
+	public void inventoryTick(@NotNull ItemStack itemstack, @NotNull Level world, @NotNull Entity entity, int i, boolean flag)
 	{
 		boolean isEquipped = flag && entity instanceof LivingEntity;
 		if (IC2R.sideProxy.isRendering())
@@ -359,17 +360,17 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		return Ic2rSoundEvents.ITEM_ELECTRIC_SHUTDOWN.get();
 	}
 
-	public boolean isBarVisible(ItemStack stack)
+	public boolean isBarVisible(@NotNull ItemStack stack)
 	{
 		return true;
 	}
 
-	public int getBarWidth(ItemStack stack)
+	public int getBarWidth(@NotNull ItemStack stack)
 	{
 		return (int) Math.round(ElectricItem.manager.getChargeLevel(stack) * 13.0);
 	}
 
-	public int getBarColor(ItemStack stack)
+	public int getBarColor(@NotNull ItemStack stack)
 	{
 		return Mth.hsvToRgb((float) (ElectricItem.manager.getChargeLevel(stack) / 3.0), 1.0F, 1.0F);
 	}

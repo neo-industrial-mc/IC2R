@@ -260,7 +260,7 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 	}
 
 	@Override
-	public TextureAtlasSprite getParticleIcon()
+	public @NotNull TextureAtlasSprite getParticleIcon()
 	{
 		return this.baseModel.getParticleIcon();
 	}

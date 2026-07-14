@@ -4,10 +4,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class MiningPipeBlock extends Block
 {
@@ -18,12 +18,12 @@ public class MiningPipeBlock extends Block
 		super(settings);
 	}
 
-	public boolean useShapeForLightOcclusion(BlockState state)
+	public boolean useShapeForLightOcclusion(@NotNull BlockState state)
 	{
 		return true;
 	}
 
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
+	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context)
 	{
 		return SHAPE;
 	}

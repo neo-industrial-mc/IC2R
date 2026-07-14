@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Con
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class KineticGeneratorRenderer<T extends BlockEntity & IRotorProvider> implements BlockEntityRenderer<T>
 {
@@ -30,7 +31,7 @@ public class KineticGeneratorRenderer<T extends BlockEntity & IRotorProvider> im
 	{
 	}
 
-	public void render(T windGen, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay)
+	public void render(T windGen, float tickDelta, @NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers, int light, int overlay)
 	{
 		int diameter = windGen.getRotorDiameter();
 		if (diameter != 0)

@@ -29,8 +29,8 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class ItemArmorElectric extends ItemArmorIC2R implements IElectricItem
@@ -122,7 +122,7 @@ public abstract class ItemArmorElectric extends ItemArmorIC2R implements IElectr
 		};
 	}
 
-	public boolean isEnchantable(ItemStack stack)
+	public boolean isEnchantable(@NotNull ItemStack stack)
 	{
 		return false;
 	}
@@ -132,7 +132,7 @@ public abstract class ItemArmorElectric extends ItemArmorIC2R implements IElectr
 		ElectricItemManager.addChargeVariants(this, subItems);
 	}
 
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context)
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag context)
 	{
 		ElectricItemTooltipHandler.addTooltip(stack, tooltip);
 	}
@@ -166,17 +166,17 @@ public abstract class ItemArmorElectric extends ItemArmorIC2R implements IElectr
 		return this.transferLimit;
 	}
 
-	public boolean isBarVisible(ItemStack stack)
+	public boolean isBarVisible(@NotNull ItemStack stack)
 	{
 		return ElectricItem.manager.getChargeLevel(stack) < 1.0;
 	}
 
-	public int getBarWidth(ItemStack stack)
+	public int getBarWidth(@NotNull ItemStack stack)
 	{
 		return (int) Math.round(ElectricItem.manager.getChargeLevel(stack) * 13.0);
 	}
 
-	public int getBarColor(ItemStack stack)
+	public int getBarColor(@NotNull ItemStack stack)
 	{
 		return Mth.hsvToRgb((float) (ElectricItem.manager.getChargeLevel(stack) / 3.0), 1.0F, 1.0F);
 	}

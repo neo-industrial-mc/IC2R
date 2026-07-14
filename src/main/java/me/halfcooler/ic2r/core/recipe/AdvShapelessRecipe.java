@@ -25,6 +25,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class AdvShapelessRecipe implements CraftingRecipe
 {
@@ -43,7 +44,7 @@ public class AdvShapelessRecipe implements CraftingRecipe
 		this.consuming = consuming;
 	}
 
-	public boolean matches(CraftingContainer inventorycrafting, Level world)
+	public boolean matches(@NotNull CraftingContainer inventorycrafting, @NotNull Level world)
 	{
 		return this.assemble(inventorycrafting) != StackUtil.emptyStack;
 	}
@@ -94,7 +95,7 @@ public class AdvShapelessRecipe implements CraftingRecipe
 		return this.output;
 	}
 
-	public ItemStack getResultItem(net.minecraft.core.RegistryAccess registryAccess)
+	public @NotNull ItemStack getResultItem(net.minecraft.core.@NotNull RegistryAccess registryAccess)
 	{
 		return this.output;
 	}
@@ -105,7 +106,7 @@ public class AdvShapelessRecipe implements CraftingRecipe
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
+	public @NotNull NonNullList<ItemStack> getRemainingItems(@NotNull CraftingContainer inv)
 	{
 		if (this.consuming)
 		{
@@ -142,7 +143,7 @@ public class AdvShapelessRecipe implements CraftingRecipe
 		return x * y >= this.input.length;
 	}
 
-	public NonNullList<Ingredient> getIngredients()
+	public @NotNull NonNullList<Ingredient> getIngredients()
 	{
 		NonNullList<Ingredient> list = NonNullList.create();
 		if (!this.hidden)
@@ -161,23 +162,23 @@ public class AdvShapelessRecipe implements CraftingRecipe
 		return this.hidden;
 	}
 
-	public ResourceLocation getId()
+	public @NotNull ResourceLocation getId()
 	{
 		return this.id;
 	}
 
 	@Override
-	public ItemStack assemble(net.minecraft.world.inventory.CraftingContainer inventory, net.minecraft.core.RegistryAccess registryAccess)
+	public @NotNull ItemStack assemble(net.minecraft.world.inventory.@NotNull CraftingContainer inventory, net.minecraft.core.@NotNull RegistryAccess registryAccess)
 	{
 		return this.assemble(inventory);
 	}
 
-	public net.minecraft.world.item.crafting.CraftingBookCategory category()
+	public net.minecraft.world.item.crafting.@NotNull CraftingBookCategory category()
 	{
 		return net.minecraft.world.item.crafting.CraftingBookCategory.MISC;
 	}
 
-	public RecipeSerializer<?> getSerializer()
+	public @NotNull RecipeSerializer<?> getSerializer()
 	{
 		return Ic2rRecipeSerializers.SHAPELESS;
 	}
@@ -196,7 +197,7 @@ public class AdvShapelessRecipe implements CraftingRecipe
 			return inputs;
 		}
 
-		public AdvShapelessRecipe fromJson(ResourceLocation id, JsonObject json)
+		public @NotNull AdvShapelessRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json)
 		{
 			IRecipeInput[] ingredients = getIngredients(GsonHelper.getAsJsonArray(json, "ingredients"));
 			if (ingredients.length == 0)
@@ -215,7 +216,7 @@ public class AdvShapelessRecipe implements CraftingRecipe
 			return new AdvShapelessRecipe(id, ingredients, result, hidden, consuming);
 		}
 
-		public AdvShapelessRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf)
+		public AdvShapelessRecipe fromNetwork(@NotNull ResourceLocation id, FriendlyByteBuf buf)
 		{
 			IRecipeInput[] inputs = new IRecipeInput[buf.readVarInt()];
 

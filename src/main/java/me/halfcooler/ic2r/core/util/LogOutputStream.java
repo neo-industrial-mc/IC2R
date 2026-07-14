@@ -2,7 +2,6 @@ package me.halfcooler.ic2r.core.util;
 
 import me.halfcooler.ic2r.core.IC2R;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -12,6 +11,7 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
 
 import org.apache.logging.log4j.Level;
+import org.jetbrains.annotations.NotNull;
 
 class LogOutputStream extends OutputStream
 {
@@ -43,7 +43,7 @@ class LogOutputStream extends OutputStream
 	}
 
 	@Override
-	public void write(byte[] b, int off, int len)
+	public void write(byte @NotNull [] b, int off, int len)
 	{
 		while (len > 0)
 		{

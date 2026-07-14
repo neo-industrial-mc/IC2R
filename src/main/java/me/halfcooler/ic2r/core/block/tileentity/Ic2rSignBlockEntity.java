@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class Ic2rSignBlockEntity extends SignBlockEntity
 {
@@ -13,7 +14,7 @@ public class Ic2rSignBlockEntity extends SignBlockEntity
 		super(pos, state);
 	}
 
-	public BlockEntityType<?> getType()
+	public @NotNull BlockEntityType<?> getType()
 	{
 		return Ic2rBlockEntities.SIGN;
 	}

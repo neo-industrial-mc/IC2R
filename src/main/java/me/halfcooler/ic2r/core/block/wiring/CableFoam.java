@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
+import org.jetbrains.annotations.NotNull;
 
 public enum CableFoam implements StringRepresentable
 {
@@ -105,7 +106,7 @@ public enum CableFoam implements StringRepresentable
 		}
 	}
 
-	public String getSerializedName()
+	public @NotNull String getSerializedName()
 	{
 		return this.name;
 	}

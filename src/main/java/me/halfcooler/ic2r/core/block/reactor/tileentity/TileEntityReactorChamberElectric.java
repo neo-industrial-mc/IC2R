@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements Container, IReactorChamber, IEnergyEmitter, ClientTicker
 {
@@ -125,25 +126,25 @@ public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements 
 		return reactor != null ? reactor.isEmpty() : true;
 	}
 
-	public ItemStack getItem(int index)
+	public @NotNull ItemStack getItem(int index)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
 		return reactor != null ? reactor.getItem(index) : null;
 	}
 
-	public ItemStack removeItem(int index, int count)
+	public @NotNull ItemStack removeItem(int index, int count)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
 		return reactor != null ? reactor.removeItem(index, count) : null;
 	}
 
-	public ItemStack removeItemNoUpdate(int index)
+	public @NotNull ItemStack removeItemNoUpdate(int index)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
 		return reactor != null ? reactor.removeItemNoUpdate(index) : null;
 	}
 
-	public void setItem(int index, ItemStack stack)
+	public void setItem(int index, @NotNull ItemStack stack)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
 		if (reactor != null)
@@ -158,13 +159,13 @@ public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements 
 		return reactor != null ? reactor.getMaxStackSize() : 0;
 	}
 
-	public boolean stillValid(Player player)
+	public boolean stillValid(@NotNull Player player)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
 		return reactor != null && reactor.stillValid(player);
 	}
 
-	public void startOpen(Player player)
+	public void startOpen(@NotNull Player player)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
 		if (reactor != null)
@@ -173,7 +174,7 @@ public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements 
 		}
 	}
 
-	public void stopOpen(Player player)
+	public void stopOpen(@NotNull Player player)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
 		if (reactor != null)
@@ -182,7 +183,7 @@ public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements 
 		}
 	}
 
-	public boolean canPlaceItem(int index, ItemStack stack)
+	public boolean canPlaceItem(int index, @NotNull ItemStack stack)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
 		return reactor != null && reactor.canPlaceItem(index, stack);

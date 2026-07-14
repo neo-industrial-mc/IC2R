@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 public class ExplosiveBlockRenderer extends EntityRenderer<ExplosiveEntity>
 {
@@ -23,7 +24,7 @@ public class ExplosiveBlockRenderer extends EntityRenderer<ExplosiveEntity>
 		this.blockRenderManager = context.getBlockRenderDispatcher();
 	}
 
-	public void render(ExplosiveEntity tntEntity, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i)
+	public void render(ExplosiveEntity tntEntity, float f, float g, PoseStack matrixStack, @NotNull MultiBufferSource vertexConsumerProvider, int i)
 	{
 		matrixStack.pushPose();
 		matrixStack.translate(0.0, 0.5, 0.0);
@@ -46,7 +47,7 @@ public class ExplosiveBlockRenderer extends EntityRenderer<ExplosiveEntity>
 		super.render(tntEntity, f, g, matrixStack, vertexConsumerProvider, i);
 	}
 
-	public ResourceLocation getTextureLocation(ExplosiveEntity tntEntity)
+	public @NotNull ResourceLocation getTextureLocation(@NotNull ExplosiveEntity tntEntity)
 	{
 		return TextureAtlas.LOCATION_BLOCKS;
 	}

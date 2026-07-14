@@ -32,8 +32,8 @@ public enum SubPacketType
 		}
 	}
 
-	private boolean serverToClient;
-	private boolean clientToServer;
+	private final boolean serverToClient;
+	private final boolean clientToServer;
 
 	SubPacketType(boolean serverToClient, boolean clientToServer)
 	{

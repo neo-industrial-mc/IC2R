@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class DynamicCableModelForge extends DynamicCableModel<List<BakedQuad>[], List<BakedQuad>[]> implements Ic2rModel
@@ -87,7 +88,7 @@ final class DynamicCableModelForge extends DynamicCableModel<List<BakedQuad>[], 
 		return super.bake(bakery, spriteGetter, modelTransform, modelLocation);
 	}
 
-	public ModelData getModelData(BlockAndTintGetter world, BlockPos pos, BlockState state, ModelData tileData)
+	public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter world, @NotNull BlockPos pos, BlockState state, @NotNull ModelData tileData)
 	{
 		if (state.getBlock() instanceof AbstractCableBlock cable && !cable.isFoam() && world instanceof Level level)
 		{
@@ -100,7 +101,7 @@ final class DynamicCableModelForge extends DynamicCableModel<List<BakedQuad>[], 
 		return tileData;
 	}
 
-	public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType layer)
+	public @NotNull List<BakedQuad> getQuads(BlockState state, Direction side, @NotNull RandomSource rand, ModelData extraData, @Nullable RenderType layer)
 	{
 		List<BakedQuad>[] mesh = extraData.get(MESH_DATA);
 		return mesh[getIdx(side)];

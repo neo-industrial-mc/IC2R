@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 public interface IHasGui extends Container
 {
@@ -63,12 +64,12 @@ public interface IHasGui extends Container
 		// G3.6: open menu via PlatformPlayerUi (Forge → EnvProxy#openHandledScreen)
 		return PlatformServices.playerUi().openMenu(player, new MenuProvider()
 		{
-			public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player playerx)
+			public AbstractContainerMenu createMenu(int syncId, @NotNull Inventory playerInventory, @NotNull Player playerx)
 			{
 				return IHasGui.this.createServerScreenHandler(syncId, playerx);
 			}
 
-			public Component getDisplayName()
+			public @NotNull Component getDisplayName()
 			{
 				return IHasGui.getBeName((BlockEntity) IHasGui.this);
 			}
@@ -87,12 +88,12 @@ public interface IHasGui extends Container
 		// G3.6: open menu via PlatformPlayerUi (Forge → EnvProxy#openHandledScreen)
 		return PlatformServices.playerUi().openMenu(player, new MenuProvider()
 		{
-			public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player playerx)
+			public AbstractContainerMenu createMenu(int syncId, @NotNull Inventory playerInventory, @NotNull Player playerx)
 			{
 				return IHasGui.this.createServerScreenHandler(syncId, playerx);
 			}
 
-			public Component getDisplayName()
+			public @NotNull Component getDisplayName()
 			{
 				return IHasGui.getItemName(item, subGuiId);
 			}

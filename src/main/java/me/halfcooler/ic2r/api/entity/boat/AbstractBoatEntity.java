@@ -246,7 +246,7 @@ public abstract class AbstractBoatEntity extends Boat
 		}
 	}
 
-	protected void checkFallDamage(double heightDifference, boolean onGround, BlockState state, BlockPos landedPosition)
+	protected void checkFallDamage(double heightDifference, boolean onGround, @NotNull BlockState state, @NotNull BlockPos landedPosition)
 	{
 		if (onGround && this.brokenByFalling())
 		{

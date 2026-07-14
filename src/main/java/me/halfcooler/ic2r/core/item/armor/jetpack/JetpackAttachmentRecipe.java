@@ -63,7 +63,7 @@ public class JetpackAttachmentRecipe implements CraftingRecipe
 		return !this.assemble(inv, null).isEmpty();
 	}
 
-	public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, RegistryAccess registryAccess)
+	public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess registryAccess)
 	{
 		ItemStack jetpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;

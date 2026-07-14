@@ -3,6 +3,7 @@ package me.halfcooler.ic2r.core.entity.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import com.mojang.math.Axis;
@@ -84,7 +85,7 @@ public class LaserBulletEntityRenderer extends EntityRenderer<LaserBulletEntity>
 			.endVertex();
 	}
 
-	public ResourceLocation getTextureLocation(LaserBulletEntity entity)
+	public @NotNull ResourceLocation getTextureLocation(@NotNull LaserBulletEntity entity)
 	{
 		return TEXTURE;
 	}

@@ -8,8 +8,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemNuclearResource extends Item implements IBaseReactorComponent
 {
@@ -29,7 +29,7 @@ public class ItemNuclearResource extends Item implements IBaseReactorComponent
 		return false;
 	}
 
-	public void inventoryTick(ItemStack stack, Level world, Entity rawEntity, int slot, boolean selected)
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level world, @NotNull Entity rawEntity, int slot, boolean selected)
 	{
 		if (rawEntity instanceof LivingEntity entity)
 		{

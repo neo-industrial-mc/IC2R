@@ -15,9 +15,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.Entity.MovementEmission;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.util.RandomSource;
 
@@ -140,7 +140,7 @@ public abstract class ExplosiveEntity extends Entity
 		return this;
 	}
 
-	protected MovementEmission getMovementEmission()
+	protected @NotNull MovementEmission getMovementEmission()
 	{
 		return MovementEmission.NONE;
 	}
@@ -160,7 +160,7 @@ public abstract class ExplosiveEntity extends Entity
 		this.setFuse(nbt.getShort("Fuse"));
 	}
 
-	protected float getEyeHeight(Pose pose, EntityDimensions dimensions)
+	protected float getEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions dimensions)
 	{
 		return 0.15F;
 	}
@@ -175,7 +175,7 @@ public abstract class ExplosiveEntity extends Entity
 		this.entityData.set(FUSE, fuse);
 	}
 
-	public Packet<ClientGamePacketListener> getAddEntityPacket()
+	public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket()
 	{
 		return new ClientboundAddEntityPacket(this);
 	}

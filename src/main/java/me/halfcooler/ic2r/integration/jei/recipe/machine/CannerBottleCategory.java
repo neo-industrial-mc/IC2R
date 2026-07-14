@@ -56,7 +56,7 @@ public class CannerBottleCategory extends IORecipeCategory<CannerBottleRecipeWra
 	}
 
 	@Override
-	public void draw(CannerBottleRecipeWrapper recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY)
+	public void draw(@NotNull CannerBottleRecipeWrapper recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY)
 	{
 		for (Tuple.T2<IDrawable, SlotPosition> element : this.elements)
 		{

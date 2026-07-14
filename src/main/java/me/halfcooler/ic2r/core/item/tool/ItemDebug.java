@@ -60,6 +60,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemDebug extends Item implements PriorityUsableItem, ISpecialElectricItem, IBoxable
 {
@@ -607,7 +608,7 @@ public class ItemDebug extends Item implements PriorityUsableItem, ISpecialElect
 		}
 	}
 
-	public InteractionResult interactLivingEntity(ItemStack stack, Player user, LivingEntity entity, InteractionHand hand)
+	public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player user, @NotNull LivingEntity entity, @NotNull InteractionHand hand)
 	{
 		return handleEntity(stack, user, entity);
 	}
