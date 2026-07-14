@@ -1,12 +1,12 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W2.6  
+**last_completed:** W3.1  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
 > 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
-> **阶段 2 Work Unit（W2.1–W2.6）已全部 done**；§7.7 为 partial/gap（见 `docs/spec/phase2_closeout.md`）。下一 pending：**W3.1**。
+> **阶段 0–2 done**；阶段 3：last W3.1（SPI 草案）。
 
 ## Queue
 
@@ -32,7 +32,7 @@
 | W2.4 | done | gui_modernization.md 冻结 XML；CodeGuiSample Menu/Screen 注册；compile+test 绿 |
 | W2.5 | done | GatherDataEvent + ItemTagsProvider；3 tool tags → src/generated；runData+test 绿 |
 | W2.6 | done | phase2_closeout：§7.7 partial/gap；窄口径~3.5%≪70%；test 66/66+jacoco 绿 |
-| W3.1 | pending | platform SPI 草案 |
+| W3.1 | done | platform.services 8 SPI + PlatformServices；platform_spi.md；compile+test 绿 |
 | W3.2 | pending | 迁移 1 个调用点到 SPI |
 | W3.3 | pending | EnvProxy 瘦身切片 |
 | W3.4 | pending | NeoForge 骨架或计划 |
@@ -40,10 +40,11 @@
 
 ## Last session
 
-- unit: W2.6
+- unit: W3.1
 - result: done / PASS
-- suggested_commit: `docs: phase 2 closeout with §7.7 gaps and jacoco evidence`
+- suggested_commit: `feat(platform): add platform SPI draft interfaces and dependency doc`
 - verify_log: |
-    - DoD: phase2_closeout.md 含 §7.7 逐条 + G2.1–G2.8 ✅
-    - 3× partial + 覆盖率 gap（窄口径 ~3.53% ≪ 70%）诚实登记
-    - test 66/66 + jacocoTestReport 绿；仅 docs 变更；无 W3 实现
+    - DoD: 8 SPI 接口 + platform_spi.md 依赖方向 ✅
+    - SPI 无 net.minecraftforge import
+    - 运行时仍 EnvProxy；未做 W3.2/W3.3
+    - compileJava + test 绿
