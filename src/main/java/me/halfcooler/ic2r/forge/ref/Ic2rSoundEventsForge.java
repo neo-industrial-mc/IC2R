@@ -93,11 +93,7 @@ public final class Ic2rSoundEventsForge
 		REGISTRY.register(modEventBus);
 	}
 
-	/**
-	 * Called after registry freeze to copy {@link RegistryObject} references back to
-	 * the core class so {@code Ic2rSoundEvents.X.get()} resolves correctly.
-	 */
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({"unchecked"})
 	public static void wireCoreFields()
 	{
 		try
