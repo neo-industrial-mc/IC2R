@@ -53,7 +53,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.Nullable;
 
 public class EventHandlerClient
@@ -61,9 +61,9 @@ public class EventHandlerClient
 	public static void onClientSetup()
 	{
 		List<Block> fluidBlocks = new ArrayList<>();
-		for (Block block : ForgeRegistries.BLOCKS.getValues())
+		for (Block block : BuiltInRegistries.BLOCK)
 		{
-			ResourceLocation id = ForgeRegistries.BLOCKS.getKey(block);
+			ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
 			if (id != null && "ic2r".equals(id.getNamespace()) && id.getPath().startsWith("fluid_block_"))
 			{
 				fluidBlocks.add(block);
@@ -124,7 +124,7 @@ public class EventHandlerClient
 	public static float onSetupFogDensity(BlockState state)
 	{
 		Fluid fluid = FluidHandler.getWorldFluid(state);
-		if (fluid != null && "ic2r".equals(Objects.requireNonNull(ForgeRegistries.FLUIDS.getKey(fluid)).getNamespace()))
+		if (fluid != null && "ic2r".equals(Objects.requireNonNull(BuiltInRegistries.FLUID.getKey(fluid)).getNamespace()))
 		{
 			int density = FluidHandler.getDensity(fluid);
 			return (float) Util.map(Math.abs(density), 20000.0, 2.0);
@@ -137,7 +137,7 @@ public class EventHandlerClient
 	public static int onRenderFogColor(BlockState state)
 	{
 		Fluid fluid = FluidHandler.getWorldFluid(state);
-		return fluid != null && "ic2r".equals(ForgeRegistries.FLUIDS.getKey(fluid).getNamespace()) ? FluidHandler.getColor(fluid) : -1;
+		return fluid != null && "ic2r".equals(BuiltInRegistries.FLUID.getKey(fluid).getNamespace()) ? FluidHandler.getColor(fluid) : -1;
 	}
 
 	/**

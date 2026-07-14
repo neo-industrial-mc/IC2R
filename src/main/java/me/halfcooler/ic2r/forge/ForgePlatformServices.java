@@ -1,6 +1,12 @@
 package me.halfcooler.ic2r.forge;
 
+import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
+import me.halfcooler.ic2r.core.item.Ic2rBucketItem;
+import me.halfcooler.ic2r.forge.fluid.Ic2rFluidTankHandler;
+import me.halfcooler.ic2r.forge.item.tool.ShearableAccessForge;
+import me.halfcooler.ic2r.forge.util.PumpUtilForge;
 import me.halfcooler.ic2r.platform.services.PlatformServices;
+import net.minecraftforge.event.ForgeEventFactory;
 
 /**
  * Wires Forge SPI adapters into {@link PlatformServices}.
@@ -31,6 +37,10 @@ public final class ForgePlatformServices
 		installing = true;
 		try
 		{
+			Ic2rFluidTank.setHandlerFactory(Ic2rFluidTankHandler::new);
+			Ic2rBucketItem.setBucketUseHook(ForgeEventFactory::onBucketUse);
+				PumpUtilForge.install();
+				ShearableAccessForge.install();
 			PlatformServices.install(
 				new PlatformRegistryForge(),
 				new PlatformEnergyBridgeForge(),

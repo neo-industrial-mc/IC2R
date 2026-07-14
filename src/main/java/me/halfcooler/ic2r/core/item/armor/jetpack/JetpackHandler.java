@@ -24,37 +24,25 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.event.TickEvent;
 
 public class JetpackHandler implements IBackupElectricItemManager
 {
 	static final ItemStack jetpack = new ItemStack(Ic2rItems.JETPACK_ELECTRIC);
 	private static final Map<Player, ItemStack> playerArmorBuffer = new WeakHashMap<>();
 	public static JetpackHandler instance;
-	@OnlyIn(Dist.CLIENT)
-	private static LayerJetpackOverride render;
-	@OnlyIn(Dist.CLIENT)
-	private static Field renderLayers;
 	private boolean internalHandlesCheck = false;
 
 	private JetpackHandler()
 	{
-		MinecraftForge.EVENT_BUS.register(this);
 		ElectricItem.registerBackupManager(this);
 	}
 
 	public static void init()
 	{
-		instance = new JetpackHandler();
+		if (instance == null)
+		{
+			instance = new JetpackHandler();
+		}
 	}
 
 	public static void onPlayerTick(Player player)
@@ -235,98 +223,57 @@ public class JetpackHandler implements IBackupElectricItemManager
 		return handle;
 	}
 
-	@SubscribeEvent
-	public void tick(TickEvent.PlayerTickEvent event)
+	/** Called by JetpackHandlerForge on player tick START. */
+	public static void restoreArmorIfBuffered(Player player)
 	{
-		if (event.phase == TickEvent.Phase.START)
+		if (playerArmorBuffer.containsKey(player))
 		{
-			if (playerArmorBuffer.containsKey(event.player))
+			ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
+			ItemStack lastStack = playerArmorBuffer.get(player);
+			if (!StackUtil.isEmpty(lastStack) && hasJetpackAttached(lastStack) && StackUtil.isEmpty(stack))
 			{
-				ItemStack stack = event.player.getItemBySlot(EquipmentSlot.CHEST);
-				ItemStack lastStack = playerArmorBuffer.get(event.player);
-				if (!StackUtil.isEmpty(lastStack) && hasJetpackAttached(lastStack) && StackUtil.isEmpty(stack))
-				{
-					ItemStack newJetpack = jetpack.copy();
-					double oldCharge = ElectricItem.manager.getCharge(lastStack);
-					ElectricItem.manager.charge(newJetpack, oldCharge, Integer.MAX_VALUE, true, false);
-					event.player.setItemSlot(EquipmentSlot.CHEST, newJetpack);
-				}
-
-				playerArmorBuffer.remove(event.player);
+				ItemStack newJetpack = jetpack.copy();
+				double oldCharge = ElectricItem.manager.getCharge(lastStack);
+				ElectricItem.manager.charge(newJetpack, oldCharge, Integer.MAX_VALUE, true, false);
+				player.setItemSlot(EquipmentSlot.CHEST, newJetpack);
 			}
+			playerArmorBuffer.remove(player);
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	@SubscribeEvent(priority = EventPriority.HIGH)
-	public void tooltip(ItemTooltipEvent event)
+	/** Called by JetpackHandlerForge for jetpack tooltip injection. */
+	public static void addJetpackTooltip(ItemStack stack, java.util.List<Component> tip)
 	{
-		if (hasJetpackAttached(event.getItemStack()))
+		if (hasJetpackAttached(stack))
 		{
-			Ic2rTooltip.add(event.getToolTip(), Component.translatable("ic2r.jetpackAttached").withStyle(ChatFormatting.YELLOW));
-			String energyTooltip = ElectricItem.manager.getToolTip(event.getItemStack());
+			Ic2rTooltip.add(tip, Component.translatable("ic2r.jetpackAttached").withStyle(ChatFormatting.YELLOW));
+			String energyTooltip = ElectricItem.manager.getToolTip(stack);
 			if (energyTooltip != null && !energyTooltip.trim().isEmpty())
 			{
-				Ic2rTooltip.add(event.getToolTip(), Component.literal(energyTooltip));
+				Ic2rTooltip.add(tip, Component.literal(energyTooltip));
 			}
 		}
 	}
 
-	@SubscribeEvent
-	public void onEquipmentChange(LivingEquipmentChangeEvent event)
+	/** Called by JetpackHandlerForge on equipment slot change. */
+	public static void onEquipmentChanged(LivingEntity entity)
 	{
-		if (event.getSlot() != EquipmentSlot.CHEST || !(event.getEntity() instanceof Player player))
+		if (!(entity instanceof Player player))
 		{
 			return;
 		}
-
-		if (!hasJetpack(event.getTo()) && !hasJetpack(event.getFrom()))
-		{
-			return;
-		}
-
 		JetpackLogic.stopJetpackSound(player);
 	}
 
-	@SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
-	public void livingAttack(LivingAttackEvent event)
+	/** Called by JetpackHandlerForge before damage; buffers chest armor for potential restore. */
+	public static void bufferChestArmor(Player player)
 	{
-		if (event.getEntity() instanceof Player player && event.getSource() != null && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY))
+		ItemStack currentArmor = player.getItemBySlot(EquipmentSlot.CHEST);
+		if (hasJetpackAttached(currentArmor))
 		{
-			ItemStack currentArmor = player.getItemBySlot(EquipmentSlot.CHEST);
-			if (hasJetpackAttached(currentArmor))
-			{
-				playerArmorBuffer.put(player, currentArmor);
-			}
+			playerArmorBuffer.put(player, currentArmor);
 		}
 	}
 
-	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void render(RenderLivingEvent.Pre<LivingEntity, ?> event)
-	{
-		LivingEntity entity = event.getEntity();
-		if (hasJetpackAttached(entity.getItemBySlot(EquipmentSlot.CHEST)))
-		{
-			if (render == null)
-			{
-				render = new LayerJetpackOverride((RenderLayerParent) event.getRenderer());
-				renderLayers = ReflectionUtil.getField(LivingEntityRenderer.class, "layers", "f_115291_");
-			}
 
-			event.getRenderer().addLayer((RenderLayer) render);
-		}
-	}
-
-	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)
-	@SuppressWarnings("unchecked")
-	public void renderPost(RenderLivingEvent.Post<LivingEntity, ?> event)
-	{
-		if (render != null)
-		{
-			((List<RenderLayer<?, ?>>) ReflectionUtil.getFieldValue(renderLayers, event.getRenderer())).remove(render);
-		}
-	}
 }

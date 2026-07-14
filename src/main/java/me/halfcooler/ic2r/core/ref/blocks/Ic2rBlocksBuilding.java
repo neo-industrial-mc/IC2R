@@ -150,7 +150,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 
 /** Domain block registrations: rubber wood, sheets, walls, foam, explosives, building blocks */
@@ -187,7 +187,7 @@ public final class Ic2rBlocksBuilding
 	{
 	});
 	public static final Block RUBBER_SIGN = Ic2rBlocks.register("rubber_sign", new Ic2rSignBlock(Properties.of().mapColor(RUBBER_LOG.defaultMapColor()).noCollission().strength(1.0F).sound(SoundType.WOOD), Ic2rSignType.RUBBER));
-	public static final Block RUBBER_WALL_SIGN = Ic2rBlocks.register("rubber_wall_sign", new Ic2rWallSignBlock(Properties.of().mapColor(RUBBER_LOG.defaultMapColor()).noCollission().strength(1.0F).sound(SoundType.WOOD).lootFrom(ForgeRegistries.BLOCKS.getDelegateOrThrow(RUBBER_SIGN)), Ic2rSignType.RUBBER));
+	public static final Block RUBBER_WALL_SIGN = Ic2rBlocks.register("rubber_wall_sign", new Ic2rWallSignBlock(Properties.of().mapColor(RUBBER_LOG.defaultMapColor()).noCollission().strength(1.0F).sound(SoundType.WOOD).lootFrom(BuiltInRegistries.BLOCK.getResourceKey(RUBBER_SIGN).flatMap(BuiltInRegistries.BLOCK::getHolder).orElseThrow()), Ic2rSignType.RUBBER));
 	public static final Block RUBBER_SLAB = Ic2rBlocks.register("rubber_slab", new SlabBlock(Properties.of().mapColor(MapColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
 	public static final Block RUBBER_STAIRS = Ic2rBlocks.register("rubber_stairs", new StairBlock(RUBBER_PLANKS::defaultBlockState, Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD))
 	{

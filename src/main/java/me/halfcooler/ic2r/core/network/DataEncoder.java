@@ -43,7 +43,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class DataEncoder
 {
@@ -237,7 +237,7 @@ public final class DataEncoder
 				}
 				break;
 			case Enchantment:
-				encode(os, ForgeRegistries.ENCHANTMENTS.getKey((Enchantment) o), false);
+				encode(os, BuiltInRegistries.ENCHANTMENT.getKey((Enchantment) o), false);
 				break;
 			case Enum:
 				os.writeVarInt(((Enum<?>) o).ordinal());
@@ -246,7 +246,7 @@ public final class DataEncoder
 				os.writeFloat((Float) o);
 				break;
 			case Fluid:
-				encode(os, ForgeRegistries.FLUIDS.getKey((Fluid) o), false);
+				encode(os, BuiltInRegistries.FLUID.getKey((Fluid) o), false);
 				break;
 			case FluidStack:
 				Ic2rFluidStack fs = (Ic2rFluidStack) o;
@@ -308,7 +308,7 @@ public final class DataEncoder
 			case Object:
 				throw new IllegalArgumentException("unhandled class: " + o.getClass());
 			case Potion:
-				encode(os, ForgeRegistries.MOB_EFFECTS.getKey((MobEffect) o), false);
+				encode(os, BuiltInRegistries.MOB_EFFECT.getKey((MobEffect) o), false);
 				break;
 			case ResourceLocation:
 				ResourceLocation loc = (ResourceLocation) o;
@@ -543,13 +543,13 @@ public final class DataEncoder
 
 				return new IElectrolyzerRecipeManager.ElectrolyzerRecipe(inputAmount, EUaTick, ticksNeeded, outputs);
 			case Enchantment:
-				return ForgeRegistries.ENCHANTMENTS.getValue((ResourceLocation) decode(is, DataEncoder.EncodedType.ResourceLocation));
+				return BuiltInRegistries.ENCHANTMENT.get((ResourceLocation) decode(is, DataEncoder.EncodedType.ResourceLocation));
 			case Enum:
 				return is.readVarInt();
 			case Float:
 				return is.readFloat();
 			case Fluid:
-				return ForgeRegistries.FLUIDS.getValue((ResourceLocation) decode(is, DataEncoder.EncodedType.ResourceLocation));
+				return BuiltInRegistries.FLUID.get((ResourceLocation) decode(is, DataEncoder.EncodedType.ResourceLocation));
 			case FluidStack:
 			{
 				Fluid fluid = (Fluid) decode(is, DataEncoder.EncodedType.Fluid);
@@ -605,7 +605,7 @@ public final class DataEncoder
 			case Object:
 				return new Object();
 			case Potion:
-				return ForgeRegistries.MOB_EFFECTS.getValue((ResourceLocation) decode(is, DataEncoder.EncodedType.ResourceLocation));
+				return BuiltInRegistries.MOB_EFFECT.get((ResourceLocation) decode(is, DataEncoder.EncodedType.ResourceLocation));
 			case ResourceLocation:
 				return ResourceLocation.fromNamespaceAndPath(is.readString(), is.readString());
 			case Short:

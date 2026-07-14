@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class Util
 {
@@ -296,7 +296,7 @@ public final class Util
 
 	public static Block getBlock(ResourceLocation loc)
 	{
-		Block ret = ForgeRegistries.BLOCKS.getValue(loc);
+		Block ret = BuiltInRegistries.BLOCK.get(loc);
 		if (ret != Blocks.AIR)
 		{
 			return ret;
@@ -326,7 +326,7 @@ public final class Util
 
 	public static ResourceLocation getName(Block block)
 	{
-		return ForgeRegistries.BLOCKS.getKey(block);
+		return BuiltInRegistries.BLOCK.getKey(block);
 	}
 
 	public static Item getItem(String name)
@@ -343,7 +343,7 @@ public final class Util
 
 	public static Item getItem(ResourceLocation loc)
 	{
-		return ForgeRegistries.ITEMS.getValue(loc);
+		return BuiltInRegistries.ITEM.get(loc);
 	}
 
 	public static Vector3 getLook(Entity entity)
@@ -353,17 +353,17 @@ public final class Util
 
 	public static ResourceLocation getName(Item item)
 	{
-		return ForgeRegistries.ITEMS.getKey(item);
+		return BuiltInRegistries.ITEM.getKey(item);
 	}
 
 	public static Fluid getFluid(ResourceLocation loc)
 	{
-		return ForgeRegistries.FLUIDS.getValue(loc);
+		return BuiltInRegistries.FLUID.get(loc);
 	}
 
 	public static ResourceLocation getName(Fluid fluid)
 	{
-		return ForgeRegistries.FLUIDS.getKey(fluid);
+		return BuiltInRegistries.FLUID.getKey(fluid);
 	}
 
 	public static ResourceLocation getDimId(Level world)
@@ -631,7 +631,7 @@ public final class Util
 	{
 		if (!(match instanceof ItemStack))
 		{
-			if (!(match instanceof TagKey<?> tagKey && tagKey.isFor(ForgeRegistries.ITEMS.getRegistryKey())))
+			if (!(match instanceof TagKey<?> tagKey && tagKey.registry().equals(BuiltInRegistries.ITEM.key())))
 			{
 				return stack == match;
 			} else
@@ -641,13 +641,8 @@ public final class Util
 					return false;
 				}
 
-				Optional<TagKey<Item>> itemTagKeyOpt = tagKey.cast(ForgeRegistries.ITEMS.getRegistryKey());
-				if (itemTagKeyOpt.isEmpty())
-				{
-					return false;
-				}
-
-				TagKey<Item> itemTagKey = itemTagKeyOpt.get();
+				@SuppressWarnings("unchecked")
+				TagKey<Item> itemTagKey = (TagKey<Item>) tagKey;
 				return stack.is(itemTagKey);
 			}
 		} else

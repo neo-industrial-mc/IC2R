@@ -8,6 +8,8 @@ import me.halfcooler.ic2r.core.network.NetworkManager;
 import me.halfcooler.ic2r.core.loot.Ic2rLootNbtProviderTypes;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
+import me.halfcooler.ic2r.forge.item.armor.jetpack.JetpackHandlerForge;
+import me.halfcooler.ic2r.forge.ref.Ic2rSoundEventsForge;
 import me.halfcooler.ic2r.integration.ae2.Ic2rAe2Plugin;
 
 import java.util.ArrayList;
@@ -60,7 +62,8 @@ public final class FmlMod
 		EnvFluidHandlerForge.fluidTypeRegistry.register(modEventBus);
 		Ic2rLootModifier.lootModifiersRegistry.register(modEventBus);
 		// W1.7: SoundEvent category fully DeferredRegister + RegistryObject
-		Ic2rSoundEvents.register(modEventBus);
+		Ic2rSoundEventsForge.register(modEventBus);
+			JetpackHandlerForge.register();
 		if (FMLEnvironment.dist.isClient())
 		{
 			modEventBus.register(new ClientModEventHandlerForge());
@@ -108,7 +111,8 @@ public final class FmlMod
 			throw new IllegalStateException();
 		}
 
-		EventHandler.onInitLate();
+		Ic2rSoundEventsForge.wireCoreFields();
+			EventHandler.onInitLate();
 	}
 
 	@SubscribeEvent

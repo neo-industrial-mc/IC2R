@@ -39,7 +39,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class CommandIc2r
 {
@@ -51,7 +51,7 @@ public final class CommandIc2r
 	private static final SuggestionProvider<CommandSourceStack> ITEM_SUGGESTIONS = (ctx, builder) -> {
 		String remaining = builder.getRemaining().toLowerCase();
 
-		for (Item item : ForgeRegistries.ITEMS)
+		for (Item item : BuiltInRegistries.ITEM)
 		{
 			String name = Util.getName(item).toString();
 			if (name.toLowerCase().contains(remaining))
@@ -65,7 +65,7 @@ public final class CommandIc2r
 			builder.suggest("Tag:");
 		}
 
-		for (var fluid : ForgeRegistries.FLUIDS)
+		for (var fluid : BuiltInRegistries.FLUID)
 		{
 			String suggestion = "Fluid:" + Util.getName(fluid);
 			if (suggestion.toLowerCase().contains(remaining))

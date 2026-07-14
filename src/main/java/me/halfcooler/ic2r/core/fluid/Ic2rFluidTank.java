@@ -7,8 +7,10 @@ public class Ic2rFluidTank
 {
 	private int capacity;
 	private Ic2rFluidStack fluidStack;
-	/** Lazy Forge {@code IFluidHandler} view (G2.5); not a storage copy. */
-	private Ic2rFluidTankHandler fluidHandler;
+	/** Lazy forge adapter (G2.5); type is {@code Object} so core stays forge-free. */
+	private Object fluidHandler;
+	/** Set by forge/ init so core never imports forge types. */
+	private static java.util.function.Function<Ic2rFluidTank, Object> handlerFactory;
 
 	public Ic2rFluidTank(int capacity)
 	{
@@ -16,16 +18,20 @@ public class Ic2rFluidTank
 	}
 
 	/**
-	 * First-class Forge fluid handler over this tank (single tank index 0).
-	 * Side masks / multi-tank aggregation remain on {@code Fluids} + BE capability.
-	 *
-	 * @see Ic2rFluidTankHandler
+	 * First-class forge fluid handler over this tank (single tank index 0).
+	 * Actual type is {@code forge.fluid.Ic2rFluidTankHandler} — core callers
+	 * only pass the opaque reference to forge-side capability attachment.
 	 */
-	public final Ic2rFluidTankHandler getFluidHandler()
+	public static void setHandlerFactory(java.util.function.Function<Ic2rFluidTank, Object> factory)
 	{
-		if (this.fluidHandler == null)
+		handlerFactory = factory;
+	}
+
+	public final Object getFluidHandler()
+	{
+		if (this.fluidHandler == null && handlerFactory != null)
 		{
-			this.fluidHandler = new Ic2rFluidTankHandler(this);
+			this.fluidHandler = handlerFactory.apply(this);
 		}
 
 		return this.fluidHandler;
@@ -227,7 +233,7 @@ public class Ic2rFluidTank
 		return true;
 	}
 
-	protected boolean canFill(Fluid fluid)
+	public boolean canFill(Fluid fluid)
 	{
 		return true;
 	}

@@ -39,9 +39,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -188,7 +186,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 
 	private static String getTeName(BlockEntity te)
 	{
-		return te != null ? ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(te.getType()).toString() : "none";
+		return te != null ? BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(te.getType()).toString() : "none";
 	}
 
 	// === Left-click (mining) behavior — 1.12 ItemToolWrenchNew tool harvest ===
@@ -295,7 +293,6 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return false;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack stack, Level world, List<Component> info, @NotNull TooltipFlag flag)
 	{
 		Component attackKey = Minecraft.getInstance().options.keyAttack.getTranslatedKeyMessage();
@@ -310,7 +307,6 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return world.getBlockState(pos).getBlock() instanceof IWrenchAble;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public SoundEvent getHitSoundForBlock(LocalPlayer player, Level world, BlockPos pos, ItemStack stack)
 	{
@@ -318,7 +314,6 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return null;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public SoundEvent getBreakSoundForBlock(LocalPlayer player, Level world, BlockPos pos, ItemStack stack)
 	{

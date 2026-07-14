@@ -37,7 +37,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,10 +69,13 @@ public abstract class Ic2rBucketItem extends BucketItem
 			user,
 			contained == Fluids.EMPTY ? net.minecraft.world.level.ClipContext.Fluid.SOURCE_ONLY : net.minecraft.world.level.ClipContext.Fluid.NONE
 		);
-		InteractionResultHolder<ItemStack> ret = ForgeEventFactory.onBucketUse(user, world, itemStack, blockHitResult);
-		if (ret != null)
+		if (bucketUseHook != null)
 		{
-			return ret;
+			InteractionResultHolder<ItemStack> ret = bucketUseHook.onBucketUse(user, world, itemStack, blockHitResult);
+			if (ret != null)
+			{
+				return ret;
+			}
 		}
 
 		if (blockHitResult.getType() == Type.MISS)
@@ -262,5 +264,21 @@ public abstract class Ic2rBucketItem extends BucketItem
 		SoundEvent soundEvent = fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
 		world.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
 		world.gameEvent(player, GameEvent.FLUID_PLACE, pos);
+	}
+
+	/** Forge-event hook set by forge/ init; no-op unless forge layer wires {@code ForgeEventFactory#onBucketUse}. */
+	@Nullable
+	private static BucketUseHook bucketUseHook;
+
+	@FunctionalInterface
+	public interface BucketUseHook
+	{
+		@Nullable
+		InteractionResultHolder<ItemStack> onBucketUse(Player user, Level world, ItemStack stack, BlockHitResult hit);
+	}
+
+	public static void setBucketUseHook(BucketUseHook hook)
+	{
+		bucketUseHook = hook;
 	}
 }

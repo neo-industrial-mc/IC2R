@@ -8,7 +8,6 @@ import me.halfcooler.ic2r.core.fluid.FluidTankInfo;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidBlock;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
-import me.halfcooler.ic2r.core.fluid.Ic2rFluidTankHandler;
 import me.halfcooler.ic2r.core.util.Util;
 
 import java.util.ArrayList;
@@ -176,7 +175,7 @@ public class Fluids extends TileEntityComponent implements Ic2rFluidBlock
 	 *
 	 * @see me.halfcooler.ic2r.core.fluid.Ic2rFluidTankHandler
 	 */
-	public Ic2rFluidTankHandler getTankHandler(String name)
+	public Object getTankHandler(String name)
 	{
 		return this.getFluidTank(name).getFluidHandler();
 	}

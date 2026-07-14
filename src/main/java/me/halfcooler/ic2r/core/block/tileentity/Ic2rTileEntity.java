@@ -47,9 +47,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public abstract class Ic2rTileEntity extends BlockEntity implements INetworkDataProvider, INetworkUpdateListener, IGuiConditionProvider
 {
@@ -276,7 +274,6 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	protected void updateEntityClient()
 	{
 	}
@@ -289,7 +286,7 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 	public List<String> getNetworkedFields()
 	{
 		List<String> ret = new ArrayList<>(3);
-		ret.add("teBlk=" + ForgeRegistries.BLOCKS.getKey(this.teBlock));
+		ret.add("teBlk=" + BuiltInRegistries.BLOCK.getKey(this.teBlock));
 		ret.add("active");
 		return ret;
 	}
@@ -338,7 +335,6 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private boolean hasActiveTexture()
 	{
 		return this.teBlock.canActive();

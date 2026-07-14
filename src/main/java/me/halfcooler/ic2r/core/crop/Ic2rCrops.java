@@ -56,7 +56,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class Ic2rCrops extends Crops
@@ -280,7 +280,7 @@ public class Ic2rCrops extends Crops
 	@Override
 	public CropCard getCropCard(ItemStack stack)
 	{
-		ResourceLocation identifier = ForgeRegistries.ITEMS.getKey(stack.getItem());
+		ResourceLocation identifier = BuiltInRegistries.ITEM.getKey(stack.getItem());
 		if (stack.is(ItemTags.SAPLINGS) && identifier.getNamespace().equals("minecraft"))
 		{
 			return this.getCropCard("ic2r", identifier.getPath());
@@ -300,7 +300,7 @@ public class Ic2rCrops extends Crops
 	@Override
 	public CropCard getCropCard(Block cropBlock)
 	{
-		ResourceLocation cropIdentifier = ForgeRegistries.BLOCKS.getKey(cropBlock);
+		ResourceLocation cropIdentifier = BuiltInRegistries.BLOCK.getKey(cropBlock);
 		String cropOwner = cropIdentifier.getNamespace();
 		String cropName = cropIdentifier.getPath().replace("_crop", "");
 		return this.getCropCard(cropOwner, cropName);

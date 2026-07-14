@@ -12,10 +12,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.IFluidBlock;
 
 public class PumpUtil
 {
+	private static PumpFluidAccess fluidAccess;
+
+	@FunctionalInterface
+	public interface PumpFluidAccess
+	{
+		@org.jetbrains.annotations.Nullable
+		Integer getForgeFluidDecay(BlockState state, Level world, BlockPos pos);
+	}
+
+	public static void setFluidAccess(PumpFluidAccess access)
+	{
+		fluidAccess = access;
+	}
+
 	private static final int MAX_TRACE_STEPS = 64;
 	private static final int MAX_AIR_BRIDGE = 64;
 	private static final int LOCAL_AIR_BRIDGE = 8;
@@ -354,15 +367,13 @@ public class PumpUtil
 	protected static int getFlowDecay(BlockState state, Level world, BlockPos pos)
 	{
 		Block block = state.getBlock();
-		if (block instanceof IFluidBlock fb)
+		if (fluidAccess != null)
 		{
-			if (fb.canDrain(world, pos))
+			Integer forgeDecay = fluidAccess.getForgeFluidDecay(state, world, pos);
+			if (forgeDecay != null)
 			{
-				return 0;
+				return forgeDecay;
 			}
-
-			float level = Math.abs(fb.getFilledPercentage(world, pos));
-			return 7 - Util.limit(Math.round(6.0F * level), 0, 6);
 		}
 
 		return block instanceof LiquidBlock ? state.getValue(LiquidBlock.LEVEL) : -1;

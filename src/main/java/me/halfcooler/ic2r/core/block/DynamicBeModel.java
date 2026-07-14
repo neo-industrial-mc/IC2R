@@ -23,7 +23,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +40,7 @@ public abstract class DynamicBeModel<T> implements UnbakedModel, BakedModel
 	protected DynamicBeModel(ResourceLocation id)
 	{
 		ResourceLocation blockId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath().substring(id.getPath().lastIndexOf('/') + 1));
-		Block block = ForgeRegistries.BLOCKS.getValue(blockId);
+		Block block = BuiltInRegistries.BLOCK.get(blockId);
 		if (!(block instanceof Ic2rTileEntityBlock))
 		{
 			throw new IllegalArgumentException("invalid id: " + id);

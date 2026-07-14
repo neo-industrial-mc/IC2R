@@ -1,4 +1,8 @@
-package me.halfcooler.ic2r.core.fluid;
+package me.halfcooler.ic2r.forge.fluid;
+
+import me.halfcooler.ic2r.core.fluid.FluidHandler;
+import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
+import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
@@ -9,16 +13,9 @@ import org.jetbrains.annotations.NotNull;
  * Forge {@link IFluidHandler} adapter over a single {@link Ic2rFluidTank} (G2.5 / FL-*).
  * <p>
  * Machine domain logic continues to use {@link Ic2rFluidTank#fillMb}/{@link Ic2rFluidTank#drainMb};
- * automation and capability callers use this handler. Fill/drain respect tank
- * {@code canFill}/{@code canDrain}, fluid compatibility, capacity, and simulate vs execute
- * via {@link FluidTransferMath} (delegated inside the tank). Storage remains inside the tank
- * (no full fluid rewrite).
+ * automation and capability callers use this handler.
  * <p>
- * Side masks and multi-tank aggregation stay on {@code Fluids} / {@code BlockFluidCapImpl}
- * (analogous to {@code SidedInvWrapper} vs {@code InvSlotItemHandler}). Contract and pure-logic
- * mirrors: {@code docs/spec/fluid_handler_contract.md}. This class needs FluidStack/Forge types —
- * unit suite mirrors rules in {@code FluidHandlerMathTest} without loading this adapter
- * (no MC bootstrap in CI).
+ * Moved from {@code core.fluid} to {@code forge.fluid} (A40.2 Batch 3).
  */
 public final class Ic2rFluidTankHandler implements IFluidHandler
 {
@@ -59,10 +56,6 @@ public final class Ic2rFluidTankHandler implements IFluidHandler
 		return this.tank.getCapacity();
 	}
 
-	/**
-	 * Fluid-type gate only (not free space). Mirrors external fill access:
-	 * empty offer rejected; otherwise {@link Ic2rFluidTank#canFill}.
-	 */
 	@Override
 	public boolean isFluidValid(int tank, @NotNull FluidStack stack)
 	{
@@ -125,11 +118,7 @@ public final class Ic2rFluidTankHandler implements IFluidHandler
 		}
 	}
 
-	/**
-	 * Domain stack from Forge resource (amount + optional NBT). Uses platform stack factory
-	 * so NBT-bearing fluids round-trip when ENV is bootstrapped.
-	 */
-	static Ic2rFluidStack toDomain(FluidStack resource)
+	public static Ic2rFluidStack toDomain(FluidStack resource)
 	{
 		if (resource == null || resource.isEmpty())
 		{
@@ -137,18 +126,14 @@ public final class Ic2rFluidTankHandler implements IFluidHandler
 		}
 
 		CompoundTag tag = resource.getTag();
-		return FluidHandler.ENV_HANDLER.createFluidStackMb(
+		return FluidHandler.createFluidStackMb(
 			resource.getFluid(),
 			resource.getAmount(),
 			tag != null ? tag.copy() : null
 		);
 	}
 
-	/**
-	 * Forge stack from domain content. Empty / null → {@link FluidStack#EMPTY}.
-	 * NBT is copied when present so cap observers see the same fluid identity as the tank.
-	 */
-	static FluidStack toForge(Ic2rFluidStack fs)
+	public static FluidStack toForge(Ic2rFluidStack fs)
 	{
 		if (fs == null || fs.isEmpty())
 		{

@@ -49,7 +49,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.apache.commons.lang3.mutable.MutableObject;
 import net.minecraft.util.RandomSource;
 
@@ -80,7 +80,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 
 	public TileEntityCrop(BlockPos pos, BlockState state)
 	{
-		super(Ic2rBlockEntities.get(ForgeRegistries.BLOCKS.getKey(state.getBlock())), pos, state);
+		super(Ic2rBlockEntities.get(BuiltInRegistries.BLOCK.getKey(state.getBlock())), pos, state);
 		this.crop = Crops.instance.getCropCard(this.getBlockType());
 		if (debug)
 		{

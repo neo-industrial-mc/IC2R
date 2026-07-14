@@ -38,12 +38,24 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEvent.Context;
-import net.minecraftforge.common.IForgeShearable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSoundOverride, BlockBreakableItem, IEntityAttackableItem
 {
+	private static ShearableAccess shearableAccess;
+
+	public interface ShearableAccess
+	{
+		boolean isShearable(net.minecraft.world.entity.Entity entity, net.minecraft.world.item.ItemStack stack, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos);
+		java.util.List<net.minecraft.world.item.ItemStack> onSheared(net.minecraft.world.entity.Entity entity, net.minecraft.world.entity.player.Player player, net.minecraft.world.item.ItemStack stack, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos);
+	}
+
+	public static void setShearableAccess(ShearableAccess access)
+	{
+		shearableAccess = access;
+	}
+
 	public ItemElectricToolChainsaw(Properties settings)
 	{
 		super(settings, 100, Ic2rToolMaterials.CHAINSAW, Collections.singletonList(BlockTags.MINEABLE_WITH_AXE));
@@ -149,16 +161,16 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	{
 		if (!StackUtil.getOrCreateNbtData(stack).getBoolean("disableShear"))
 		{
-			if (entity instanceof IForgeShearable shearable)
+			if (shearableAccess != null)
 			{
 				Level level = entity.level();
 				BlockPos pos = entity.blockPosition();
 
-				if (shearable.isShearable(stack, level, pos))
+				if (shearableAccess.isShearable(entity, stack, level, pos))
 				{
 					if (this.consumeEnergy(stack, this.operationEnergyCost, user))
 					{
-						List<ItemStack> drops = shearable.onSheared(user, stack, level, pos, 0);
+						List<ItemStack> drops = shearableAccess.onSheared(entity, user, stack, level, pos);
 
 						for (ItemStack drop : drops)
 						{

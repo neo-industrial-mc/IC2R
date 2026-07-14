@@ -42,7 +42,7 @@ import net.minecraft.world.level.block.WallBannerBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemToolPainter extends ItemToolCrafting implements IBoxable
@@ -57,20 +57,20 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 
 	public static boolean canColor(Block block, DyeColor color)
 	{
-		ResourceLocation identifier = ForgeRegistries.BLOCKS.getKey(block);
+		ResourceLocation identifier = BuiltInRegistries.BLOCK.getKey(block);
 		return !identifier.getPath().contains(color.getName());
 	}
 
 	public static BlockState getColorBlockState(DyeColor color, VanillaColorBlockId vanillaColorBlock)
 	{
 		ResourceLocation identifier = ResourceLocation.withDefaultNamespace(color.getName() + "_" + vanillaColorBlock.id);
-		return ForgeRegistries.BLOCKS.getValue(identifier).defaultBlockState();
+		return BuiltInRegistries.BLOCK.get(identifier).defaultBlockState();
 	}
 
 	public static BlockState getBlockStateWithProperties(DyeColor color, VanillaColorBlockId vanillaColorBlock, BlockState state)
 	{
 		ResourceLocation identifier = ResourceLocation.withDefaultNamespace(color.getName() + "_" + vanillaColorBlock.id);
-		return ForgeRegistries.BLOCKS.getValue(identifier).withPropertiesOf(state);
+		return BuiltInRegistries.BLOCK.get(identifier).withPropertiesOf(state);
 	}
 
 	@Override
@@ -235,7 +235,7 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 				return true;
 			} else
 			{
-				ResourceLocation identifier = ForgeRegistries.BLOCKS.getKey(block);
+				ResourceLocation identifier = BuiltInRegistries.BLOCK.getKey(block);
 				if (identifier.getNamespace().equals("minecraft") && identifier.getPath().contains("concrete"))
 				{
 					world.setBlockAndUpdate(pos, getColorBlockState(color.dyeColor, VanillaColorBlockId.CONCRETE));
