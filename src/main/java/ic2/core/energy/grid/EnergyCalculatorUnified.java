@@ -796,6 +796,12 @@ public class EnergyCalculatorUnified implements IEnergyCalculator {
       }
     }
 
+    if (!foundAny) {
+      // No source offers this tick -> grids are not calculated. Advance calc ids so
+      // getNodeStats only counts current-tick path energy (not sticky last transfer).
+      GridData.advanceCalcIds(enet);
+    }
+
     return foundAny;
   }
 
@@ -829,7 +835,10 @@ public class EnergyCalculatorUnified implements IEnergyCalculator {
         double sum = 0.0;
 
         for (EnergyPath path : paths) {
-          if (path.lastCalcId <= calcId && path.energySupplied > 0.0) {
+          // Only the current calculation pass. energySupplied is only reset when a
+          // path is used again, so including older lastCalcId values freezes the
+          // last non-zero EU/t on meters after transfer stops.
+          if (path.lastCalcId == calcId && path.energySupplied > 0.0) {
             sum += path.energySupplied;
             max = Math.max(path.maxPacketConducted, max);
           }
@@ -889,7 +898,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator {
       }
 
       n++;
-      if (path.lastCalcId > calcId || path.energySupplied <= 0.0) {
+      if (path.lastCalcId != calcId || path.energySupplied <= 0.0) {
         if (printPathEnergy) {
           chat.println(" (idle)");
         }
@@ -923,5 +932,20 @@ public class EnergyCalculatorUnified implements IEnergyCalculator {
     final Map<Node, List<EnergyPath>> pathCache = new IdentityHashMap<>();
     boolean active;
     int currentCalcId = -1;
+
+    /**
+     * Bump every active grid's calc id so path-local {@code energySupplied} from prior ticks no
+     * longer matches {@code currentCalcId}. Used when the energy net has no sources offering energy
+     * and therefore skips {@code runCalculation} — without this, meters/detectors keep reporting
+     * the last non-zero throughput forever.
+     */
+    static void advanceCalcIds(EnergyNetLocal enet) {
+      for (Grid grid : enet.getGrids()) {
+        GridData data = grid.getData();
+        if (data != null && data.active) {
+          data.currentCalcId++;
+        }
+      }
+    }
   }
 }

@@ -1,8 +1,10 @@
 package ic2.core.gametest;
 
 import ic2.api.energy.EnergyNet;
+import ic2.api.energy.NodeStats;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
+import ic2.core.block.wiring.tileentity.TileEntityElectricBatBox;
 import ic2.core.item.tool.ContainerMeter;
 import ic2.core.item.tool.HandHeldMeter;
 import ic2.core.item.tool.ItemToolMeter;
@@ -27,6 +29,37 @@ public class MeterGameTests {
   private static final String EMPTY = "gametest/empty3x3x3";
 
   private static final BlockPos TARGET_POS = new BlockPos(1, 1, 1);
+
+  @GameTest(template = EMPTY)
+  public static void meterReadsZeroAfterPowerStops(GameTestHelper helper) {
+    BlockPos sourcePos = new BlockPos(1, 2, 1);
+    helper.setBlock(sourcePos, Ic2Blocks.BATBOX);
+    helper.setBlock(TARGET_POS, Ic2Blocks.MACERATOR);
+    TileEntityElectricBatBox batbox = (TileEntityElectricBatBox) helper.getBlockEntity(sourcePos);
+    batbox.energy.addEnergy(320.0);
+    boolean[] sawFlow = {false};
+
+    helper.onEachTick(
+        () -> {
+          IEnergyTile source =
+              EnergyNet.instance.getTile(helper.getLevel(), helper.absolutePos(sourcePos));
+          if (source == null) {
+            return;
+          }
+
+          NodeStats stats = EnergyNet.instance.getNodeStats(source);
+          if (!sawFlow[0]) {
+            if (stats.getEnergyOut() > 0.0) {
+              sawFlow[0] = true;
+              batbox.energy.forceAddEnergy(-batbox.energy.getEnergy());
+            }
+          } else if (stats.getEnergyOut() == 0.0) {
+            Ic2GameTestAssertions.assertNear(
+                helper, stats.getEnergyOut(), 0.0, "meter reading after power stops");
+            helper.succeed();
+          }
+        });
+  }
 
   // the meter finds the clicked energy net tile and provides its readout container
   // (mock players can't receive the menu-open payload, so the container is created directly)
