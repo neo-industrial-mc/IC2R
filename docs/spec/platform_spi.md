@@ -1,7 +1,7 @@
 # Platform SPI 草案（W3.1）
 
-> **状态**：草案 — 接口与依赖方向已就位；**运行时仍走** `IC2R.envProxy` / `IC2R.sideProxy` / `me.halfcooler.ic2r.forge.*`。  
-> **下一 Unit**：W3.2 迁移 1 个调用点到 SPI；W3.3 再瘦身 EnvProxy。  
+> **状态**：W3.2 — SPI 已 install；**首迁调用点**：`EventHandler.onInitLate` 的 `isClientEnv` → `PlatformServices.lifecycle().isClient()`（`PlatformLifecycleForge`）。其余运行时仍双轨 `IC2R.envProxy` / `IC2R.sideProxy`。  
+> **下一 Unit**：W3.3 EnvProxy 瘦身切片。  
 > **主文档**：[Modernization_Project.md](../Modernization_Project.md) §2.2–2.3、§8.2。
 
 ---
@@ -37,7 +37,8 @@ platform-impl  ──may use──►  common / core domain types
 | Forge 实现（现状，W3.2+ 逐步对齐） | `me.halfcooler.ic2r.forge` |
 | 遗留上帝代理（待 W3.3 瘦身） | `me.halfcooler.ic2r.core.proxy` |
 
-访问入口：`PlatformServices`（`install(...)` 显式注入，或 `ServiceLoader` 回退）。**W3.1 不要求**已有 Forge 类实现 SPI 或写入 `META-INF/services`。
+访问入口：`PlatformServices`（`install(...)` 显式注入，或 `ServiceLoader` 回退）。  
+**W3.2 实现**：`ForgePlatformServices.install()`（`FmlMod` 构造首段）安装 `PlatformLifecycleForge` + 其余 facet stub；**不**强制 `META-INF/services`。
 
 ---
 
@@ -117,17 +118,17 @@ core.proxy.EnvProxy  ◄──  core 业务（现状）
         │ implements
 forge.EnvProxyForge
 
-platform.services.*  ◄──  （W3.2 起）少量 core 调用点
+platform.services.*  ◄──  （W3.2）EventHandler.onInitLate 等少量 core 调用点
         ▲
-        │ implements（待写）
-forge.*Platform*Impl
+        │ implements
+forge.PlatformLifecycleForge + ForgePlatformServices（其它 facet stub）
 ```
 
 规则：
 
 1. **common → spi**：只依赖接口与 domain 类型。  
 2. **forge 实现 → spi**：实现接口；可依赖 Forge API。  
-3. **禁止 common 直依赖 forge 实现类**（目标；`IC2R.createEnvProxy()` 里 `new EnvProxyForge()` 为已知债，W3.2+ 改为 `PlatformServices` / ServiceLoader）。  
+3. **禁止 common 直依赖 forge 实现类**（目标；`IC2R.createEnvProxy()` 里 `new EnvProxyForge()` 为已知债，后续改为 `PlatformServices` / ServiceLoader）。  
 4. **SPI 不反向依赖** `integration` / GUI XML 运行时等。
 
 ---
@@ -144,14 +145,15 @@ forge.*Platform*Impl
 
 ## 7. 验证与非目标
 
-**本 Unit 验证**：`.\gradlew.bat compileJava` 通过；既有 test 不破。
+**W3.1 验证**：`.\gradlew.bat compileJava` 通过；既有 test 不破。  
+**W3.2 验证**：`.\gradlew.bat compileJava test`；首迁调用点不直调 `envProxy.isClientEnv()`。
 
 **非目标（禁止扩 scope）**：
 
-- 不迁移任何调用点（W3.2）  
+- W3.2 只迁 **1** 个调用点；不全库替换  
 - 不删除/缩 EnvProxy 方法（W3.3）  
 - 不拆多模块 / Architectury  
-- 不写完整 Forge SPI 实现类（可选空骨架仅 `PlatformServices`）
+- 不把全部 SPI facet 做成完整委托实现（lifecycle 以外可 stub）
 
 ---
 
@@ -161,6 +163,7 @@ forge.*Platform*Impl
 |:---|:---|:---|
 | 双轨并存 | EnvProxy 与 SPI 短期重复 | 文档映射；W3.2 只迁 1 点证明方向 |
 | domain 类型耦合 | SPI 引用 `EnvFluidHandler` 等 | 接受；或后续把 Env* 收成 SPI 本身 |
-| ServiceLoader 未注册 | 误调用 `PlatformServices.*()` 会抛 | W3.1 无调用；W3.2 用 `install` 优先 |
-| 签名不稳 | 草案可能在 W3.2 微调 | 标注 Draft；仅接口无实现成本低 |
+| ServiceLoader 未注册 | 误调用未 install 的 facet 会抛 | `FmlMod` 显式 `install`；stub facet 调用会 UOE |
+| 签名不稳 | 草案可能微调 | 标注 Draft；薄适配器 |
 | Config `Object` 弱类型 | 实现易错 | 实现类内 cast + 单测（后置） |
+| install 时机 | 过早 static 路径仍无 SPI | 首迁选 post-init（`onInitLate`），非 class-init |

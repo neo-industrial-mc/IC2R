@@ -44,6 +44,8 @@ public final class FmlMod
 	{
 		instance = this;
 		this.ctx = ctx;
+		// W3.2: install platform SPI before common code may use PlatformServices
+		ForgePlatformServices.install();
 		IEventBus modEventBus = this.ctx.getModEventBus();
 		modEventBus.register(this);
 		EnvProxyForge.blockEntityRegistry.register(modEventBus);

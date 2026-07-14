@@ -10,6 +10,7 @@ import me.halfcooler.ic2r.api.sound.item.ISwingSoundItem;
 import me.halfcooler.ic2r.core.ChunkLoaderLogic;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.apihelper.CoreAccessImpl;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 import me.halfcooler.ic2r.core.block.ChunkLoadAwareBlockHandler;
 import me.halfcooler.ic2r.core.block.comp.Components;
 import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntitySemifluidGenerator;
@@ -130,7 +131,8 @@ public final class EventHandler
 		UuIndex.instance.init();
 		UuIndex.instance.refresh(true);
 		IC2R.sideProxy.onPostInit();
-		IC2R.sideProxy.requestTick(!IC2R.envProxy.isClientEnv(), ChunkLoadAwareBlockHandler::init);
+		// W3.2: first common call site on PlatformLifecycle (dual-track; other sites still use envProxy)
+		IC2R.sideProxy.requestTick(!PlatformServices.lifecycle().isClient(), ChunkLoadAwareBlockHandler::init);
 		IC2R.log.debug(LogCategory.General, "Finished post-init after %d ms.", (System.nanoTime() - startTime) / 1000000L);
 	}
 

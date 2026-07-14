@@ -1,12 +1,11 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W3.1  
+**last_completed:** W3.2  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
-> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
-> **阶段 0–2 done**；阶段 3：last W3.1（SPI 草案）。
+> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。
 
 ## Queue
 
@@ -33,18 +32,18 @@
 | W2.5 | done | GatherDataEvent + ItemTagsProvider；3 tool tags → src/generated；runData+test 绿 |
 | W2.6 | done | phase2_closeout：§7.7 partial/gap；窄口径~3.5%≪70%；test 66/66+jacoco 绿 |
 | W3.1 | done | platform.services 8 SPI + PlatformServices；platform_spi.md；compile+test 绿 |
-| W3.2 | pending | 迁移 1 个调用点到 SPI |
+| W3.2 | done | EventHandler.onInitLate → PlatformLifecycle.isClient；ForgePlatformServices.install；双轨 EnvProxy |
 | W3.3 | pending | EnvProxy 瘦身切片 |
 | W3.4 | pending | NeoForge 骨架或计划 |
 | W3.5 | pending | 阶段 3 收口 |
 
 ## Last session
 
-- unit: W3.1
+- unit: W3.2
 - result: done / PASS
-- suggested_commit: `feat(platform): add platform SPI draft interfaces and dependency doc`
+- suggested_commit: `feat(platform): wire first common call site to PlatformLifecycle SPI`
 - verify_log: |
-    - DoD: 8 SPI 接口 + platform_spi.md 依赖方向 ✅
-    - SPI 无 net.minecraftforge import
-    - 运行时仍 EnvProxy；未做 W3.2/W3.3
+    - DoD: EventHandler 1 处 PlatformServices.lifecycle().isClient() ✅
+    - PlatformLifecycleForge + ForgePlatformServices.install in FmlMod
+    - 其它 isClientEnv 仍 EnvProxy 双轨
     - compileJava + test 绿

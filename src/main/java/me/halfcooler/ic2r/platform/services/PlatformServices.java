@@ -7,12 +7,10 @@ import java.util.function.Supplier;
 /**
  * Access point for platform SPI implementations.
  * <p>
- * W3.1 skeleton only: nothing installs services yet. W3.2 will either:
- * <ul>
- *   <li>call {@link #install} from the Forge mod entry, or</li>
- *   <li>provide {@code META-INF/services/…} entries and use {@link #load}.</li>
- * </ul>
- * Existing runtime still uses {@code IC2R.envProxy} / {@code IC2R.sideProxy}.
+ * W3.2: Forge entry calls {@link #install} via {@code ForgePlatformServices.install()}.
+ * First migrated common call site uses {@link #lifecycle()}; other facets may still be stubs.
+ * Remaining runtime largely uses {@code IC2R.envProxy} / {@code IC2R.sideProxy} (dual-track).
+ * ServiceLoader remains a fallback when {@link #install} was not called.
  */
 public final class PlatformServices
 {
