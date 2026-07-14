@@ -1,0 +1,102 @@
+# Reverse patch: remove MissingMappings world-migration compatibility.
+#
+# Introduced for:
+#   1) ic2:* -> ic2r:* namespace remap (20.1.40+)
+#   2) ic2r:empty_cell -> ic2r:facade_cell (earlier rename)
+#
+# Apply in the next MAJOR version after drop-support for those worlds:
+#   git apply docs/patches/remove-registry-compat-ic2-namespace-and-empty-cell.patch
+#
+# Or manually delete onMissingMappings / remapLegacyNamespace and related imports
+# in EventHandlerForge.java (see minus hunks below).
+#
+# Do NOT apply while supporting saves from <20.1.40 (ic2 namespace) or empty_cell.
+#
+diff --git a/src/main/java/me/halfcooler/ic2r/forge/EventHandlerForge.java b/src/main/java/me/halfcooler/ic2r/forge/EventHandlerForge.java
+index d7362b5e..38ea6689 100644
+--- a/src/main/java/me/halfcooler/ic2r/forge/EventHandlerForge.java
++++ b/src/main/java/me/halfcooler/ic2r/forge/EventHandlerForge.java
+@@ -15,13 +15,10 @@ import me.halfcooler.ic2r.core.fluid.FluidBeBridge;
+ import me.halfcooler.ic2r.core.fluid.Ic2rFluidBlock;
+ import me.halfcooler.ic2r.core.fluid.Ic2rFluidItem;
+ import me.halfcooler.ic2r.core.item.tool.AbstractItemNanoSaber;
+-import me.halfcooler.ic2r.core.ref.Ic2rItems;
+ import me.halfcooler.ic2r.core.util.LogCategory;
+ import me.halfcooler.ic2r.core.util.Util;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.Direction;
+-import net.minecraft.core.Registry;
+-import net.minecraft.resources.ResourceKey;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.world.Container;
+ import net.minecraft.world.InteractionResult;
+@@ -59,16 +56,10 @@ import net.minecraftforge.items.IItemHandler;
+ import net.minecraftforge.items.IItemHandlerModifiable;
+ import net.minecraftforge.items.wrapper.InvWrapper;
+ import net.minecraftforge.items.wrapper.SidedInvWrapper;
+-import net.minecraftforge.registries.ForgeRegistries;
+-import net.minecraftforge.registries.IForgeRegistry;
+-import net.minecraftforge.registries.MissingMappingsEvent;
+ import org.jetbrains.annotations.NotNull;
+ 
+ public final class EventHandlerForge
+ {
+-	/** Pre-20.1.40 registry namespace. Worlds still store {@code ic2:*} ids until remapped. */
+-	private static final String LEGACY_NAMESPACE = "ic2";
+-	private static final String CURRENT_NAMESPACE = "ic2r";
+ 
+ 	private static final ResourceLocation fluidCapId = IC2R.getIdentifier("fluid");
+ 	private static final ResourceLocation itemCapId = IC2R.getIdentifier("item");
+@@ -80,52 +71,6 @@ public final class EventHandlerForge
+ 		EventHandler.onServerStart(event.getServer());
+ 	}
+ 
+-	/**
+-	 * World save migration for registry renames.
+-	 * <ul>
+-	 *   <li>{@code ic2:*} → {@code ic2r:*} (same path) for every Forge registry that fires this event</li>
+-	 *   <li>{@code ic2r:empty_cell} → {@link Ic2rItems#FACADE_CELL} (earlier internal rename)</li>
+-	 * </ul>
+-	 * Fired once per registry that has missing entries (Forge 1.20.1).
+-	 */
+-	@SubscribeEvent
+-	public void onMissingMappings(MissingMappingsEvent event)
+-	{
+-		remapLegacyNamespace(event);
+-
+-		for (MissingMappingsEvent.Mapping<Item> mapping : event.getMappings(ForgeRegistries.Keys.ITEMS, CURRENT_NAMESPACE))
+-		{
+-			if ("empty_cell".equals(mapping.getKey().getPath()))
+-			{
+-				mapping.remap(Ic2rItems.FACADE_CELL);
+-			}
+-		}
+-	}
+-
+-	/**
+-	 * Remap every missing {@code ic2:path} entry to {@code ic2r:path} when the new id is registered.
+-	 */
+-	@SuppressWarnings("unchecked")
+-	private static <T> void remapLegacyNamespace(MissingMappingsEvent event)
+-	{
+-		ResourceKey<? extends Registry<T>> registryKey = (ResourceKey<? extends Registry<T>>) event.getKey();
+-		IForgeRegistry<T> registry = (IForgeRegistry<T>) event.getRegistry();
+-
+-		for (MissingMappingsEvent.Mapping<T> mapping : event.getMappings(registryKey, LEGACY_NAMESPACE))
+-		{
+-			ResourceLocation newId = ResourceLocation.fromNamespaceAndPath(CURRENT_NAMESPACE, mapping.getKey().getPath());
+-			if (!registry.containsKey(newId))
+-			{
+-				continue;
+-			}
+-
+-			T replacement = registry.getValue(newId);
+-			if (replacement != null)
+-			{
+-				mapping.remap(replacement);
+-			}
+-		}
+-	}
+ 
+ 	@SubscribeEvent
+ 	public void registerCommands(RegisterCommandsEvent event)
