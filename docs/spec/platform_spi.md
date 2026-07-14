@@ -1,7 +1,8 @@
 # Platform SPI 草案（W3.1）
 
 > **状态**：W3.3 — **EnvProxy 瘦身切片**：删除 `EnvProxy#isClientEnv`（及 `EnvProxyForge` 实现）；全库 client 环境判定改走 `PlatformServices.lifecycle().isClient()`。`IC2R` 静态初始化在创建 `sideProxy` 前调用 `ForgePlatformServices.install()`（与 `FmlMod` 双入口，幂等）。其余 `EnvProxy` 方法仍双轨。  
-> **下一 Unit**：W3.4 NeoForge 骨架（或后续继续瘦身 `isForgeEnv`/`isFabricEnv`/`getServer` 等）。  
+> **W3.4**：NeoForge **文档级**计划见 [neoforge_migration_plan.md](neoforge_migration_plan.md)（未建多模块 / 未切主构建）。  
+> **下一 Unit**：W3.5 阶段 3 收口（或继续瘦身 `isForgeEnv`/`isFabricEnv`/`getServer` 等）。  
 > **主文档**：[Modernization_Project.md](../Modernization_Project.md) §2.2–2.3、§8.2。
 
 ---

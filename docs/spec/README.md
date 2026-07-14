@@ -55,6 +55,8 @@
 | [smell_exemptions_w1_4.md](smell_exemptions_w1_4.md) | **已产出**（W1.4） | W1.4 | 味道清理豁免登记 |
 | [gui_modernization.md](gui_modernization.md) | **已产出**（W2.4） | W2.4 | 冻结 guidef XML；新 UI 代码 Menu/Screen 约定与样板 |
 | （入口说明见本表下） | **已起步**（W2.5） | W2.5 | DataGen：`Ic2rDataGenerators` + Tags provider；`.\gradlew.bat runData` → `src/generated/resources` |
+| [platform_spi.md](platform_spi.md) | **已起步**（W3.1–W3.3） | W3.1+ | Platform SPI 接口、依赖方向、EnvProxy 映射与瘦身记录 |
+| [neoforge_migration_plan.md](neoforge_migration_plan.md) | **已产出**（W3.4） | W3.4 | NeoForge 文档级迁移计划：版本线选项、模块/SPI、退役序、里程碑与风险 |
 
 ### 编写约定（摘要）
 
