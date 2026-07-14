@@ -81,7 +81,8 @@
 | `core/gui/code/**` | **rewritten** | W2.4 纯代码 Menu/Screen 样板（工程侧） | 扩生产 GUI 迁移 |
 | `core/block/machine/gui/**`、`.../container/**` | **mixed** | 多数仍 XML/历史 Container；部分（如 storage_box）代码化 | 与 W2.4/G2.3 续迁 |
 | `core/block/reactor/**` + `api/reactor/**` | **residual** | 核电舱室/组件/热逻辑高风险同源域（Golden 高风险预留）；**G1–G3 未域重写** | 强制干净室：规格→测→重写 |
-| `core/crop/**` + `api/crops/**` | **residual** | `CropCard`/`TileEntityCrop`/统计与生长字段网络同步；**未** Origin 清零 | 同上；字段 snake_case 随 NS 迁移 |
+| `core/crop/**` + `api/crops/**` | **residual**（主判据） | `CropCard`/`TileEntityCrop`/统计与生长字段网络同步；**G3.9** 仅抽出生长/存储/杂交资格纯逻辑切片，宿主仍 residual | 干净室重写后置；字段 snake_case 随 NS 迁移 |
+| `core/crop/CropGrowthMath` | **rewritten**（切片） | G3.9 / §8.3：质量门槛、totalGrowth、reset 判定、cross base、storage accept + 单测；**回接** `TileEntityCrop`，非 TE 本体重写 | 保持测护；核电/采矿机同类切片后置 |
 | `core/world/**` | **rewritten** | 橡胶树等世界生成已接 1.20 生成管线；内容主题仍来自 IC 系 | DataGen/配置键规范化；行为规格后置 |
 | `core/uu/**` | **residual** | UU 图/扫描/解析器（含反射读区块缓存痕迹），物质复制价值链 | 规格化后再动；高耦合扫描慎改 |
 | `core/block/wiring/**` | **residual** | 电缆/变压器/储能/充电座 TE 与网绑定；充电座等规则或有 IC2R 差分但骨架同源 | 差分写入 Golden；结构重写排期电网之后 |

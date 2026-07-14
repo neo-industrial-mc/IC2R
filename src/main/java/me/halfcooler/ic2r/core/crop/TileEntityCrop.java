@@ -256,7 +256,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 					return;
 				}
 
-				if (this.growthPoints >= this.crop.getGrowthDuration(this))
+				if (CropGrowthMath.readyToAgeUp(this.growthPoints, this.crop.getGrowthDuration(this)))
 				{
 					this.growthPoints = 0;
 					this.setCurrentAge(this.getCurrentAge() + 1);
@@ -290,28 +290,40 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 				IC2R.log.info(LogCategory.Block, "Crop at %s - growth points (before): %s", this.worldPosition, this.growthPoints);
 			}
 
+			// Pure arithmetic via CropGrowthMath (G3.9); RNG call order preserved.
 			int totalGrowth = 0;
-			int baseGrowth = 3 + IC2R.random.nextInt(7) + this.getStatGrowth();
-			int minimumQuality = (this.crop.getProperties().tier() - 1) * 4 + this.getStatGrowth() + this.statGain + this.statResistance;
-			minimumQuality = Math.max(minimumQuality, 0);
-			int providedQuality = this.crop.getWeightInfluences(this, this.getTerrainHumidity(), this.getTerrainNutrients(), this.getTerrainAirQuality()) * 5;
-			if (providedQuality >= minimumQuality)
+			int baseGrowth = CropGrowthMath.baseGrowth(this.getStatGrowth(), IC2R.random.nextInt(7));
+			int minimumQuality = CropGrowthMath.minimumQuality(
+				this.crop.getProperties().tier(),
+				this.getStatGrowth(),
+				this.statGain,
+				this.statResistance
+			);
+			int providedQuality = CropGrowthMath.scaleWeightInfluences(
+				this.crop.getWeightInfluences(
+					this,
+					this.getTerrainHumidity(),
+					this.getTerrainNutrients(),
+					this.getTerrainAirQuality()
+				)
+			);
+			if (CropGrowthMath.isQualitySufficient(providedQuality, minimumQuality))
 			{
-				totalGrowth = baseGrowth * (100 + (providedQuality - minimumQuality)) / 100;
+				totalGrowth = CropGrowthMath.totalGrowthWhenSufficient(baseGrowth, providedQuality, minimumQuality);
 			} else
 			{
-				int aux = (minimumQuality - providedQuality) * 4;
-				if (aux > 100 && IC2R.random.nextInt(32) > this.statResistance)
+				int aux = CropGrowthMath.qualityDeficitAux(minimumQuality, providedQuality);
+				// Sample nextInt(32) only when aux > 100 — same stream as pre-slice.
+				if (aux > 100 && CropGrowthMath.shouldResetFromDeficit(aux, this.statResistance, IC2R.random.nextInt(32)))
 				{
 					this.reset();
 				} else
 				{
-					totalGrowth = baseGrowth * (100 - aux) / 100;
-					totalGrowth = Math.max(totalGrowth, 0);
+					totalGrowth = CropGrowthMath.totalGrowthWhenDeficient(baseGrowth, aux);
 				}
 			}
 
-			this.growthPoints = (short) (this.growthPoints + totalGrowth);
+			this.growthPoints = CropGrowthMath.addGrowthPoints(this.growthPoints, totalGrowth);
 			if (debugGrowth)
 			{
 				IC2R.log.info(LogCategory.Block, "Crop at %s - base growth: %s", this.worldPosition, baseGrowth);
@@ -1328,23 +1340,8 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 
 		if (neighborCrop.canGrow(this) && neighborCrop.canCross(sideCrop))
 		{
-			int base = 4;
-			if (sideCrop.statGrowth >= 16)
-			{
-				base++;
-			}
-
-			if (sideCrop.statGrowth >= 30)
-			{
-				base++;
-			}
-
-			if (sideCrop.statResistance >= 28)
-			{
-				base += 27 - sideCrop.statResistance;
-			}
-
-			if (base < IC2R.random.nextInt(16))
+			int base = CropGrowthMath.crossEligibilityBase(sideCrop.statGrowth, sideCrop.statResistance);
+			if (!CropGrowthMath.passesCrossRoll(base, IC2R.random.nextInt(16)))
 			{
 				return false;
 			}
@@ -1413,23 +1410,8 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 			{
 				if (neighborCrop.canGrow(this) && neighborCrop.canCross(sideCrop))
 				{
-					int base = 4;
-					if (sideCrop.statGrowth >= 16)
-					{
-						base++;
-					}
-
-					if (sideCrop.statGrowth >= 30)
-					{
-						base++;
-					}
-
-					if (sideCrop.statResistance >= 28)
-					{
-						base += 27 - sideCrop.statResistance;
-					}
-
-					if (base >= IC2R.random.nextInt(16))
+					int base = CropGrowthMath.crossEligibilityBase(sideCrop.statGrowth, sideCrop.statResistance);
+					if (CropGrowthMath.passesCrossRoll(base, IC2R.random.nextInt(16)))
 					{
 						crops.add(sideCrop);
 					}
@@ -1447,22 +1429,8 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 			{
 				if (neighborCrop.canGrow(this) && neighborCrop.canCross(sideCrop))
 				{
-					int base = 4;
-					if (sideCrop.statGrowth >= 16)
-					{
-						base++;
-					}
-
-					if (sideCrop.statGrowth >= 30)
-					{
-						base++;
-					}
-
-					if (sideCrop.statResistance >= 28)
-					{
-						base += 27 - sideCrop.statResistance;
-					}
-
+					// Historical no-op path still samples RNG for stream parity; base unused.
+					CropGrowthMath.crossEligibilityBase(sideCrop.statGrowth, sideCrop.statResistance);
 					IC2R.random.nextInt(16);
 				}
 			}
@@ -1483,14 +1451,8 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 
 	public int applyHydration(int amount, boolean simulate)
 	{
-		int space = 200 - this.storageWater;
-		if (space <= 0)
-		{
-			return 0;
-		}
-
-		amount = Math.min(amount, space);
-		if (!simulate)
+		amount = CropGrowthMath.acceptIntoStorage(this.storageWater, amount, CropGrowthMath.WATER_STORAGE_MAX);
+		if (amount > 0 && !simulate)
 		{
 			this.storageWater = (short) (this.storageWater + amount);
 		}
@@ -1500,24 +1462,16 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 
 	public int applyWeedEx(int amount, boolean fixedAmount, boolean manual, boolean simulate)
 	{
-		int space = (manual ? 100 : 150) - this.storageWeedEX;
+		int capacity = CropGrowthMath.weedExCapacity(manual);
 		if (fixedAmount)
 		{
-			if (space <= amount)
-			{
-				return 0;
-			}
+			amount = CropGrowthMath.acceptFixedDose(this.storageWeedEX, amount, capacity);
 		} else
 		{
-			if (space <= 0)
-			{
-				return 0;
-			}
-
-			amount = Math.min(amount, space);
+			amount = CropGrowthMath.acceptIntoStorage(this.storageWeedEX, amount, capacity);
 		}
 
-		if (!simulate)
+		if (amount > 0 && !simulate)
 		{
 			this.storageWeedEX = (short) (this.storageWeedEX + amount);
 		}

@@ -1,23 +1,25 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** G3.7  
+**last_completed:** G3.9  
 **updated:** 2026-07-14  
 
 ## Queue（G3）
 
 | ID | status | last_notes |
 |----|--------|------------|
-| G3.1–G3.6 | done | 见历史 |
-| G3.7 | done | g3_7_module_split.md + modules/* README 骨架；settings 注释 include；主构建仍单模块 |
-| G3.8 | pending | Architectury 有意延期（可 skip 文档） |
-| G3.9+ | pending | 巨型 BE 瘦身等 |
+| G3.1–G3.7 | done | 见历史 |
+| G3.8 | skipped | Architectury **有意延期**（g3_8_architectury_decision.md）；非缺陷 |
+| G3.9 | done | Mixin 仅 RecipeManagerMixin；api_surface.md；CropGrowthMath 切片 + 10 测；partial 未拆全 BE |
+| G3.10–G3.11 | pending | 继承 G1/G2 交叉登记（多为已部分推进的债） |
 
 ## Last session
 
-- unit: G3.7
-- result: done / PASS（partial skeleton）
-- suggested_commit: `docs: G3.7 multi-module skeleton and mapping plan`
+- units: G3.8 (view+skip) → G3.9
+- result: PASS
+- suggested_commits: |
+    1) `docs: G3.8 defer Architectury by design`
+    2) `feat: CropGrowthMath extract + api/mixin inventory for G3.9`
 - verify_log: |
-    - DoD: 文档 + modules 骨架 + 注释 include ✅
-    - gradle projects: No sub-projects；test 绿
+    - G3.8: 无 Architectury 依赖 ✅
+    - G3.9: CropGrowthMath 回接；test 绿；巨型 BE 未全拆

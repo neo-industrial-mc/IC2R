@@ -64,6 +64,8 @@
 | [neoforge_migration_plan.md](neoforge_migration_plan.md) | **已产出**（W3.4） | W3.4 | NeoForge 文档级迁移计划：版本线选项、模块/SPI、退役序、里程碑与风险 |
 | [g3_2_neoforge_min_set.md](g3_2_neoforge_min_set.md) | **已起步**（G3.2 partial） | G3.2 | 非 Forge 最小可运行集 kickoff：目标清单、版本 A/B、SPI 就绪度、阻断项；Registry 真实现 + getServer 切片 |
 | [g3_7_module_split.md](g3_7_module_split.md) | **已起步**（G3.7 partial/skeleton） | G3.7 | 物理多模块：目标 common/forge/neoforge(+fabric)、源码映射、SPI 方向、不默认 include 原因与前置；`modules/` 骨架 |
+| [g3_8_architectury_decision.md](g3_8_architectury_decision.md) | **已产出**（G3.8 skipped/deferred） | G3.8 | Architectury **有意延期**：理由、再评估前置；**禁止**本阶段引入依赖 |
+| [api_surface.md](api_surface.md) | **已起步**（G3.9 partial） | G3.9 | `api/` 稳定对外 vs 内部迁移中分类（只文档）；Mixin 清单见 phase3 §17 |
 
 ### 编写约定（摘要）
 

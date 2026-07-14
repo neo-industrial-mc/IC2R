@@ -141,8 +141,8 @@
 | G3.5 | EnvProxy 上帝代理仍在；**E2 done**：`isClientEnv`/`isForgeEnv`/`isFabricEnv`/`getServer` 已从 EnvProxy 删并迁 SPI；注册族/流体物品工厂未切 | P0 | **partial（E2 done）**：见 platform_spi.md G3.5 切片；下一 E3 注册族 → E4+（neoforge_migration_plan §4.2） |
 | G3.6 | ~~SPI facet 多为 stub~~ → **done**（见 **§14**）：8 facet Forge 薄委托；≥4 调用点迁 SPI；`extract` 有意 EMPTY 缺口已文档 | P1 | **done**；后续 E3 注册主路径 + 可选 Network 发包替换；勿堆 SPI 空测 |
 | G3.7 | 物理多模块 **partial/skeleton**（文档 + `modules/` 骨架；运行时仍单模块） | P1 | **partial/skeleton（见 §15）**：映射文档 + 目录 README + `settings.gradle` 注释 include；**未**搬迁 `src/main`、**未**默认多项目。下一 Unit 满足 g3_7 §6 前置后再启用 include |
-| G3.8 | Architectury **未**引入 | P2 | **有意延期**（主文档：先手写 thin platform）；非缺陷 |
-| G3.9 | 巨型 BE / api 面瘦身 / Mixin 最小集（§8.3）未作为 W3.\* 推进 | P2 | 后置域 Unit；与 G3.4 Origin 联动 |
+| G3.8 | Architectury **未**引入 | P2 | **skipped / deferred by design（见 §16）**：[g3_8_architectury_decision.md](g3_8_architectury_decision.md)；非缺陷；再评估前置 = NeoForge 最小集 + SPI 稳定 |
+| G3.9 | 巨型 BE / api 面 / Mixin 瘦身（§8.3） | P2 | **partial（见 §17）**：Mixin 清单 done；[api_surface.md](api_surface.md)；`CropGrowthMath` 1 BE 切片 + 测；**未**拆完全部巨型 BE |
 | G3.10 | **继承 G1.\***：TeUpdate 仍默认、snake_case 仅试点、阶段 1 覆盖率 gap | P0 | 见 phase1_closeout；不阻塞本收口登记 |
 | G3.11 | **继承 G2.\***：管道/AE2 e2e 无、配方非全机型直查、~47 guidef、DataGen 窄 | P0–P2 | 见 phase2_closeout |
 
@@ -189,7 +189,7 @@ G3.*（本文件）
 | common 全库去 Forge import | 未做 |
 | NeoForge / Fabric 可运行产物 | 未做（仅计划） |
 | 物理多模块 Gradle | **G3.7 skeleton only**（目录/文档；默认仍单模块） |
-| Architectury | 未引入（有意） |
+| Architectury | **未引入**（G3.8 skipped/deferred by design；见 §16） |
 | Origin 全表 residual 清零 | 未做 |
 | 为 75% 门槛堆测 | 未做 |
 | 本 Unit 生产代码功能改动 | **无**（文档 + 验证） |
@@ -492,4 +492,76 @@ G3.*（本文件）
 - `settings.gradle`（注释 include 示例）  
 - 本文件 §4 G3.7 行 + **§15**；[docs/spec/README.md](README.md) 索引  
 - **无**生产 Java 搬迁；**无** git commit/push  
- 
+
+---
+
+## 16. G3.8 Architectury — skipped / deferred by design
+
+> **Work Unit**: G3.8  
+> **日期**: 2026-07-14  
+> **状态**: **skipped / deferred by design**（**非**缺陷）  
+> **规格**: [g3_8_architectury_decision.md](g3_8_architectury_decision.md)  
+> **验证**: 文档 only；**禁止**引入 Architectury 依赖  
+
+### 16.1 决策摘要
+
+| 项 | 结论 |
+|:---|:---|
+| Architectury / `@ExpectPlatform` | **不引入** |
+| 理由 | W3.1–G3.6 手写 SPI 已落地；G3.2/G3.7 无第二 loader 产品线；框架增依赖与锁成本 |
+| 再评估 | `ic2r-neoforge` 最小集落地 **且** SPI 稳定后，**可选**评估 ExpectPlatform 是否替换手写 install |
+| 默认倾向 | 继续 thin platform SPI（与 neoforge 计划一致） |
+
+### 16.2 变更范围（G3.8）
+
+- [g3_8_architectury_decision.md](g3_8_architectury_decision.md)（新建）  
+- 本文件 §4 G3.8 行 + **§16**；[docs/spec/README.md](README.md) 索引  
+- **无** `build.gradle` Architectury 依赖；**无** git commit/push  
+
+---
+
+## 17. G3.9 §8.3 架构瘦身切片 — partial
+
+> **Work Unit**: G3.9  
+> **日期**: 2026-07-14  
+> **状态**: **partial**（Mixin 清单 + API 文档 + **1** 巨型 BE 纯逻辑切片；**未**拆完全部巨型 BE）  
+> **规格**: [api_surface.md](api_surface.md)；主文档 §8.3  
+> **验证**: `.\gradlew.bat compileJava test` → BUILD SUCCESSFUL  
+
+### 17.1 Mixin 清单（最小集合）
+
+| Mixin | 配置 | 作用 | 事件可替代？ | 结论 |
+|:---|:---|:---|:---|:---|
+| `RecipeManagerMixin` | `ic2r.mixins.json` → `mixins: ["RecipeManagerMixin"]` | 在 `RecipeManager.fromJson`（含 Forge `ICondition` 重载）HEAD 打配方 ID 调试日志（历史：排查 Create 等不兼容） | Forge 配方加载事件**不能**无损覆盖同一注入点语义；且当前仅为 debug/info 日志，无玩法改写 | **暂保留**；生产可后续改为配置开关或删除，**不**为本 Unit 扩大 Mixin 面 |
+
+**最小集合确认**：仓库 **仅** `me.halfcooler.ic2r.mixin.RecipeManagerMixin` 一枚；`ic2r.mixins.json` 无 client 列表条目。§8.3「Mixin 维持最小集合；能事件则事件」→ 清单 done，替代评估结论：**暂保留**。
+
+### 17.2 API 面文档
+
+| 交付 | 说明 |
+|:---|:---|
+| [api_surface.md](api_surface.md) | `api/` 粗分 **稳定对外**（energy/recipe/upgrade/crops…）与 **内部迁移中**（network 反射面、CoreAccess、多数 item 工具向接口…） |
+| 搬包 | **未做**（DoD：只文档） |
+
+### 17.3 巨型 BE 切片：`CropGrowthMath`
+
+| 项 | 说明 |
+|:---|:---|
+| 宿主 | `TileEntityCrop`（~1.3k 行，§8.3 优先作物） |
+| 抽出 | `core/crop/CropGrowthMath`：base/minimum/provided quality、充足/亏缺 totalGrowth、reset 判定、growthPoints 累加、age-up、cross 资格 base/roll、storage accept（水/WeedEX） |
+| 回接 | `performGrowthTick`、`readyToAgeUp`、`checkCrossingAvailability` / `attemptSpreading`、`applyHydration` / `applyWeedEx`；**RNG 调用序保持**（仅 `aux > 100` 时 `nextInt(32)`） |
+| 测 | `CropGrowthMathTest`（**≥3**，实际 **10** 条有意义场景） |
+| **未做** | 核电 / 采矿机 TE 拆分；整棵 crop TE 干净室重写 |
+
+### 17.4 诚实边界
+
+- G3.9 = **partial**：§8.3 清单三项各有切片，巨型 BE **禁止一次拆光**  
+- Origin：`CropGrowthMath` **rewritten 切片**；`core/crop/**` 宿主仍 **residual**  
+- **无** Architectury；**无** 全库 BE 拆分；**无** git commit/push  
+
+### 17.5 变更范围（G3.9）
+
+- 新建：`core/crop/CropGrowthMath.java`；`src/test/.../crop/CropGrowthMathTest.java`  
+- 改：`core/crop/TileEntityCrop.java`（委托纯逻辑）  
+- 文档：本文件 §4 G3.9 + **§17**；[api_surface.md](api_surface.md)；[origin.md](origin.md) 切片行；[README.md](README.md) 索引  
+
