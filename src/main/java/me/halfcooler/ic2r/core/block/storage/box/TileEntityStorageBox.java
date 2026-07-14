@@ -4,7 +4,6 @@ import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.invslot.InvSlot;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
-import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.StackUtil;
@@ -27,7 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityStorageBox extends TileEntityInventory implements IHasGui
 {
-	protected final InvSlot inventory;
+	public final InvSlot inventory;
 
 	public TileEntityStorageBox(BlockEntityType<? extends TileEntityStorageBox> type, BlockPos pos, BlockState state, int inventorySize)
 	{
@@ -74,12 +73,12 @@ public abstract class TileEntityStorageBox extends TileEntityInventory implement
 	@Override
 	public ContainerBase<?> createServerScreenHandler(int syncId, Player player)
 	{
-		return DynamicContainer.create(syncId, player.getInventory(), this);
+		return new ContainerStorageBox(syncId, player.getInventory(), this);
 	}
 
 	@Override
 	public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inventory, GrowingBuffer data)
 	{
-		return DynamicContainer.create(syncId, inventory, this);
+		return new ContainerStorageBox(syncId, inventory, this);
 	}
 }

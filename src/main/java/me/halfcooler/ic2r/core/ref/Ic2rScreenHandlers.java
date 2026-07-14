@@ -44,6 +44,7 @@ import me.halfcooler.ic2r.core.block.personal.ContainerEnergyOMatOpen;
 import me.halfcooler.ic2r.core.block.personal.ContainerTradeOMatClosed;
 import me.halfcooler.ic2r.core.block.personal.ContainerTradeOMatOpen;
 import me.halfcooler.ic2r.core.block.reactor.container.ContainerNuclearReactor;
+import me.halfcooler.ic2r.core.block.storage.box.ContainerStorageBox;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.block.wiring.ContainerChargepadBlock;
 import me.halfcooler.ic2r.core.block.wiring.ContainerElectricBlock;
@@ -127,6 +128,8 @@ public final class Ic2rScreenHandlers
 	public static final MenuType<ContainerWeightedItemDistributor> WEIGHTED_ITEM_DISTRIBUTOR = registerManagedBe("weighted_item_distributor");
 	public static final MenuType<ContainerIndustrialWorkbench> INDUSTRIAL_WORKBENCH = registerManagedBe("industrial_workbench");
 	public static final MenuType<ContainerBatchCrafter> BATCH_CRAFTER = registerManagedBe("batch_crafter");
+	/** G2.3: all storage box tiers (wood/iron/bronze/steel/iridium) share one pure-code Menu. */
+	public static final MenuType<ContainerStorageBox> STORAGE_BOX = registerManagedBe("storage_box");
 	private static final EnvProxy.ExtendedClientScreenHandlerFactory<ContainerBase<?>> MANAGED_CLIENT_ITEM_HANDLER = createManagedItemClientHandler();
 	public static final MenuType<DynamicContainer<HandHeldInventory>> DYNAMIC_ITEM = registerManagedItem("dynamic_item");
 	public static final MenuType<DynamicContainer<HandHeldAdvancedUpgrade>> ADVANCED_UPGRADE = registerManagedItem("advanced_upgrade");

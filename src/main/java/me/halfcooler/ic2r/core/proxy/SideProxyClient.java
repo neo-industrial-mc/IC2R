@@ -44,6 +44,7 @@ import me.halfcooler.ic2r.core.block.personal.GuiTradeOMatClosed;
 import me.halfcooler.ic2r.core.block.personal.GuiTradeOMatOpen;
 import me.halfcooler.ic2r.core.block.reactor.gui.GuiNuclearReactor;
 import me.halfcooler.ic2r.core.block.renderer.KineticGeneratorRenderer;
+import me.halfcooler.ic2r.core.block.storage.box.GuiStorageBox;
 import me.halfcooler.ic2r.core.block.wiring.GuiChargePadBlock;
 import me.halfcooler.ic2r.core.block.wiring.GuiElectricBlock;
 import me.halfcooler.ic2r.core.block.wiring.GuiTransformer;
@@ -150,6 +151,7 @@ public final class SideProxyClient implements SideProxy
 		envProxy.registerScreen(Ic2rScreenHandlers.WEIGHTED_ITEM_DISTRIBUTOR, GuiWeightedItemDistributor::new);
 		envProxy.registerScreen(Ic2rScreenHandlers.INDUSTRIAL_WORKBENCH, GuiIndustrialWorkbench::new);
 		envProxy.registerScreen(Ic2rScreenHandlers.BATCH_CRAFTER, GuiBatchCrafter::new);
+		envProxy.registerScreen(Ic2rScreenHandlers.STORAGE_BOX, GuiStorageBox::new);
 		envProxy.registerScreen(Ic2rScreenHandlers.ADVANCED_UPGRADE, new AdvancedUpgradeScreenFactory());
 		envProxy.registerScreen(Ic2rScreenHandlers.ADVANCED_UPGRADE_EDIT_ORE, HandHeldOre.GuiEditOre::new);
 		envProxy.registerScreen(Ic2rScreenHandlers.ADVANCED_UPGRADE_VALUE_CONFIG, HandHeldValueConfig.GuiValueConfig::new);

@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** G2.2  
+**last_completed:** G2.3  
 **updated:** 2026-07-14  
 
 > 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
@@ -11,18 +11,18 @@
 
 | ID | status | last_notes |
 |----|--------|------------|
-| G2.1 | done | item_handler_contract.md + InvSlot 管道式测 +5；无 AE2 e2e residual |
-| G2.2 | done | extractor/compressor 与 macerator 同 bridge 证据；recipe_manager_query_eval.md；JSON 烟测+findMatching；test 124 绿 |
-| G2.3 | pending | guidef 迁移简单机 |
+| G2.1 | done | item_handler_contract.md + InvSlot 管道式测 +5 |
+| G2.2 | done | extractor/compressor 全链路 + recipe_manager_query_eval.md |
+| G2.3 | done | Storage Box 全档纯代码 GUI；删 6 guidef；余 41 XML；compile+test 绿 |
 | G2.4 | pending | inv/fluid 覆盖率有意义抬升 |
 | G2.5+ | pending | 见 phase2_closeout G2.* |
 
 ## Last session
 
-- unit: G2.2
+- unit: G2.3
 - result: done / PASS
-- suggested_commit: `docs+test: G2.2 multi-type basic recipe chain and RM query eval`
+- suggested_commit: `feat(gui): migrate storage boxes from guidef XML to code Menu/Screen`
 - verify_log: |
-    - DoD: extractor/compressor 全链路证据 ✅；materialize 推荐文档 ✅
-    - ≥2 新测（实际 4）✅；test 124/124
-    - 未改非 basic 机型；未切 tick 直查
+    - DoD: ContainerStorageBox/GuiStorageBox；TE 非 DynamicContainer ✅
+    - storage* guidef 已删；MenuType+Screen 注册 ✅
+    - 其余 ~41 guidef 保留；compileJava+test 绿

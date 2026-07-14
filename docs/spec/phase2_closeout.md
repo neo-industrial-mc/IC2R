@@ -119,7 +119,7 @@
 |:---|:---|:---|:---|
 | G2.1 | 无真实管道/漏斗/AE2 端到端；`InvSlotItemHandler` 与 capability 附着 0% | P0 | **G2.1 已推进（文档+Math 加深）**：契约见 [item_handler_contract.md](item_handler_contract.md)；`InvSlotHandlerMathTest` 扩序列/布局/simulate（仍无 Handler 本体行覆盖）。**仍 residual**：真管道/AE2 e2e、cap 附着运行时测、可选 GameTest |
 | G2.2 | 配方：仅 basic 机 materialize 主路径；运行时非直查 `RecipeManager`；非 basic 机型异构 | P0 | **G2.2 已推进**：extractor/compressor 与 macerator 共用 `Rezepte#basicRecipe`→`loadBasic` 全链路已文档化（[recipe_manager_query_eval.md](recipe_manager_query_eval.md)）；推荐保持 materialize、中期对齐 `findMatching` 语义；JSON 烟测 + `findMatchingIndex` 纯测加深。**仍 residual**：tick 未切直查；非 basic 异构 |
-| G2.3 | 新 UI 零 XML 仅「新增冻结」；**~47** guidef 仍服务生产 GUI | P1 | 分批迁移简单机 Menu/Screen → 删对应 XML；JEI/DynamicCategory 同步 |
+| G2.3 | 新 UI 零 XML 仅「新增冻结」；**~47** guidef 仍服务生产 GUI | P1 | **已推进**：storage_box 全档纯代码 Menu/Screen（`ContainerStorageBox`/`GuiStorageBox`），删 6 XML；**仍 residual**：其余 ~41 guidef + Dynamic 兼容层 |
 | G2.4 | 覆盖率 inv/fluid/recipe 包级 ≪ 70%（窄口径 ~3.5%） | P0 | **勿空转**：补 `Ic2rFluidTank` 委托分支测、InvSlot accept 边界、Serializer 无 Level 切口；抬窄口径有意义行 |
 | G2.5 | `Ic2rFluidTank` 非 `IFluidHandler` 一等公民；管道流体仍经 forge cap 包装 | P1 | 统一 fill/empty 服务对外；fluid handler 适配单测（对齐 FL-\*） |
 | G2.6 | DataGen 仅 3 item tags；Recipes/Models/Lang 未生成 | P2 | 后续 DataGen Unit：至少 1 类 recipe 或 block tags |

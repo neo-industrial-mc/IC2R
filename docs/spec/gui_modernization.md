@@ -153,3 +153,4 @@ public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inv, Gro
 | 日期 | Unit | 说明 |
 |:---|:---|:---|
 | 2026-07-14 | W2.4 | 初版：冻结 XML + 代码样板 + 与 Dynamic 关系 |
+| 2026-07-14 | **G2.3** | **首台生产机迁移**：`storage_box` 全档（wood/iron/bronze/steel/iridium）→ `ContainerStorageBox` + `GuiStorageBox`；TE 不再 `DynamicContainer.create`；删 6 份 `guidef/*storage_box*.xml`；`Ic2rScreenHandlers.STORAGE_BOX` + `SideProxyClient` 绑定 |
