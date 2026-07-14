@@ -7,10 +7,28 @@ public class Ic2rFluidTank
 {
 	private int capacity;
 	private Ic2rFluidStack fluidStack;
+	/** Lazy Forge {@code IFluidHandler} view (G2.5); not a storage copy. */
+	private Ic2rFluidTankHandler fluidHandler;
 
 	public Ic2rFluidTank(int capacity)
 	{
 		this.capacity = capacity;
+	}
+
+	/**
+	 * First-class Forge fluid handler over this tank (single tank index 0).
+	 * Side masks / multi-tank aggregation remain on {@code Fluids} + BE capability.
+	 *
+	 * @see Ic2rFluidTankHandler
+	 */
+	public final Ic2rFluidTankHandler getFluidHandler()
+	{
+		if (this.fluidHandler == null)
+		{
+			this.fluidHandler = new Ic2rFluidTankHandler(this);
+		}
+
+		return this.fluidHandler;
 	}
 
 	public final int getCapacity()

@@ -1,11 +1,13 @@
 package me.halfcooler.ic2r.core.fluid;
 
 /**
- * Pure fill/empty arithmetic for {@link Ic2rFluidTank} (and later unified fluid services).
- * No Minecraft/Forge types — unit-testable without client or registry bootstrap (W2.2 / FL-001 / G2.4).
+ * Pure fill/empty arithmetic for {@link Ic2rFluidTank} and {@link Ic2rFluidTankHandler}.
+ * No Minecraft/Forge types — unit-testable without client or registry bootstrap
+ * (W2.2 / G2.4 / G2.5 / FL-*).
  * <p>
  * Gate helpers mirror {@code Ic2rFluidTank} fill/drain delegate branches (compat, external
- * canFill/canDrain, stack-match drain, simulate vs commit stored amount).
+ * canFill/canDrain, stack-match drain, simulate vs commit stored amount). Handler-level
+ * empty-resource early exits and pipe sequences are mirrored in {@code FluidHandlerMathTest}.
  */
 public final class FluidTransferMath
 {

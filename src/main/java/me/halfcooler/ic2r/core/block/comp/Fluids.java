@@ -8,6 +8,7 @@ import me.halfcooler.ic2r.core.fluid.FluidTankInfo;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidBlock;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
+import me.halfcooler.ic2r.core.fluid.Ic2rFluidTankHandler;
 import me.halfcooler.ic2r.core.util.Util;
 
 import java.util.ArrayList;
@@ -166,6 +167,18 @@ public class Fluids extends TileEntityComponent implements Ic2rFluidBlock
 		}
 
 		throw new IllegalArgumentException("Unable to find tank: " + name);
+	}
+
+	/**
+	 * First-class Forge {@link net.minecraftforge.fluids.capability.IFluidHandler} for a named tank
+	 * (G2.5). No side-mask filtering — callers that need facing gates use BE
+	 * {@code FLUID_HANDLER} ({@code BlockFluidCapImpl} over this component).
+	 *
+	 * @see me.halfcooler.ic2r.core.fluid.Ic2rFluidTankHandler
+	 */
+	public Ic2rFluidTankHandler getTankHandler(String name)
+	{
+		return this.getFluidTank(name).getFluidHandler();
 	}
 
 	@Override

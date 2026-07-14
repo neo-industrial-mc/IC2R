@@ -188,7 +188,7 @@
 | 核电 | 热与爆炸阈值（至少纯函数部分） | RX-001（预留） |
 | 作物 | 生长关键公式（可测部分） | CR-001（预留） |
 | UU 图 | `UuGraph` 算法不变量 | UU-001（预留） |
-| 流体容器 | fill / empty 语义 | FL-001（预留） |
+| 流体容器 | fill / empty 语义 | FL-001…FL-003 |
 
 ### 6.2 条目表（预留 ID）
 
@@ -197,7 +197,9 @@
 | RX-001 | 核电热平衡（占位） | 纯函数热输入/输出与爆炸阈值边界待后续 Unit 冻结 | P2 | 未写 | 预留 |
 | CR-001 | 作物生长关键式（占位） | 可测生长/产率公式待后续冻结 | P2 | 未写 | 预留 |
 | UU-001 | UuGraph 不变量（占位） | 图算法可达性/代价不变量待后续冻结 | P2 | 未写 | 预留 |
-| FL-001 | 流体 fill/empty（占位） | 容器 fill/empty 容量与残余语义待后续冻结 | P2 | 未写 | 预留 |
+| FL-001 | 流体 fill/empty 容量与残余 | 可填量=min(空间,offer)；残余 offer；满罐/不兼容/canFill 拒；simulate 不提交 | P1 | 测绿 | `FluidTransferMathTest` + `FluidHandlerMathTest`；契约 [fluid_handler_contract.md](fluid_handler_contract.md) |
+| FL-002 | IFluidHandler 单罐适配门闩 | 空 resource→0；isFluidValid↔canFill；input-only 拒 drain、output-only 拒 fill | P1 | 测绿 | G2.5 `Ic2rFluidTankHandler` 镜像；本体 0% residual |
+| FL-003 | 管道式 fill→drain 序列 | IO 罐 fill 后可 drain；全抽空 stored=0；多步余量一致 | P1 | 测绿 | `FluidHandlerMathTest#pipe_sequence_*` |
 
 ---
 

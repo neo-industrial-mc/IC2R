@@ -13,6 +13,14 @@ import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+/**
+ * Multi-tank + side-mask {@link IFluidHandler} for BE fluid capability (pipes / automation).
+ * <p>
+ * Per-tank first-class adapter is {@link me.halfcooler.ic2r.core.fluid.Ic2rFluidTankHandler}
+ * ({@link me.halfcooler.ic2r.core.fluid.Ic2rFluidTank#getFluidHandler()}); this class aggregates
+ * {@link Ic2rFluidBlock} fill/drain with facing masks (G2.5). Contract:
+ * {@code docs/spec/fluid_handler_contract.md}.
+ */
 final class BlockFluidCapImpl implements ICapabilityProvider
 {
 	private final Ic2rFluidBlock parent;
