@@ -52,6 +52,7 @@ import ic2.core.world.Ic2WorldGen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -170,7 +171,7 @@ public final class EventHandler
 		}
 
 		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2Config.misc.energyNetMode.get());
-		IC2.sideProxy.messagePlayer(player, "ic2.energynet.mode", "ic2.energynet.mode." + mode.name().toLowerCase());
+		IC2.sideProxy.messagePlayer(player, Component.translatable("ic2.energynet.mode", "ic2.energynet.mode." + mode.name().toLowerCase()));
 	}
 
 	public static void onWorldLoad(Level world)
