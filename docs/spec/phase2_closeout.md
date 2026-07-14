@@ -123,7 +123,7 @@
 | G2.4 | 覆盖率 inv/fluid/recipe 包级 ≪ 70%（窄口径 ~3.5%） | P0 | **勿空转**：补 `Ic2rFluidTank` 委托分支测、InvSlot accept 边界、Serializer 无 Level 切口；抬窄口径有意义行 |
 | G2.5 | `Ic2rFluidTank` 非 `IFluidHandler` 一等公民；管道流体仍经 forge cap 包装 | P1 | 统一 fill/empty 服务对外；fluid handler 适配单测（对齐 FL-\*） |
 | G2.6 | DataGen 仅 3 item tags；Recipes/Models/Lang 未生成 | P2 | 后续 DataGen Unit：至少 1 类 recipe 或 block tags |
-| G2.7 | 阶段 1 遗留：TeUpdate 仍默认、energy.grid/标准机循环覆盖极低（G1.\*） | P0 | 不阻塞阶段 2 名义收口；阶段 3 前建议专项抬测/切主 |
+| G2.7 | 阶段 1 遗留：TeUpdate 仍默认、energy.grid/标准机循环覆盖极低（G1.\*） | P0 | **G2.7 交叉对照 done（§8）**：**部分关闭**。G1.1 Sync 读/写优先已落地（TeUpdate **帧仍默认**）；G1.3/G1.4 纯逻辑测例已绿；**G1.2 宽口径 ~3.76% 仍 gap**（**不**达 60%）。详见 §8 与 [phase1_closeout.md](phase1_closeout.md) |
 | G2.8 | FE/RF 能量桥、§7.5 对外能量未在阶段 2 Work Unit 推进 | P2 | platform 适配与阶段 3 SPI 一并规划 |
 
 ### 3.1 建议测试优先级（抬阶段 2 门槛用）
@@ -189,3 +189,69 @@
 - `docs/spec/README.md` 索引 + 阶段 2 进度一句  
 - 可选：`golden_suite.md` 阶段 2 摘要一句  
 - **无**生产代码功能改动；**无** W3.\* 实现；**无** git commit/push  
+
+---
+
+## 8. G2.7 — 阶段 1 遗留交叉对照（G1 迁移后）
+
+> **Work Unit**: G2.7 阶段 1 遗留交叉对照  
+> **日期**: 2026-07-14  
+> **性质**: 只读交叉对照 + 本文件 / phase1 文档更新；**无**强制生产代码；**不**为凑覆盖率堆测  
+> **对照对象**: 本文件 §3 **G2.7 原始表述** vs G1.\* 迁移后真实状态（[phase1_closeout.md](phase1_closeout.md) §3 / §8 + 源码/测例）  
+
+### 8.1 W2.6 时的 G2.7 原始断言（冻结）
+
+| 断言（W2.6 登记） | 含义 |
+|:---|:---|
+| TeUpdate **仍为默认**同步路径 | 运行时仍走 `getNetworkedFields()` + `TeUpdate` + 反射字段 R/W；Sync 仅标准机双写骨架 |
+| `energy.grid` 覆盖极低 | 包级 ~0.87%（W1.8）；主体 calculator/路径/爆炸未测 |
+| 标准机循环覆盖极低 | `machine.tileentity` ~0.21%；进度/耗电/升级无行为单测 |
+| 关联 | 整组 **G1.\***（尤其 G1.1–G1.4）；不阻塞阶段 2 名义收口 |
+
+### 8.2 G1 迁移后真实状态（交叉对照）
+
+| 原始断言 / Gap | G1 后真实状态 | 关闭判定 |
+|:---|:---|:---|
+| **TeUpdate 仍默认**（G1.1） | **帧仍默认**：发包仍 `getNetworkedFields()` + 字符串字段名 + `DataEncoder`/`TeUpdate`。**已推进**：`NetworkManager.readFieldValueForNetwork` / `TeUpdate` apply 对 **已注册 Sync 字段优先** `BlockEntitySync.tryGetValue` / `trySetValue`（legacy alias 如 `guiProgress`）；未注册字段仍反射。绑定面：标准机 `gui_progress`/`active`、BatchCrafter、ElectricBlock `redstone_mode` 等 | **部分关闭** — Sync **值路径优先**；**未**「反射不再是默认路径 / TeUpdate 切主为唯一写出」 |
+| **energy.grid 覆盖极低**（G1.3） | `EnergyTransferMath` 扩测（IC loss/分配/保护/变压器 + GT offer/amps/过压过流等）；类行覆盖 **~91.8%**；包级 `energy.grid` **2.81%**（56/1994，G1.2 复测）。`EnergyCalculatorUnified`/`GT`、路径、爆炸主体仍 ~0% | **部分关闭** — 可测切口 + Golden 部分 EN-\* 绿；**包级仍极低** |
+| **标准机循环覆盖极低**（G1.4） | 抽出 `StandardMachineCycleMath`；`StandardMachineCycleMathTest`（10）；SM-001…004 绿、005/006 部分；TE/`InvSlotUpgrade`/`Process` 已接纯逻辑。包级 `machine.tileentity` **0.98%**（38/3886） | **部分关闭** — 循环**行为单测已有**；巨型 TE 分母仍主导，**包级仍极低** |
+| **核心包 ≥60%**（G1.2） | 宽口径 **3.76%**（317/8442 LINE，G1.2 复测）≪ 60% | **仍 open（gap）** — **禁止**宣称 60% 达标 |
+| G1.5 snake_case | 试点 + G1.5 扩域（electric/batch 等 NBT/Sync）；全库未收口 | **partial**（非 G2.7 主断言，登记继承） |
+| G1.6 recipe 匹配器 | `MachineRecipeMatchMath` + 测；**done** | **已关闭**（相对 G1.6） |
+| G1.7 / G1.8 | Spotless N/A；Blocks 拆分等 hygiene | **仍 open / N/A** |
+
+### 8.3 一句话总判（G2.7）
+
+| 项 | 值 |
+|:---|:---|
+| **G2.7 状态** | **partial**（交叉对照 **done**；所描述债 **未全部清零**） |
+| 已缓解 | G1.1 Sync 优先 R/W；G1.3/G1.4 有意义纯逻辑测例与 TE 接线；G1.6 done |
+| **仍 open** | TeUpdate **协议帧**默认；G1.2 **≪60%**；`energy.grid` / 标准机 **包级**仍个位数 %；G1.5 全库命名 |
+| 覆盖率诚实句 | 阶段 1 门槛 **未达**；宽口径约 **3.76%**，**不是** 60% |
+
+### 8.4 对照表（G1.* 状态机，供 Progress / 后续 Unit）
+
+| ID | 主题 | 状态 | 证据锚点 |
+|:---|:---|:---|:---|
+| G1.1 | TeUpdate / Sync 优先 | **partial** | `NetworkManager#readFieldValueForNetwork`；`TeUpdate` apply `trySetValue`；`StandardMachineSyncRoundTripTest`（legacy alias / TeUpdate 路径测） |
+| G1.2 | 核心包 ≥60% | **gap / open** | phase1 §8：**3.76%**；关闭条件仍是 ≥60% 或改口径 |
+| G1.3 | energy.grid 可测端口 | **partial** | `EnergyTransferMath` + `EnergyTransferMathTest`；包 2.81% |
+| G1.4 | 标准机循环行为测 | **partial** | `StandardMachineCycleMath` + Test；SM-001…004；包 0.98% |
+| G1.5 | snake_case 全库 | **partial** | phase1 / `id_migrations` |
+| G1.6 | recipe 匹配器 | **done** | `MachineRecipeMatchMathTest` |
+| G1.7 | Spotless/Checkstyle | **N/A** | 未启用 |
+| G1.8 | Blocks 拆分等 | **open** | hygiene |
+
+### 8.5 建议后续（**非本 G2.7**；勿空转）
+
+1. **G1.1 真切主**（若产品需要）：更多 TE 注册 Sync；最终去掉未注册字段的反射默认，或 Sync 表为唯一写出（wire 兼容策略另开 Unit）。  
+2. **G1.3 加深**：calculator / 分配主体可测端口，抬 `energy.grid` 有意义行（非堆 GUI）。  
+3. **G1.4 加深**：TE 委托面 / 多超频边界；避免无 Level 硬造巨型 TE。  
+4. **G1.2**：仅当上述有意义行累积后复测；**在 ~4% 量级禁止勾 done**。  
+
+### 8.6 本 Unit 变更范围
+
+- `docs/spec/phase2_closeout.md`（本节 + §3 G2.7 行）  
+- `docs/spec/phase1_closeout.md`（G1.1 行与 §9 指针）  
+- `docs/Modernization_Progress.md`（G2.7 done）  
+- **无**生产代码功能改动；**无**为凑覆盖率新测；**无** git commit/push  

@@ -12,7 +12,7 @@
 
 | # | §6.3 标准 | 判定 | 证据摘要 | 关联 Unit |
 |:---|:---|:---|:---|:---|
-| 1 | 反射网络同步**不再是默认路径** | **partial / gap** | 已有 `SyncKey`/`SyncCodec`/`BlockEntitySync` + 标准机 `gui_progress`/`active` 双写绑定；**运行时默认仍走** `getNetworkedFields()` + `TeUpdate` 反射路径，未切主 | W1.1, W1.2 |
+| 1 | 反射网络同步**不再是默认路径** | **partial / gap** | 骨架 + 双写 + **G1.1 Sync 优先**：已注册字段经 `BlockEntitySync` get/set（legacy alias）；**TeUpdate 帧仍默认**（`getNetworkedFields()` + 字符串名）；未注册字段仍反射。见 §9 / [phase2_closeout.md](phase2_closeout.md) §8 | W1.1, W1.2, G1.1 |
 | 2 | Tick 反射探测移除 | **done** | `ServerTicker` / `ClientTicker` 显式接口；`Ic2rTileEntity` 以 `instanceof` 决定是否 tick；源码中**无** `getDeclaredMethod("updateEntityServer/Client")` 探测（仅接口 Javadoc 提及历史路径） | W1.3 |
 | 3 | 核心命名面字面量 snake_case 化完成（或剩余仅兼容层） | **partial** | **试点域 done**：Energy `energy_buffer` + `LegacyNbt`、标准机 `progress`、Sync wire `gui_progress`/`active`（见 `id_migrations.md`）。**全库未完成**：网络字段 camelCase、作物/反应堆/配置/组件 ID 等仍大量残留（见 `naming_audit.md`） | W1.5 + W0.5 |
 | 4 | 单元测试覆盖率达 §4.5 阶段 1 门槛（核心包行覆盖率 ≥ **60%**） | **gap** | 见 §2；核心包聚合远低于 60%。`network.sync` 子包可达 91%，但 `energy.grid` / 标准机循环整体未覆盖 | W0.1, W0.4, W1.x tests |
@@ -21,7 +21,7 @@
 ### 1.1 勾选视图（阶段 1 名义完成度）
 
 ```text
-[partial] 反射网络同步不再是默认路径     ← 骨架+双写，TeUpdate 仍为默认
+[partial] 反射网络同步不再是默认路径     ← 骨架+双写+G1.1 Sync 优先；TeUpdate 帧仍默认
 [x]       Tick 反射探测移除
 [partial] 核心命名面 snake_case          ← 试点+兼容层；全库未收口
 [gap]     覆盖率 ≥60%（§4.5 阶段 1）
@@ -87,10 +87,10 @@
 
 | ID | Gap | 严重度 | 建议后续（测试或实现 Unit，**非本 W1.8**） |
 |:---|:---|:---|:---|
-| G1.1 | 反射 TeUpdate **仍为默认**同步路径；Sync 表仅标准机双写骨架 | P0 | 后续：TeUpdate 切主 / 标准机（或更多 TE）走 `BlockEntitySync` 为唯一写出；Golden NS-005 扩展能量显示 |
-| G1.2 | 核心包行覆盖率 ≪ 60%（宽口径 **3.76%**；W1.8 时 ~2.7%） | P0 | **仍 gap**（G1.2 复测 §8）；优先有意义测例，非凑行：见 §3.1 / §8.5 |
-| G1.3 | `energy.grid` 主体（`EnergyCalculatorUnified`/`GT`、路径、爆炸）0% | P0 | 延续 W0.4 切口：IC loss/分配纯函数、GT 求解器可测端口（对齐 EN-IC/EN-GT Golden） |
-| G1.4 | 标准机加工循环（进度、耗电、升级）无行为单测 | P0 | 可测切口：进度 tick 纯逻辑 / 耗电公式；对齐 SM-\* Golden；再抬 `machine.tileentity` 覆盖率 |
+| G1.1 | 反射 TeUpdate **帧仍默认**；Sync 表曾仅标准机双写骨架 | P0 | **partial（G1.1 已推进）**：TeUpdate 读/写对已注册字段 **优先 Sync**（标准机/BatchCrafter/ElectricBlock 等）；未注册仍反射。**仍 open**：全库切主 / 去反射默认；NS-005 能量显示未扩。交叉：[phase2 §8](phase2_closeout.md) |
+| G1.2 | 核心包行覆盖率 ≪ 60%（宽口径 **3.76%**；W1.8 时 ~2.7%） | P0 | **仍 gap**（G1.2 复测 §8）；**未**达 60%。优先有意义测例，非凑行：见 §3.1 / §8.5 |
+| G1.3 | `energy.grid` 主体（`EnergyCalculatorUnified`/`GT`、路径、爆炸）0% | P0 | **partial（G1.3 done 切口）**：`EnergyTransferMath` 扩测 + EN-\* 部分绿；包级 **2.81%**。主体 calculator/路径/爆炸仍 ~0% |
+| G1.4 | 标准机加工循环（进度、耗电、升级）无行为单测 | P0 | **partial（G1.4 done 切口）**：`StandardMachineCycleMath` + SM-001…004 绿；TE 已接线；包级 **0.98%**；升级/真实 Inv 部分仍 residual |
 | G1.5 | snake_case 仅试点；全库网络/NBT/配置 camelCase | P1 | 按 `naming_audit` P0→P2 分批 + `id_migrations`；与切主同步避免双名地狱 |
 | G1.6 | recipe 匹配器覆盖率未建立（阶段 0 定义的一部分） | P1 | **done（G1.6）**：`MachineRecipeMatchMath` 加深 item/tag/名单纯门闩 + `MachineRecipeMatchMathTest`（13 测）；RC-001…005 部分绿；运行时 ItemStack 匹配仍依赖 registries |
 | G1.7 | Spotless/Checkstyle 未启用 | P2 | 若启用再纳入 CI；当前 N/A |
@@ -213,3 +213,24 @@
 3. `LegacyNbt` / `Energy` NBT 读写加深（抬 `block.comp`）。  
 4. Sync 切主后 e2e 对齐（抬 `network` 有意义路径，非反射死枝）。  
 5. **不要**：为凑 60% 对 GUI、渲染、完整 TE 构造写无断言测试。
+
+---
+
+## 9. G2.7 交叉指针（阶段 1 遗留 vs G1 迁移后）
+
+> **Work Unit**: G2.7（文档交叉，**非**新实现）  
+> **日期**: 2026-07-14  
+> **全文对照表**: [phase2_closeout.md §8](phase2_closeout.md)  
+
+| G1.* | G2.7 后登记状态 | 一句话 |
+|:---|:---|:---|
+| G1.1 | **partial** | Sync **优先**已接 TeUpdate 值路径；**帧/默认协议**仍 TeUpdate |
+| G1.2 | **gap** | 宽口径 **~3.76%**，**不**达 60% |
+| G1.3 | **partial** | 电网纯逻辑切口 + 测；包级仍极低 |
+| G1.4 | **partial** | 标准机循环纯逻辑 + 测 + 部分接线；包级仍极低 |
+| G1.5 | **partial** | 命名试点/扩域；全库未收口 |
+| G1.6 | **done** | recipe 匹配器纯逻辑 |
+| G1.7 | **N/A** | Spotless 未启用 |
+| G1.8 | **open** | Blocks 等 hygiene |
+
+**禁止**：将 G1.2 标为 done，或宣称阶段 1 覆盖率门槛已满足。  
