@@ -5,6 +5,7 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.sound.SoundManager;
 import me.halfcooler.ic2r.core.util.Keyboard;
 import me.halfcooler.ic2r.core.util.Util;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -131,7 +132,7 @@ public final class SideProxyServer implements SideProxy
 			throw new IllegalStateException();
 		}
 
-		MinecraftServer server = IC2R.envProxy.getServer();
+		MinecraftServer server = PlatformServices.lifecycle().getServer();
 		if (server != null)
 		{
 			server.execute(runnable);
@@ -139,7 +140,7 @@ public final class SideProxyServer implements SideProxy
 		{
 			synchronized (pendingTasks)
 			{
-				server = IC2R.envProxy.getServer();
+				server = PlatformServices.lifecycle().getServer();
 				if (server != null)
 				{
 					server.execute(runnable);
@@ -205,7 +206,7 @@ public final class SideProxyServer implements SideProxy
 	@Override
 	public RecipeManager getRecipeManager()
 	{
-		return IC2R.envProxy.getServer().getRecipeManager();
+		return PlatformServices.lifecycle().getServer().getRecipeManager();
 	}
 
 	@Override

@@ -1,41 +1,24 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** G3.1  
+**last_completed:** G3.2  
 **updated:** 2026-07-14  
 
-> 用户本会话：G1.7 + G1.8 收尾 → G3.1。
-
-## Queue（G1 收尾）
-
-| ID | status | last_notes |
-|----|--------|------------|
-| G1.1–G1.6 | done | 见历史 |
-| G1.7 | done | Spotless/Checkstyle **skipped/N/A**（phase1 §10 决策，未启用） |
-| G1.8 | done | Ic2rBlocks 门面 + 8 域类（247 字段）；compile+test 绿 |
-
-## Queue（G2）
-
-| ID | status | last_notes |
-|----|--------|------------|
-| G2.1–G2.8 | done | 阶段 2 gap 队列已完成 |
+> **G3.2** 为非 Forge 最小集 **启动（partial）**——尚无可运行 NeoForge artifact；主构建仍 Forge 1.20.1。
 
 ## Queue（G3）
 
 | ID | status | last_notes |
 |----|--------|------------|
-| G3.1 | done | Dist/OnlyIn-only 34 文件清零 + debug 改 SPI；core Forge 文件 65→31、import 行 123→54；**仍 partial residual** |
-| G3.2+ | pending | 见 phase3_closeout G3.* |
+| G3.1 | done | Dist/OnlyIn 切片；core Forge residual 减半 |
+| G3.2 | done | kickoff 文档 g3_2_neoforge_min_set.md；PlatformRegistryForge；getServer→SPI；test 绿；**无** NeoForge 产品线 |
+| G3.3+ | pending | 见 phase3_closeout（覆盖率、Origin、EnvProxy E2…） |
 
 ## Last session
 
-- units: G1.7 → G1.8 → G3.1
-- result: all PASS / done（G3.1 partial residual）
-- suggested_commits: |
-    1) `docs: skip Spotless/Checkstyle for G1.7`
-    2) `refactor: split Ic2rBlocks into domain registration classes`
-    3) `refactor: strip Dist/OnlyIn-only forge imports from core (G3.1 slice)`
+- unit: G3.2
+- result: done / PASS（partial residual）
+- suggested_commit: `feat(platform): G3.2 NeoForge min-set kickoff + PlatformRegistryForge`
 - verify_log: |
-    - G1.7: 文档 N/A skip ✅
-    - G1.8: blocks/* 八域 + 门面；test 绿
-    - G3.1: −34 files Dist-only；CommandIc2r → PlatformLifecycle；test 绿；未全清 residual
+    - DoD: kickoff 文档 ✅；Registry SPI 真实现 ✅；getServer 迁移 ✅
+    - 主构建仍 Forge；无 neoforge artifact；test 绿

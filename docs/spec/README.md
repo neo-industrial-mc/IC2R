@@ -62,6 +62,7 @@
 | （入口说明见本表下） | **已起步**（W2.5） | W2.5 | DataGen：`Ic2rDataGenerators` + Tags provider；`.\gradlew.bat runData` → `src/generated/resources` |
 | [platform_spi.md](platform_spi.md) | **已起步**（W3.1–W3.3） | W3.1+ | Platform SPI 接口、依赖方向、EnvProxy 映射与瘦身记录 |
 | [neoforge_migration_plan.md](neoforge_migration_plan.md) | **已产出**（W3.4） | W3.4 | NeoForge 文档级迁移计划：版本线选项、模块/SPI、退役序、里程碑与风险 |
+| [g3_2_neoforge_min_set.md](g3_2_neoforge_min_set.md) | **已起步**（G3.2 partial） | G3.2 | 非 Forge 最小可运行集 kickoff：目标清单、版本 A/B、SPI 就绪度、阻断项；Registry 真实现 + getServer 切片 |
 
 ### 编写约定（摘要）
 

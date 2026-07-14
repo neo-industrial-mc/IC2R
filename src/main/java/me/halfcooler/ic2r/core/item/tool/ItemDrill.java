@@ -6,6 +6,7 @@ import me.halfcooler.ic2r.core.IHitSoundOverride;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 
 import java.util.Arrays;
 
@@ -49,7 +50,7 @@ public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSou
 			}
 		} else
 		{
-			MinecraftServer server = IC2R.envProxy.getServer();
+			MinecraftServer server = PlatformServices.lifecycle().getServer();
 			if (server == null)
 			{
 				return null;

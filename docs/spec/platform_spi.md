@@ -1,8 +1,8 @@
 # Platform SPI 草案（W3.1）
 
-> **状态**：W3.3 — **EnvProxy 瘦身切片**：删除 `EnvProxy#isClientEnv`（及 `EnvProxyForge` 实现）；全库 client 环境判定改走 `PlatformServices.lifecycle().isClient()`。`IC2R` 静态初始化在创建 `sideProxy` 前调用 `ForgePlatformServices.install()`（与 `FmlMod` 双入口，幂等）。其余 `EnvProxy` 方法仍双轨。  
-> **W3.4**：NeoForge **文档级**计划见 [neoforge_migration_plan.md](neoforge_migration_plan.md)（未建多模块 / 未切主构建）。  
-> **下一 Unit**：W3.5 阶段 3 收口（或继续瘦身 `isForgeEnv`/`isFabricEnv`/`getServer` 等）。  
+> **状态**：**G3.2** — `PlatformRegistryForge` 真实现（薄委托 EnvProxy）；`getServer` 调用点迁 `PlatformLifecycle`（`SideProxyServer` / `ItemDrill`）。W3.3 已删 `isClientEnv`。`isForgeEnv`/`isFabricEnv` 与注册主路径仍双轨 EnvProxy。  
+> **W3.4 / G3.2**：NeoForge 计划 [neoforge_migration_plan.md](neoforge_migration_plan.md)；最小集 kickoff [g3_2_neoforge_min_set.md](g3_2_neoforge_min_set.md)（**未**切主构建 / **无**可运行 NeoForge artifact）。  
+> **下一**：E2 续（环境位）/ E3 注册调用点 / SPI 非 stub（Network、Item…）。  
 > **主文档**：[Modernization_Project.md](../Modernization_Project.md) §2.2–2.3、§8.2。
 
 ---
@@ -39,7 +39,7 @@ platform-impl  ──may use──►  common / core domain types
 | 遗留上帝代理（待 W3.3 瘦身） | `me.halfcooler.ic2r.core.proxy` |
 
 访问入口：`PlatformServices`（`install(...)` 显式注入，或 `ServiceLoader` 回退）。  
-**W3.2 实现**：`ForgePlatformServices.install()`（`FmlMod` 构造首段）安装 `PlatformLifecycleForge` + 其余 facet stub；**不**强制 `META-INF/services`。
+**G3.2 实现**：`ForgePlatformServices.install()` 安装 `PlatformLifecycleForge` + **`PlatformRegistryForge`** + `PlatformEnergyBridgeForge`；其余 facet stub；**不**强制 `META-INF/services`。
 
 ---
 
@@ -74,7 +74,7 @@ platform-impl  ──may use──►  common / core domain types
 | `createItemHandler`（及 EnvItemHandler 实现细节） | **PlatformItemTransfer** |
 | `openHandledScreen` | **PlatformPlayerUi** |
 | ~~`isClientEnv`~~（**W3.3 已删**） | **PlatformLifecycle#isClient**（全库已切） |
-| `isForgeEnv` / `isFabricEnv` / `getServer` | **PlatformLifecycle**（`getLoaderKind` / `getServer` 已有；调用点待切） |
+| `isForgeEnv` / `isFabricEnv` / `getServer` | **PlatformLifecycle**（`getLoaderKind` / `getServer` 已有；**G3.2** 已迁 `getServer` 调用点；`isForgeEnv`/`isFabricEnv` 待切） |
 | `announce*` 事件、假玩家、burn time、biome types、blast resistance… | **暂留 EnvProxy**（后续再切或删） |
 
 ### 4.2 `SideProxy` → SPI
@@ -90,7 +90,8 @@ platform-impl  ──may use──►  common / core domain types
 
 | 类 | 对应 SPI 实现角色 |
 |:---|:---|
-| `EnvProxyForge` | Registry + 部分 Lifecycle + 菜单打开 + fluid/item 工厂 |
+| `EnvProxyForge` | Registry 委托目标 + 部分 Lifecycle + 菜单打开 + fluid/item 工厂 |
+| `PlatformRegistryForge` | **PlatformRegistry**（G3.2：薄委托 EnvProxy） |
 | `EnvFluidHandlerForge` / `Ic2rFluidStackImpl` / `*FluidCapImpl` | PlatformFluidBridge |
 | `EnvItemHandlerForge` | PlatformItemTransfer |
 | `ForgeNetworkHandler` + `FmlMod` 通道注册 | PlatformNetwork |
@@ -123,7 +124,7 @@ forge.EnvProxyForge
 platform.services.*  ◄──  （W3.2）EventHandler.onInitLate 等少量 core 调用点
         ▲
         │ implements
-forge.PlatformLifecycleForge + ForgePlatformServices（其它 facet stub）
+forge.PlatformLifecycleForge + PlatformRegistryForge + ForgePlatformServices（其余 facet stub）
 ```
 
 规则：

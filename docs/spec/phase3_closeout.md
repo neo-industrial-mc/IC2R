@@ -14,7 +14,7 @@
 | # | §8.5 标准 | 判定 | 证据摘要 | 关联 Unit |
 |:---|:---|:---|:---|:---|
 | 1 | common 源码无 `net.minecraftforge.*` / `net.neoforged.*` / `net.fabricmc.*` **实现型** import | **gap** | 尚无物理 `ic2r-common` 模块；以 `core` + `platform.services` 作 common 代理口径抽查：**platform 包 0 条** loader import（达标切片）。**core 仍大量残留**：约 **57** 个文件、**114** 条 `import net.minecraftforge.*`（抽样主导：`Dist`/`OnlyIn`×37 对、`ForgeRegistries`×13、`IItemHandler*`/`LazyOptional` 于库存 TE、`ForgeConfigSpec` 等）。`net.neoforged.*` / `net.fabricmc.*` **全库 0**。W3.2 仅迁 1 调用点（`PlatformLifecycle.isClient`）；W3.3 删 `EnvProxy#isClientEnv` 但 `isForgeEnv`/`isFabricEnv` 等仍双轨 | W3.1–W3.3 |
-| 2 | 至少一条**非 Forge**加载器可运行最小集（物品注册 + 一台机器 + 电网） | **deferred** | **W3.4** 仅落地 [neoforge_migration_plan.md](neoforge_migration_plan.md) **文档级**计划；主构建仍 **Forge 1.20.1** 单模块；**无** `ic2r-neoforge` / `ic2r-fabric` 源集或 artifact；无可运行非 Forge 最小集。计划明确：M8 前再评估选项 A/B | W3.4 |
+| 2 | 至少一条**非 Forge**加载器可运行最小集（物品注册 + 一台机器 + 电网） | **deferred**（G3.2 **started**） | **W3.4** 文档计划 + **G3.2** kickoff：[g3_2_neoforge_min_set.md](g3_2_neoforge_min_set.md)；`PlatformRegistryForge` 真实现 + `getServer` 调用点迁 SPI。主构建仍 **Forge 1.20.1**；**无**可运行 NeoForge artifact。选项 **A** 优先验证 SPI；M8 再谈完整最小集 | W3.4 / G3.2 |
 | 3 | 覆盖率达 §4.5 阶段 3 门槛（**≥ 75%** common 全量，不含 client 渲染） | **gap** | 见 §2。overall LINE **~0.90%**（355/39464）；common-ish（排除 forge/integration/gui/render）**~1.06%**（355/33429）≪ 75%。阶段 1/2 窄/宽口径与收口时一致量级，**无**覆盖率跃升 | W0.1+ 历史；阶段 3 未加测 |
 | 4 | Origin 文档中「移植残留」**核心模块清零**或仅剩标注兼容层 | **partial / gap** | [origin.md](origin.md) 仍为 W0.6 初版表；P0 residual（EnergyNet IC 路径、标准机、`network` 反射同步、InvSlot、reactor/crop 等）**未**升为 rewritten/original。阶段 1–3 **局部现代化**（Sync 骨架、显式 Tick、Handler 委托、macerator RecipeManager、SPI 草案+首迁）降低部分路径风险，但 **Origin 核心 residual 未清零** → 诚实 **partial**（有增量）/ **gap**（未达 §8.5 清零） | W0.6 + W1–W3 局部 |
 
@@ -22,7 +22,7 @@
 
 ```text
 [gap]      common 无 loader 实现型 import     ← platform 洁净；core ~57 文件仍含 Forge
-[deferred] 非 Forge 最小可运行集             ← W3.4 仅计划；主线仍 Forge 1.20.1
+[deferred] 非 Forge 最小可运行集             ← G3.2 **started**（文档+SPI 前置）；仍无 NeoForge artifact；主线 Forge 1.20.1
 [gap]      覆盖率 ≥75% common（§4.5 阶段 3）
 [partial]  Origin residual 核心清零          ← 有现代化切片；表内 P0 仍 residual
 ```
@@ -75,7 +75,7 @@
 | `me...core.block.machine.tileentity` | **0.21%** | 8/3850 | 标准机循环本体未测 |
 | `me...platform.services` | **0%** | 0/30 | SPI 接口 + `PlatformServices` 未单测 |
 | `me...core.proxy` | **0%** | 0/327 | EnvProxy 上帝代理仍在 |
-| `me...forge` / `forge.model` | **0%** | 0/1753 | loader 实现层 |
+| `me...forge` / `forge.model` | **0%** | 0/1753+ | loader 实现层（G3.2 增 PlatformRegistryForge） |
 | **阶段 2 窄口径**\* | **~3.53%** | 75/2127 | 与 W2.6 一致 |
 | **阶段 1 宽口径**† | **~2.68%** | 223/8335 | 与 W1.8 一致量级 |
 | **common-ish（阶段 3 主门槛）**‡ | **~1.06%** | 355/33429 | ≪ 75% → **gap** |
@@ -135,7 +135,7 @@
 | ID | Gap | 严重度 | 建议后续（**非本 W3.5**） |
 |:---|:---|:---|:---|
 | G3.1 | common/core 仍大量 `net.minecraftforge.*` 实现型 import | P0 | **partial（G3.1 切片 done，见 §10）**：core **65→31** 文件 / **123→54** import 行；仅 `Dist`/`OnlyIn` 文件已清零。**仍 residual**：`ForgeRegistries`、cap/handler、config、event 等；禁止一次清零。后续 E2–E6 / 下沉 SPI/forge 包 |
-| G3.2 | 非 Forge 最小可运行集 **未启动**（§8.5 #2） | P0 | SPI facet 实质实现 + EnvProxy 主路径退役过半后，追加 Unit：`ic2r-neoforge` 骨架 → 物品+1 机+电网最小集（计划 M8） |
+| G3.2 | 非 Forge 最小可运行集 **已启动 / partial**（§8.5 #2 仍 **未** done） | P0 | **partial/started（见 §11）**：kickoff 文档 + `PlatformRegistryForge` + `getServer` 调用点迁 SPI；**尚无**可运行 NeoForge artifact；主构建仍 Forge 1.20.1。后续：E2 续 → 非 stub Network/Item → 骨架 → M8 最小集 |
 | G3.3 | 覆盖率 common ≪ 75%（~1%） | P0 | **继承 G1.2/G2.4**；优先 EnergyNet / 标准机循环 / Sync 切主后 e2e；勿堆 SPI 接口空测 |
 | G3.4 | Origin residual **核心未清零**（energy IC、标准机、network 反射、InvSlot、reactor/crop…） | P0 | 域重写 Unit + 回写 origin.md；清零前禁止宣称 §8.5 #4 done |
 | G3.5 | EnvProxy 上帝代理仍在；仅 `isClientEnv` 退役；`isForgeEnv`/`isFabricEnv`/`getServer`/注册族/流体物品工厂未切 | P0 | 延续 W3.3 切片模式（E2→E6，见 neoforge_migration_plan §4.2） |
@@ -208,7 +208,8 @@ G3.*（本文件）
 | [origin.md](origin.md) | residual/rewritten/original 初版（G3.4） |
 | [golden_suite.md](golden_suite.md) | 行为规格；阶段 3 无新 Golden 条目 |
 | `me.halfcooler.ic2r.platform.services.*` | SPI 接口与访问器 |
-| `me.halfcooler.ic2r.forge.ForgePlatformServices` / `PlatformLifecycleForge` | Forge 安装与 lifecycle 实现 |
+| `me.halfcooler.ic2r.forge.ForgePlatformServices` / `PlatformLifecycleForge` / `PlatformRegistryForge` | Forge 安装、lifecycle、registry（G3.2） |
+| [g3_2_neoforge_min_set.md](g3_2_neoforge_min_set.md) | G3.2 最小集 kickoff |
 | [Modernization_Progress.md](../Modernization_Progress.md) | Work Unit 队列 |
 
 ---
@@ -273,4 +274,45 @@ G3.*（本文件）
 - `core/command/CommandIc2r.java`（FMLEnvironment → `PlatformServices.lifecycle()`）  
 - 本文件 §4 G3.1 行 + **§10**  
 - [Modernization_Progress.md](../Modernization_Progress.md) G3.1  
+- **无** git commit/push  
+
+---
+
+## 11. G3.2 非 Forge 最小可运行集 — 启动
+
+> **Work Unit**: G3.2  
+> **日期**: 2026-07-14  
+> **状态**: **partial / started**（kickoff + SPI 前置 **done**；§8.5 #2 可运行最小集 **未**达成）  
+> **规格**: [g3_2_neoforge_min_set.md](g3_2_neoforge_min_set.md)  
+> **验证**: `.\gradlew.bat compileJava test` → BUILD SUCCESSFUL  
+
+### 11.1 交付
+
+| 动作 | 说明 |
+|:---|:---|
+| **文档 kickoff** | 最小集定义（物品+1 机+电网）、版本 A 优先 / B 后置、SPI 就绪度 8 facet、阻断项、主构建不切换、M8 前里程碑 |
+| **PlatformRegistryForge** | 薄委托 `EnvProxy` 注册族；`ForgePlatformServices` 替换 `StubRegistry` |
+| **调用点（E2 切片）** | `SideProxyServer`、`ItemDrill`：`envProxy.getServer()` → `PlatformServices.lifecycle().getServer()` |
+| **未做** | NeoForge 依赖/模块/入口；主构建切换；全库注册迁 SPI；Network/Item/Fluid/UI/Config 非 stub；git commit/push |
+
+### 11.2 SPI 就绪（G3.2 后）
+
+| 真实现 | stub |
+|:---|:---|
+| Lifecycle、**Registry（新）**、EnergyBridge | Network、PlayerUi、Config、ItemTransfer、FluidBridge |
+
+### 11.3 Residual / 诚实边界
+
+- **无可运行 NeoForge artifact** → §8.5 #2 仍 **deferred**  
+- EnvProxy 双轨仍在（`getServer` 方法表面保留；`isForgeEnv`/`isFabricEnv` 未切）  
+- 注册**调用点**仍多走 `IC2R.envProxy`（Registry SPI 可调用，E3 再迁主路径）  
+- 主线 **Forge 1.20.1** 不变  
+
+### 11.4 变更范围（G3.2）
+
+- [g3_2_neoforge_min_set.md](g3_2_neoforge_min_set.md)（新建）  
+- `forge/PlatformRegistryForge.java`（新建）  
+- `forge/ForgePlatformServices.java`  
+- `core/proxy/SideProxyServer.java`、`core/item/tool/ItemDrill.java`  
+- 本文件 §1 / §4 G3.2 + **§11**；[docs/spec/README.md](README.md) 索引  
 - **无** git commit/push  
