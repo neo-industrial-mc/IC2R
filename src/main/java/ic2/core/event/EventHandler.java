@@ -185,6 +185,7 @@ public final class EventHandler
 
 	public static void onWorldUnload(Level world)
 	{
+		ChunkLoadAwareBlockHandler.onWorldUnload(world);
 		WorldData.onWorldUnload(world);
 	}
 

@@ -182,6 +182,30 @@ public class EnergyNetLocal
 		}
 	}
 
+	/**
+	 * Re-queue an addition that failed prepareSync because the chunk was not yet visible.
+	 * Without this, GridUpdater drops the change permanently after removing it from
+	 * {@link #gridAdditionsMap}.
+	 */
+	void requeueAddition(GridChange change)
+	{
+		if (change == null || change.type != GridChange.Type.ADDITION)
+		{
+			return;
+		}
+
+		if (this.gridAdditionsMap.putIfAbsent(change.ioTile, change) != null)
+		{
+			return;
+		}
+
+		this.gridChangesQueue.add(change);
+		if (EnergyNetSettings.logGridUpdatesVerbose)
+		{
+			IC2.log.debug(LogCategory.EnergyNet, "Re-queued addition of %s (chunk not ready).", Util.toString(change.ioTile, this.getWorld(), change.pos));
+		}
+	}
+
 	public Collection<Tile> getSources()
 	{
 		return this.sources;

@@ -1,6 +1,7 @@
 package ic2.core.event;
 
 import ic2.core.IC2;
+import ic2.core.block.ChunkLoadAwareBlockHandler;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -17,6 +18,9 @@ public class TickHandler
 	{
 		if (!world.isClientSide)
 		{
+			// Flush deferred cable/chunk-aware block loads before EnergyNet runs.
+			ChunkLoadAwareBlockHandler.onWorldTick(world);
+
 			WorldData worldData = WorldData.get(world, false);
 			if (worldData != null)
 			{

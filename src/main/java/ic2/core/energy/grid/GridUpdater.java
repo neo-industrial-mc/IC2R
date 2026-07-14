@@ -163,8 +163,37 @@ class GridUpdater implements Runnable
 
 	private void prepareUpdate()
 	{
+		// prepareSync may reject ADDITION when Level.isLoaded is still false around chunk load.
+		// startChangeCalc already removed these from gridAdditionsMap — re-queue so they are not lost.
+		List<GridChange> retryAdditions = null;
+		var it = this.changes.iterator();
+		while (it.hasNext())
+		{
+			GridChange change = it.next();
+			if (ChangeHandler.prepareSync(this.enet, change))
+			{
+				continue;
+			}
 
-		this.changes.removeIf(change -> !ChangeHandler.prepareSync(this.enet, change));
+			it.remove();
+			if (change.type == GridChange.Type.ADDITION && !this.enet.getWorld().isLoaded(change.pos))
+			{
+				if (retryAdditions == null)
+				{
+					retryAdditions = new ArrayList<>();
+				}
+
+				retryAdditions.add(change);
+			}
+		}
+
+		if (retryAdditions != null)
+		{
+			for (GridChange change : retryAdditions)
+			{
+				this.enet.requeueAddition(change);
+			}
+		}
 	}
 
 	private void updateGrid()

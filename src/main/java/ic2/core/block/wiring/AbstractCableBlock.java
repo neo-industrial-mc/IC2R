@@ -571,7 +571,10 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 
 	public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean notify)
 	{
-		this.addToEnet(state, world, pos, true);
+		if (!world.isClientSide)
+		{
+			this.addToEnet(state, world, pos, true);
+		}
 		if (this.isFoam() && state.getValue(foamProperty).isSoft())
 		{
 			this.scheduleFoamHardeningTick(world, pos);
@@ -581,7 +584,11 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	@Override
 	public void onLoad(BlockState state, Level world, BlockPos pos)
 	{
-		this.addToEnet(state, world, pos, false);
+		if (!world.isClientSide)
+		{
+			// Replace any stale conductor left from a partial unload/reload.
+			this.addToEnet(state, world, pos, false);
+		}
 		if (this.isFoam() && state.getValue(foamProperty).isSoft())
 		{
 			this.scheduleFoamHardeningTick(world, pos);
@@ -591,19 +598,43 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	@Override
 	public void onUnload(BlockState state, Level world, BlockPos pos)
 	{
-		this.removeFromEnet(state, world, pos);
+		if (!world.isClientSide)
+		{
+			this.removeFromEnet(state, world, pos);
+		}
 	}
 
 	protected void addToEnet(BlockState state, Level world, BlockPos pos, boolean checkConflicting)
 	{
-		if (!checkConflicting || EnergyNet.instance.getTile(world, pos) == null)
+		if (world.isClientSide)
 		{
-			EnergyNet.instance.addLocatableTile(new AbstractCableBlock.Conductor(state, world, pos));
+			return;
 		}
+
+		IEnergyTile existing = EnergyNet.instance.getTile(world, pos);
+		if (existing != null)
+		{
+			if (checkConflicting)
+			{
+				// Already registered (e.g. place after a same-tick load) — keep it.
+				return;
+			}
+
+			// Chunk reload path: drop the previous Conductor so the new instance can join.
+			// Without this, ChangeHandler reports a position conflict and silently rejects the add.
+			EnergyNet.instance.removeTile(existing);
+		}
+
+		EnergyNet.instance.addLocatableTile(new AbstractCableBlock.Conductor(state, world, pos));
 	}
 
 	protected void removeFromEnet(BlockState state, Level world, BlockPos pos)
 	{
+		if (world.isClientSide)
+		{
+			return;
+		}
+
 		IEnergyTile tile = EnergyNet.instance.getTile(world, pos);
 		if (tile != null)
 		{

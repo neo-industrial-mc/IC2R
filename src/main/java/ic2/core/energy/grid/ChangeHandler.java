@@ -143,19 +143,21 @@ class ChangeHandler
 
 					if (!found)
 					{
+						// Stale registration after chunk unload/reload (common with non-TE cables).
+						// Replace instead of permanently rejecting the new tile.
 						if (EnergyNetSettings.logGridUpdateIssues)
 						{
 							IC2.log
 								.warn(
 									LogCategory.EnergyNet,
-									"Tile %s, sub tile %s addition is conflicting with a previous registration at the same location: %s.",
+									"Tile %s, sub tile %s addition conflicts with previous registration %s; replacing.",
 									Util.toString(ioTile, enet.getWorld(), pos),
 									Util.toString(subTile, enet.getWorld(), subPos),
 									prevIoTile
 								);
 						}
 
-						return;
+						applyRemoval(enet, prevIoTile, EnergyNet.instance.getPos(prevIoTile));
 					}
 				}
 			}
