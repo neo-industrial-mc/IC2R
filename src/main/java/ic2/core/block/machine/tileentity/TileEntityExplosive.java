@@ -92,6 +92,10 @@ public abstract class TileEntityExplosive extends TileEntityInventory
   }
 
   protected boolean explode(LivingEntity igniter, boolean shortFuse) {
+    if (this.exploded) {
+      return true;
+    }
+
     RandomSource rng = RandomSource.create();
     ExplosiveEntity entity = this.getEntity(igniter);
     if (entity == null) {
@@ -103,6 +107,9 @@ public abstract class TileEntityExplosive extends TileEntityInventory
       return true;
     }
 
+    // Mark before removeBlock so any drop/loot path during removal sees exploded=true
+    // and does not yield the block as an item instead of arming it.
+    this.exploded = true;
     entity.setCausingEntity(igniter);
     this.onIgnite(igniter);
     world.removeBlock(this.worldPosition, false);
@@ -120,7 +127,6 @@ public abstract class TileEntityExplosive extends TileEntityInventory
         SoundSource.BLOCKS,
         1.0F,
         1.0F);
-    this.exploded = true;
     return true;
   }
 

@@ -564,12 +564,18 @@ public final class Ic2TileEntityBlock extends Block
 
   @Override
   public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion) {
-    if (!level.isClientSide) {
+    // Explosive blocks must be primed, never silently deleted by the default
+    // setBlock(AIR)+wasExploded path (wasExploded is a no-op for TE explosives).
+    if (!level.isClientSide && this.explosive) {
       BlockEntity blockEntity = level.getBlockEntity(pos);
       if (blockEntity instanceof TileEntityExplosive explosive) {
         explosive.onExploded(explosion);
         return;
       }
+
+      // TE missing (edge case): remove without item drops; do not fall through to wasExploded.
+      level.removeBlock(pos, false);
+      return;
     }
 
     super.onBlockExploded(state, level, pos, explosion);

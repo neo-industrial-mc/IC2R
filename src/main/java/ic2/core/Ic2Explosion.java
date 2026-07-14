@@ -350,8 +350,7 @@ public class Ic2Explosion extends Explosion {
               if (blockEntity instanceof TileEntityExplosive explosive) {
                 explosive.onExploded(this);
               } else {
-                this.worldObj.setBlock(tmpPos, Blocks.AIR.defaultBlockState(), 3);
-                block.wasExploded(this.worldObj, tmpPos, this);
+                state.onBlockExploded(this.worldObj, tmpPos, this);
               }
             }
           }
