@@ -2,6 +2,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
+    id 'jacoco'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'com.modrinth.minotaur' version '2.+'
     id 'org.spongepowered.mixin' version '0.7.+'
@@ -123,6 +124,9 @@ dependencies {
     // Jade
     compileOnly "maven.modrinth:jade:${jade_version}+forge"
     runtimeOnly fg.deobf("maven.modrinth:jade:${jade_version}+forge")
+
+    // Unit tests (pure JUnit; no Minecraft runtime required for smoke/logic tests)
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
 
 reobf {
@@ -153,6 +157,23 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+// Pure unit tests via JUnit Platform (do not boot Minecraft/Forge for smoke/logic tests)
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = '0.8.11'
+}
+
+tasks.named('jacocoTestReport', JacocoReport).configure {
+    dependsOn tasks.named('test')
+    reports {
+        xml.required = true
+        html.required = true
+    }
 }
 
 tasks.register('syncVersion') {

@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** none  
+**last_completed:** W0.1  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -11,7 +11,7 @@
 
 | ID | status | last_notes |
 |----|--------|------------|
-| W0.1 | pending | 测试基建 JUnit5/JaCoCo |
+| W0.1 | done | JUnit5 + JaCoCo 已接；SmokeTest 1/1 通过；gradlew test SUCCESS |
 | W0.2 | pending | Progress/规格目录 |
 | W0.3 | pending | Golden Suite 大纲 |
 | W0.4 | pending | EnergyNet 可测切口 + 首批测试 |
@@ -39,7 +39,11 @@
 
 ## Last session
 
-- unit: none
-- result: none
-- suggested_commit: none
-- verify_log: none
+- unit: W0.1
+- result: done / PASS
+- suggested_commit: `test: bootstrap junit5 and jacoco with smoke test`
+- verify_log: |
+    - DoD: useJUnitPlatform ✅；SmokeTest 1/1 ✅；jacoco plugin ✅
+    - `gradlew test` BUILD SUCCESSFUL
+    - diff 范围: build.gradle, src/test/**, docs/Modernization_Progress.md
+    - 无 src/main 玩法改动
