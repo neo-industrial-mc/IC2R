@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W0.2  
+**last_completed:** W0.3  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -13,7 +13,7 @@
 |----|--------|------------|
 | W0.1 | done | JUnit5 + JaCoCo 已接；SmokeTest 1/1 通过；gradlew test SUCCESS |
 | W0.2 | done | docs/spec/README.md + golden_suite.md 骨架；Progress 文件就位 |
-| W0.3 | pending | Golden Suite 大纲 |
+| W0.3 | done | golden_suite 条目表：EN-IC/GT + SM + RC + NS 共 44+ 可引用 ID |
 | W0.4 | pending | EnergyNet 可测切口 + 首批测试 |
 | W0.5 | pending | 命名审计 |
 | W0.6 | pending | Origin 初版 |
@@ -39,10 +39,10 @@
 
 ## Last session
 
-- unit: W0.2
+- unit: W0.3
 - result: done / PASS
-- suggested_commit: `docs: add spec directory and golden suite skeleton`
+- suggested_commit: `docs: fill golden suite entry tables for phase 0`
 - verify_log: |
-    - DoD: Progress ✅；docs/spec/README.md ✅；golden_suite.md 含 IC/GT/标准机/配方/NBT 章节 ✅
-    - 未抢做 naming_audit.md / origin.md
-    - 无 src/ 或 build.gradle 改动
+    - DoD: EN-IC 10 / EN-GT 10 / SM 11 / RC 7 / NS 6 条目非空 ✅
+    - §4.4 主题覆盖抽查通过
+    - git 仅 docs/spec + Progress；无 src 改动
