@@ -1,11 +1,15 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W3.4  
+**last_completed:** W3.5  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
-> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。
+> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
+>  
+> **§A Work Unit 队列 W0.1–W3.5 已全部 `done`。**  
+> 这不等于 §6.3 / §7.7 / §8.5 全部勾满——阶段收口文档已登记 **G1.\* / G2.\* / G3.\*** 等 gap 与延期项。  
+> 后续工作：按 gap 列表追加新 Unit，或用户指定方向；默认不再有本表 `pending` 项。
 
 ## Queue
 
@@ -35,14 +39,15 @@
 | W3.2 | done | EventHandler.onInitLate → PlatformLifecycle.isClient；ForgePlatformServices.install；双轨 EnvProxy |
 | W3.3 | done | 删除 EnvProxy.isClientEnv；全库改 PlatformLifecycle.isClient；compile+test 绿 |
 | W3.4 | done | neoforge_migration_plan.md 文档级计划；主构建仍 Forge 1.20.1 |
-| W3.5 | pending | 阶段 3 收口 |
+| W3.5 | done | phase3_closeout：§8.5 gap/deferred；common~1%≪75%；test 66/66+jacoco；队列名义收官 |
 
 ## Last session
 
-- unit: W3.4
+- unit: W3.5
 - result: done / PASS
-- suggested_commit: `docs: add NeoForge migration plan for stage 3`
+- suggested_commit: `docs: phase 3 closeout and complete modernization work unit queue`
 - verify_log: |
-    - DoD: 文档级计划落地（稳定线/选项/模块/SPI 退役序/里程碑/风险）✅
-    - 主构建仍 Forge；无 neoforge 模块代码
-    - test 绿；范围仅 docs
+    - DoD: phase3_closeout.md 含 §8.5 四条 gap/deferred/partial + G3.1–G3.11 ✅
+    - 非 Forge 最小集 deferred；覆盖率 ~1% 诚实 gap
+    - test 66/66 + jacocoTestReport 绿；仅 docs 变更
+    - §A 队列 W0.1–W3.5 全部 done（标准层仍有 gap）
