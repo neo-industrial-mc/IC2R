@@ -9,25 +9,20 @@ import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
-import java.util.Vector;
-import java.util.Map.Entry;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraft.util.RandomSource;
 
 public class TileEntityMacerator extends TileEntityStandardMachine<IRecipeInput, Collection<ItemStack>, ItemStack>
 {
-	public static List<Entry<ItemStack, ItemStack>> recipes = new Vector<>();
-
 	public TileEntityMacerator(BlockPos pos, BlockState state)
 	{
 		super(Ic2rBlockEntities.MACERATOR, pos, state, 2, 300, 1);
@@ -38,9 +33,14 @@ public class TileEntityMacerator extends TileEntityStandardMachine<IRecipeInput,
 	@Override
 	protected void updateEntityClient()
 	{
-     RandomSource rng = RandomSource.create();
 		super.updateEntityClient();
 		Level world = this.getLevel();
+		if (world == null)
+		{
+			return;
+		}
+
+		RandomSource rng = world.random;
 		if (this.getActive() && rng.nextInt(8) == 0)
 		{
 			for (int i = 0; i < 4; i++)

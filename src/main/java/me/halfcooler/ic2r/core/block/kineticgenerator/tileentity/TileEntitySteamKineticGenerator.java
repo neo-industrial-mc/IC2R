@@ -37,7 +37,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.util.RandomSource;
 
 @NotClassic
 public class TileEntitySteamKineticGenerator extends TileEntityAbstractKineticGenerator implements IHasGui, IUpgradableBlock, ServerTicker
@@ -159,7 +158,6 @@ public class TileEntitySteamKineticGenerator extends TileEntityAbstractKineticGe
 
 	private void outputSteam(int amount, boolean hotSteam)
 	{
-     RandomSource rng = RandomSource.create();
 		Level world = this.getLevel();
 
 		for (Direction dir : Util.ALL_DIRS)
@@ -182,7 +180,7 @@ public class TileEntitySteamKineticGenerator extends TileEntityAbstractKineticGe
 		if (amount > 0)
 		{
 			this.ventingSteam = true;
-			if (rng.nextInt(10) == 0)
+			if (world.random.nextInt(10) == 0)
 			{
 				new Ic2rExplosion(world, null, this.worldPosition, 1, 1.0F, Ic2rExplosion.Type.Heat).doExplosion();
 			}

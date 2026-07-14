@@ -731,7 +731,7 @@ public final class StackUtil
 
 	public static void dropAsEntity(Level world, BlockPos pos, ItemStack stack)
 	{
-     RandomSource rng = RandomSource.create();
+		RandomSource rng = world.random;
 		if (!isEmpty(stack))
 		{
 			double f = 0.7;

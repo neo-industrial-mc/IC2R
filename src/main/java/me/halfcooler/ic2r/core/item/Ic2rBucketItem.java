@@ -201,7 +201,7 @@ public abstract class Ic2rBucketItem extends BucketItem
 
 	public boolean emptyContents(@Nullable Player player, Level world, BlockPos pos, @Nullable BlockHitResult hitResult, Fluid fluid)
 	{
-		RandomSource rng = RandomSource.create();
+		RandomSource rng = world.random;
 		if (!(fluid instanceof FlowingFluid))
 		{
 			return false;

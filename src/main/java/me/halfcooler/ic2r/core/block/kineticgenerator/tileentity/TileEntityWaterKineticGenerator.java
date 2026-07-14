@@ -94,11 +94,11 @@ public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGe
 	@Override
 	protected void updateEntityServer()
 	{
-     RandomSource rng = RandomSource.create();
 		super.updateEntityServer();
 		if (this.updateTicker++ % this.getTickRate() == 0)
 		{
 			Level world = this.getLevel();
+			RandomSource rng = world.random;
 			if (this.type == TileEntityWaterKineticGenerator.BiomeState.UNKNOWN)
 			{
 				Holder<Biome> biome = BiomeUtil.getBiome(world, this.worldPosition);

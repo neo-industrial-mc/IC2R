@@ -733,7 +733,7 @@ public class LiquidUtil
 
 	public static boolean fillWorldFluidBlock(Ic2rFluidStack fs, Level world, BlockPos pos, boolean simulate)
 	{
-     RandomSource rng = RandomSource.create();
+		RandomSource rng = world.random;
 		if (fs != null && fs.getAmountMb() >= 1000)
 		{
 			Fluid fluid = fs.getFluid();

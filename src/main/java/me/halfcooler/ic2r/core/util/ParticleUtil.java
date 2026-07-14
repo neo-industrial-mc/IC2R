@@ -11,7 +11,7 @@ public class ParticleUtil
 {
 	public static void showFurnaceFlames(Level world, BlockPos pos, Direction facing)
 	{
-     RandomSource rng = RandomSource.create();
+		RandomSource rng = world.random;
 		if (rng.nextInt(8) == 0)
 		{
 			double width = 0.625;

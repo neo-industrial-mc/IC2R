@@ -29,7 +29,7 @@ public class Desertification extends TerraformerBase
 	@Override
 	boolean terraform(Level world, BlockPos pos)
 	{
-     RandomSource rng = RandomSource.create();
+		RandomSource rng = world.random;
 		pos = TileEntityTerra.getFirstBlockFrom(world, pos, 10);
 		if (pos == null)
 		{

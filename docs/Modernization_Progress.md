@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W1.3  
+**last_completed:** W1.4  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -20,7 +20,7 @@
 | W1.1 | done | SyncKey/Codec/BlockEntitySync 骨架 + BE 空钩子；反射路径保留；18 tests 绿 |
 | W1.2 | done | 标准机 gui_progress/active 双写注册；NS-005 往返测；test 24/24 绿；TeUpdate 未切主 |
 | W1.3 | done | ServerTicker/ClientTicker 显式接口；移除 getDeclaredMethod 探测；test 24/24 绿 |
-| W1.4 | pending | 清理致命味道 |
+| W1.4 | done | 清零 Vector 配方死字段 + 热路径 RandomSource.create()；create(42L)/printStackTrace 豁免登记 |
 | W1.5 | pending | NBT/网络字面量 snake_case 试点 |
 | W1.6 | pending | 注册拆分 |
 | W1.7 | pending | Deferred/Holder 试点 |
@@ -39,11 +39,11 @@
 
 ## Last session
 
-- unit: W1.3
+- unit: W1.4
 - result: done / PASS
-- suggested_commit: `refactor: replace reflective TE tick probe with ServerTicker/ClientTicker`
+- suggested_commit: `refactor: remove Vector recipe leftovers and hot-path RandomSource.create`
 - verify_log: |
-    - DoD: 无 getDeclaredMethod 探测 update ✅；显式 ServerTicker/ClientTicker ✅
-    - 有 updateEntity* 的类继承链均覆盖接口（0 missing）
-    - gradlew test 24/24 绿
-    - 未做 W1.4/W1.5
+    - DoD: java.util.Vector 0；RandomSource.create() 0；create(42L) 豁免登记 ✅
+    - 抽查 world.random 替换 ✅
+    - gradlew test 绿；未改电网公式/NBT 键名
+    - docs/spec/smell_exemptions_w1_4.md

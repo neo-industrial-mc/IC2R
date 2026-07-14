@@ -27,7 +27,7 @@ public class Cultivation extends TerraformerBase
 
 	private static boolean growPlantsOn(Level world, BlockPos pos)
 	{
-     RandomSource rng = RandomSource.create();
+		RandomSource rng = world.random;
 		BlockPos above = pos.above();
 		BlockState state = world.getBlockState(above);
 		Block block = state.getBlock();

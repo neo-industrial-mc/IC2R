@@ -50,7 +50,7 @@ public class Irrigation extends TerraformerBase
 
 	private static boolean spreadGrass(Level world, BlockPos pos)
 	{
-     RandomSource rng = RandomSource.create();
+		RandomSource rng = world.random;
 		if (rng.nextBoolean())
 		{
 			return false;
@@ -82,7 +82,7 @@ public class Irrigation extends TerraformerBase
 	@Override
 	boolean terraform(Level world, BlockPos pos)
 	{
-     RandomSource rng = RandomSource.create();
+		RandomSource rng = world.random;
 		if (rng.nextInt(48000) == 0)
 		{
 			world.getLevelData().setRaining(true);

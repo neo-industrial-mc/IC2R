@@ -182,7 +182,7 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 		}
 
 		Level world = grid.getEnergyNet().getWorld();
-		RandomSource rand = RandomSource.create();
+		RandomSource rand = world.random;
 		boolean shufflePaths = (world.getGameTime() & 3L) != 0L;
 		int sourcesOffset = activeSources.size() > 1 ? rand.nextInt(activeSources.size()) : 0;
 		Map<Node, Integer> conductorAmpLoads = new IdentityHashMap<>();

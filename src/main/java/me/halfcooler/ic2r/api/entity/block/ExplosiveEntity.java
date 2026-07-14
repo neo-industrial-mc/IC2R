@@ -48,7 +48,7 @@ public abstract class ExplosiveEntity extends Entity
 	{
 		this(type, world);
 		this.absMoveTo(x, y, z);
-		RandomSource rng = RandomSource.create();
+		RandomSource rng = world.random;
 		double angle = (Math.PI * 2) * rng.nextDouble();
 		this.setDeltaMovement(-Math.sin(angle) * 0.02, 0.2, -Math.cos(angle) * 0.02);
 		this.xo = x;

@@ -118,7 +118,7 @@ public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock i
 	{
 		super.updateEntityClient();
 		Level world = this.getLevel();
-		RandomSource rnd = RandomSource.create();
+		RandomSource rnd = world.random;
 		if (rnd.nextInt(8) == 0)
 		{
 			if (this.getActive())

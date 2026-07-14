@@ -91,8 +91,7 @@ public class TileEntityTesla extends Ic2rTileEntity implements ServerTicker
 			{
 				if (world instanceof ServerLevel worldServer)
 				{
-					RandomSource rnd = RandomSource.create();
-					System.out.println(entity);
+					RandomSource rnd = worldServer.random;
 
 					for (int i = 0; i < damage; i++)
 					{

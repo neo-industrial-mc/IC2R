@@ -17,7 +17,7 @@ public class Mushroom extends TerraformerBase
 {
 	private static boolean growBlockWithDependancy(Level world, BlockPos pos, Block target, Block dependancy)
 	{
-     RandomSource rng = RandomSource.create();
+		RandomSource rng = world.random;
 		MutableBlockPos cPos = new MutableBlockPos();
 
 		for (int xm = pos.getX() - 1; dependancy != null && xm < pos.getX() + 1; xm++)

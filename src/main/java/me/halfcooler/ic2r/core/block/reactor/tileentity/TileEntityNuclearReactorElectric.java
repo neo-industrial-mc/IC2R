@@ -131,7 +131,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 
 	public static void showHeatEffects(Level world, BlockPos pos, int heat)
 	{
-		RandomSource rnd = RandomSource.create();
+		RandomSource rnd = world.random;
 		if (rnd.nextInt(8) == 0)
 		{
 			int puffs = heat / 1000;
@@ -578,7 +578,6 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 
 	public boolean calculateHeatEffects()
 	{
-     RandomSource rng = RandomSource.create();
 		if (this.heat >= 4000 && IC2R.sideProxy.isSimulating() && !(IC2RConfig.protection.reactorExplosionPowerLimit.get() <= 0.0F))
 		{
 			float power = (float) this.heat / this.maxHeat;
@@ -589,6 +588,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 			}
 
 			Level world = this.getLevel();
+			RandomSource rng = world.random;
 			if (power >= 0.85F && rng.nextFloat() <= 0.2F * this.hem)
 			{
 				BlockPos coordination = this.getRandCoordination(2);
@@ -656,13 +656,13 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 
 	public BlockPos getRandCoordination(int radius)
 	{
-     RandomSource rng = RandomSource.create();
 		if (radius <= 0)
 		{
 			return null;
 		}
 
 		Level world = this.getLevel();
+		RandomSource rng = world.random;
 
 		BlockPos ret;
 		do

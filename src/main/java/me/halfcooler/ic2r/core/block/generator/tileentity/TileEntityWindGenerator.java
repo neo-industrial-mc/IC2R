@@ -45,7 +45,6 @@ public class TileEntityWindGenerator extends TileEntityBaseRotorGenerator implem
 	@Override
 	public boolean gainEnergy()
 	{
-     RandomSource rng = RandomSource.create();
 		if (++this.ticker % 128 == 0)
 		{
 			if (this.ticker % 1024 == 0)
@@ -61,6 +60,7 @@ public class TileEntityWindGenerator extends TileEntityBaseRotorGenerator implem
 			}
 
 			Level world = this.getLevel();
+			RandomSource rng = world.random;
 			WindSim windSim = WorldData.get(world).windSim;
 			double wind = windSim.getWindAt(this.worldPosition.getY()) * (1.0 - this.obstructedBlockCount / 567.0);
 			if (wind <= 0.0)

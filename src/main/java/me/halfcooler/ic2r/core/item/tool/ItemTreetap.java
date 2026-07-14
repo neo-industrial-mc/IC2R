@@ -37,7 +37,7 @@ public class ItemTreetap extends Item implements IBoxable
 
 	public static boolean attemptExtract(Player player, Level world, BlockPos pos, Direction side, BlockState state, List<ItemStack> stacks, boolean isElectric)
 	{
-     RandomSource rng = RandomSource.create();
+		RandomSource rng = world.random;
 		assert state.getBlock() == Ic2rBlocks.RUBBER_LOG;
 		RubberLogBlock.RubberWoodState rwState = state.getValue(RubberLogBlock.stateProperty);
 		if (rwState.isPlain() || rwState.facing != side)

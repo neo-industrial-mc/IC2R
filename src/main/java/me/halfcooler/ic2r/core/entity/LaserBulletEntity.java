@@ -188,8 +188,8 @@ public class LaserBulletEntity extends ThrowableProjectile
 
 	private boolean hitBlock(BlockPos pos, Direction side)
 	{
-     RandomSource rng = RandomSource.create();
 		Level world = this.getCommandSenderWorld();
+		RandomSource rng = world.random;
 		Player playerOwner = this.owner instanceof Player ? (Player) this.owner : Ic2rPlayer.get(world);
 		if (playerOwner == null)
 		{

@@ -9,10 +9,7 @@ import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
-import java.util.Vector;
-import java.util.Map.Entry;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
@@ -21,8 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityExtractor extends TileEntityStandardMachine<IRecipeInput, Collection<ItemStack>, ItemStack>
 {
-	public static List<Entry<ItemStack, ItemStack>> recipes = new Vector<>();
-
 	public TileEntityExtractor(BlockPos pos, BlockState state)
 	{
 		super(Ic2rBlockEntities.EXTRACTOR, pos, state, 2, 300, 1);

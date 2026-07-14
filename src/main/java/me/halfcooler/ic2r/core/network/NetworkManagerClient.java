@@ -42,7 +42,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraft.util.RandomSource;
 
 @OnlyIn(Dist.CLIENT)
 public class NetworkManagerClient extends NetworkManager
@@ -300,7 +299,7 @@ final Object teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
 								switch (type)
 								{
 									case Normal:
-										world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (RandomSource.create().nextFloat() - RandomSource.create().nextFloat()) * 0.2F) * 0.7F, true);
+										world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F, true);
 										world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 0.0, 0.0, 0.0);
 										break;
 									case Electrical:
@@ -308,7 +307,7 @@ final Object teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
 										world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 0.0, 0.0, 0.0);
 										break;
 									case Heat:
-										world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 4.0F, (1.0F + (RandomSource.create().nextFloat() - RandomSource.create().nextFloat()) * 0.2F) * 0.7F, true);
+										world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 4.0F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F, true);
 										world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 0.0, 0.0, 0.0);
 										break;
 									case Nuclear:

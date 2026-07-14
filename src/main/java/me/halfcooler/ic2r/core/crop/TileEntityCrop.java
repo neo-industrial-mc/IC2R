@@ -882,7 +882,6 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	@Override
 	public boolean pick()
 	{
-     RandomSource rng = RandomSource.create();
 		if (this.crop == null)
 		{
 			return false;
@@ -893,6 +892,8 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		{
 			return false;
 		}
+
+		RandomSource rng = world.random;
 
 		boolean bonus = this.crop.canBeHarvested(this);
 		float firstchance = this.crop.dropSeedChance(this);

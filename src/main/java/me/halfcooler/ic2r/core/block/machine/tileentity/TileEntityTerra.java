@@ -96,7 +96,6 @@ public class TileEntityTerra extends TileEntityElectricMachine
 	@Override
 	protected void updateEntityServer()
 	{
-     RandomSource rng = RandomSource.create();
 		super.updateEntityServer();
 		boolean newActive = false;
 		ItemStack stack = this.tfbpSlot.get();
@@ -113,6 +112,7 @@ public class TileEntityTerra extends TileEntityElectricMachine
 					return;
 				}
 
+				RandomSource rng = world.random;
 				BlockPos nextPos;
 				if (this.lastPos != null)
 				{
