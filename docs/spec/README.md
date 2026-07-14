@@ -51,6 +51,7 @@
 | [origin.md](origin.md) | **已产出**（W0.6）：核心包初版标注 | W0.6 | 模块 Origin：residual / rewritten / original / mixed |
 | [id_migrations.md](id_migrations.md) | **已起步**（W1.5 试点） | 命名/NBT 迁移相关 Unit | 注册 ID / NBT 键 / 网络字段迁移表 |
 | [phase1_closeout.md](phase1_closeout.md) | **已产出**（W1.8） | W1.8 | 阶段 1 §6.3 勾选、JaCoCo 覆盖率证据与 gap 列表 |
+| [phase2_closeout.md](phase2_closeout.md) | **已产出**（W2.6） | W2.6 | 阶段 2 §7.7 勾选、inv/fluid/recipe 覆盖率证据与 G2.\* gap 列表 |
 | [smell_exemptions_w1_4.md](smell_exemptions_w1_4.md) | **已产出**（W1.4） | W1.4 | 味道清理豁免登记 |
 | [gui_modernization.md](gui_modernization.md) | **已产出**（W2.4） | W2.4 | 冻结 guidef XML；新 UI 代码 Menu/Screen 约定与样板 |
 | （入口说明见本表下） | **已起步**（W2.5） | W2.5 | DataGen：`Ic2rDataGenerators` + Tags provider；`.\gradlew.bat runData` → `src/generated/resources` |
@@ -74,3 +75,6 @@
 | 命名审计 | **已完成（W0.5）**：见 `naming_audit.md` |
 | Origin | **已完成（W0.6）**：见 `origin.md`（初版；随 W1+ 更新） |
 | 阶段 1 收口 | **已完成（W1.8）**：见 `phase1_closeout.md`（§6.3 partial/gap 已登记；覆盖率未达 60%） |
+| 阶段 2 收口 | **已完成（W2.6）**：见 `phase2_closeout.md`（§7.7 均为 partial/gap；W2.1–W2.5 试点已交付；窄口径 inv/fluid/recipe 覆盖 ~3.5% ≪70%） |
+
+阶段 1 收基础设施与命名/Sync 试点缺口（G1.\*）；阶段 2 在其上叠加 Forge 生态适配试点（Handler/流体/RecipeManager/GUI 冻结/DataGen），缺口见 G2.\*。

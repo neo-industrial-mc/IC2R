@@ -4,7 +4,8 @@
 > **下一步**：W0.4+ 补用例正文（Given/When/Then）、可测切入点与测试链接；实现侧首批 EnergyNet 测试。  
 > **依据**：[Modernization_Project.md §4.4](../Modernization_Project.md)  
 > **索引**：[docs/spec/README.md](README.md)  
-> **阶段 1 摘要（W1.8）**：NS-001…003/005 与部分 energy 切口已绿；EN/SM/RC 主体仍 draft；覆盖率与 TeUpdate 切主见 [phase1_closeout.md](phase1_closeout.md)。
+> **阶段 1 摘要（W1.8）**：NS-001…003/005 与部分 energy 切口已绿；EN/SM/RC 主体仍 draft；覆盖率与 TeUpdate 切主见 [phase1_closeout.md](phase1_closeout.md)。  
+> **阶段 2 摘要（W2.6）**：inv/fluid 适配纯逻辑测 + macerator RecipeManager 试点 + GUI 冻结样板 + Tags DataGen；§7.7 partial/gap 见 [phase2_closeout.md](phase2_closeout.md)。
 
 本文件冻结「必须先规格与测试、再动实现」的模块与用例大纲。条目 ID 建议格式：`{域}-{子域}-{序号}`（例：`EN-IC-001`），测试可用 `@Spec("EN-IC-001")` 对齐（§4.7）。
 

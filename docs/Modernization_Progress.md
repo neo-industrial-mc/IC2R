@@ -1,11 +1,12 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W2.5  
+**last_completed:** W2.6  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
-> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。
+> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
+> **阶段 2 Work Unit（W2.1–W2.6）已全部 done**；§7.7 为 partial/gap（见 `docs/spec/phase2_closeout.md`）。下一 pending：**W3.1**。
 
 ## Queue
 
@@ -30,7 +31,7 @@
 | W2.3 | done | macerator Type/Serializer/JSON + RecipeManagerMachineBridge + MatchMath 测；test 66/66 绿 |
 | W2.4 | done | gui_modernization.md 冻结 XML；CodeGuiSample Menu/Screen 注册；compile+test 绿 |
 | W2.5 | done | GatherDataEvent + ItemTagsProvider；3 tool tags → src/generated；runData+test 绿 |
-| W2.6 | pending | 阶段 2 收口 |
+| W2.6 | done | phase2_closeout：§7.7 partial/gap；窄口径~3.5%≪70%；test 66/66+jacoco 绿 |
 | W3.1 | pending | platform SPI 草案 |
 | W3.2 | pending | 迁移 1 个调用点到 SPI |
 | W3.3 | pending | EnvProxy 瘦身切片 |
@@ -39,11 +40,10 @@
 
 ## Last session
 
-- unit: W2.5
+- unit: W2.6
 - result: done / PASS
-- suggested_commit: `feat(datagen): bootstrap Forge DataGen for tool item tags`
+- suggested_commit: `docs: phase 2 closeout with §7.7 gaps and jacoco evidence`
 - verify_log: |
-    - DoD: Tags 一类生成 ✅；runData SUCCESS；test 66/66
-    - Ic2rDataGenerators + Ic2rItemTagsProvider
-    - wrenches/forge_hammers/wire_cutters → src/generated/resources
-    - 未全量迁移 tags/recipes；未做 W2.6
+    - DoD: phase2_closeout.md 含 §7.7 逐条 + G2.1–G2.8 ✅
+    - 3× partial + 覆盖率 gap（窄口径 ~3.53% ≪ 70%）诚实登记
+    - test 66/66 + jacocoTestReport 绿；仅 docs 变更；无 W3 实现
