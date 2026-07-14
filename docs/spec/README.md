@@ -47,7 +47,7 @@
 |:---|:---|:---|:---|
 | [README.md](README.md) | **本文件**（W0.2） | W0.2 | 目录用途、与主文档关系、文件约定 |
 | [golden_suite.md](golden_suite.md) | 条目表大纲（W0.3）→ 用例正文（后续） | W0.2 / W0.3+ | 行为黄金用例大纲与条目 ID 表 |
-| `naming_audit.md` | **待建**（W0.5） | W0.5 | 命名扫描报告与修复优先级 |
+| [naming_audit.md](naming_audit.md) | **已产出**（W0.5）：抽样 + 优先级 | W0.5 | 命名扫描报告与修复优先级 |
 | `origin.md` | **待建**（W0.6） | W0.6 | 模块 Origin：residual / rewritten / original |
 | `id_migrations.md` | **可选**（按需） | 命名/NBT 迁移相关 Unit | 注册 ID / NBT 键 / 网络字段迁移表 |
 
@@ -67,4 +67,5 @@
 | 目录 + README | 已完成（W0.2） |
 | Golden 大纲骨架 | 已完成（W0.2）：见 `golden_suite.md` |
 | Golden 条目表 | **已完成（W0.3）**：EN-IC/GT、SM、RC、NS 可引用 ID；正文后续 |
-| 命名审计 / Origin | **W0.5 / W0.6** |
+| 命名审计 | **已完成（W0.5）**：见 `naming_audit.md` |
+| Origin | **W0.6** |

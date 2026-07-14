@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W0.4  
+**last_completed:** W0.5  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -15,7 +15,7 @@
 | W0.2 | done | docs/spec/README.md + golden_suite.md 骨架；Progress 文件就位 |
 | W0.3 | done | golden_suite 条目表：EN-IC/GT + SM + RC + NS 共 44+ 可引用 ID |
 | W0.4 | done | EnergyTransferMath 可测切口 + 12 energy 测试；gradlew test 13/13 绿 |
-| W0.5 | pending | 命名审计 |
+| W0.5 | done | naming_audit.md：网络/NBT camelCase 大面积 + 注册/lang 抽样 + P0–P2 修复序 |
 | W0.6 | pending | Origin 初版 |
 | W1.1 | pending | Sync 抽象骨架 |
 | W1.2 | pending | 标准机同步试点 |
@@ -39,11 +39,10 @@
 
 ## Last session
 
-- unit: W0.4
+- unit: W0.5
 - result: done / PASS
-- suggested_commit: `test: add EnergyNet pure-logic tests and EnergyTransferMath seam`
+- suggested_commit: `docs: add naming audit report for snake_case literals`
 - verify_log: |
-    - DoD: 12 energy 有意义测试 ≥3 ✅；无客户端依赖 ✅；gradlew test 13/13 ✅
-    - EnergyCalculator* 仅委托到 EnergyTransferMath，公式等价
-    - 新增 EnergyTransferMath.java + energy/*Test.java
-    - 覆盖 Spec：EN-IC-001/003，EN-GT-001–007 等（公式层）
+    - DoD: naming_audit.md 非空含路径/分类/P0-P2 ✅
+    - 抽查 guiProgress / fluidReactorLookup / energyBuffer 源码命中 ✅
+    - git 仅 docs；无业务重命名
