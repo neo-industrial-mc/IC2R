@@ -7,11 +7,12 @@ import org.jetbrains.annotations.Nullable;
 /**
  * External energy (FE/RF and future Fabric transfer) bridge.
  * <p>
- * Draft stub for W3.1. IC EU logic stays in common ({@code core.energy}); this SPI only
- * covers loader capability / transfer interop. Signatures intentionally minimal until W3.2
- * picks a first call site (e.g. AE2 FE path or a conversion cable).
+ * IC EU logic stays in common ({@code core.energy}); this SPI only covers loader capability /
+ * transfer interop. EU↔FE conversion is pure math in {@code EnergyBridgeMath} (default
+ * {@code 2.0} FE/EU, aligned with AE2). Contract: {@code docs/spec/energy_bridge_contract.md}.
  * <p>
  * Units: {@code long} energy amounts are <strong>external</strong> units (typically FE), not EU.
+ * Forge: {@code PlatformEnergyBridgeForge} via {@code IEnergyStorage}.
  */
 public interface PlatformEnergyBridge
 {

@@ -124,7 +124,7 @@
 | G2.5 | `Ic2rFluidTank` 非 `IFluidHandler` 一等公民；管道流体仍经 forge cap 包装 | P1 | 统一 fill/empty 服务对外；fluid handler 适配单测（对齐 FL-\*） |
 | G2.6 | DataGen 仅 3 item tags；Recipes/Models/Lang 未生成 | P2 | 后续 DataGen Unit：至少 1 类 recipe 或 block tags |
 | G2.7 | 阶段 1 遗留：TeUpdate 仍默认、energy.grid/标准机循环覆盖极低（G1.\*） | P0 | **G2.7 交叉对照 done（§8）**：**部分关闭**。G1.1 Sync 读/写优先已落地（TeUpdate **帧仍默认**）；G1.3/G1.4 纯逻辑测例已绿；**G1.2 宽口径 ~3.76% 仍 gap**（**不**达 60%）。详见 §8 与 [phase1_closeout.md](phase1_closeout.md) |
-| G2.8 | FE/RF 能量桥、§7.5 对外能量未在阶段 2 Work Unit 推进 | P2 | platform 适配与阶段 3 SPI 一并规划 |
+| G2.8 | FE/RF 能量桥、§7.5 对外能量 | P2 | **已推进（G2.8）**：`EnergyBridgeMath`（默认 2.0 FE/EU）+ `PlatformEnergyBridgeForge`；契约 [energy_bridge_contract.md](energy_bridge_contract.md)；AE2 FE 路径共享 Math。**仍 residual**：config 开关未落地、IC 机器不暴露 FE、无 e2e FE 管 |
 
 ### 3.1 建议测试优先级（抬阶段 2 门槛用）
 

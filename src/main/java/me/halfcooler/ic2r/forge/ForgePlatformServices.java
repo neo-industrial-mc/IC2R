@@ -5,7 +5,6 @@ import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.item.EnvItemHandler;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.platform.services.PlatformConfig;
-import me.halfcooler.ic2r.platform.services.PlatformEnergyBridge;
 import me.halfcooler.ic2r.platform.services.PlatformFluidBridge;
 import me.halfcooler.ic2r.platform.services.PlatformItemTransfer;
 import me.halfcooler.ic2r.platform.services.PlatformNetwork;
@@ -61,8 +60,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Wires Forge SPI adapters into {@link PlatformServices}.
  * <p>
- * W3.2: only {@link PlatformLifecycleForge} is used by common call sites;
- * other facets are stubs until later Work Units migrate them (EnvProxy dual-track).
+ * Real facets: {@link PlatformLifecycleForge}, {@link PlatformEnergyBridgeForge} (G2.8).
+ * Other facets remain stubs until later Work Units migrate them (EnvProxy dual-track).
  */
 public final class ForgePlatformServices
 {
@@ -80,7 +79,7 @@ public final class ForgePlatformServices
 
 		PlatformServices.install(
 			new StubRegistry(),
-			new StubEnergy(),
+			new PlatformEnergyBridgeForge(),
 			new StubFluid(),
 			new StubItemTransfer(),
 			new StubNetwork(),
@@ -220,33 +219,6 @@ public final class ForgePlatformServices
 		public CreativeModeTab createCreativeTab(ResourceLocation id, Supplier<ItemStack> icon)
 		{
 			throw notMigrated("PlatformRegistry");
-		}
-	}
-
-	private static final class StubEnergy implements PlatformEnergyBridge
-	{
-		@Override
-		public boolean canReceive(BlockEntity be, @Nullable Direction side)
-		{
-			throw notMigrated("PlatformEnergyBridge");
-		}
-
-		@Override
-		public boolean canExtract(BlockEntity be, @Nullable Direction side)
-		{
-			throw notMigrated("PlatformEnergyBridge");
-		}
-
-		@Override
-		public long insert(BlockEntity be, @Nullable Direction side, long amount, boolean simulate)
-		{
-			throw notMigrated("PlatformEnergyBridge");
-		}
-
-		@Override
-		public long extract(BlockEntity be, @Nullable Direction side, long maxAmount, boolean simulate)
-		{
-			throw notMigrated("PlatformEnergyBridge");
 		}
 	}
 

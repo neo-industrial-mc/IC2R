@@ -54,6 +54,7 @@
 | [phase2_closeout.md](phase2_closeout.md) | **已产出**（W2.6） | W2.6 | 阶段 2 §7.7 勾选、inv/fluid/recipe 覆盖率证据与 G2.\* gap 列表 |
 | [item_handler_contract.md](item_handler_contract.md) | **已产出**（G2.1） | G2.1 | 标准机/库存 BE 对外 `ITEM_HANDLER`：null vs facing、Access 门控、Macerator 布局；Math 测例与 residual gap |
 | [fluid_handler_contract.md](fluid_handler_contract.md) | **已产出**（G2.5） | G2.5 | 流体 BE/Tank 对外 `FLUID_HANDLER`：单罐 `Ic2rFluidTankHandler`、多罐 side、fill/empty 路径表；Math 测例与 residual gap |
+| [energy_bridge_contract.md](energy_bridge_contract.md) | **已产出**（G2.8） | G2.8 | FE/RF 对外能量桥：EU 权威、默认 2.0 FE/EU、`PlatformEnergyBridgeForge`、与 AE2 对齐；Math 测例 |
 | [recipe_manager_query_eval.md](recipe_manager_query_eval.md) | **已产出**（G2.2） | G2.2 | basic 多 type 全链路证据；tick 直查 RecipeManager vs 缓存 materialize 利弊与推荐 |
 | [phase3_closeout.md](phase3_closeout.md) | **已产出**（W3.5） | W3.5 | 阶段 3 §8.5 勾选（gap/deferred）、common 覆盖率证据与 G3.\* gap 列表 |
 | [smell_exemptions_w1_4.md](smell_exemptions_w1_4.md) | **已产出**（W1.4） | W1.4 | 味道清理豁免登记 |

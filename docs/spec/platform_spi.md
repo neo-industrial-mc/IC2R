@@ -96,7 +96,7 @@ platform-impl  ──may use──►  common / core domain types
 | `ForgeNetworkHandler` + `FmlMod` 通道注册 | PlatformNetwork |
 | `FmlMod` 配置注册 | PlatformConfig |
 | `ClientEnvProxyForge` | 未来 client SPI |
-| AE2 / 其它 FE 使用点 | PlatformEnergyBridge 候选首迁 |
+| AE2 / 其它 FE 使用点 | **G2.8**：`PlatformEnergyBridgeForge` + `EnergyBridgeMath`；AE2 FE 路径已共享 Math |
 
 ---
 
@@ -141,7 +141,7 @@ forge.PlatformLifecycleForge + ForgePlatformServices（其它 facet stub）
 - 无 Forge 类型：例如 extended menu 用 `ByteBuf` 工厂，而不是 `IForgeMenuType`。  
 - 能量桥用 `long` 外部单位；EU 换算留在 common。  
 - `PlatformConfig.register*Config(Object spec, …)` 用 `Object` 暂避 `ForgeConfigSpec` 泄漏；后续可引入本模组 `ConfigSpecHandle`。  
-- `PlatformEnergyBridge` 为 stub：待真实调用点再扩。
+- `PlatformEnergyBridge`：**G2.8** 已由 `PlatformEnergyBridgeForge`（`IEnergyStorage`）实现；EU↔FE 纯转换见 `EnergyBridgeMath`（默认 2.0 FE/EU）；契约 [energy_bridge_contract.md](energy_bridge_contract.md)。
 
 ---
 

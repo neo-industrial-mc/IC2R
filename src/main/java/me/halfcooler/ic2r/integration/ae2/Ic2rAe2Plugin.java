@@ -6,6 +6,7 @@ import me.halfcooler.ic2r.api.energy.tile.IEnergySink;
 import me.halfcooler.ic2r.api.info.ILocatable;
 import me.halfcooler.ic2r.api.info.Info;
 import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.energy.EnergyBridgeMath;
 import me.halfcooler.ic2r.core.util.LogCategory;
 
 import java.lang.reflect.Method;
@@ -37,7 +38,11 @@ import javax.annotation.Nullable;
 
 public final class Ic2rAe2Plugin
 {
-	public static final double EU_TO_AE_RATIO = 2.0;
+	/**
+	 * AE (and FE-fallback) units per 1 EU. Same value as {@link EnergyBridgeMath#DEFAULT_FE_PER_EU}
+	 * so AE2 play balance stays aligned with the shared energy bridge (G2.8).
+	 */
+	public static final double EU_TO_AE_RATIO = EnergyBridgeMath.DEFAULT_FE_PER_EU;
 	public static final ResourceLocation ENERGY_ACCEPTOR_ID = ResourceLocation.fromNamespaceAndPath("ae2", "energy_acceptor");
 
 	private static final Map<Level, Map<BlockPos, Ae2EnergySink>> sinks = new HashMap<>();
@@ -335,13 +340,13 @@ public final class Ic2rAe2Plugin
 			IEnergyStorage storage = getFeStorage(be);
 			if (storage == null) return euAmount;
 
-			int feToSend = (int) Math.ceil(euAmount * EU_TO_AE_RATIO);
+			int feToSend = EnergyBridgeMath.clampToIntEnergy(
+				EnergyBridgeMath.euToFeCeil(euAmount, EU_TO_AE_RATIO)
+			);
 			if (feToSend <= 0) return euAmount;
 
 			int feAccepted = storage.receiveEnergy(feToSend, false);
-			double euAccepted = Math.min(feAccepted / EU_TO_AE_RATIO, euAmount);
-
-			return euAmount - euAccepted;
+			return EnergyBridgeMath.residualEuAfterFeTransfer(euAmount, feAccepted, EU_TO_AE_RATIO);
 		}
 
 		private double getAeDemand()
@@ -372,7 +377,7 @@ public final class Ic2rAe2Plugin
 			if (storage == null) return 0.0;
 
 			int feFree = storage.getMaxEnergyStored() - storage.getEnergyStored();
-			return feFree / EU_TO_AE_RATIO;
+			return EnergyBridgeMath.feToEu(feFree, EU_TO_AE_RATIO);
 		}
 
 		@Override
