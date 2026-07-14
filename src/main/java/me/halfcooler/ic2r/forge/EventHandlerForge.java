@@ -20,6 +20,8 @@ import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
@@ -58,11 +60,16 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.MissingMappingsEvent;
 import org.jetbrains.annotations.NotNull;
 
 public final class EventHandlerForge
 {
+	/** Pre-20.1.40 registry namespace. Worlds still store {@code ic2:*} ids until remapped. */
+	private static final String LEGACY_NAMESPACE = "ic2";
+	private static final String CURRENT_NAMESPACE = "ic2r";
+
 	private static final ResourceLocation fluidCapId = IC2R.getIdentifier("fluid");
 	private static final ResourceLocation itemCapId = IC2R.getIdentifier("item");
 	private static final ResourceLocation nanoSaberCapId = IC2R.getIdentifier("nano_saber_state");
@@ -73,14 +80,49 @@ public final class EventHandlerForge
 		EventHandler.onServerStart(event.getServer());
 	}
 
+	/**
+	 * World save migration for registry renames.
+	 * <ul>
+	 *   <li>{@code ic2:*} → {@code ic2r:*} (same path) for every Forge registry that fires this event</li>
+	 *   <li>{@code ic2r:empty_cell} → {@link Ic2rItems#FACADE_CELL} (earlier internal rename)</li>
+	 * </ul>
+	 * Fired once per registry that has missing entries (Forge 1.20.1).
+	 */
 	@SubscribeEvent
 	public void onMissingMappings(MissingMappingsEvent event)
 	{
-		for (MissingMappingsEvent.Mapping<Item> mapping : event.getMappings(ForgeRegistries.Keys.ITEMS, "ic2r"))
+		remapLegacyNamespace(event);
+
+		for (MissingMappingsEvent.Mapping<Item> mapping : event.getMappings(ForgeRegistries.Keys.ITEMS, CURRENT_NAMESPACE))
 		{
 			if ("empty_cell".equals(mapping.getKey().getPath()))
 			{
 				mapping.remap(Ic2rItems.FACADE_CELL);
+			}
+		}
+	}
+
+	/**
+	 * Remap every missing {@code ic2:path} entry to {@code ic2r:path} when the new id is registered.
+	 */
+	@SuppressWarnings("unchecked")
+	private static <T> void remapLegacyNamespace(MissingMappingsEvent event)
+	{
+		ResourceKey<? extends Registry<T>> registryKey = (ResourceKey<? extends Registry<T>>) event.getKey();
+		IForgeRegistry<T> registry = (IForgeRegistry<T>) event.getRegistry();
+
+		for (MissingMappingsEvent.Mapping<T> mapping : event.getMappings(registryKey, LEGACY_NAMESPACE))
+		{
+			ResourceLocation newId = ResourceLocation.fromNamespaceAndPath(CURRENT_NAMESPACE, mapping.getKey().getPath());
+			if (!registry.containsKey(newId))
+			{
+				continue;
+			}
+
+			T replacement = registry.getValue(newId);
+			if (replacement != null)
+			{
+				mapping.remap(replacement);
 			}
 		}
 	}
