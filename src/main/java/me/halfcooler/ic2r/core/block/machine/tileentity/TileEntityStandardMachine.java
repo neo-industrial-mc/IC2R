@@ -45,18 +45,21 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	protected static final int EventStop = 3;
 
 	/**
-	 * Modern SyncKey for GUI progress (wire: {@code gui_progress}).
-	 * Dual-write: legacy reflection still uses {@link #LEGACY_GUI_PROGRESS_FIELD}.
+	 * Modern SyncKey for GUI progress (logical wire name: {@code gui_progress}).
+	 * TeUpdate packets still carry {@link #LEGACY_GUI_PROGRESS_FIELD} as the string name (G1.1 alias).
 	 */
 	public static final SyncKey<Float> KEY_GUI_PROGRESS = SyncKey.of("gui_progress", SyncCodecs.FLOAT);
 	/**
 	 * Modern SyncKey for machine active state (wire: {@code active}).
-	 * Dual-write: legacy reflection still uses {@link #LEGACY_ACTIVE_FIELD}.
+	 * TeUpdate field name is the same string ({@link #LEGACY_ACTIVE_FIELD}).
 	 */
 	public static final SyncKey<Boolean> KEY_ACTIVE = SyncKey.of("active", SyncCodecs.BOOLEAN);
-	/** Legacy {@code getNetworkedFields()} / NetworkManager reflection field name for progress. */
+	/**
+	 * Legacy TeUpdate / {@code getNetworkedFields()} field name for progress.
+	 * On-wire name stays camelCase for protocol compatibility; values R/W via Sync (G1.1).
+	 */
 	public static final String LEGACY_GUI_PROGRESS_FIELD = "guiProgress";
-	/** Legacy {@code getNetworkedFields()} / NetworkManager reflection field name for active. */
+	/** Legacy TeUpdate / {@code getNetworkedFields()} field name for active (same as modern wire). */
 	public static final String LEGACY_ACTIVE_FIELD = "active";
 
 	/**
@@ -169,9 +172,8 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	}
 
 	/**
-	 * W1.2 dual-write pilot: registers modern SyncKeys bound to real machine state.
-	 * Live packets still use {@code getNetworkedFields()} + reflection ({@link #LEGACY_GUI_PROGRESS_FIELD},
-	 * {@link #LEGACY_ACTIVE_FIELD}) until TeUpdate prefers the Sync table.
+	 * G1.1: registers modern SyncKeys for standard-machine network fields.
+	 * TeUpdate / writeFieldData resolve values via this table (legacy names aliased).
 	 */
 	@Override
 	protected void registerSyncedData(BlockEntitySync sync)
@@ -187,7 +189,8 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	}
 
 	/**
-	 * Registers standard-machine pilot SyncKeys. Shared by BE registration and pure unit tests (NS-005).
+	 * Registers standard-machine SyncKeys with TeUpdate legacy name aliases (NS-005 / G1.1).
+	 * Shared by BE registration and pure unit tests.
 	 */
 	public static void bindStandardMachineSync(
 		BlockEntitySync sync,
@@ -197,8 +200,9 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		Consumer<Float> guiProgressSetter
 	)
 	{
-		sync.add(KEY_ACTIVE, activeGetter, activeSetter);
-		sync.add(KEY_GUI_PROGRESS, guiProgressGetter, guiProgressSetter);
+		// LEGACY_ACTIVE_FIELD equals wire "active" — alias is a no-op; declared for clarity.
+		sync.add(KEY_ACTIVE, activeGetter, activeSetter, LEGACY_ACTIVE_FIELD);
+		sync.add(KEY_GUI_PROGRESS, guiProgressGetter, guiProgressSetter, LEGACY_GUI_PROGRESS_FIELD);
 	}
 
 	/** Apply GUI progress from modern sync decode (no side effects). */

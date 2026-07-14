@@ -295,14 +295,21 @@ class TeUpdate
 				for (TeUpdateDataClient.FieldData fieldUpdate : update.getFields())
 				{
 					Object value = DataEncoder.getValue(fieldUpdate.value, null);
-					if (fieldUpdate.field != null)
+					// G1.1: registered Sync fields (incl. legacy aliases like guiProgress) use setter; else reflection.
+					boolean appliedViaSync = te instanceof Ic2rTileEntity
+						&& ((Ic2rTileEntity) te).getBlockEntitySync().trySetValue(fieldUpdate.name, value);
+					if (!appliedViaSync)
 					{
-						ReflectionUtil.setValue(te, fieldUpdate.field, value);
-					} else
-					{
-						ReflectionUtil.setValueRecursive(te, fieldUpdate.name, value);
+						if (fieldUpdate.field != null)
+						{
+							ReflectionUtil.setValue(te, fieldUpdate.field, value);
+						} else
+						{
+							ReflectionUtil.setValueRecursive(te, fieldUpdate.name, value);
+						}
 					}
 
+					// Notify with the wire/legacy name from the packet (GUI / texture listeners depend on it).
 					if (te instanceof INetworkUpdateListener)
 					{
 						((INetworkUpdateListener) te).onNetworkUpdate(fieldUpdate.name);

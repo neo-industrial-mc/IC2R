@@ -49,8 +49,8 @@ public class ContainerStandardMachine<T extends TileEntityStandardMachine<?, ?, 
 	}
 
 	/**
-	 * Dual-write (W1.2): keep legacy camelCase field name for reflection {@code NetworkManager}
-	 * until TeUpdate cutover. Modern path uses SyncKey {@code gui_progress} on the TE.
+	 * Network field list still uses legacy camelCase name {@code guiProgress} for TeUpdate packet
+	 * compatibility (DataEncoder + string name). Value R/W on the TE goes through Sync (G1.1).
 	 */
 	@Override
 	public List<String> getNetworkedFields()

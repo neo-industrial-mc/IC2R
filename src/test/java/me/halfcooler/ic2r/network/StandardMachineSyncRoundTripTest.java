@@ -161,4 +161,96 @@ class StandardMachineSyncRoundTripTest
 		assertEquals(TileEntityStandardMachine.KEY_ACTIVE, sync.get("active").key());
 		assertEquals(TileEntityStandardMachine.KEY_GUI_PROGRESS, sync.get("gui_progress").key());
 	}
+
+	/** G1.1: legacy TeUpdate names map to the same Sync fields as modern wire names */
+	@Test
+	void lookup_resolvesWireNameThenLegacyAlias()
+	{
+		BlockEntitySync sync = new BlockEntitySync();
+		TileEntityStandardMachine.bindStandardMachineSync(
+			sync, () -> false, v ->
+			{
+			}, () -> 0f, v ->
+			{
+			}
+		);
+
+		assertSame(sync.get("gui_progress"), sync.lookup("gui_progress"));
+		assertSame(sync.get("gui_progress"), sync.lookup(TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD));
+		assertSame(sync.get("active"), sync.lookup("active"));
+		assertSame(sync.get("active"), sync.lookup(TileEntityStandardMachine.LEGACY_ACTIVE_FIELD));
+		assertEquals(null, sync.lookup("unknownField"));
+		assertEquals(null, sync.get(TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD));
+	}
+
+	/**
+	 * G1.1 / NS-005: TeUpdate write path uses Sync getter under legacy packet names;
+	 * values match direct getters (what DataEncoder would encode).
+	 */
+	@Test
+	void tryGetValue_prefersSyncGetter_forLegacyAndWireNames()
+	{
+		AtomicBoolean active = new AtomicBoolean(true);
+		AtomicReference<Float> guiProgress = new AtomicReference<>(0.75f);
+		AtomicBoolean getterUsed = new AtomicBoolean(false);
+
+		BlockEntitySync sync = new BlockEntitySync();
+		TileEntityStandardMachine.bindStandardMachineSync(
+			sync,
+			() ->
+			{
+				getterUsed.set(true);
+				return active.get();
+			},
+			active::set,
+			guiProgress::get,
+			guiProgress::set
+		);
+
+		Object[] out = new Object[1];
+		assertTrue(sync.tryGetValue(TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD, out));
+		assertEquals(0.75f, (Float) out[0], 0f);
+
+		assertTrue(sync.tryGetValue("gui_progress", out));
+		assertEquals(0.75f, (Float) out[0], 0f);
+
+		assertTrue(sync.tryGetValue(TileEntityStandardMachine.LEGACY_ACTIVE_FIELD, out));
+		assertEquals(Boolean.TRUE, out[0]);
+		assertTrue(getterUsed.get());
+
+		assertFalse(sync.tryGetValue("energy", out));
+	}
+
+	/**
+	 * G1.1: TeUpdate apply path uses Sync setter under legacy names (no reflection required).
+	 */
+	@Test
+	void trySetValue_prefersSyncSetter_updatesMockState()
+	{
+		AtomicBoolean active = new AtomicBoolean(false);
+		AtomicReference<Float> guiProgress = new AtomicReference<>(0f);
+		AtomicBoolean setterUsed = new AtomicBoolean(false);
+
+		BlockEntitySync sync = new BlockEntitySync();
+		TileEntityStandardMachine.bindStandardMachineSync(
+			sync,
+			active::get,
+			active::set,
+			guiProgress::get,
+			v ->
+			{
+				setterUsed.set(true);
+				guiProgress.set(v);
+			}
+		);
+
+		assertTrue(sync.trySetValue(TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD, 0.33f));
+		assertEquals(0.33f, guiProgress.get(), 0f);
+		assertTrue(setterUsed.get());
+
+		assertTrue(sync.trySetValue("active", Boolean.TRUE));
+		assertTrue(active.get());
+
+		assertFalse(sync.trySetValue("notRegistered", 1));
+	}
 }

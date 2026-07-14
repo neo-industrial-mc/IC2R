@@ -88,15 +88,33 @@ public class NetworkManager implements INetworkManager
 			DataEncoder.encode(out, fieldName.substring(pos + 1));
 		} else
 		{
+			// Keep legacy string field name on the wire (DataEncoder + name protocol).
 			out.writeString(fieldName);
+			DataEncoder.encode(out, readFieldValueForNetwork(object, fieldName));
+		}
+	}
 
-			try
+	/**
+	 * G1.1: prefer {@link me.halfcooler.ic2r.core.network.sync.BlockEntitySync} getter when the TE
+	 * registered the field (wire or legacy alias); otherwise reflection. Used by TeUpdate send path.
+	 */
+	static Object readFieldValueForNetwork(Object object, String fieldName)
+	{
+		if (object instanceof Ic2rTileEntity te)
+		{
+			Object[] out = new Object[1];
+			if (te.getBlockEntitySync().tryGetValue(fieldName, out))
 			{
-				DataEncoder.encode(out, ReflectionUtil.getValueRecursive(object, fieldName));
-			} catch (NoSuchFieldException e)
-			{
-				throw new RuntimeException("Can't find field " + fieldName + " in " + object.getClass().getName(), e);
+				return out[0];
 			}
+		}
+
+		try
+		{
+			return ReflectionUtil.getValueRecursive(object, fieldName);
+		} catch (NoSuchFieldException e)
+		{
+			throw new RuntimeException("Can't find field " + fieldName + " in " + object.getClass().getName(), e);
 		}
 	}
 

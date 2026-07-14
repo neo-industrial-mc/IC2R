@@ -62,7 +62,7 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 	private boolean active = false;
 	private byte loadState = 0;
 	private boolean enableWorldTick;
-	/** Modern SyncKey registry; empty until subclasses override {@link #registerSyncedData}. Reflection path remains active. */
+	/** Modern SyncKey registry; empty until subclasses override {@link #registerSyncedData}. Unregistered fields still use reflection. */
 	private BlockEntitySync blockEntitySync;
 
 	public Ic2rTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
@@ -295,8 +295,10 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 	}
 
 	/**
-	 * Modern sync registry (W1.1+). Subclasses register SyncKeys via {@link #registerSyncedData};
-	 * {@link #getNetworkedFields()} + reflection remains the live wire path until TeUpdate cutover (dual-write).
+	 * Modern sync registry (W1.1+ / G1.1). Subclasses register SyncKeys via {@link #registerSyncedData}.
+	 * TeUpdate and {@code NetworkManager.writeFieldData} prefer this table when a field (or legacy alias)
+	 * is registered; unregistered names still use reflection. Packet field <em>names</em> remain
+	 * legacy strings from {@link #getNetworkedFields()}.
 	 */
 	public final BlockEntitySync getBlockEntitySync()
 	{
@@ -312,7 +314,7 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 
 	/**
 	 * Override to register {@link me.halfcooler.ic2r.core.network.sync.SyncKey}-based fields
-	 * (snake_case wire names). Default no-op. Does not replace reflection until protocol cutover.
+	 * (snake_case logical names + optional legacy TeUpdate aliases). Default no-op.
 	 */
 	protected void registerSyncedData(BlockEntitySync sync)
 	{
