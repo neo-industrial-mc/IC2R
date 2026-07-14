@@ -1,12 +1,11 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W2.1  
+**last_completed:** W2.2  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
-> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
-> **阶段 1 done**；阶段 2：last W2.1。
+> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。
 
 ## Queue
 
@@ -27,7 +26,7 @@
 | W1.7 | done | SoundEvent 全类 DeferredRegister+RegistryObject；FmlMod bus 挂载；test 38/38 绿 |
 | W1.8 | done | phase1_closeout：§6.3 对照；覆盖率 ~2.7% 记 gap；test+jacoco 绿 |
 | W2.1 | done | InvSlotItemHandler 适配 + TileEntityInventory ITEM_HANDLER；14 测；test 52/52 绿 |
-| W2.2 | pending | 流体适配收窄试点 |
+| W2.2 | done | FluidTransferMath fill/empty + Ic2rFluidTank 委托；8 测；test 60/60 绿 |
 | W2.3 | pending | 配方 RecipeManager 试点 |
 | W2.4 | pending | 冻结 XML / 代码 GUI 样板 |
 | W2.5 | pending | DataGen 起步 |
@@ -40,11 +39,10 @@
 
 ## Last session
 
-- unit: W2.1
+- unit: W2.2
 - result: done / PASS
-- suggested_commit: `feat(inv): expose ITEM_HANDLER via InvSlot adapter on inventory BEs`
+- suggested_commit: `feat(fluid): FluidTransferMath fill/empty pilot wired to Ic2rFluidTank`
 - verify_log: |
-    - DoD: TileEntityInventory（含 Macerator）ITEM_HANDLER ✅
-    - InvSlotItemHandler + InvSlotTransferMath；内部仍 InvSlot
-    - InvSlotHandlerMathTest 14/14；全量 test 52/52 绿
-    - 未做 W2.2；未删除 InvSlot 树
+    - DoD: fill/empty 路径单测绿（FL-001 串联 + 边界）✅
+    - Ic2rFluidTank 委托 FluidTransferMath；非全库重写
+    - test 60/60；未做 W2.3

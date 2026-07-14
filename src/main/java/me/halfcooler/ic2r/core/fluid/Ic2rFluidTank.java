@@ -84,33 +84,34 @@ public class Ic2rFluidTank
 
 	private Ic2rFluidStack drainMb(int amount, boolean simulate, boolean external)
 	{
-		if (amount > 0 && this.fluidStack != null && !this.fluidStack.isEmpty() && (!external || this.canDrain()))
-		{
-			Ic2rFluidStack ret;
-			if (amount >= this.fluidStack.getAmountMb())
-			{
-				if (simulate)
-				{
-					ret = this.fluidStack.copy();
-				} else
-				{
-					ret = this.fluidStack;
-					this.fluidStack = null;
-				}
-			} else
-			{
-				ret = this.fluidStack.copyWithAmountMb(amount);
-				if (!simulate)
-				{
-					this.fluidStack.decreaseMb(amount);
-				}
-			}
-
-			return ret;
-		} else
+		boolean canDrain = !external || this.canDrain();
+		int drained = FluidTransferMath.drainableMb(this.getFluidAmount(), amount, canDrain);
+		if (drained <= 0 || this.fluidStack == null || this.fluidStack.isEmpty())
 		{
 			return Ic2rFluidStack.EMPTY;
 		}
+
+		Ic2rFluidStack ret;
+		if (drained >= this.fluidStack.getAmountMb())
+		{
+			if (simulate)
+			{
+				ret = this.fluidStack.copy();
+			} else
+			{
+				ret = this.fluidStack;
+				this.fluidStack = null;
+			}
+		} else
+		{
+			ret = this.fluidStack.copyWithAmountMb(drained);
+			if (!simulate)
+			{
+				this.fluidStack.decreaseMb(drained);
+			}
+		}
+
+		return ret;
 	}
 
 	public final int drainMb(Ic2rFluidStack toDrain, boolean simulate)
@@ -125,35 +126,32 @@ public class Ic2rFluidTank
 
 	private int drainMb(Ic2rFluidStack toDrain, boolean simulate, boolean external)
 	{
-		if (!toDrain.isEmpty()
-			&& this.fluidStack != null
+		boolean fluidsMatch = this.fluidStack != null
 			&& !this.fluidStack.isEmpty()
-			&& this.fluidStack.hasExactFluid(toDrain)
-			&& (!external || this.canDrain()))
-		{
-			int amount = toDrain.getAmountMb();
-			int ret;
-			if (amount >= this.fluidStack.getAmountMb())
-			{
-				ret = this.fluidStack.getAmountMb();
-				if (!simulate)
-				{
-					this.fluidStack = null;
-				}
-			} else
-			{
-				ret = amount;
-				if (!simulate)
-				{
-					this.fluidStack.decreaseMb(amount);
-				}
-			}
-
-			return ret;
-		} else
+			&& !toDrain.isEmpty()
+			&& this.fluidStack.hasExactFluid(toDrain);
+		boolean canDrain = fluidsMatch && (!external || this.canDrain());
+		int ret = FluidTransferMath.drainableMb(
+			this.getFluidAmount(),
+			toDrain.isEmpty() ? 0 : toDrain.getAmountMb(),
+			canDrain);
+		if (ret <= 0)
 		{
 			return 0;
 		}
+
+		if (!simulate)
+		{
+			if (ret >= this.fluidStack.getAmountMb())
+			{
+				this.fluidStack = null;
+			} else
+			{
+				this.fluidStack.decreaseMb(ret);
+			}
+		}
+
+		return ret;
 	}
 
 	public final int fillMb(Ic2rFluidStack toFill, boolean simulate)
@@ -168,28 +166,33 @@ public class Ic2rFluidTank
 
 	private int fillMb(Ic2rFluidStack toFill, boolean simulate, boolean external)
 	{
-		if (!toFill.isEmpty()
-			&& this.capacity > 0
-			&& (this.fluidStack == null || this.fluidStack.getAmountMb() < this.capacity && (this.fluidStack.isEmpty() || this.fluidStack.hasExactFluid(toFill)))
-			&& (!external || this.canFill(toFill.getFluid())))
-		{
-			int ret = Math.min(toFill.getAmountMb(), this.capacity - this.getFluidAmount());
-			if (!simulate)
-			{
-				if (this.fluidStack != null && !this.fluidStack.isEmpty())
-				{
-					this.fluidStack.increaseMb(ret);
-				} else
-				{
-					this.fluidStack = toFill.copyWithAmountMb(ret);
-				}
-			}
-
-			return ret;
-		} else
+		boolean fluidsCompatible = this.fluidStack == null
+			|| this.fluidStack.isEmpty()
+			|| this.fluidStack.hasExactFluid(toFill);
+		boolean canFill = !toFill.isEmpty() && (!external || this.canFill(toFill.getFluid()));
+		int ret = FluidTransferMath.fillableMb(
+			this.capacity,
+			this.getFluidAmount(),
+			toFill.isEmpty() ? 0 : toFill.getAmountMb(),
+			fluidsCompatible,
+			canFill);
+		if (ret <= 0)
 		{
 			return 0;
 		}
+
+		if (!simulate)
+		{
+			if (this.fluidStack != null && !this.fluidStack.isEmpty())
+			{
+				this.fluidStack.increaseMb(ret);
+			} else
+			{
+				this.fluidStack = toFill.copyWithAmountMb(ret);
+			}
+		}
+
+		return ret;
 	}
 
 	protected boolean canDrain()
