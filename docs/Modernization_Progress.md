@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** G2.5  
+**last_completed:** G2.6  
 **updated:** 2026-07-14  
 
 > 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
@@ -15,16 +15,16 @@
 | G2.2 | done | multi-type basic recipe chain + query eval |
 | G2.3 | done | Storage Box 纯代码 GUI |
 | G2.4 | done | 窄口径 3.53%→6.51% 仍 gap |
-| G2.5 | done | Ic2rFluidTankHandler + fluid_handler_contract.md + 7 测；多罐 cap 仍 Fluids 聚合 residual |
-| G2.6 | pending | DataGen 扩类（P2） |
-| G2.7–G2.8 | pending | 见 phase2_closeout（G1 遗留 / FE 桥） |
+| G2.5 | done | Ic2rFluidTankHandler + fluid_handler_contract.md |
+| G2.6 | done | BlockTags DataGen：`mineable/wrench`；runData+test 绿；Recipes 未扩 |
+| G2.7 | pending | 阶段 1 遗留交叉（G1 已多推进，可文档关闭/对照） |
+| G2.8 | pending | FE/RF 能量桥（P2） |
 
 ## Last session
 
-- unit: G2.5
+- unit: G2.6
 - result: done / PASS
-- suggested_commit: `feat(fluid): Ic2rFluidTankHandler IFluidHandler adapter and contract`
+- suggested_commit: `data: migrate mineable/wrench block tag to DataGen`
 - verify_log: |
-    - DoD: 适配器 + 契约 + ≥4 测（7）✅
-    - getFluidHandler/getTankHandler 工厂；BE 多罐未拼装改动
-    - test 绿
+    - DoD: BlockTags 新一类 ✅；runData 写出；main 手写已删无双源
+    - compile+test 绿；无 recipe 全量 DataGen

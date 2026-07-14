@@ -12,8 +12,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 /**
- * Pilot item-tag DataGen (W2.5): tool tags previously handwritten under
+ * Item-tag DataGen (W2.5): tool tags previously handwritten under
  * {@code data/ic2r/tags/items/}. Content is intentionally identical to the old JSON.
+ * Block-tag lookup comes from {@link Ic2rBlockTagsProvider} (G2.6) for future {@code copy()}.
  */
 public final class Ic2rItemTagsProvider extends ItemTagsProvider
 {
