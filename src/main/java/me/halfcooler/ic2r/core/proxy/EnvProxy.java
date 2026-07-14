@@ -19,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.MenuProvider;
@@ -63,12 +62,8 @@ import net.minecraft.world.phys.Vec3;
 public interface EnvProxy
 {
 	// W3.3: isClientEnv removed — use PlatformServices.lifecycle().isClient()
-
-	boolean isFabricEnv();
-
-	boolean isForgeEnv();
-
-	MinecraftServer getServer();
+	// G3.5 / E2: isFabricEnv / isForgeEnv / getServer removed —
+	// use PlatformServices.lifecycle().getLoaderKind() / .getServer()
 
 	void registerBlock(ResourceLocation var1, Block var2);
 

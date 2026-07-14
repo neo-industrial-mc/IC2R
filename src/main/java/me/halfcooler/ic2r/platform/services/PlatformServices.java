@@ -9,6 +9,8 @@ import java.util.function.Supplier;
  * <p>
  * W3.2+: Forge entry and {@code IC2R} static both call {@code ForgePlatformServices.install()} (idempotent).
  * W3.3: all client-env checks use {@link #lifecycle()}{@code .isClient()}; {@code EnvProxy#isClientEnv} removed.
+ * G3.5 / E2: loader kind / server via {@link #lifecycle()}{@code .getLoaderKind()}/{@code .getServer()};
+ * {@code EnvProxy#isForgeEnv}/{@code isFabricEnv}/{@code getServer} removed.
  * Other facets may still be stubs; remaining runtime dual-tracks {@code IC2R.envProxy} / {@code IC2R.sideProxy}.
  * ServiceLoader remains a fallback when {@link #install} was not called.
  */

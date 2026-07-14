@@ -10,9 +10,10 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * Draft SPI. Consolidates environment bits formerly on {@code EnvProxy}
  * ({@code isClientEnv} removed in W3.3 → {@link #isClient()}; G3.2 migrated
- * {@code getServer} call sites → {@link #getServer()}; {@code isForgeEnv}/{@code isFabricEnv}
- * still dual-track) and side lifecycle from {@code SideProxy}
- * ({@code preInit}, {@code onPostInit}, {@code onServerAvailable},
+ * {@code getServer} call sites → {@link #getServer()}; G3.5 / E2 removed
+ * {@code isForgeEnv}/{@code isFabricEnv}/{@code getServer} from EnvProxy →
+ * {@link #getLoaderKind()} / {@link #getServer()}) and side lifecycle from
+ * {@code SideProxy} ({@code preInit}, {@code onPostInit}, {@code onServerAvailable},
  * {@code requestTick}, {@code isSimulating}/{@code isRendering}).
  */
 public interface PlatformLifecycle

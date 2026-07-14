@@ -42,7 +42,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -97,7 +96,6 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 public final class EnvProxyForge implements EnvProxy
 {
@@ -127,23 +125,8 @@ public final class EnvProxyForge implements EnvProxy
 		pendingItemRegistrations.clear();
 	}
 
-	@Override
-	public boolean isFabricEnv()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isForgeEnv()
-	{
-		return true;
-	}
-
-	@Override
-	public MinecraftServer getServer()
-	{
-		return ServerLifecycleHooks.getCurrentServer();
-	}
+	// G3.5 / E2: isFabricEnv / isForgeEnv / getServer removed —
+	// use PlatformServices.lifecycle().getLoaderKind() / .getServer()
 
 	@Override
 	public void registerBlock(ResourceLocation id, Block block)

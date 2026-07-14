@@ -1,6 +1,8 @@
 package me.halfcooler.ic2r.core.ref;
 
 import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.platform.services.PlatformLifecycle;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -70,7 +72,13 @@ public final class Ic2rItemTags
 
 	private static TagKey<Item> create(String fabricName, String forgeName)
 	{
-		ResourceLocation id = ResourceLocation.parse(IC2R.envProxy.isFabricEnv() ? fabricName : forgeName);
+		// G3.5: force IC2R <clinit> (installs SPI) then pick loader-specific tag id
+		if (IC2R.envProxy == null)
+		{
+			throw new IllegalStateException("IC2R.envProxy not initialized");
+		}
+		boolean fabric = PlatformServices.lifecycle().getLoaderKind() == PlatformLifecycle.LoaderKind.FABRIC;
+		ResourceLocation id = ResourceLocation.parse(fabric ? fabricName : forgeName);
 		return TagKey.create(Registries.ITEM, id);
 	}
 

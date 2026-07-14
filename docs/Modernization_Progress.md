@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** G3.4  
+**last_completed:** G3.5  
 **updated:** 2026-07-14  
 
 ## Queue（G3）
@@ -9,16 +9,17 @@
 | ID | status | last_notes |
 |----|--------|------------|
 | G3.1 | done | Dist/OnlyIn 切片 |
-| G3.2 | done | NeoForge min-set kickoff |
+| G3.2 | done | NeoForge min-set kickoff + Registry SPI |
 | G3.3 | done | common-ish ~1.79% 仍 gap |
-| G3.4 | done | origin.md v0.2-g3.4 回写切片状态；§8.5 #4 核心 residual **仍 gap** |
-| G3.5 | pending | EnvProxy E2 切片（isForgeEnv/getServer 等） |
+| G3.4 | done | origin 回写；§8.5 #4 仍 gap |
+| G3.5 | done | E2：删除 EnvProxy isForge/isFabric/getServer；标签→getLoaderKind；test 绿 |
+| G3.6+ | pending | SPI 非 stub（Network/UI/…）、E3 注册族、多模块… |
 
 ## Last session
 
-- unit: G3.4
+- unit: G3.5
 - result: done / PASS
-- suggested_commit: `docs: G3.4 origin refresh after G1–G3 modernization slices`
+- suggested_commit: `refactor: EnvProxy E2 remove isForgeEnv/isFabricEnv/getServer for SPI`
 - verify_log: |
-    - origin 反映 Math/Sync/Handler/SPI 切片；P0 宿主仍 residual
-    - §8.5 #4 诚实 gap；仅 docs 变更
+    - DoD: 三方法从 EnvProxy 删除；tags 走 LoaderKind ✅
+    - getServer 已走 SPI；compile+test 绿
