@@ -7,6 +7,8 @@
 
 This project's code is based on the official build version `2.9.40-ex119` and has migrated missing and erroneous features from `2.8.222-ex112`.
 
+The project has migrated from `ic2:` to `ic2r:`, independent of the original IC2 namespace.
+
 ## Writing Before
 
 IC2 is probably dead. No official response for open-source, successor developers are still absent.
