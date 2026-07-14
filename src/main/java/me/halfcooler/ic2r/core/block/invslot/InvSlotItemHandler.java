@@ -8,12 +8,16 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Forge {@link IItemHandlerModifiable} adapter over a single {@link InvSlot} (W2.1).
+ * Forge {@link IItemHandlerModifiable} adapter over a single {@link InvSlot} (W2.1 / G2.1).
  * <p>
  * Machine domain logic continues to use InvSlot get/put/accepts; automation and capability
  * callers use this handler. Insert/extract respect {@link InvSlot#canInput()},
- * {@link InvSlot#canOutput()}, {@link InvSlot#accepts(ItemStack)}, and stack-size limits.
- * Storage remains inside the InvSlot (no full InvSlot rewrite).
+ * {@link InvSlot#canOutput()}, {@link InvSlot#accepts(ItemStack)}, and stack-size limits
+ * via {@link InvSlotTransferMath}. Storage remains inside the InvSlot (no full InvSlot rewrite).
+ * <p>
+ * Contract and pure-logic mirrors: {@code docs/spec/item_handler_contract.md}. This class itself
+ * needs ItemStack/Forge types — unit suite mirrors rules in {@code InvSlotHandlerMathTest}
+ * without loading this adapter (no MC bootstrap in CI).
  */
 public final class InvSlotItemHandler implements IItemHandlerModifiable
 {

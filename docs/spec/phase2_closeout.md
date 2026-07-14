@@ -117,7 +117,7 @@
 
 | ID | Gap | 严重度 | 建议后续（**非本 W2.6**） |
 |:---|:---|:---|:---|
-| G2.1 | 无真实管道/漏斗/AE2 端到端；`InvSlotItemHandler` 与 capability 附着 0% | P0 | 最小 GameTest 或 mock `IItemHandler` 往返；文档化「标准机对外 ITEMS」契约表；AE2 导入侧 smoke（若 CI 可） |
+| G2.1 | 无真实管道/漏斗/AE2 端到端；`InvSlotItemHandler` 与 capability 附着 0% | P0 | **G2.1 已推进（文档+Math 加深）**：契约见 [item_handler_contract.md](item_handler_contract.md)；`InvSlotHandlerMathTest` 扩序列/布局/simulate（仍无 Handler 本体行覆盖）。**仍 residual**：真管道/AE2 e2e、cap 附着运行时测、可选 GameTest |
 | G2.2 | 配方：仅 basic 机 materialize 主路径；运行时非直查 `RecipeManager`；非 basic 机型异构 | P0 | 扩展更多 `RecipeType` JSON 全链路；评估 tick 直查 vs 缓存 materialize；对齐 RC-\* Golden |
 | G2.3 | 新 UI 零 XML 仅「新增冻结」；**~47** guidef 仍服务生产 GUI | P1 | 分批迁移简单机 Menu/Screen → 删对应 XML；JEI/DynamicCategory 同步 |
 | G2.4 | 覆盖率 inv/fluid/recipe 包级 ≪ 70%（窄口径 ~3.5%） | P0 | **勿空转**：补 `Ic2rFluidTank` 委托分支测、InvSlot accept 边界、Serializer 无 Level 切口；抬窄口径有意义行 |
@@ -170,7 +170,8 @@
 | [gui_modernization.md](gui_modernization.md) | W2.4 新 UI 零 XML 约定 |
 | [golden_suite.md](golden_suite.md) | RC/SM 等；W2.3 部分 RC 部分绿 |
 | [origin.md](origin.md) | invslot/recipe/gui residual 标注 |
-| `src/test/.../inv/InvSlotHandlerMathTest.java` | 自动化库存交互文档化测例 |
+| `src/test/.../inv/InvSlotHandlerMathTest.java` | 自动化库存交互文档化测例（W2.1 + G2.1 序列/布局/simulate） |
+| [item_handler_contract.md](item_handler_contract.md) | G2.1 标准机对外 ITEM_HANDLER 契约与 residual gap |
 | `src/test/.../fluid/FluidTransferMathTest.java` | fill/empty 文档化测例 |
 | `src/test/.../recipe/MachineRecipeMatchMathTest.java` | 配方匹配纯逻辑测例 |
 | `src/main/resources/data/ic2r/recipes/macerator/**` | macerator 数据包主路径 |

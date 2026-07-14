@@ -414,8 +414,9 @@ public final class EventHandlerForge
 				event.addCapability(fluidCapId, new LazyBlockFluidCapImpl(be));
 			}
 
-			// W2.1: TileEntityInventory (standard machines e.g. Macerator) expose ITEM_HANDLER via
-			// InvSlotItemHandler combined view (facing == null) + sided WorldlyContainer wrappers.
+			// W2.1 / G2.1: TileEntityInventory (standard machines e.g. Macerator) expose ITEM_HANDLER via
+			// InvSlotItemHandler combined view (facing == null; Access-only, no preferredSide) +
+			// sided WorldlyContainer wrappers (facing != null). See docs/spec/item_handler_contract.md.
 			if (be instanceof TileEntityInventory teInv)
 			{
 				event.addCapability(itemCapId, new ICapabilityProvider()

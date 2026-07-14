@@ -27,8 +27,10 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 /**
  * Inventory-bearing TE. InvSlots keep domain APIs; Forge {@code ITEM_HANDLER} is exposed via
- * {@link #getInvSlotItemHandler()} (combined InvSlot adapters) and sided wrappers in
- * {@code EventHandlerForge} (W2.1 pilot — covers standard machines such as Macerator).
+ * {@link #getInvSlotItemHandlerCap()} / {@link #createInvSlotItemHandler()} (combined
+ * {@link InvSlotItemHandler} adapters, null facing) and sided {@code SidedInvWrapper} in
+ * {@code EventHandlerForge} (facing ≠ null). Contract: {@code docs/spec/item_handler_contract.md}
+ * (G2.1 — standard machines such as Macerator).
  */
 public abstract class TileEntityInventory extends Ic2rTileEntity implements WorldlyContainer, IInventorySlotHolder<TileEntityInventory>
 {
@@ -404,8 +406,12 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	}
 
 	/**
-	 * Combined Forge item handler over all InvSlots via {@link InvSlotItemHandler} (W2.1).
-	 * Insert/extract respect each slot's access and accepts; machines keep using InvSlot APIs.
+	 * Combined Forge item handler over all InvSlots via {@link InvSlotItemHandler} (W2.1 / G2.1).
+	 * Registration order of {@link #addInventorySlot(InvSlot)} is the combined index order
+	 * (Macerator: discharge → output → upgrade → input). Insert/extract respect each slot's
+	 * {@link InvSlot#canInput()}/{@link InvSlot#canOutput()} and {@link InvSlot#accepts};
+	 * machines keep using InvSlot domain APIs. No {@code preferredSide} filter here — that applies
+	 * only on the sided {@code WorldlyContainer} path (non-null facing).
 	 */
 	public IItemHandler createInvSlotItemHandler()
 	{
@@ -424,7 +430,9 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	}
 
 	/**
-	 * LazyOptional of {@link #createInvSlotItemHandler()} for capability attachment (null facing).
+	 * LazyOptional of {@link #createInvSlotItemHandler()} for capability attachment when
+	 * {@code facing == null}. Invalidated on slot-list change and {@link #invalidateCaps()}.
+	 * Cap wiring itself is runtime-only (no unit coverage without BE bootstrap).
 	 */
 	public LazyOptional<IItemHandler> getInvSlotItemHandlerCap()
 	{

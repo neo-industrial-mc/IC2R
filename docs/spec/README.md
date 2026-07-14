@@ -52,6 +52,7 @@
 | [id_migrations.md](id_migrations.md) | **已起步**（W1.5 试点） | 命名/NBT 迁移相关 Unit | 注册 ID / NBT 键 / 网络字段迁移表 |
 | [phase1_closeout.md](phase1_closeout.md) | **已产出**（W1.8） | W1.8 | 阶段 1 §6.3 勾选、JaCoCo 覆盖率证据与 gap 列表 |
 | [phase2_closeout.md](phase2_closeout.md) | **已产出**（W2.6） | W2.6 | 阶段 2 §7.7 勾选、inv/fluid/recipe 覆盖率证据与 G2.\* gap 列表 |
+| [item_handler_contract.md](item_handler_contract.md) | **已产出**（G2.1） | G2.1 | 标准机/库存 BE 对外 `ITEM_HANDLER`：null vs facing、Access 门控、Macerator 布局；Math 测例与 residual gap |
 | [phase3_closeout.md](phase3_closeout.md) | **已产出**（W3.5） | W3.5 | 阶段 3 §8.5 勾选（gap/deferred）、common 覆盖率证据与 G3.\* gap 列表 |
 | [smell_exemptions_w1_4.md](smell_exemptions_w1_4.md) | **已产出**（W1.4） | W1.4 | 味道清理豁免登记 |
 | [gui_modernization.md](gui_modernization.md) | **已产出**（W2.4） | W2.4 | 冻结 guidef XML；新 UI 代码 Menu/Screen 约定与样板 |

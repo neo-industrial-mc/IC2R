@@ -2,7 +2,9 @@ package me.halfcooler.ic2r.core.block.invslot;
 
 /**
  * Pure insert/extract arithmetic for {@link InvSlotItemHandler}.
- * No Minecraft/Forge types — unit-testable without client or registry bootstrap (W2.1).
+ * No Minecraft/Forge types — unit-testable without client or registry bootstrap (W2.1 / G2.1).
+ * Combined-index helpers mirror {@code TileEntityInventory} multi-InvSlot layout for the
+ * null-facing combined {@code ITEM_HANDLER} view. See {@code docs/spec/item_handler_contract.md}.
  */
 public final class InvSlotTransferMath
 {
