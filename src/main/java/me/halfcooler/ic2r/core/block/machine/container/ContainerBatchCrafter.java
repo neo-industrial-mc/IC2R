@@ -73,11 +73,16 @@ public class ContainerBatchCrafter extends ContainerElectricMachine<TileEntityBa
 		return changes.a.isEmpty() ? StackUtil.emptyStack : changes.a.get(0);
 	}
 
+	/**
+	 * Network field list still uses legacy camelCase names for TeUpdate packet compatibility
+	 * (DataEncoder + string name). {@code guiProgress} value R/W goes through Sync (G1.5);
+	 * {@code recipeOutput} remains reflection until ItemStack SyncCodec is available.
+	 */
 	@Override
 	public List<String> getNetworkedFields()
 	{
 		List<String> fields = super.getNetworkedFields();
-		fields.add("guiProgress");
+		fields.add(TileEntityBatchCrafter.LEGACY_GUI_PROGRESS_FIELD);
 		fields.add("recipeOutput");
 		return fields;
 	}

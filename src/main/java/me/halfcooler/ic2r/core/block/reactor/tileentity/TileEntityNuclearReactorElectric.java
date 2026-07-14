@@ -41,6 +41,7 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.sound.Sound;
+import me.halfcooler.ic2r.core.util.LegacyNbt;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
@@ -109,6 +110,14 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	private double energyBuffer = 0.0;
 	private int EmitHeatBuffer = 0;
 	private boolean fluidCooled = false;
+
+	/**
+	 * Modern NBT key for GT-mode energy buffer (G1.5 naming expansion).
+	 * Same logical name as {@link me.halfcooler.ic2r.core.block.comp.Energy#NBT_ENERGY_BUFFER}.
+	 */
+	public static final String NBT_ENERGY_BUFFER = "energy_buffer";
+	/** Legacy camelCase key; still readable via {@link LegacyNbt}. */
+	public static final String LEGACY_NBT_ENERGY_BUFFER = "energyBuffer";
 
 	public TileEntityNuclearReactorElectric(BlockPos pos, BlockState state)
 	{
@@ -222,7 +231,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		super.load(nbt);
 		this.heat = nbt.getInt("heat");
 		this.output = nbt.getShort("output");
-		this.energyBuffer = nbt.getDouble("energyBuffer");
+		this.energyBuffer = readEnergyBufferNbt(nbt);
 	}
 
 	@Override
@@ -231,7 +240,19 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		super.saveAdditional(nbt);
 		nbt.putInt("heat", this.heat);
 		nbt.putShort("output", (short) this.getReactorEnergyOutput());
-		nbt.putDouble("energyBuffer", this.energyBuffer);
+		writeEnergyBufferNbt(nbt, this.energyBuffer);
+	}
+
+	/** Pure NBT write (snake_case only). Unit-test entry (NS-003 / G1.5). */
+	public static void writeEnergyBufferNbt(CompoundTag nbt, double energy)
+	{
+		nbt.putDouble(NBT_ENERGY_BUFFER, energy);
+	}
+
+	/** Pure NBT read: prefer {@link #NBT_ENERGY_BUFFER}, else legacy {@link #LEGACY_NBT_ENERGY_BUFFER}. */
+	public static double readEnergyBufferNbt(CompoundTag nbt)
+	{
+		return LegacyNbt.getDouble(nbt, NBT_ENERGY_BUFFER, LEGACY_NBT_ENERGY_BUFFER);
 	}
 
 	@Override

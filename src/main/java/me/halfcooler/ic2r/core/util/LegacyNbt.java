@@ -96,6 +96,26 @@ public final class LegacyNbt
 	}
 
 	/**
+	 * Reads a byte: primary key first, then each legacy key in order.
+	 * Returns {@code 0} if none are present (matches {@link CompoundTag#getByte} default).
+	 */
+	public static byte getByte(CompoundTag tag, String primary, String... legacyKeys)
+	{
+		if (tag.contains(primary, Tag.TAG_ANY_NUMERIC))
+		{
+			return tag.getByte(primary);
+		}
+		for (String legacy : legacyKeys)
+		{
+			if (tag.contains(legacy, Tag.TAG_ANY_NUMERIC))
+			{
+				return tag.getByte(legacy);
+			}
+		}
+		return 0;
+	}
+
+	/**
 	 * True if the primary key or any legacy key is present (any type).
 	 */
 	public static boolean contains(CompoundTag tag, String primary, String... legacyKeys)

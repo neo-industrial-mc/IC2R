@@ -15,6 +15,9 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerBatchCrafter;
 import me.halfcooler.ic2r.core.gui.dynamic.IGuiValueProvider;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
+import me.halfcooler.ic2r.core.network.sync.BlockEntitySync;
+import me.halfcooler.ic2r.core.network.sync.SyncCodecs;
+import me.halfcooler.ic2r.core.network.sync.SyncKey;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.StackUtil;
@@ -24,6 +27,8 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -51,6 +56,23 @@ public class TileEntityBatchCrafter
 	public static final int defaultEnergyConsume = 2;
 	public static final int defaultOperationLength = 40;
 	public static final int defaultEnergyStorage = 20000;
+
+	/**
+	 * Modern SyncKey for GUI progress (wire: {@code gui_progress}).
+	 * TeUpdate packets still carry {@link #LEGACY_GUI_PROGRESS_FIELD} (G1.1 / G1.5).
+	 */
+	public static final SyncKey<Float> KEY_GUI_PROGRESS = SyncKey.of("gui_progress", SyncCodecs.FLOAT);
+	/**
+	 * Legacy TeUpdate / {@code getNetworkedFields()} field name for progress.
+	 * On-wire name stays camelCase for protocol compatibility; values R/W via Sync.
+	 */
+	public static final String LEGACY_GUI_PROGRESS_FIELD = "guiProgress";
+	/**
+	 * World-save NBT key for process progress (already snake_case-legal; retained).
+	 * Network GUI fraction uses {@link #KEY_GUI_PROGRESS}, not this key.
+	 */
+	public static final String NBT_PROGRESS = "progress";
+
 	private static final Set<UpgradableProperty> UPGRADES = EnumSet.of(
 		UpgradableProperty.Processing,
 		UpgradableProperty.Transformer,
@@ -148,7 +170,7 @@ public class TileEntityBatchCrafter
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
-		this.progress = nbt.getShort("progress");
+		this.progress = readProgressNbt(nbt);
 		ListTag grid = nbt.getList("grid", 10);
 
 		for (int i = 0; i < grid.size(); i++)
@@ -162,7 +184,7 @@ public class TileEntityBatchCrafter
 	public void saveAdditional(CompoundTag nbt)
 	{
 		super.saveAdditional(nbt);
-		nbt.putShort("progress", this.progress);
+		writeProgressNbt(nbt, this.progress);
 		ListTag grid = new ListTag();
 
 		for (byte i = 0; i < this.craftingGrid.length; i++)
@@ -458,5 +480,53 @@ public class TileEntityBatchCrafter
 		{
 			throw new IllegalArgumentException("Unexpected value requested: " + name);
 		}
+	}
+
+	public float getProgress()
+	{
+		return this.guiProgress;
+	}
+
+	/** Pure NBT write for batch-crafter progress (snake_case-legal key {@link #NBT_PROGRESS} only). */
+	public static void writeProgressNbt(CompoundTag nbt, short progress)
+	{
+		nbt.putShort(NBT_PROGRESS, progress);
+	}
+
+	/** Pure NBT read for batch-crafter progress (already snake_case-legal; no camelCase legacy). */
+	public static short readProgressNbt(CompoundTag nbt)
+	{
+		return nbt.getShort(NBT_PROGRESS);
+	}
+
+	/**
+	 * G1.5: registers modern SyncKeys for batch-crafter network fields.
+	 * TeUpdate / writeFieldData resolve values via this table (legacy names aliased).
+	 * {@code recipeOutput} stays on reflection until an ItemStack SyncCodec is available.
+	 */
+	@Override
+	protected void registerSyncedData(BlockEntitySync sync)
+	{
+		super.registerSyncedData(sync);
+		bindBatchCrafterSync(sync, this::getProgress, this::setGuiProgressSynced);
+	}
+
+	/**
+	 * Registers batch-crafter SyncKeys with TeUpdate legacy name aliases (G1.5).
+	 * Shared by BE registration and pure unit tests.
+	 */
+	public static void bindBatchCrafterSync(
+		BlockEntitySync sync,
+		Supplier<Float> guiProgressGetter,
+		Consumer<Float> guiProgressSetter
+	)
+	{
+		sync.add(KEY_GUI_PROGRESS, guiProgressGetter, guiProgressSetter, LEGACY_GUI_PROGRESS_FIELD);
+	}
+
+	/** Apply GUI progress from modern sync decode (no side effects). */
+	protected void setGuiProgressSynced(float value)
+	{
+		this.guiProgress = value;
 	}
 }

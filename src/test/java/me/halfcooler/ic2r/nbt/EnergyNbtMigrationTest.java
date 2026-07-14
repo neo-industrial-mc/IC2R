@@ -2,6 +2,7 @@ package me.halfcooler.ic2r.nbt;
 
 import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntityConversionGenerator;
+import me.halfcooler.ic2r.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
 
 import net.minecraft.nbt.CompoundTag;
 
@@ -92,5 +93,51 @@ class EnergyNbtMigrationTest
 
 		assertEquals(64.0, out.getDouble(TileEntityConversionGenerator.NBT_ENERGY_BUFFER), 0.0);
 		assertFalse(out.contains(TileEntityConversionGenerator.LEGACY_NBT_ENERGY_BUFFER));
+	}
+
+	/** G1.5: NuclearReactor camelCase {@code energyBuffer} alone is readable */
+	@Test
+	void nuclearReactor_legacyCamelCase_isReadable()
+	{
+		CompoundTag legacy = new CompoundTag();
+		legacy.putDouble(TileEntityNuclearReactorElectric.LEGACY_NBT_ENERGY_BUFFER, 512.0);
+
+		assertEquals(512.0, TileEntityNuclearReactorElectric.readEnergyBufferNbt(legacy), 0.0);
+		assertEquals("energyBuffer", TileEntityNuclearReactorElectric.LEGACY_NBT_ENERGY_BUFFER);
+		assertEquals("energy_buffer", TileEntityNuclearReactorElectric.NBT_ENERGY_BUFFER);
+	}
+
+	/** G1.5: NuclearReactor write uses snake_case only */
+	@Test
+	void nuclearReactor_write_usesSnakeCaseOnly()
+	{
+		CompoundTag out = new CompoundTag();
+		TileEntityNuclearReactorElectric.writeEnergyBufferNbt(out, 128.0);
+
+		assertEquals(128.0, out.getDouble(TileEntityNuclearReactorElectric.NBT_ENERGY_BUFFER), 0.0);
+		assertFalse(out.contains(TileEntityNuclearReactorElectric.LEGACY_NBT_ENERGY_BUFFER));
+	}
+
+	/** G1.5: NuclearReactor modern key wins over legacy when both present */
+	@Test
+	void nuclearReactor_bothKeys_prefersModern()
+	{
+		CompoundTag both = new CompoundTag();
+		both.putDouble(TileEntityNuclearReactorElectric.NBT_ENERGY_BUFFER, 11.0);
+		both.putDouble(TileEntityNuclearReactorElectric.LEGACY_NBT_ENERGY_BUFFER, 999.0);
+		assertEquals(11.0, TileEntityNuclearReactorElectric.readEnergyBufferNbt(both), 0.0);
+	}
+
+	/** G1.5: NuclearReactor legacy→read then rewrite upgrades key */
+	@Test
+	void nuclearReactor_legacyUpgradeReadWrite()
+	{
+		CompoundTag legacy = new CompoundTag();
+		legacy.putDouble(TileEntityNuclearReactorElectric.LEGACY_NBT_ENERGY_BUFFER, 44.0);
+		double loaded = TileEntityNuclearReactorElectric.readEnergyBufferNbt(legacy);
+		CompoundTag upgraded = new CompoundTag();
+		TileEntityNuclearReactorElectric.writeEnergyBufferNbt(upgraded, loaded);
+		assertEquals(44.0, upgraded.getDouble(TileEntityNuclearReactorElectric.NBT_ENERGY_BUFFER), 0.0);
+		assertFalse(upgraded.contains(TileEntityNuclearReactorElectric.LEGACY_NBT_ENERGY_BUFFER));
 	}
 }

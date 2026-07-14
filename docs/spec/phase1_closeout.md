@@ -88,7 +88,7 @@
 | ID | Gap | 严重度 | 建议后续（测试或实现 Unit，**非本 W1.8**） |
 |:---|:---|:---|:---|
 | G1.1 | 反射 TeUpdate **仍为默认**同步路径；Sync 表仅标准机双写骨架 | P0 | 后续：TeUpdate 切主 / 标准机（或更多 TE）走 `BlockEntitySync` 为唯一写出；Golden NS-005 扩展能量显示 |
-| G1.2 | 核心包行覆盖率 ≪ 60%（宽口径 ~2.7%） | P0 | **优先有意义测例**，非凑行：见 §3.1 |
+| G1.2 | 核心包行覆盖率 ≪ 60%（宽口径 **3.76%**；W1.8 时 ~2.7%） | P0 | **仍 gap**（G1.2 复测 §8）；优先有意义测例，非凑行：见 §3.1 / §8.5 |
 | G1.3 | `energy.grid` 主体（`EnergyCalculatorUnified`/`GT`、路径、爆炸）0% | P0 | 延续 W0.4 切口：IC loss/分配纯函数、GT 求解器可测端口（对齐 EN-IC/EN-GT Golden） |
 | G1.4 | 标准机加工循环（进度、耗电、升级）无行为单测 | P0 | 可测切口：进度 tick 纯逻辑 / 耗电公式；对齐 SM-\* Golden；再抬 `machine.tileentity` 覆盖率 |
 | G1.5 | snake_case 仅试点；全库网络/NBT/配置 camelCase | P1 | 按 `naming_audit` P0→P2 分批 + `id_migrations`；与切主同步避免双名地狱 |
@@ -149,3 +149,67 @@
 - **本文件**（新建）  
 - 可选：`docs/spec/README.md` 索引、`golden_suite.md` 阶段 1 状态一句  
 - **无**生产代码功能改动；**无** W2.\* 实现；**无** git commit/push  
+
+---
+
+## 8. G1.2 复测（G1.3 / G1.4 之后）
+
+> **Work Unit**: G1.2 核心包覆盖率复测收口  
+> **日期**: 2026-07-14  
+> **前提**: G1.3（EnergyTransferMath 扩测）与 G1.4（StandardMachineCycleMath + SM 测）已 done  
+> **验证命令**: `.\gradlew.bat test jacocoTestReport` → **BUILD SUCCESSFUL**（**89** tests, 0 failures）  
+> **性质**: 只读复测 + 本小节登记；**未**为凑覆盖率堆无意义测试；**无**生产功能改动  
+
+### 8.1 门槛判定（§4.5 阶段 1）
+
+| 项 | 值 |
+|:---|:---|
+| 门槛 | 核心包行覆盖率 ≥ **60%** |
+| 宽口径定义 | `energy` + `energy.grid` + `energy.profile` + `network` + `network.sync` + `block.comp` + `block.machine.tileentity` |
+| **实测聚合** | **3.76%**（**317 / 8442** LINE） |
+| **判定** | **仍 gap**（≪ 60%，G1.2 **未**勾 done） |
+| 报告 | `build/reports/jacoco/test/html/index.html` |
+| XML | `build/reports/jacoco/test/jacocoTestReport.xml` |
+
+### 8.2 包级行覆盖率（复测 vs W1.8）
+
+| 包（短名） | W1.8 行覆盖 | G1.2 复测 | covered/total（G1.2） | Δ covered |
+|:---|:---|:---|:---|:---|
+| `network.sync` | 91.40% (85/93) | **90.91%** | 110/121 | +25 cov / +28 total |
+| `energy.profile` | 20.00% (23/115) | **20.00%** | 23/115 | 0 |
+| `network` | 5.51% (86/1560) | **5.49%** | 86/1567 | 0 / +7 total |
+| `energy.grid` | 0.87% (17/1957) | **2.81%** | 56/1994 | **+39**（G1.3） |
+| `block.comp` | 0.53% (4/756) | **0.53%** | 4/755 | ~0 |
+| `block.machine.tileentity` | 0.21% (8/3850) | **0.98%** | 38/3886 | **+30**（G1.4 `StandardMachineCycleMath`） |
+| `energy` | 0% (0/4) | **0%** | 0/4 | 0 |
+| **§4.5 宽口径聚合** | **~2.7%** (223/8335) | **3.76%** (317/8442) | 317/8442 | **+94** covered / +107 total |
+| 全工程 overall LINE | 0.72% (280/39156) | **1.14%** (450/39565) | 450/39565 | 背景，非门槛 |
+
+### 8.3 高价值类（复测）
+
+| 类 | 行覆盖 | 关联 |
+|:---|:---|:---|
+| `EnergyTransferMath` | **91.80%** (56/61) | G1.3：`EnergyTransferMathTest` 16 条 |
+| `StandardMachineCycleMath` | **87.88%** (29/33) | G1.4：`StandardMachineCycleMathTest` 10 条 |
+| `BlockEntitySync` | 90.91% (50/55) | Sync 往返 + G1.1 切主相关路径 |
+| `SyncKey` / `SyncedField` / `SyncCodecs` | ~100% | 既有 codec 测 |
+| `ElectricalProfile` | 35.48% (11/31) | 未变 |
+| `LegacyNbt` | 50% (15/30) | 不在宽口径包内，仅对照 |
+| `Energy`（组件） | 1.67% (4/240) | 未变 |
+| `TileEntityStandardMachine` | 6.15% (8/130) | 本体仍几乎未测；循环纯逻辑已外提 |
+
+### 8.4 相对 W1.8 变化摘要
+
+- **方向正确、幅度不足**：宽口径 **2.7% → 3.76%**（约 **+1.1 pp**），距 60% 仍差 **~56 pp**。  
+- **增益来源（有意义测例）**：G1.3 抬 `energy.grid` 切口类；G1.4 在 `machine.tileentity` 包内新增可测纯逻辑并高覆盖，但包内巨型 TE 行数仍主导分母。  
+- **结构瓶颈未变**：`energy.grid` 主体（calculator/路径/爆炸等）、`network` TeUpdate 树、`block.comp`、`TileEntity*` 海量行仍 ~0%；仅靠切口类无法单独跨过 60%。  
+- **测试体量**：W1.8 **38** → 本复测 **89** tests（含阶段 2 数学测 + G1.3/G1.4）。  
+- **G1.2 状态**：**仍 gap**；关闭条件仍是宽口径 ≥60% 或项目另行改口径，**禁止**无断言/GUI 堆行。
+
+### 8.5 建议（抬覆盖率，继承 §3.1）
+
+1. 继续 **EnergyNet 可测端口**（loss/分配/GT 求解器），把 `energy.grid` 从切口扩到行为主体。  
+2. 标准机：**将** `StandardMachineCycleMath` 接到 TE 或加深 SM 边界；避免巨型 `TileEntity*` 无 Level 硬测。  
+3. `LegacyNbt` / `Energy` NBT 读写加深（抬 `block.comp`）。  
+4. Sync 切主后 e2e 对齐（抬 `network` 有意义路径，非反射死枝）。  
+5. **不要**：为凑 60% 对 GUI、渲染、完整 TE 构造写无断言测试。

@@ -26,11 +26,15 @@ public class ContainerElectricBlock extends ContainerFullInv<TileEntityElectricB
 		this.addSlot(new SlotInvSlot(tileEntity1.dischargeSlot, 0, 56, 53));
 	}
 
+	/**
+	 * Network field list still uses legacy camelCase name {@code redstoneMode} for TeUpdate packet
+	 * compatibility. Value R/W on the TE goes through Sync (G1.5).
+	 */
 	@Override
 	public List<String> getNetworkedFields()
 	{
 		List<String> ret = super.getNetworkedFields();
-		ret.add("redstoneMode");
+		ret.add(TileEntityElectricBlock.LEGACY_REDSTONE_MODE_FIELD);
 		return ret;
 	}
 }

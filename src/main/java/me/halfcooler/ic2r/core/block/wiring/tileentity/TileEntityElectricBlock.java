@@ -16,14 +16,20 @@ import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.block.wiring.ContainerElectricBlock;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
+import me.halfcooler.ic2r.core.network.sync.BlockEntitySync;
+import me.halfcooler.ic2r.core.network.sync.SyncCodecs;
+import me.halfcooler.ic2r.core.network.sync.SyncKey;
 import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
+import me.halfcooler.ic2r.core.util.LegacyNbt;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
 import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 
 import net.minecraft.core.BlockPos;
@@ -42,6 +48,19 @@ import net.minecraft.world.level.block.state.BlockState;
 public abstract class TileEntityElectricBlock extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener, IEnergyStorage, ServerTicker
 {
 	public static byte redstoneModes = 7;
+
+	/**
+	 * Modern SyncKey for redstone mode (wire: {@code redstone_mode}).
+	 * TeUpdate packets still carry {@link #LEGACY_REDSTONE_MODE_FIELD} (G1.1 / G1.5).
+	 */
+	public static final SyncKey<Byte> KEY_REDSTONE_MODE = SyncKey.of("redstone_mode", SyncCodecs.BYTE);
+	/** Legacy TeUpdate / {@code getNetworkedFields()} field name for redstone mode. */
+	public static final String LEGACY_REDSTONE_MODE_FIELD = "redstoneMode";
+	/** Modern NBT key for redstone mode (G1.5). Writes use this only. */
+	public static final String NBT_REDSTONE_MODE = "redstone_mode";
+	/** Legacy camelCase NBT key; still readable via {@link LegacyNbt}. */
+	public static final String LEGACY_NBT_REDSTONE_MODE = "redstoneMode";
+
 	public final InvSlotCharge chargeSlot;
 	public final InvSlotDischarge dischargeSlot;
 	public final Energy energy;
@@ -78,7 +97,7 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
-		this.redstoneMode = nbt.getByte("redstoneMode");
+		this.redstoneMode = readRedstoneModeNbt(nbt);
 		this.energy.setDirections(EnumSet.complementOf(EnumSet.of(this.getFacing())), EnumSet.of(this.getFacing()));
 	}
 
@@ -86,7 +105,49 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 	public void saveAdditional(CompoundTag nbt)
 	{
 		super.saveAdditional(nbt);
-		nbt.putByte("redstoneMode", this.redstoneMode);
+		writeRedstoneModeNbt(nbt, this.redstoneMode);
+	}
+
+	/** Pure NBT write (snake_case only). Unit-test entry (G1.5). */
+	public static void writeRedstoneModeNbt(CompoundTag nbt, byte mode)
+	{
+		nbt.putByte(NBT_REDSTONE_MODE, mode);
+	}
+
+	/** Pure NBT read: prefer {@link #NBT_REDSTONE_MODE}, else legacy {@link #LEGACY_NBT_REDSTONE_MODE}. */
+	public static byte readRedstoneModeNbt(CompoundTag nbt)
+	{
+		return LegacyNbt.getByte(nbt, NBT_REDSTONE_MODE, LEGACY_NBT_REDSTONE_MODE);
+	}
+
+	/**
+	 * G1.5: registers modern SyncKeys for storage-block network fields.
+	 * TeUpdate / writeFieldData resolve values via this table (legacy names aliased).
+	 */
+	@Override
+	protected void registerSyncedData(BlockEntitySync sync)
+	{
+		super.registerSyncedData(sync);
+		bindElectricBlockSync(sync, () -> this.redstoneMode, this::setRedstoneModeSynced);
+	}
+
+	/**
+	 * Registers electric-block SyncKeys with TeUpdate legacy name aliases (G1.5).
+	 * Shared by BE registration and pure unit tests.
+	 */
+	public static void bindElectricBlockSync(
+		BlockEntitySync sync,
+		Supplier<Byte> redstoneModeGetter,
+		Consumer<Byte> redstoneModeSetter
+	)
+	{
+		sync.add(KEY_REDSTONE_MODE, redstoneModeGetter, redstoneModeSetter, LEGACY_REDSTONE_MODE_FIELD);
+	}
+
+	/** Apply redstone mode from modern sync decode (no side effects). */
+	protected void setRedstoneModeSynced(byte value)
+	{
+		this.redstoneMode = value;
 	}
 
 	@Override

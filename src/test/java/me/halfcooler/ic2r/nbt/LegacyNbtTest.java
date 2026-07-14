@@ -56,4 +56,19 @@ class LegacyNbtTest
 		tag.putDouble("storage", 1.0);
 		assertTrue(LegacyNbt.contains(tag, "energy_buffer", "storage"));
 	}
+
+	@Test
+	void getByte_prefersPrimary_thenLegacy()
+	{
+		CompoundTag both = new CompoundTag();
+		both.putByte("redstone_mode", (byte) 2);
+		both.putByte("redstoneMode", (byte) 5);
+		assertEquals((byte) 2, LegacyNbt.getByte(both, "redstone_mode", "redstoneMode"));
+
+		CompoundTag legacyOnly = new CompoundTag();
+		legacyOnly.putByte("redstoneMode", (byte) 3);
+		assertEquals((byte) 3, LegacyNbt.getByte(legacyOnly, "redstone_mode", "redstoneMode"));
+
+		assertEquals((byte) 0, LegacyNbt.getByte(new CompoundTag(), "redstone_mode", "redstoneMode"));
+	}
 }
