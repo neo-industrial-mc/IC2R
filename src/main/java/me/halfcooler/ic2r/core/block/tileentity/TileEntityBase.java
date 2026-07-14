@@ -10,8 +10,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TileEntityBase extends TileEntityInventory implements ServerTicker, ClientTicker
 {
@@ -36,7 +34,6 @@ public class TileEntityBase extends TileEntityInventory implements ServerTicker,
 		// so loopingSound is null and this restart logic never ran. updateEntityClient now handles persistence.
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	protected void updateEntityClient()
 	{
@@ -44,7 +41,6 @@ public class TileEntityBase extends TileEntityInventory implements ServerTicker,
 		this.syncLoopingSounds();
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private void syncLoopingSounds()
 	{
 		this.initSound();
@@ -73,7 +69,6 @@ public class TileEntityBase extends TileEntityInventory implements ServerTicker,
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private void onActiveFieldUpdated()
 	{
 		this.initSound();
@@ -114,7 +109,6 @@ public class TileEntityBase extends TileEntityInventory implements ServerTicker,
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private void handleClientDeactivation()
 	{
 		this.initSound();
@@ -161,7 +155,6 @@ public class TileEntityBase extends TileEntityInventory implements ServerTicker,
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void requestSoundResume()
 	{
 		if (this.level == null || !this.level.isClientSide)
@@ -177,7 +170,6 @@ public class TileEntityBase extends TileEntityInventory implements ServerTicker,
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private void scheduleClientSoundResume()
 	{
 		TickHandler.requestContinuousWorldTick(this.level, new IWorldTickCallback()

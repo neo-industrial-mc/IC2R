@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
@@ -40,7 +38,6 @@ public class ItemScanner extends BaseElectricItem implements IBoxable, IHandHeld
 		super(settings, maxCharge, transferLimit, tier);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, world, tooltip, advanced);

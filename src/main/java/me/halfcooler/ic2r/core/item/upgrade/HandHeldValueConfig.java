@@ -22,8 +22,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.function.Supplier;
 
@@ -58,7 +56,6 @@ public class HandHeldValueConfig extends HandHeldUpgradeOption
 		return new HandHeldValueConfig.ContainerValueConfig(syncId);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static class GuiValueConfig extends GuiDefaultBackground<HandHeldValueConfig.ContainerValueConfig>
 	{
 		public GuiValueConfig(HandHeldValueConfig.ContainerValueConfig container, Inventory playerInventory, Component title)

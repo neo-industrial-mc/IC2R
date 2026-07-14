@@ -12,8 +12,6 @@ import me.halfcooler.ic2r.core.util.Util;
 
 import java.util.List;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -107,7 +105,6 @@ public class ItemToolCrowbar extends TieredItem implements IEnhancedOverlayProvi
 		return false;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack stack, Level worldIn, List<Component> info, @NotNull TooltipFlag flagIn)
 	{
 		Ic2rTooltip.add(info, Component.translatable("item.ic2r.crowbar.tooltip.remove", Minecraft.getInstance().options.keyRight.getKey().getDisplayName()));

@@ -22,8 +22,6 @@ import me.halfcooler.ic2r.core.util.Util;
 import java.text.DecimalFormat;
 import java.util.*;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -230,7 +228,6 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 		return info;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, world, tooltip, advanced);

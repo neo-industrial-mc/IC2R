@@ -5,10 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiCropAnalyzer extends Ic2rGui<ContainerAnalyzer>
 {
 	private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath("ic2r", "textures/gui/guicrop_analyzer.png");

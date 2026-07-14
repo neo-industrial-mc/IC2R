@@ -19,8 +19,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemCropAnalyzer extends BaseElectricItem implements IHandHeldInventory
@@ -31,7 +29,6 @@ public class ItemCropAnalyzer extends BaseElectricItem implements IHandHeldInven
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public @NotNull Rarity getRarity(@NotNull ItemStack stack)
 	{
 		return Rarity.UNCOMMON;

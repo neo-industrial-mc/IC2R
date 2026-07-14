@@ -39,8 +39,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.util.RandomSource;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 @NotClassic
 public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui, ServerTicker, ClientTicker
@@ -403,7 +401,6 @@ public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGe
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	protected void updateEntityClient()
 	{
 		super.updateEntityClient();

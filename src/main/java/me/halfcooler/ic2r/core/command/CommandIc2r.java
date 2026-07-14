@@ -20,6 +20,7 @@ import me.halfcooler.ic2r.core.uu.UuGraph;
 import me.halfcooler.ic2r.core.util.ConfigUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -38,7 +39,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public final class CommandIc2r
@@ -301,7 +301,8 @@ public final class CommandIc2r
 
 	private static int cmdDebugDumpTextures(CommandSourceStack source, String name, int size)
 	{
-		if (FMLEnvironment.dist.isDedicatedServer())
+		// Physical dedicated server has no client texture atlas (G3.1: via PlatformLifecycle, not FMLEnvironment).
+		if (!PlatformServices.lifecycle().isClient())
 		{
 			msg(source, "Can't dump textures on the dedicated server.");
 		} else

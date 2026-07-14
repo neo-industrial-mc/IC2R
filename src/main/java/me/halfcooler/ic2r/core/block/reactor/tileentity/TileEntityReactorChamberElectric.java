@@ -29,8 +29,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements Container, IReactorChamber, IEnergyEmitter, ClientTicker
 {
@@ -68,7 +66,6 @@ public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements 
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	protected void updateEntityClient()
 	{

@@ -10,8 +10,6 @@ import me.halfcooler.ic2r.core.util.StackUtil;
 
 import java.util.List;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -72,7 +70,6 @@ public class ItemCropSeed extends Item implements ICropSeed
 		return Component.translatable(crop == null ? "ic2r.crop.seeds" : crop.getSeedType(), super.getName(stack));
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, Level world, List<Component> info, TooltipFlag debugTooltips)
 	{
 		if (this.getScannedFromStack(stack) >= 4)

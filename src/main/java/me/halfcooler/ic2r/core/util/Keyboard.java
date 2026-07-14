@@ -11,8 +11,6 @@ import java.util.WeakHashMap;
 
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Keyboard implements IKeyboard
 {
@@ -143,7 +141,6 @@ public class Keyboard implements IKeyboard
 
 	public interface IKeyWatcher
 	{
-		@OnlyIn(Dist.CLIENT)
 		void checkForKey(Set<Keyboard.Key> var1);
 
 		Keyboard.Key getRepresentation();

@@ -34,8 +34,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 @NotClassic
 public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui, ServerTicker, ClientTicker
@@ -292,7 +290,6 @@ public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGen
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	protected void updateEntityClient()
 	{
 		super.updateEntityClient();

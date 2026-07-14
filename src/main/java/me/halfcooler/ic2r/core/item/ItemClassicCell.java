@@ -34,8 +34,6 @@ import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemClassicCell extends Ic2rBucketItem implements Ic2rFluidItem
 {
@@ -252,7 +250,6 @@ public class ItemClassicCell extends Ic2rBucketItem implements Ic2rFluidItem
 		return false;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		if (this.fluid == Fluids.EMPTY)

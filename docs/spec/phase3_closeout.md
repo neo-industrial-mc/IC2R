@@ -134,7 +134,7 @@
 
 | ID | Gap | 严重度 | 建议后续（**非本 W3.5**） |
 |:---|:---|:---|:---|
-| G3.1 | common/core 仍大量 `net.minecraftforge.*` 实现型 import（~57 文件） | P0 | 按 neoforge 计划 E2–E6：Dist/OnlyIn 收敛、Registry/Handler/Config 下沉 SPI 或 forge 包；物理拆 `ic2r-common` 后用编译失败强制 |
+| G3.1 | common/core 仍大量 `net.minecraftforge.*` 实现型 import | P0 | **partial（G3.1 切片 done，见 §10）**：core **65→31** 文件 / **123→54** import 行；仅 `Dist`/`OnlyIn` 文件已清零。**仍 residual**：`ForgeRegistries`、cap/handler、config、event 等；禁止一次清零。后续 E2–E6 / 下沉 SPI/forge 包 |
 | G3.2 | 非 Forge 最小可运行集 **未启动**（§8.5 #2） | P0 | SPI facet 实质实现 + EnvProxy 主路径退役过半后，追加 Unit：`ic2r-neoforge` 骨架 → 物品+1 机+电网最小集（计划 M8） |
 | G3.3 | 覆盖率 common ≪ 75%（~1%） | P0 | **继承 G1.2/G2.4**；优先 EnergyNet / 标准机循环 / Sync 切主后 e2e；勿堆 SPI 接口空测 |
 | G3.4 | Origin residual **核心未清零**（energy IC、标准机、network 反射、InvSlot、reactor/crop…） | P0 | 域重写 Unit + 回写 origin.md；清零前禁止宣称 §8.5 #4 done |
@@ -234,3 +234,43 @@ G3.*（本文件）
 | **协议** | 仍遵守 §A：一次一个 Unit、禁止 Agent commit、用户「继续」再开下一项 |
 
 **阶段 3 名义完成度**：试点与计划 **done**；§8.5 硬门槛 **多数 gap/deferred** — 诚实记录，不假装勾满。
+
+---
+
+## 10. G3.1 core Forge 实现型 import 收敛切片
+
+> **Work Unit**: G3.1  
+> **日期**: 2026-07-14  
+> **状态**: **partial / open**（有意义一切片 **done**；§8.5 #1 **未**清零）  
+> **模式**: 仿 W3.3 `isClientEnv` 退役 + Dist/OnlyIn 注解去 loader 依赖（**非**全库去 Forge）  
+> **验证**: `.\gradlew.bat compileJava test` → BUILD SUCCESSFUL  
+
+### 10.1 切片内容
+
+| 动作 | 说明 |
+|:---|:---|
+| **A. Dist/OnlyIn 仅含文件清零** | **34** 个 core 文件原先 **仅** `import net.minecraftforge.api.distmarker.{Dist,OnlyIn}` + `@OnlyIn(Dist.CLIENT)`；删除注解与 import，行为依赖既有 `level.isClientSide` / client 类分离，**不**改玩法 |
+| **B. FMLEnvironment → SPI** | `CommandIc2r#cmdDebugDumpTextures`：`FMLEnvironment.dist.isDedicatedServer()` → `!PlatformServices.lifecycle().isClient()`（与 `PlatformLifecycleForge` 物理 dist 一致） |
+| **未做** | 一次清零全部 residual；Registry/Handler/Config/Event 下沉；物理 `ic2r-common`；git commit/push |
+
+**仍保留 Dist/OnlyIn 的 core 文件（另有其它 Forge import，未本切片清）**：`Ic2rTileEntity`、`JetpackHandler`、`ItemToolWrench`（与 cap/event/registry 混杂）。
+
+### 10.2 Residual 计数（前后对比）
+
+| 口径 | G3.1 前（本切片实测） | G3.1 后 | Δ |
+|:---|:---|:---|:---|
+| `core/**` 含 `import net.minecraftforge.*` 的 `.java` 文件 | **65** | **31** | **−34** |
+| `core/**` Forge import 行 | **123** | **54** | **−69** |
+| 其中 **仅** Dist/OnlyIn 的文件 | **34** | **0** | **−34** |
+| `core` 内 `FMLEnvironment` 实现型用法 | 1（`CommandIc2r`） | **0** | **−1** |
+| W3.5 文档登记（历史） | ~57 文件 / ~114 行 | — | 与本切片前实测口径略差（域拆分等增文件）；**以本表实测为准** |
+
+**residual 主导簇（core，切片后）**：`ForgeRegistries`（含 `ref/blocks/*` 与注册/序列化）、`IItemHandler*`/`LazyOptional`、`ForgeConfigSpec`、`FluidStack`/`IFluidHandler`、event/client model 等 — 需后续 SPI 或 forge 适配下沉。
+
+### 10.3 变更范围（G3.1）
+
+- 上述 **34** 个 Dist/OnlyIn-only core 源文件（注解/import 删除）  
+- `core/command/CommandIc2r.java`（FMLEnvironment → `PlatformServices.lifecycle()`）  
+- 本文件 §4 G3.1 行 + **§10**  
+- [Modernization_Progress.md](../Modernization_Progress.md) G3.1  
+- **无** git commit/push  

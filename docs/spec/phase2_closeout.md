@@ -218,7 +218,7 @@
 | **核心包 ≥60%**（G1.2） | 宽口径 **3.76%**（317/8442 LINE，G1.2 复测）≪ 60% | **仍 open（gap）** — **禁止**宣称 60% 达标 |
 | G1.5 snake_case | 试点 + G1.5 扩域（electric/batch 等 NBT/Sync）；全库未收口 | **partial**（非 G2.7 主断言，登记继承） |
 | G1.6 recipe 匹配器 | `MachineRecipeMatchMath` + 测；**done** | **已关闭**（相对 G1.6） |
-| G1.7 / G1.8 | Spotless N/A；Blocks 拆分等 hygiene | **仍 open / N/A** |
+| G1.7 / G1.8 | Spotless N/A（G1.7 done）；Blocks 拆分（G1.8 done） | **done / done(N/A)**（见 phase1 §10–§11） |
 
 ### 8.3 一句话总判（G2.7）
 
@@ -239,8 +239,8 @@
 | G1.4 | 标准机循环行为测 | **partial** | `StandardMachineCycleMath` + Test；SM-001…004；包 0.98% |
 | G1.5 | snake_case 全库 | **partial** | phase1 / `id_migrations` |
 | G1.6 | recipe 匹配器 | **done** | `MachineRecipeMatchMathTest` |
-| G1.7 | Spotless/Checkstyle | **N/A** | 未启用 |
-| G1.8 | Blocks 拆分等 | **open** | hygiene |
+| G1.7 | Spotless/Checkstyle | **done(N/A)/skipped** | 本阶段不启用（phase1 §10） |
+| G1.8 | Blocks 拆分 | **done** | `Ic2rBlocks` + `ref/blocks/*`（phase1 §11） |
 
 ### 8.5 建议后续（**非本 G2.7**；勿空转）
 

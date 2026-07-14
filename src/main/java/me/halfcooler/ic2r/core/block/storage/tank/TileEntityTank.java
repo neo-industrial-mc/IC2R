@@ -44,8 +44,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class TileEntityTank extends TileEntityInventory implements IHasGui, Ic2rFluidBlock, FluidBeBridge, INetworkClientTileEntityEventListener, IUpgradableBlock, ServerTicker
 {
@@ -104,7 +102,6 @@ public abstract class TileEntityTank extends TileEntityInventory implements IHas
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{

@@ -15,8 +15,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -24,7 +22,6 @@ import org.joml.Matrix4f;
  * GT-style face grid overlay when holding tools that use {@link RotationUtil#rotateByHit}.
  * Draws a 3×3 region grid on the looked-at face, plus an X on the region for the machine's current facing.
  */
-@OnlyIn(Dist.CLIENT)
 public final class EnhancedOverlayRenderer
 {
 	/** Slight lift along the face normal to avoid z-fighting. */

@@ -28,8 +28,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TileEntityIronFurnace extends TileEntityBase implements IHasGui, IGuiValueProvider, INetworkClientTileEntityEventListener
 {
@@ -139,7 +137,6 @@ public class TileEntityIronFurnace extends TileEntityBase implements IHasGui, IG
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	protected void updateEntityClient()
 	{

@@ -10,10 +10,7 @@ import java.util.Set;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class KeyboardClient extends Keyboard
 {
 	public static final KeyMapping altKey = new KeyMapping("ic2r.keyboard.alt_key", 342, "ic2r.name");

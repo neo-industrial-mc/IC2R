@@ -40,8 +40,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TileEntityPersonalChest extends TileEntityInventory implements IPersonalBlock, IHasGui, ClientTicker
 {
@@ -110,7 +108,6 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	protected void updateEntityClient()
 	{

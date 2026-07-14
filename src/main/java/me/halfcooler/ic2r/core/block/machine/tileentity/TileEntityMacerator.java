@@ -18,8 +18,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TileEntityMacerator extends TileEntityStandardMachine<IRecipeInput, Collection<ItemStack>, ItemStack>
 {
@@ -29,7 +27,6 @@ public class TileEntityMacerator extends TileEntityStandardMachine<IRecipeInput,
 		this.inputSlot = new InvSlotProcessableGeneric(this, "input", 1, Recipes.macerator);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	protected void updateEntityClient()
 	{

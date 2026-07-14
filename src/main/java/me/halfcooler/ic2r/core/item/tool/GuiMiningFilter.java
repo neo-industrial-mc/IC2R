@@ -7,10 +7,7 @@ import me.halfcooler.ic2r.core.gui.VanillaButton;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiMiningFilter extends GuiDefaultBackground<ContainerMiningFilter>
 {
 	public GuiMiningFilter(ContainerMiningFilter container, Inventory playerInventory, Component title)

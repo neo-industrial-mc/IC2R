@@ -28,8 +28,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -142,7 +140,6 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 		return world.getBlockState(pos).getBlock() instanceof IWrenchAble;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag flag)
 	{
@@ -153,14 +150,12 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 		Ic2rTooltip.add(tooltip, Component.translatable("item.ic2r.wrench.tooltip.rotate", useKey));
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public SoundEvent getHitSoundForBlock(LocalPlayer player, Level world, BlockPos pos, ItemStack stack)
 	{
 		return null;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public SoundEvent getBreakSoundForBlock(LocalPlayer player, Level world, BlockPos pos, ItemStack stack)
 	{

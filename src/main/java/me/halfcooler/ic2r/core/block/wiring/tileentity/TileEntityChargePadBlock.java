@@ -28,8 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock implements ClientTicker
 {
@@ -112,7 +110,6 @@ public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock i
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	protected void updateEntityClient()
 	{

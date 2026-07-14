@@ -13,8 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TileEntityGenerator extends TileEntityBaseGenerator implements IGuiValueProvider
 {
@@ -28,7 +26,6 @@ public class TileEntityGenerator extends TileEntityBaseGenerator implements IGui
 		this.fuelSlot = new InvSlotConsumableFuel(this, "fuel", 1, false);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	protected void updateEntityClient()
 	{

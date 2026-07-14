@@ -79,8 +79,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 public class TileEntityNuclearReactorElectric extends TileEntityInventory implements IHasGui, IReactor, IEnergySource, IMetaDelegate, IGuiValueProvider, IElectricalNode, ServerTicker, ClientTicker
@@ -555,7 +553,6 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	protected void updateEntityClient()
 	{

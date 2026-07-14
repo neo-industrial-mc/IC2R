@@ -8,8 +8,6 @@ import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 
 import java.util.List;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -43,7 +41,6 @@ public class ItemWindRotor extends Item implements IKineticRotor
 		this.water = water;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag advanced)
 	{
 		Ic2rTooltip.add(tooltip, Component.translatable("ic2r.itemrotor.wind.info", this.minWindStrength, this.maxWindStrength));

@@ -37,8 +37,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiValueProvider
 {
@@ -323,7 +321,6 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 		this.currentRecipe = null;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	protected void updateEntityClient()
 	{
