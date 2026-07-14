@@ -1,12 +1,29 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** G3.11  
+**last_completed:** A40.1  
 **updated:** 2026-07-14  
 
 > **G3 阶段 3 gap 队列（G3.1–G3.11，G3.8=skipped）已全部收口。**  
 > 多项标准仍 partial/gap（覆盖率、TeUpdate 帧、guidef residual、无第二 loader 产品、Origin 核心 residual 等）。  
-> 后续需用户指定新方向，或从各 closeout 的 residual 列表追加新 Unit。
+>
+> **下一队列（20.1.40 之后）**：见 **[After-20-1-40-Moderize.md](After-20-1-40-Moderize.md)**  
+> — Track A 发版前：residual（IC 电网）+ core 去 Forge + Golden EN-IC；用户 release 后 Track B 其余现代化。  
+> 执行会话请读 After 文档 §0 / §7，不要在本文件重复开 G3 队列。
+
+## After-20.1.40 — Track A Queue (Pre-release)
+
+| ID | status | last_notes |
+|:---|:---|:---|
+| A40.0 | done | 基线 20.1.40；core 31 + api 6 = 37 文件 forge import；清单已冻结 |
+| A40.1 | done | EN-IC-001…010 GWT 摘要 + EnergyNetIcSolverTest(11 宿主边界测) + EN-GT-010 对照测绿 |
+| A40.2 | pending | core/api 去 Forge 实现依赖 |
+| A40.3 | pending | IC 求解 residual 现代化回接 |
+| A40.4 | pending | Release Gate 预检文档 |
+
+**release_gate:** not_run  
+**基线 mod_version:** 20.1.40  
+**forge import 快照:** [a40_core_forge_imports.md](spec/a40_core_forge_imports.md)
 
 ## Queue（G3）
 

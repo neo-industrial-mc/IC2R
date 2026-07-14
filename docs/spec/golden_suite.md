@@ -17,8 +17,8 @@
 
 | 项 | 值 |
 |:---|:---|
-| 规格版本 | 0.2-outline |
-| 冻结目标 | 各域条目 ID 稳定可引用；正文与测试可后补 |
+| 规格版本 | 0.3-a40.1 |
+| 冻结目标 | 各域条目 ID 稳定可引用；EN-IC-001…010 均具备 GWT 摘要与测入口 |
 | 覆盖范围 | EnergyNet IC/GT、标准机、配方、NBT/同步；§4.4.6 高风险域预留 |
 | 非目标（本文件） | 完整用例正文、实现代码、完整命名审计 |
 
@@ -27,6 +27,15 @@
 | ID | 标题 | 不变量 / 期望摘要 | 优先级 | 测试状态 | 备注 |
 |:---|:---|:---|:---|:---|:---|
 | `{域}-{序号}` | 短标题 | 一句话不变量 | P0/P1/P2 | 未写 / 红 / 绿 | 可选：引用文档、废弃说明 |
+
+### 测试状态标记约定
+
+| 标记 | 含义 |
+|:---|:---|
+| 测绿 | 至少纯逻辑测通过；world 效果可能未覆盖 |
+| 测绿（纯谓词） | 仅纯函数/谓词测试通过；世界效果/方块操作标 `residual-world` |
+| 测绿（宿主） | 含 solver-level / 拓扑级测试 |
+| residual-world | 该条目 world 效果（方块移除/爆炸/实体伤害）因需 Level 而暂未自动化，以纯谓词边界约束 |
 
 ---
 
@@ -46,18 +55,35 @@
 
 ### 1.2 条目表
 
-| ID | 标题 | 不变量 / 期望摘要 | 优先级 | 测试状态 | 备注 |
+| ID | 标题 | Given / When / Then（精简摘要） | 优先级 | 测试状态 | 测入口 |
 |:---|:---|:---|:---|:---|:---|
-| EN-IC-001 | 单源单汇基本传输 | 唯一源→唯一汇时，汇侧收到的 EU 等于源发出量减去路径线损（按现行 IC loss 规则） | P0 | 测绿 | `EnergyTransferMathTest.icInjectAmount_*` |
-| EN-IC-002 | 最短/优选路径选择 | 多条并联路径时，选用与现行 Calculator 一致的路径代价规则（非任意路径） | P0 | 测绿（纯谓词） | `icPreferNewPath_*`；全拓扑 BFS 仍待 |
-| EN-IC-003 | 线损后到达量边界 | 线损耗尽时到达量 ≥0；不足一包/有效 EU 时不得「负 EU」进入汇 | P0 | 测绿 | `icInjectAmount_lossExceedsOrEqualsOffer_*` |
-| EN-IC-004 | 多汇可分配性 | 单源多汇时，各汇获得量之和 ≤ 源可提供量（扣除线损后的有效供给） | P0 | 测绿 | `icDistributeSequential_totalDelivered_*` |
-| EN-IC-005 | 多汇分配策略 | 固定路径顺序按需填满（非均分）；前序路径优先，后序吃 residual | P0 | 测绿 | `icDistributeSequential_earlierPathPriority_*`；shuffle 随机序未覆盖 |
-| EN-IC-006 | 绝缘击穿 | 包能量超过绝缘击穿阈值且未达导体熔断时 strip（`amount > insulation && ≤ conductor`） | P0 | 测绿（纯谓词） | `icInsulationBreakdown_*`；世界效果未测 |
-| EN-IC-007 | 导体熔断/过载 | 超过 `capacity+1` 时导体失效（移除或等价） | P0 | 测绿（纯谓词） | `icConductorBreakdown_*`；方块移除未测 |
-| EN-IC-008 | 过压对设备 | 包电压 &gt; sink tier 额定功率 → 超压（爆炸路径另测） | P1 | 测绿（纯谓词） | `icSinkOverVoltage_*` |
-| EN-IC-009 | 变压器升压 packet | 升压：4×低压侧 → 1×高压 packet，相邻档位能量守恒 | P0 | 测绿 | `icTransformer_stepUp_*` |
-| EN-IC-010 | 变压器降压 packet | 降压：1×高压 → 4×低压 packet，能量守恒 | P0 | 测绿 | `icTransformer_stepDown_*` |
+| EN-IC-001 | 单源单汇基本传输 | **Given** 唯一源提供 offer EU，经唯一路径（累计损耗 loss）连接唯一汇；**When** 线损后 EU 到达汇侧；**Then** 到达量 = offer − loss（≥0） | P0 | 测绿 | 纯逻辑：`EnergyTransferMathTest.icInjectAmount_*` |
+| EN-IC-002 | 最短/优选路径选择 | **Given** 源→汇存在多条并联路径（各路径损耗不同）；**When** BFS 探索所有候选路径并按 `icPreferNewPath` 比较；**Then** 严格更小损耗的路径替换当前最优；全拓扑 BFS 最终收敛到全局最小损耗路径 | P0 | 测绿（宿主） | 纯逻辑：`icPreferNewPath_*`；宿主：`EnergyNetIcSolverTest.pathSelection_*` |
+| EN-IC-003 | 线损后到达量边界 | **Given** 源提供 offer EU，路径累计损耗 loss；**When** loss ≥ offer 或 offer 被 loss 耗尽；**Then** 到达量 = 0，绝不出现负 EU 进入汇 | P0 | 测绿 | 纯逻辑：`icInjectAmount_lossExceeds*` |
+| EN-IC-004 | 多汇可分配性 | **Given** 单源提供 offer EU，N 个汇各有路径损耗 loss[i] 与需求 demand[i]；**When** 按固定顺序依次分配；**Then** Σ delivered[i] ≤ offer（各步源消耗 = delivered[i] + loss[i]） | P0 | 测绿（宿主） | 纯逻辑：`icDistributeSequential_total*`；宿主：`multiSink_heterogeneousLosses_*` |
+| EN-IC-005 | 多汇分配策略 | **Given** offer 不足以同时满足所有汇；**When** 按固定路径顺序填满（前序路径按需取，后序吃 residual）；**Then** 前序先满足、后序可能被饿死（非均分） | P0 | 测绿（宿主） | 纯逻辑：`icDistributeSequential_earlier*`；宿主：`multiSink_earlierPriority_*` |
+| EN-IC-006 | 绝缘击穿 | **Given** 传输 packet 能量为 amount；**When** amount > insulation 且 amount ≤ conductor（未达熔断）；**Then** 绝缘 strip，电缆降级；**world 效果 residual-world**：方块状态变更需 Level 未自动化 | P0 | 测绿（纯谓词） | 纯谓词：`icInsulationBreakdown_*`；world 效果标记 `residual-world` |
+| EN-IC-007 | 导体熔断/过载 | **Given** 传输 packet 能量 amount > conductorBreakdownEnergy（= capacity + 1）；**When** 触发 cable meltdown 判定；**Then** 导体移除/方块销毁；**world 效果 residual-world**：方块移除需 Level 未自动化 | P0 | 测绿（纯谓词） | 纯谓词：`icConductorBreakdown_*`；world 效果标记 `residual-world` |
+| EN-IC-008 | 过压对设备 | **Given** packet 电压 > sink tier 额定最大功率；**When** `icSinkOverVoltage` 判定；**Then** 设备标记超压（触发爆炸路径） | P1 | 测绿（纯谓词） | 纯谓词：`icSinkOverVoltage_*`；world 爆炸效果未自动化 |
+| EN-IC-009 | 变压器升压 packet | **Given** 低压侧 4× 输入 packet；**When** 升压模式运行；**Then** 输出 1× 高压 packet；`lowVoltage × 4 == highVoltage × 1`（能量守恒，忽略传输损耗） | P0 | 测绿 | 纯逻辑：`icTransformer_stepUp_*` |
+| EN-IC-010 | 变压器降压 packet | **Given** 高压侧 1× 输入 packet；**When** 降压模式运行；**Then** 输出 4× 低压 packet；`highVoltage × 1 == lowVoltage × 4`（能量守恒） | P0 | 测绿 | 纯逻辑：`icTransformer_stepDown_*` |
+
+### 1.3 测入口汇总
+
+| 测试类 | 覆盖条目 | 类型 | 说明 |
+|:---|:---|:---|:---|
+| `EnergyTransferMathTest` | EN-IC-001…010, EN-GT-001/002/006/007/009 | 纯逻辑（JUnit） | 所有纯函数/谓词，不依赖 Level |
+| `EnergyNetIcSolverTest` | EN-IC-002, EN-IC-004/005, EN-GT-010 | 宿主边界（JUnit） | 多路径拓扑选择、异构分配、IC/GT 对照；仅用 fake 数据 + Math |
+| `ElectricalProfileMaxAmpsTest` | EN-GT-003/004/005 | 纯逻辑（JUnit） | GT maxAmps 公式 |
+
+### 1.4 residual-world 登记
+
+| 条目 | 不可测 world 效果 | 纯谓词边界 |
+|:---|:---|:---|
+| EN-IC-006 | 绝缘 strip 后方块状态变更 | `icInsulationBreakdown(amount, insulationLimit, conductorLimit)` |
+| EN-IC-007 | 导体熔断后方块移除 | `icConductorBreakdown(amount, conductorBreakdownEnergy)` |
+| EN-IC-008 | 超压爆炸/实体伤害 | `icSinkOverVoltage(packetVoltage, sinkMaxVoltage)` |
+| EN-IC-002 | 全 BFS 图遍历拓扑选择（需 Grid/Node/Level） | `icPreferNewPath(prevLoss, candidateLoss)` + 多候选路径纯数据模拟 |
 
 ---
 
@@ -89,7 +115,7 @@
 | EN-GT-007 | 导线超流熔断 | 路径安培超过导线 maxAmps → 熔断 | P0 | 测绿（纯谓词） | `gtCableOverCurrent_*` |
 | EN-GT-008 | 方向优先级推送 | 源侧按方向优先级（目标：D-U-N-S-W-E；可分阶段用 BFS 近似，但须文档化）分配整安，非「最近机器优先」 | P1 | 未写 | PR-4 可近似；见 GTEU 参考 |
 | EN-GT-009 | 源满 1A 才输出 | GT 模式发电机/储电输出：内部攒满 1A 才 `offer`；与 IC「可吐全部 storage」隔离 | P0 | 测绿 | `gtOfferAmps_partialBufferBelowOneAmp_*` |
-| EN-GT-010 | IC/GT Calculator 不串味 | 同一拓扑在 IC 与 GT 配置下结果符合各自 invariants；无跨模式状态泄漏 | P0 | 未写 | 双 Calculator |
+| EN-GT-010 | IC/GT Calculator 不串味 | **Given** 同一源缓冲（EU）与同一拓扑参数（电压/损耗/需求）；**When** 分别经 IC Math（连续 EU）与 GT Math（离散 1A packet）计算；**Then** 结果各自符合模式 invariants：IC 以 `offer − loss` 连续交付、GT 以 `floor(buffer/V)` 整安交付、loss 语义不同（IC 一次扣减 / GT 逐安扣减）→ 输出数值差异正确且无跨模式状态泄漏 | P0 | 测绿 | `EnergyNetIcSolverTest.icVsGt_*` (4 条对照场景) |
 
 ---
 
@@ -221,3 +247,4 @@
 | 2026-07-14 | 0.1-skeleton | W0.2：章节骨架就位，条目表留空待 W0.3 |
 | 2026-07-14 | 0.2-outline | W0.3：填入 EN-IC/EN-GT/SM/RC/NS 条目表与高风险预留 ID |
 | 2026-07-14 | 0.3-g1.3 | G1.3：EN-IC 多汇/保护/变压器 + EN-GT-009 纯逻辑测绿；`EnergyTransferMath` 切口回接 |
+| 2026-07-14 | 0.3-a40.1 | A40.1：全 EN-IC-001…010 GWT 摘要 + 测入口明确；新增 `EnergyNetIcSolverTest`（宿主边界 11 测）；EN-IC-002 加深至拓扑级；EN-IC-006/007/008 world 效果登记 `residual-world`；EN-GT-010 IC/GT 不串味 4 条对照测绿 |
