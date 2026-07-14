@@ -48,7 +48,7 @@
 | [README.md](README.md) | **本文件**（W0.2） | W0.2 | 目录用途、与主文档关系、文件约定 |
 | [golden_suite.md](golden_suite.md) | 条目表大纲（W0.3）→ 用例正文（后续） | W0.2 / W0.3+ | 行为黄金用例大纲与条目 ID 表 |
 | [naming_audit.md](naming_audit.md) | **已产出**（W0.5）：抽样 + 优先级 | W0.5 | 命名扫描报告与修复优先级 |
-| [origin.md](origin.md) | **已产出**（W0.6）：核心包初版标注 | W0.6 | 模块 Origin：residual / rewritten / original / mixed |
+| [origin.md](origin.md) | **已产出**（W0.6）→ **G3.4 回写** | W0.6 / G3.4 | 模块 Origin：residual / rewritten / original / mixed；§8.5 #4 核心 residual **未**清零 |
 | [id_migrations.md](id_migrations.md) | **已起步**（W1.5 试点） | 命名/NBT 迁移相关 Unit | 注册 ID / NBT 键 / 网络字段迁移表 |
 | [phase1_closeout.md](phase1_closeout.md) | **已产出**（W1.8） | W1.8 | 阶段 1 §6.3 勾选、JaCoCo 覆盖率证据与 gap 列表 |
 | [phase2_closeout.md](phase2_closeout.md) | **已产出**（W2.6） | W2.6 | 阶段 2 §7.7 勾选、inv/fluid/recipe 覆盖率证据与 G2.\* gap 列表 |

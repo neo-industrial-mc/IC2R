@@ -16,7 +16,7 @@
 | 1 | common 源码无 `net.minecraftforge.*` / `net.neoforged.*` / `net.fabricmc.*` **实现型** import | **gap** | 尚无物理 `ic2r-common` 模块；以 `core` + `platform.services` 作 common 代理口径抽查：**platform 包 0 条** loader import（达标切片）。**core 仍大量残留**：约 **57** 个文件、**114** 条 `import net.minecraftforge.*`（抽样主导：`Dist`/`OnlyIn`×37 对、`ForgeRegistries`×13、`IItemHandler*`/`LazyOptional` 于库存 TE、`ForgeConfigSpec` 等）。`net.neoforged.*` / `net.fabricmc.*` **全库 0**。W3.2 仅迁 1 调用点（`PlatformLifecycle.isClient`）；W3.3 删 `EnvProxy#isClientEnv` 但 `isForgeEnv`/`isFabricEnv` 等仍双轨 | W3.1–W3.3 |
 | 2 | 至少一条**非 Forge**加载器可运行最小集（物品注册 + 一台机器 + 电网） | **deferred**（G3.2 **started**） | **W3.4** 文档计划 + **G3.2** kickoff：[g3_2_neoforge_min_set.md](g3_2_neoforge_min_set.md)；`PlatformRegistryForge` 真实现 + `getServer` 调用点迁 SPI。主构建仍 **Forge 1.20.1**；**无**可运行 NeoForge artifact。选项 **A** 优先验证 SPI；M8 再谈完整最小集 | W3.4 / G3.2 |
 | 3 | 覆盖率达 §4.5 阶段 3 门槛（**≥ 75%** common 全量，不含 client 渲染） | **gap** | W3.5 见 §2（common-ish **~1.06%**）。**G3.3 复测**见 **§12**：common-ish **~1.79%**（609/34053）仍 ≪ 75%；需再覆盖约 **2.5e4** 行才达门槛 | W0.1+ / G3.3 |
-| 4 | Origin 文档中「移植残留」**核心模块清零**或仅剩标注兼容层 | **partial / gap** | [origin.md](origin.md) 仍为 W0.6 初版表；P0 residual（EnergyNet IC 路径、标准机、`network` 反射同步、InvSlot、reactor/crop 等）**未**升为 rewritten/original。阶段 1–3 **局部现代化**（Sync 骨架、显式 Tick、Handler 委托、macerator RecipeManager、SPI 草案+首迁）降低部分路径风险，但 **Origin 核心 residual 未清零** → 诚实 **partial**（有增量）/ **gap**（未达 §8.5 清零） | W0.6 + W1–W3 局部 |
+| 4 | Origin 文档中「移植残留」**核心模块清零**或仅剩标注兼容层 | **partial / gap** | **G3.4 已回写** [origin.md](origin.md)（v0.2）：按 G1–G3 标 mixed / rewritten **切片**（Sync、\*Math、Handler、SPI、Sound/域拆等）；**P0 宿主仍 residual**（EnergyNet IC、标准机 TE、TeUpdate 帧/反射、InvSlot 树、reactor/crop…）。**核心 residual 未清零** → 诚实 **partial**（表已反映增量）/ **gap**（§8.5 #4 清零未达成）。见 **§13** | W0.6 + G3.4 |
 
 ### 1.1 勾选视图（阶段 3 名义完成度）
 
@@ -24,7 +24,7 @@
 [gap]      common 无 loader 实现型 import     ← platform 洁净；core ~57 文件仍含 Forge
 [deferred] 非 Forge 最小可运行集             ← G3.2 **started**（文档+SPI 前置）；仍无 NeoForge artifact；主线 Forge 1.20.1
 [gap]      覆盖率 ≥75% common（§4.5 阶段 3）
-[partial]  Origin residual 核心清零          ← 有现代化切片；表内 P0 仍 residual
+[partial]  Origin residual 核心清零          ← G3.4 表已回写切片；P0 宿主仍 residual（#4 未勾满）
 ```
 
 **阶段 3 结论**：Work Unit **W3.1–W3.4** 均已按各自 DoD 交付（SPI 草案、1 调用点迁移、EnvProxy 切片瘦身、NeoForge **文档**计划）；§8.5 **未全部勾满**。  
@@ -137,7 +137,7 @@
 | G3.1 | common/core 仍大量 `net.minecraftforge.*` 实现型 import | P0 | **partial（G3.1 切片 done，见 §10）**：core **65→31** 文件 / **123→54** import 行；仅 `Dist`/`OnlyIn` 文件已清零。**仍 residual**：`ForgeRegistries`、cap/handler、config、event 等；禁止一次清零。后续 E2–E6 / 下沉 SPI/forge 包 |
 | G3.2 | 非 Forge 最小可运行集 **已启动 / partial**（§8.5 #2 仍 **未** done） | P0 | **partial/started（见 §11）**：kickoff 文档 + `PlatformRegistryForge` + `getServer` 调用点迁 SPI；**尚无**可运行 NeoForge artifact；主构建仍 Forge 1.20.1。后续：E2 续 → 非 stub Network/Item → 骨架 → M8 最小集 |
 | G3.3 | 覆盖率 common ≪ 75%（G3.3 复测 common-ish **~1.79%**） | P0 | **open / gap（见 §12）**：相对 W3.5 有增量（66→**153** tests；common-ish 1.06%→**1.79%**）仍远低于 75%。继承 G1.2/G2.4；优先电网/标准机本体/切主 Sync e2e；**禁止**空转堆 SPI |
-| G3.4 | Origin residual **核心未清零**（energy IC、标准机、network 反射、InvSlot、reactor/crop…） | P0 | 域重写 Unit + 回写 origin.md；清零前禁止宣称 §8.5 #4 done |
+| G3.4 | Origin residual **核心未清零**（energy IC、标准机、network 反射、InvSlot、reactor/crop…） | P0 | **partial（G3.4 文档回写 done，见 §13）**：origin.md 已按 G1–G3 刷新切片状态；**§8.5 #4 清零仍 gap**。后续域干净室重写后再回写；清零前禁止宣称 #4 done |
 | G3.5 | EnvProxy 上帝代理仍在；仅 `isClientEnv` 退役；`isForgeEnv`/`isFabricEnv`/`getServer`/注册族/流体物品工厂未切 | P0 | 延续 W3.3 切片模式（E2→E6，见 neoforge_migration_plan §4.2） |
 | G3.6 | `PlatformServices` 除 lifecycle 外 facet 多为 **stub**；`platform.services` 0% 测 | P1 | 实现 Registry/Network/… 委托；关键路径可测时再补测 |
 | G3.7 | 无物理多模块（`ic2r-common` / `ic2r-neoforge` / `ic2r-fabric`） | P1 | 逻辑边界稳定后拆 Gradle；主线默认仍可只 assemble Forge |
@@ -205,7 +205,7 @@ G3.*（本文件）
 | [phase2_closeout.md](phase2_closeout.md) | §7.7 / G2.\* |
 | [platform_spi.md](platform_spi.md) | W3.1–W3.3 SPI 与 EnvProxy 映射 |
 | [neoforge_migration_plan.md](neoforge_migration_plan.md) | W3.4 多 loader 计划与延期预填 |
-| [origin.md](origin.md) | residual/rewritten/original 初版（G3.4） |
+| [origin.md](origin.md) | residual/rewritten/original/mixed（W0.6 初版 → **G3.4** G1–G3 回写） |
 | [golden_suite.md](golden_suite.md) | 行为规格；阶段 3 无新 Golden 条目 |
 | `me.halfcooler.ic2r.platform.services.*` | SPI 接口与访问器 |
 | `me.halfcooler.ic2r.forge.ForgePlatformServices` / `PlatformLifecycleForge` / `PlatformRegistryForge` | Forge 安装、lifecycle、registry（G3.2） |
@@ -374,3 +374,48 @@ G3.*（本文件）
 - 上述 **4** 个 `src/test` 文件（边界测）  
 - 本文件 §1 #3 / §4 G3.3 行 + **§12**  
 - **无** git commit/push  
+
+---
+
+## 13. G3.4 Origin residual 回写
+
+> **Work Unit**: G3.4  
+> **日期**: 2026-07-14  
+> **状态**: **partial**（origin.md **已诚实回写**；§8.5 #4 **核心 residual 清零未达成**）  
+> **规格**: [origin.md](origin.md) v0.2-g3.4  
+> **验证**: 文档对照 G1–G3 收口证据；**无**强制代码改动；`test` 可保持绿  
+
+### 13.1 交付
+
+| 动作 | 说明 |
+|:---|:---|
+| **刷新核心包表** | 按 G1–G3 实际交付标注 residual / rewritten / original / mixed；切片类写明「切片」 |
+| **§0.3 诚实结论** | 明确 §8.5 #4 **未**达成；禁止全表改 original |
+| **§3 证据索引** | EnergyNet / network / 标准机 / Inv·Fluid / recipe / platform SPI / Sound·域拆 对照 Unit |
+| **未做** | 域干净室重写；假装 P0 residual 清零；git commit/push |
+
+### 13.2 关键状态变更（摘要）
+
+| 包/切片 | W0.6 | G3.4 |
+|:---|:---|:---|
+| `core/energy/` 整体 | mixed | **mixed**（不变主判据；+ Math 切片行） |
+| `EnergyCalculatorGT` / `EnergyNetMode` | original | **original** |
+| IC 路径 Calculator + Grid 主体 | residual | **residual** |
+| `EnergyTransferMath` / `EnergyBridgeMath` | （未单列） | **rewritten 切片** |
+| `core/network/**` | residual | **mixed**（sync rewritten；TeUpdate 帧/反射 residual） |
+| `core/network/sync/**` | （并入 network） | **rewritten** |
+| 标准机 TE / 主体 | residual | **residual**；+ `StandardMachineCycleMath` **rewritten 切片** |
+| `Ic2rTileEntity` Tick | residual | **mixed**（W1.3 去反射 Tick） |
+| `invslot` / `fluid` | residual / mixed | **mixed**（Math + Handler 切片 rewritten） |
+| `recipe` / `recipe/v2` | residual / rewritten | **mixed**（MatchMath/v2/bridge） |
+| `platform/services/**` | （无） | **original** |
+| SoundEvents Deferred、Items/Blocks 域拆 | rewritten（init/ref） | **rewritten**（证据加细） |
+| reactor / crop / UU 等 | residual | **residual**（未动） |
+| **§8.5 #4 清零** | gap | **仍 gap** |
+
+### 13.3 变更范围（G3.4）
+
+- [origin.md](origin.md)（v0.2-g3.4 全文回写）  
+- 本文件 §1 #4 / §4 G3.4 行 + **§13** + 相关索引句  
+- [Modernization_Progress.md](../Modernization_Progress.md) G3.4（主 Agent）  
+- **无**生产代码功能改动；**无** git commit/push  
