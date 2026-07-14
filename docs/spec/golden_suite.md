@@ -137,12 +137,12 @@
 
 | ID | 标题 | 不变量 / 期望摘要 | 优先级 | 测试状态 | 备注 |
 |:---|:---|:---|:---|:---|:---|
-| RC-001 | item 精确匹配 | `IRecipeInput` item 模式只接受指定物品（及约定的 NBT/组件规则） | P0 | 未写 | draft |
+| RC-001 | item 精确匹配 | `IRecipeInput` item 模式只接受指定物品（及约定的 NBT/组件规则） | P0 | 部分绿 | W2.3：`MachineRecipeMatchMath` 数量/余物门闩；item 本体匹配仍需运行时 registries |
 | RC-002 | tag 匹配 | tag 输入接受该 tag 下任意成员；非成员拒绝 | P0 | 未写 | draft |
 | RC-003 | ore/等价语义 | ore 字典或项目约定的等价输入语义与加载数据一致 | P1 | 未写 | 若仍保留 ore 桥 |
 | RC-004 | 白名单接受 | 白名单内输入可匹配；名单外拒绝 | P0 | 未写 | 回收机等 |
 | RC-005 | 黑名单拒绝 | 黑名单内输入永不匹配，即使满足其它输入描述 | P0 | 未写 | draft |
-| RC-006 | JSON 反序列化往返 | 合法配方 JSON → 内存模型 → 再序列化关键字段稳定（或规范化后相等） | P0 | 未写 | draft |
+| RC-006 | JSON 反序列化往返 | 合法配方 JSON → 内存模型 → 再序列化关键字段稳定（或规范化后相等） | P0 | 部分绿 | W2.3：macerator 数据包 JSON type 存在性烟测；完整 codec 往返需 RecipeManager boot |
 | RC-007 | 非法 JSON 失败 | 缺字段/类型错误时加载失败且不注册半残配方 | P1 | 未写 | draft |
 
 ---

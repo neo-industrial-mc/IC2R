@@ -227,12 +227,12 @@ public class BasicMachineRecipeManager extends MachineRecipeHelper<IRecipeInput,
 			return null;
 		}
 
-		if (StackUtil.getSize(input) >= recipe.getInput().getAmount()
-			&& (!IC2R.envProxy.hasRecipeRemainder(input) || StackUtil.getSize(input) == recipe.getInput().getAmount()))
+		boolean hasRemainder = IC2R.envProxy.hasRecipeRemainder(input);
+		if (MachineRecipeMatchMath.canApplyInput(StackUtil.getSize(input), recipe.getInput().getAmount(), hasRemainder))
 		{
 			if (adjustInput)
 			{
-				if (IC2R.envProxy.hasRecipeRemainder(input))
+				if (hasRemainder)
 				{
 					throw new UnsupportedOperationException("can't adjust input item, use apply() instead");
 				}

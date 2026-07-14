@@ -10,11 +10,11 @@ import me.halfcooler.ic2r.core.block.machine.CannerEnrichRecipeManager;
 import me.halfcooler.ic2r.core.block.machine.EmptyFluidContainerRecipeManager;
 import me.halfcooler.ic2r.core.block.machine.FillFluidContainerRecipeManager;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
-import me.halfcooler.ic2r.core.recipe.BasicMachineRecipeManager;
 import me.halfcooler.ic2r.core.recipe.MatterAmplifierRecipeManager;
 import me.halfcooler.ic2r.core.recipe.SmeltingRecipeManager;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeHolder;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeManagerGetter;
+import me.halfcooler.ic2r.core.recipe.v2.RecipeManagerMachineBridge;
 import me.halfcooler.ic2r.core.ref.Ic2rRecipeTypes;
 
 import java.util.Collection;
@@ -81,16 +81,7 @@ public class Rezepte
 
 	private static RecipeManagerGetter<IBasicMachineRecipeManager> basicRecipe(RecipeType<RecipeHolder<IRecipeInput, Collection<ItemStack>>> recipeType)
 	{
-		return new RecipeManagerGetter<>(recipeManager ->
-		{
-			BasicMachineRecipeManager manager = new BasicMachineRecipeManager();
-
-			for (RecipeHolder<IRecipeInput, Collection<ItemStack>> holder : recipeManager.getAllRecipesFor(recipeType))
-			{
-				manager.addRecipe(holder.recipe(), false);
-			}
-
-			return manager;
-		});
+		// W2.3: materialize from vanilla RecipeManager (JSON + Serializer) via explicit bridge.
+		return new RecipeManagerGetter<>(recipeManager -> RecipeManagerMachineBridge.loadBasic(recipeManager, recipeType));
 	}
 }
