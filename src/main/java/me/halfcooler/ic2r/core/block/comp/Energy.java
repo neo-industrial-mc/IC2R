@@ -22,6 +22,7 @@ import me.halfcooler.ic2r.core.energy.grid.Tile;
 import me.halfcooler.ic2r.core.energy.profile.ElectricalProfile;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
+import me.halfcooler.ic2r.core.util.LegacyNbt;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
 
@@ -40,6 +41,14 @@ import net.minecraft.world.level.Level;
 
 public class Energy extends TileEntityComponent implements IElectricalNode
 {
+	/**
+	 * Modern NBT key for stored EU (W1.5). Writes use this only.
+	 * Semantic rename from legacy {@link #LEGACY_NBT_STORAGE} ({@code storage}).
+	 */
+	public static final String NBT_ENERGY_BUFFER = "energy_buffer";
+	/** Legacy NBT key written by pre-W1.5 builds; still readable via {@link LegacyNbt}. */
+	public static final String LEGACY_NBT_STORAGE = "storage";
+
 	private static final boolean debugLoad = System.getProperty("ic2r.comp.energy.debugload") != null;
 	private final boolean fullEnergy;
 	private double capacity;
@@ -124,15 +133,32 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 	@Override
 	public void readFromNbt(CompoundTag nbt)
 	{
-		this.storage = nbt.getDouble("storage");
+		this.storage = readEnergyBuffer(nbt);
 	}
 
 	@Override
 	public CompoundTag writeToNbt()
 	{
 		CompoundTag ret = new CompoundTag();
-		ret.putDouble("storage", this.storage);
+		writeEnergyBuffer(ret, this.storage);
 		return ret;
+	}
+
+	/**
+	 * Pure NBT write for energy buffer (snake_case only). Used by component + unit tests (NS-003).
+	 */
+	public static void writeEnergyBuffer(CompoundTag nbt, double energy)
+	{
+		nbt.putDouble(NBT_ENERGY_BUFFER, energy);
+	}
+
+	/**
+	 * Pure NBT read for energy buffer: prefer {@link #NBT_ENERGY_BUFFER}, else legacy {@link #LEGACY_NBT_STORAGE}.
+	 * Aligns with golden suite NS-001 / NS-002.
+	 */
+	public static double readEnergyBuffer(CompoundTag nbt)
+	{
+		return LegacyNbt.getDouble(nbt, NBT_ENERGY_BUFFER, LEGACY_NBT_STORAGE);
 	}
 
 	@Override

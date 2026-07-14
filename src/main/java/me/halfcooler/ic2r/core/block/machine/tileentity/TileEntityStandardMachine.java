@@ -59,6 +59,13 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	/** Legacy {@code getNetworkedFields()} / NetworkManager reflection field name for active. */
 	public static final String LEGACY_ACTIVE_FIELD = "active";
 
+	/**
+	 * World-save NBT key for process progress (W1.5).
+	 * Already a single-segment lowercase / snake_case-legal name — retained; no camelCase legacy key.
+	 * Network GUI fraction uses {@link #KEY_GUI_PROGRESS} ({@code gui_progress}), not this key.
+	 */
+	public static final String NBT_PROGRESS = "progress";
+
 	public final int defaultEnergyConsume;
 	public final int defaultOperationLength;
 	public final int defaultTier;
@@ -128,14 +135,32 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
-		this.progress = nbt.getShort("progress");
+		this.progress = readProgressNbt(nbt);
 	}
 
 	@Override
 	public void saveAdditional(CompoundTag nbt)
 	{
 		super.saveAdditional(nbt);
-		nbt.putShort("progress", this.progress);
+		writeProgressNbt(nbt, this.progress);
+	}
+
+	/**
+	 * Pure NBT write for standard-machine progress (snake_case key {@link #NBT_PROGRESS} only).
+	 * Unit-test entry (NS-003).
+	 */
+	public static void writeProgressNbt(CompoundTag nbt, short progress)
+	{
+		nbt.putShort(NBT_PROGRESS, progress);
+	}
+
+	/**
+	 * Pure NBT read for standard-machine progress.
+	 * Key {@link #NBT_PROGRESS} is already snake_case-legal; no legacy camelCase fallback.
+	 */
+	public static short readProgressNbt(CompoundTag nbt)
+	{
+		return nbt.getShort(NBT_PROGRESS);
 	}
 
 	public float getProgress()

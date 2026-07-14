@@ -14,6 +14,7 @@ import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.network.GuiSynced;
+import me.halfcooler.ic2r.core.util.LegacyNbt;
 
 import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 
@@ -31,6 +32,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityConversionGenerator extends TileEntityInventory implements IHasGui, IEnergySource, IElectricalNode, ServerTicker
 {
+	/**
+	 * Modern NBT key for GT-mode energy buffer (W1.5 energy pilot). Writes use this only.
+	 * Same logical name as {@link me.halfcooler.ic2r.core.block.comp.Energy#NBT_ENERGY_BUFFER}.
+	 */
+	public static final String NBT_ENERGY_BUFFER = "energy_buffer";
+	/** Legacy camelCase key; still readable via {@link LegacyNbt}. */
+	public static final String LEGACY_NBT_ENERGY_BUFFER = "energyBuffer";
+
 	private static final NumberFormat FORMAT = new DecimalFormat("#.#");
 	@GuiSynced
 	private double lastProduction;
@@ -50,14 +59,26 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
-		this.energyBuffer = nbt.getDouble("energyBuffer");
+		this.energyBuffer = readEnergyBufferNbt(nbt);
 	}
 
 	@Override
 	public void saveAdditional(CompoundTag nbt)
 	{
 		super.saveAdditional(nbt);
-		nbt.putDouble("energyBuffer", this.energyBuffer);
+		writeEnergyBufferNbt(nbt, this.energyBuffer);
+	}
+
+	/** Pure NBT write (snake_case only). Unit-test entry (NS-003). */
+	public static void writeEnergyBufferNbt(CompoundTag nbt, double energy)
+	{
+		nbt.putDouble(NBT_ENERGY_BUFFER, energy);
+	}
+
+	/** Pure NBT read: prefer {@link #NBT_ENERGY_BUFFER}, else legacy {@link #LEGACY_NBT_ENERGY_BUFFER}. */
+	public static double readEnergyBufferNbt(CompoundTag nbt)
+	{
+		return LegacyNbt.getDouble(nbt, NBT_ENERGY_BUFFER, LEGACY_NBT_ENERGY_BUFFER);
 	}
 
 	@Override

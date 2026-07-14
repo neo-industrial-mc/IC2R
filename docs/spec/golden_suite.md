@@ -162,9 +162,9 @@
 
 | ID | 标题 | 不变量 / 期望摘要 | 优先级 | 测试状态 | 备注 |
 |:---|:---|:---|:---|:---|:---|
-| NS-001 | 旧键兼容读 | 仅含旧 NBT 键的存档读入后，能量/进度等关键状态不丢失 | P0 | 未写 | LegacyNbt / 迁移 |
-| NS-002 | 新旧键并存读 | 同时存在旧键与新键时，优先级规则确定（通常新键优先）且结果可测 | P1 | 未写 | draft |
-| NS-003 | 新键 snake_case 写出 | 新写出 NBT 使用 `snake_case` 键（如 `energy_buffer`），不再只写旧驼峰键 | P0 | 未写 | 见主文档 §3 |
+| NS-001 | 旧键兼容读 | 仅含旧 NBT 键的存档读入后，能量/进度等关键状态不丢失 | P0 | 绿 | W1.5：`Energy`/`storage`、`ConversionGenerator`/`energyBuffer` via `LegacyNbt` |
+| NS-002 | 新旧键并存读 | 同时存在旧键与新键时，优先级规则确定（通常新键优先）且结果可测 | P1 | 绿 | W1.5：`EnergyNbtMigrationTest` 新键优先 |
+| NS-003 | 新键 snake_case 写出 | 新写出 NBT 使用 `snake_case` 键（如 `energy_buffer`），不再只写旧驼峰键 | P0 | 绿 | W1.5：仅写 `energy_buffer` / 标准机 `progress` |
 | NS-004 | 兼容期双写策略 | 若规格要求兼容期双写，读路径仍以迁移表为准；双写集合可枚举 | P1 | 未写 | 可选阶段策略 |
 | NS-005 | 同步字段编解码往返 | 标准机关键同步字段（进度、active、能量显示等）encode→decode 后相等 | P0 | 绿 | W1.2：`gui_progress`+`active` via `TileEntityStandardMachine.bindStandardMachineSync`；能量显示待后续 |
 | NS-006 | 同步不破坏服务端权威 | 客户端解码结果不得在无校验下写回篡改服务端权威状态（契约级） | P1 | 未写 | draft |

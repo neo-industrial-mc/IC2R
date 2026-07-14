@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W1.4  
+**last_completed:** W1.5  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -21,7 +21,7 @@
 | W1.2 | done | 标准机 gui_progress/active 双写注册；NS-005 往返测；test 24/24 绿；TeUpdate 未切主 |
 | W1.3 | done | ServerTicker/ClientTicker 显式接口；移除 getDeclaredMethod 探测；test 24/24 绿 |
 | W1.4 | done | 清零 Vector 配方死字段 + 热路径 RandomSource.create()；create(42L)/printStackTrace 豁免登记 |
-| W1.5 | pending | NBT/网络字面量 snake_case 试点 |
+| W1.5 | done | Energy storage/energyBuffer→energy_buffer + LegacyNbt；标准机 progress；迁移测 38 tests 绿 |
 | W1.6 | pending | 注册拆分 |
 | W1.7 | pending | Deferred/Holder 试点 |
 | W1.8 | pending | 阶段 1 收口 |
@@ -39,11 +39,12 @@
 
 ## Last session
 
-- unit: W1.4
+- unit: W1.5
 - result: done / PASS
-- suggested_commit: `refactor: remove Vector recipe leftovers and hot-path RandomSource.create`
+- suggested_commit: `feat(nbt): snake_case energy_buffer with legacy key read for pilot domain`
 - verify_log: |
-    - DoD: java.util.Vector 0；RandomSource.create() 0；create(42L) 豁免登记 ✅
-    - 抽查 world.random 替换 ✅
-    - gradlew test 绿；未改电网公式/NBT 键名
-    - docs/spec/smell_exemptions_w1_4.md
+    - DoD: 写 energy_buffer；读 storage/energyBuffer 兼容 ✅；迁移测绿 ✅
+    - LegacyNbt 工具；id_migrations.md 登记
+    - 试点仅 Energy + 标准机 progress；reactor/crop 未全改
+    - 网络 guiProgress 反射 live path 保留
+    - gradlew test 38/38

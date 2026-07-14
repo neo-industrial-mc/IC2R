@@ -49,7 +49,7 @@
 | [golden_suite.md](golden_suite.md) | 条目表大纲（W0.3）→ 用例正文（后续） | W0.2 / W0.3+ | 行为黄金用例大纲与条目 ID 表 |
 | [naming_audit.md](naming_audit.md) | **已产出**（W0.5）：抽样 + 优先级 | W0.5 | 命名扫描报告与修复优先级 |
 | [origin.md](origin.md) | **已产出**（W0.6）：核心包初版标注 | W0.6 | 模块 Origin：residual / rewritten / original / mixed |
-| `id_migrations.md` | **可选**（按需） | 命名/NBT 迁移相关 Unit | 注册 ID / NBT 键 / 网络字段迁移表 |
+| [id_migrations.md](id_migrations.md) | **已起步**（W1.5 试点） | 命名/NBT 迁移相关 Unit | 注册 ID / NBT 键 / 网络字段迁移表 |
 
 ### 编写约定（摘要）
 
