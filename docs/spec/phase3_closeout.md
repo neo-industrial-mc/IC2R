@@ -15,7 +15,7 @@
 |:---|:---|:---|:---|:---|
 | 1 | common 源码无 `net.minecraftforge.*` / `net.neoforged.*` / `net.fabricmc.*` **实现型** import | **gap** | 尚无物理 `ic2r-common` 模块；以 `core` + `platform.services` 作 common 代理口径抽查：**platform 包 0 条** loader import（达标切片）。**core 仍大量残留**：约 **57** 个文件、**114** 条 `import net.minecraftforge.*`（抽样主导：`Dist`/`OnlyIn`×37 对、`ForgeRegistries`×13、`IItemHandler*`/`LazyOptional` 于库存 TE、`ForgeConfigSpec` 等）。`net.neoforged.*` / `net.fabricmc.*` **全库 0**。W3.2 仅迁 1 调用点（`PlatformLifecycle.isClient`）；W3.3 删 `EnvProxy#isClientEnv` 但 `isForgeEnv`/`isFabricEnv` 等仍双轨 | W3.1–W3.3 |
 | 2 | 至少一条**非 Forge**加载器可运行最小集（物品注册 + 一台机器 + 电网） | **deferred**（G3.2 **started**） | **W3.4** 文档计划 + **G3.2** kickoff：[g3_2_neoforge_min_set.md](g3_2_neoforge_min_set.md)；`PlatformRegistryForge` 真实现 + `getServer` 调用点迁 SPI。主构建仍 **Forge 1.20.1**；**无**可运行 NeoForge artifact。选项 **A** 优先验证 SPI；M8 再谈完整最小集 | W3.4 / G3.2 |
-| 3 | 覆盖率达 §4.5 阶段 3 门槛（**≥ 75%** common 全量，不含 client 渲染） | **gap** | 见 §2。overall LINE **~0.90%**（355/39464）；common-ish（排除 forge/integration/gui/render）**~1.06%**（355/33429）≪ 75%。阶段 1/2 窄/宽口径与收口时一致量级，**无**覆盖率跃升 | W0.1+ 历史；阶段 3 未加测 |
+| 3 | 覆盖率达 §4.5 阶段 3 门槛（**≥ 75%** common 全量，不含 client 渲染） | **gap** | W3.5 见 §2（common-ish **~1.06%**）。**G3.3 复测**见 **§12**：common-ish **~1.79%**（609/34053）仍 ≪ 75%；需再覆盖约 **2.5e4** 行才达门槛 | W0.1+ / G3.3 |
 | 4 | Origin 文档中「移植残留」**核心模块清零**或仅剩标注兼容层 | **partial / gap** | [origin.md](origin.md) 仍为 W0.6 初版表；P0 residual（EnergyNet IC 路径、标准机、`network` 反射同步、InvSlot、reactor/crop 等）**未**升为 rewritten/original。阶段 1–3 **局部现代化**（Sync 骨架、显式 Tick、Handler 委托、macerator RecipeManager、SPI 草案+首迁）降低部分路径风险，但 **Origin 核心 residual 未清零** → 诚实 **partial**（有增量）/ **gap**（未达 §8.5 清零） | W0.6 + W1–W3 局部 |
 
 ### 1.1 勾选视图（阶段 3 名义完成度）
@@ -136,7 +136,7 @@
 |:---|:---|:---|:---|
 | G3.1 | common/core 仍大量 `net.minecraftforge.*` 实现型 import | P0 | **partial（G3.1 切片 done，见 §10）**：core **65→31** 文件 / **123→54** import 行；仅 `Dist`/`OnlyIn` 文件已清零。**仍 residual**：`ForgeRegistries`、cap/handler、config、event 等；禁止一次清零。后续 E2–E6 / 下沉 SPI/forge 包 |
 | G3.2 | 非 Forge 最小可运行集 **已启动 / partial**（§8.5 #2 仍 **未** done） | P0 | **partial/started（见 §11）**：kickoff 文档 + `PlatformRegistryForge` + `getServer` 调用点迁 SPI；**尚无**可运行 NeoForge artifact；主构建仍 Forge 1.20.1。后续：E2 续 → 非 stub Network/Item → 骨架 → M8 最小集 |
-| G3.3 | 覆盖率 common ≪ 75%（~1%） | P0 | **继承 G1.2/G2.4**；优先 EnergyNet / 标准机循环 / Sync 切主后 e2e；勿堆 SPI 接口空测 |
+| G3.3 | 覆盖率 common ≪ 75%（G3.3 复测 common-ish **~1.79%**） | P0 | **open / gap（见 §12）**：相对 W3.5 有增量（66→**153** tests；common-ish 1.06%→**1.79%**）仍远低于 75%。继承 G1.2/G2.4；优先电网/标准机本体/切主 Sync e2e；**禁止**空转堆 SPI |
 | G3.4 | Origin residual **核心未清零**（energy IC、标准机、network 反射、InvSlot、reactor/crop…） | P0 | 域重写 Unit + 回写 origin.md；清零前禁止宣称 §8.5 #4 done |
 | G3.5 | EnvProxy 上帝代理仍在；仅 `isClientEnv` 退役；`isForgeEnv`/`isFabricEnv`/`getServer`/注册族/流体物品工厂未切 | P0 | 延续 W3.3 切片模式（E2→E6，见 neoforge_migration_plan §4.2） |
 | G3.6 | `PlatformServices` 除 lifecycle 外 facet 多为 **stub**；`platform.services` 0% 测 | P1 | 实现 Registry/Network/… 委托；关键路径可测时再补测 |
@@ -315,4 +315,62 @@ G3.*（本文件）
 - `forge/ForgePlatformServices.java`  
 - `core/proxy/SideProxyServer.java`、`core/item/tool/ItemDrill.java`  
 - 本文件 §1 / §4 G3.2 + **§11**；[docs/spec/README.md](README.md) 索引  
+- **无** git commit/push  
+
+---
+
+## 12. G3.3 复测 — common 覆盖率（§4.5 阶段 3 ≥75%）
+
+> **Work Unit**: G3.3  
+> **日期**: 2026-07-14  
+> **状态**: **open / gap**（有意义纯逻辑边界测 **done**；**未**达 75% common）  
+> **命令**: `.\gradlew.bat test jacocoTestReport` → **BUILD SUCCESSFUL**；**153** tests, 0 failures  
+> **报告**: `build/reports/jacoco/test/html/index.html` / `jacocoTestReport.xml`  
+> **口径**: 与 §2.1 一致（common-ish / overall / 阶段 1 宽 / 阶段 2 窄）
+
+### 12.1 对照 75% 与 W3.5
+
+| 聚合口径 | W3.5（§2.2） | G3.3 复测 | Δ covered | 相对 75% |
+|:---|:---|:---|:---|:---|
+| **common-ish（阶段 3 主门槛）** | **~1.06%** 355/33429 | **~1.79%** 609/34053 | +254 行 | **gap**（差约 **24930** 行至 75%） |
+| 全工程 overall LINE | **0.90%** 355/39464 | **1.52%** 609/40087 | +254 | 背景，非门槛 |
+| **阶段 1 宽口径**† | **~2.68%** 223/8335 | **~4.47%** 380/8499 | +157 | 仍 ≪ 75% |
+| **阶段 2 窄口径**\* | **~3.53%** 75/2127 | **~5.90%** 143/2425 | +68 | 仍 ≪ 75% |
+| 测试计数 | **66** | **153** | +87 | 含 W3.5 后累计 + 本 Unit 边界测 |
+
+\*窄 = `invslot` + `fluid` + `recipe` + `recipe.v2`。  
+†宽 = `core/energy*` + `core/network*` + `block.comp` + `machine.tileentity`。  
+‡common-ish = overall 排除 `forge` / `integration` / `gui` / `render` / `model` / `datagen` / `mixin` / `compat` 包路径段。
+
+**结论（诚实）**：**未达 75%**。common-ish 仍 **~1.8%** 量级；相对 W3.5 有可见增量，但**无**覆盖率跃升到门槛附近。后续须覆盖电网/标准机/InvSlot 等**大本体**，而非继续只测已近 100% 的 `*Math` 切片。
+
+### 12.2 包级快照（G3.3 实测，节选）
+
+| 包或聚合 | 行覆盖 | covered/total | 备注 |
+|:---|:---|:---|:---|
+| `core.network.sync` | **96.69%** | 117/121 | Sync 边界测加深 |
+| `core.energy`（含 EnergyBridgeMath） | **91.30%** | 42/46 | Bridge 溢出/残差 |
+| `core.energy.grid` | **3.01%** | 60/1994 | 几乎仅 TransferMath |
+| `core.block.machine.tileentity` | **1.23%** | 48/3901 | CycleMath 切片；TE 本体未测 |
+| `core.fluid` / `invslot` / `recipe` | ~6–9% | — | 阶段 2 Math 遗产 |
+| `platform.services` | **0%** | 0/30 | 刻意不堆 SPI 空测 |
+| **common-ish** | **~1.79%** | 609/34053 | **gap** |
+
+高价值纯逻辑类（本 Unit 后）：`EnergyBridgeMath` / `FluidTransferMath` / `MachineRecipeMatchMath` / `RecipeSerializerMath` **~100%**；`EnergyTransferMath` **~98%**；`StandardMachineCycleMath` **~97%**；`BlockEntitySync` **~98%**。亮点已饱和，**拉不动** common 全量门槛。
+
+### 12.3 本 Unit 新增有意义测（≥3，非空转）
+
+| 文件 | 场景 | 规格精神 |
+|:---|:---|:---|
+| `EnergyTransferMathTest` | 高 tier 阶梯 / distribute 非法输入 / 线损杀 inject；GT 死包、null loss、V≤0 offer | EN-IC / EN-GT 边界 |
+| `StandardMachineCycleMathTest` | defaultLength=0→64ops/len1；rescale 非法长度；多 OC 与 applyModifier 饱和；length0 tick clamp | SM-001/006 边界 |
+| `EnergyBridgeMathTest` | 有限大数 FE 饱和 Long.MAX；Infinity 拒为 0；部分 FE 接受残差 | G2.8 bridge 溢出安全 |
+| `SyncCodecRoundTripTest` | isEmpty；legacy alias lookup；tryGet/trySet 回落；未知 wire decode 硬失败 | NS-005 / TeUpdate 别名 |
+
+**未做**：伪造 75%；对 SPI 接口 getter 空测抬点；改生产玩法逻辑。
+
+### 12.4 变更范围（G3.3）
+
+- 上述 **4** 个 `src/test` 文件（边界测）  
+- 本文件 §1 #3 / §4 G3.3 行 + **§12**  
 - **无** git commit/push  

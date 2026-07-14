@@ -112,4 +112,29 @@ class EnergyBridgeMathTest
 		assertEquals(42, EnergyBridgeMath.clampToIntEnergy(42L));
 		assertEquals(Integer.MAX_VALUE, EnergyBridgeMath.clampToIntEnergy(Integer.MAX_VALUE + 1L));
 	}
+
+	/**
+	 * G3.3: huge finite EU×ratio saturates to Long.MAX_VALUE (ceil/floor); residual never negative.
+	 * Non-finite product (Infinity) is rejected as 0 — never wraps to negative FE.
+	 */
+	@Test
+	void euToFe_overflowSaturates_andPartialAcceptResidue()
+	{
+		// finite product still ≥ Long.MAX_VALUE as double → saturate
+		// 5e18 * 4 = 2e19 > Long.MAX_VALUE (~9.22e18) and still finite
+		assertEquals(Long.MAX_VALUE, EnergyBridgeMath.euToFeCeil(5e18, 4.0));
+		assertEquals(Long.MAX_VALUE, EnergyBridgeMath.euToFeFloor(5e18, 4.0));
+
+		// overflow to Infinity is not a valid FE request
+		assertEquals(0L, EnergyBridgeMath.euToFeCeil(Double.MAX_VALUE, 4.0));
+		assertEquals(0L, EnergyBridgeMath.euToFeFloor(Double.MAX_VALUE, 4.0));
+
+		// tiny positive EU still ceils to at least 1 FE at default ratio when product > 0
+		assertEquals(1L, EnergyBridgeMath.euToFeCeil(1e-9));
+
+		// partial FE accept mid-packet: offer 100 EU → 200 FE req; accept 50 FE → 75 EU left
+		assertEquals(75.0, EnergyBridgeMath.residualEuAfterFeTransfer(100.0, 50L), EPS);
+		// accept more FE than offered EU maps to → residual 0
+		assertEquals(0.0, EnergyBridgeMath.residualEuAfterFeTransfer(1.0, 100L), EPS);
+	}
 }

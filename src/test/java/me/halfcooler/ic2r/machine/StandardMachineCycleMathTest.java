@@ -172,4 +172,53 @@ class StandardMachineCycleMathTest
 		assertFalse(StandardMachineCycleMath.canOperate(true, 9.0, 10));
 		assertFalse(StandardMachineCycleMath.canOperate(false, 100.0, 1));
 	}
+
+	// --- G3.3 boundary: zero-length defaults, rescale invalid, multi-OC ---
+
+	/**
+	 * defaultOperationLength == 0 → historical IC2 batch: 64 ops/tick, length 1.
+	 * rescale with non-positive lengths → 0 (no NaN/negative progress).
+	 */
+	@Test
+	void zeroDefaultLength_andInvalidRescale()
+	{
+		assertEquals(64, StandardMachineCycleMath.operationsPerTick(0, 0, 1.0));
+		assertEquals(1, StandardMachineCycleMath.operationLength(0, 0, 1.0));
+		// still 64/1 when overclock multipliers present (early-return on length 0)
+		assertEquals(64, StandardMachineCycleMath.operationsPerTick(0, 10, 0.7));
+		assertEquals(1, StandardMachineCycleMath.operationLength(0, 10, 0.7));
+
+		assertEquals(0, StandardMachineCycleMath.rescaleProgress((short) 50, 0, 70));
+		assertEquals(0, StandardMachineCycleMath.rescaleProgress((short) 50, 100, 0));
+		assertEquals(0, StandardMachineCycleMath.rescaleProgress((short) 50, -1, 70));
+	}
+
+	/**
+	 * Heavy overclock stack: processTime→0-ish stackOpLen drives opsPerTick toward MAX;
+	 * energyDemand applies IC2 rounding via applyModifier.
+	 */
+	@Test
+	void multiOverclock_extremeTimeMultiplier_andEnergyClamp()
+	{
+		// very small processTimeMultiplier → huge ops/tick (batch machines)
+		int ops = StandardMachineCycleMath.operationsPerTick(100, 0, 1e-9);
+		assertTrue(ops > 1);
+		assertTrue(ops <= Integer.MAX_VALUE);
+
+		// applyModifier saturation path: huge base*mult → Integer.MAX_VALUE
+		assertEquals(Integer.MAX_VALUE, StandardMachineCycleMath.applyModifier(
+			Integer.MAX_VALUE, 0, 2.0));
+
+		// two overclockers spirit: 0.7^2 time, 1.6^2 energy on 2 EU base
+		int len = StandardMachineCycleMath.operationLength(100, 0, 0.49);
+		int eu = StandardMachineCycleMath.energyDemand(2, 0, 2.56);
+		assertTrue(len < 70, "two OC shorter than one OC (70)");
+		assertEquals(5, eu); // round(2 * 2.56) = 5
+
+		// tick with length 0 input is clamped to 1 internally
+		CycleTickResult r = StandardMachineCycleMath.tick((short) 0, 0, 1, 10.0, true);
+		assertTrue(r.operationCompleted());
+		assertEquals(0, r.progress());
+		assertEquals(9.0, r.energyStored(), 1e-9);
+	}
 }

@@ -127,6 +127,56 @@ class SyncCodecRoundTripTest
 		);
 	}
 
+	/**
+	 * G3.3 Sync boundary: empty registry, legacy alias lookup, tryGet/trySet fallback,
+	 * unknown wire on decode fails hard (protocol bug).
+	 */
+	@Test
+	void blockEntitySync_legacyLookup_tryGetSet_andUnknownWire() throws IOException
+	{
+		BlockEntitySync empty = new BlockEntitySync();
+		assertTrue(empty.isEmpty());
+		assertEquals(0, empty.size());
+		assertEquals(null, empty.lookup(null));
+		assertEquals(null, empty.lookup("gui_progress"));
+
+		AtomicInteger progress = new AtomicInteger(12);
+		BlockEntitySync sync = new BlockEntitySync();
+		sync.add(
+			SyncKey.of("gui_progress", SyncCodecs.INT),
+			progress::get,
+			progress::set,
+			"guiProgress" // legacy TeUpdate name
+		);
+		assertFalse(sync.isEmpty());
+		assertEquals(1, sync.size());
+
+		// modern wire + legacy alias resolve to the same field
+		assertEquals(sync.get("gui_progress"), sync.lookup("gui_progress"));
+		assertEquals(sync.get("gui_progress"), sync.lookup("guiProgress"));
+		assertEquals(null, sync.lookup("unknown_field"));
+
+		Object[] out = new Object[1];
+		assertTrue(sync.tryGetValue("guiProgress", out));
+		assertEquals(12, out[0]);
+		assertFalse(sync.tryGetValue("missing", out));
+		assertThrows(IllegalArgumentException.class, () -> sync.tryGetValue("gui_progress", new Object[0]));
+
+		assertTrue(sync.trySetValue("guiProgress", 99));
+		assertEquals(99, progress.get());
+		assertFalse(sync.trySetValue("missing", 1));
+
+		// encode then decode with missing key → IOException
+		GrowingBuffer buffer = new GrowingBuffer(32);
+		sync.encodeAll(buffer);
+		buffer.flip();
+		BlockEntitySync other = new BlockEntitySync();
+		other.add(SyncKey.of("active", SyncCodecs.BOOLEAN), () -> false, v ->
+		{
+		});
+		assertThrows(IOException.class, () -> other.decodeAll(buffer));
+	}
+
 	private static <T> void assertRoundTrip(me.halfcooler.ic2r.core.network.sync.SyncCodec<T> codec, T value)
 		throws IOException
 	{

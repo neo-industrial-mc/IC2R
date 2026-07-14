@@ -255,4 +255,43 @@ class EnergyTransferMathTest
 		assertEquals(1, EnergyTransferMath.gtOfferAmpsCapped(128.0, lv, 1));
 		assertEquals(0, EnergyTransferMath.gtOfferAmpsCapped(64.0, lv, 0));
 	}
+
+	// --- G3.3 boundary deepening (still pure EN-IC / EN-GT math) ---
+
+	/**
+	 * High-tier ladder + inverse: tier≥14 uses 8·4^tier; tier≥30 saturates;
+	 * invalid distribute inputs yield empty delivery array.
+	 */
+	@Test
+	void icPowerFromTier_highTiersAndDistributeInvalidInputs()
+	{
+		// tier 14: 8 * 4^14 (beyond the 8<<(tier*2) branch)
+		assertEquals(8.0 * Math.pow(4.0, 14), EnergyTransferMath.icPowerFromTier(14), 1e-3);
+		assertEquals(9.223372E18F, EnergyTransferMath.icPowerFromTier(30), 1e6);
+		assertEquals(0, EnergyTransferMath.icTierFromPower(0.0));
+		assertEquals(0, EnergyTransferMath.icTierFromPower(-1.0));
+
+		// mismatched / null → empty (not NPE / partial write)
+		assertEquals(0, EnergyTransferMath.icDistributeSequential(100.0, null, new double[] {1}).length);
+		assertEquals(0, EnergyTransferMath.icDistributeSequential(100.0, new double[] {1}, null).length);
+		assertEquals(0, EnergyTransferMath.icDistributeSequential(
+			100.0, new double[] {1.0}, new double[] {1.0, 2.0}).length);
+
+		// path loss kills inject even when offer & demand positive
+		assertEquals(0.0, EnergyTransferMath.icDeliverToSink(5.0, 10.0, 100.0), 1e-9);
+		assertEquals(0.0, EnergyTransferMath.icSourceConsumed(0.0, 10.0), 1e-9);
+	}
+
+	/** GT: dead packet / null loss sequence / voltage≤0 offer edge */
+	@Test
+	void gtPacketAndOffer_deadPacketNullLossAndZeroVoltage()
+	{
+		assertEquals(0, EnergyTransferMath.gtReducePacketByConductor(0, 1));
+		assertEquals(0, EnergyTransferMath.gtReducePacketByConductor(-5, 1));
+		// null varargs path returns max(0, voltage)
+		assertEquals(32, EnergyTransferMath.gtPacketEuAfterPathLoss(32, (int[]) null));
+		assertEquals(0, EnergyTransferMath.gtPacketEuAfterPathLoss(0, (int[]) null));
+		assertEquals(0, EnergyTransferMath.gtOfferAmps(128.0, 0));
+		assertEquals(0, EnergyTransferMath.gtOfferAmps(128.0, -32));
+	}
 }
