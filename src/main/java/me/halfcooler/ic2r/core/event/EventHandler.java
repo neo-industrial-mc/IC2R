@@ -172,7 +172,11 @@ public final class EventHandler
 		}
 
 		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2RConfig.misc.energyNetMode.get());
-		IC2R.sideProxy.messagePlayer(player, Component.translatable("ic2r.energynet.mode", Component.translatable("ic2r.energynet.mode." + mode.name().toLowerCase())));
+		// G3.6: player message via PlatformPlayerUi (Forge → SideProxy#messagePlayer)
+		PlatformServices.playerUi().messagePlayer(
+			player,
+			Component.translatable("ic2r.energynet.mode", Component.translatable("ic2r.energynet.mode." + mode.name().toLowerCase()))
+		);
 	}
 
 	public static void onWorldLoad(Level world)

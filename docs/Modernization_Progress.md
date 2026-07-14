@@ -1,25 +1,23 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** G3.5  
+**last_completed:** G3.6  
 **updated:** 2026-07-14  
 
 ## Queue（G3）
 
 | ID | status | last_notes |
 |----|--------|------------|
-| G3.1 | done | Dist/OnlyIn 切片 |
-| G3.2 | done | NeoForge min-set kickoff + Registry SPI |
-| G3.3 | done | common-ish ~1.79% 仍 gap |
-| G3.4 | done | origin 回写；§8.5 #4 仍 gap |
-| G3.5 | done | E2：删除 EnvProxy isForge/isFabric/getServer；标签→getLoaderKind；test 绿 |
-| G3.6+ | pending | SPI 非 stub（Network/UI/…）、E3 注册族、多模块… |
+| G3.1–G3.5 | done | 见历史 |
+| G3.6 | done | 8 SPI facet 全 Forge 真实现（去 Stub）；IHasGui/StackUtil/FluidHandler 等迁 SPI；extract 有意 EMPTY residual |
+| G3.7 | pending | 物理多模块（ic2r-common / neoforge） |
+| G3.8+ | pending | Architectury 延期；巨型 BE 等 |
 
 ## Last session
 
-- unit: G3.5
+- unit: G3.6
 - result: done / PASS
-- suggested_commit: `refactor: EnvProxy E2 remove isForgeEnv/isFabricEnv/getServer for SPI`
+- suggested_commit: `feat(platform): implement remaining SPI facets as Forge thin adapters`
 - verify_log: |
-    - DoD: 三方法从 EnvProxy 删除；tags 走 LoaderKind ✅
-    - getServer 已走 SPI；compile+test 绿
+    - Network/UI/Config/Item/Fluid Forge 实现；install 无 Stub ✅
+    - ≥2 调用点迁 SPI；test 绿

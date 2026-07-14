@@ -11,7 +11,8 @@ import java.util.function.Supplier;
  * W3.3: all client-env checks use {@link #lifecycle()}{@code .isClient()}; {@code EnvProxy#isClientEnv} removed.
  * G3.5 / E2: loader kind / server via {@link #lifecycle()}{@code .getLoaderKind()}/{@code .getServer()};
  * {@code EnvProxy#isForgeEnv}/{@code isFabricEnv}/{@code getServer} removed.
- * Other facets may still be stubs; remaining runtime dual-tracks {@code IC2R.envProxy} / {@code IC2R.sideProxy}.
+ * G3.6: all eight facets installed as real Forge thin adapters (no stubs); remaining call sites may still
+ * dual-track {@code IC2R.envProxy} / {@code IC2R.sideProxy} until incremental migration finishes.
  * ServiceLoader remains a fallback when {@link #install} was not called.
  */
 public final class PlatformServices

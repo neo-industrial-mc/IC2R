@@ -3,6 +3,7 @@ package me.halfcooler.ic2r.core;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.util.Util;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 
 import java.io.IOException;
 
@@ -59,7 +60,8 @@ public interface IHasGui extends Container
 		}
 
 		buffer.flip();
-		return IC2R.envProxy.openHandledScreen(player, new MenuProvider()
+		// G3.6: open menu via PlatformPlayerUi (Forge → EnvProxy#openHandledScreen)
+		return PlatformServices.playerUi().openMenu(player, new MenuProvider()
 		{
 			public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player playerx)
 			{
@@ -82,7 +84,8 @@ public interface IHasGui extends Container
 
 		buffer.flip();
 		final Item item = player.getItemInHand(hand).getItem();
-		return IC2R.envProxy.openHandledScreen(player, new MenuProvider()
+		// G3.6: open menu via PlatformPlayerUi (Forge → EnvProxy#openHandledScreen)
+		return PlatformServices.playerUi().openMenu(player, new MenuProvider()
 		{
 			public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player playerx)
 			{

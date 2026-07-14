@@ -139,7 +139,7 @@
 | G3.3 | 覆盖率 common ≪ 75%（G3.3 复测 common-ish **~1.79%**） | P0 | **open / gap（见 §12）**：相对 W3.5 有增量（66→**153** tests；common-ish 1.06%→**1.79%**）仍远低于 75%。继承 G1.2/G2.4；优先电网/标准机本体/切主 Sync e2e；**禁止**空转堆 SPI |
 | G3.4 | Origin residual **核心未清零**（energy IC、标准机、network 反射、InvSlot、reactor/crop…） | P0 | **partial（G3.4 文档回写 done，见 §13）**：origin.md 已按 G1–G3 刷新切片状态；**§8.5 #4 清零仍 gap**。后续域干净室重写后再回写；清零前禁止宣称 #4 done |
 | G3.5 | EnvProxy 上帝代理仍在；**E2 done**：`isClientEnv`/`isForgeEnv`/`isFabricEnv`/`getServer` 已从 EnvProxy 删并迁 SPI；注册族/流体物品工厂未切 | P0 | **partial（E2 done）**：见 platform_spi.md G3.5 切片；下一 E3 注册族 → E4+（neoforge_migration_plan §4.2） |
-| G3.6 | `PlatformServices` 除 lifecycle 外 facet 多为 **stub**；`platform.services` 0% 测 | P1 | 实现 Registry/Network/… 委托；关键路径可测时再补测 |
+| G3.6 | ~~SPI facet 多为 stub~~ → **done**（见 **§14**）：8 facet Forge 薄委托；≥4 调用点迁 SPI；`extract` 有意 EMPTY 缺口已文档 | P1 | **done**；后续 E3 注册主路径 + 可选 Network 发包替换；勿堆 SPI 空测 |
 | G3.7 | 无物理多模块（`ic2r-common` / `ic2r-neoforge` / `ic2r-fabric`） | P1 | 逻辑边界稳定后拆 Gradle；主线默认仍可只 assemble Forge |
 | G3.8 | Architectury **未**引入 | P2 | **有意延期**（主文档：先手写 thin platform）；非缺陷 |
 | G3.9 | 巨型 BE / api 面瘦身 / Mixin 最小集（§8.3）未作为 W3.\* 推进 | P2 | 后置域 Unit；与 G3.4 Origin 联动 |
@@ -208,7 +208,7 @@ G3.*（本文件）
 | [origin.md](origin.md) | residual/rewritten/original/mixed（W0.6 初版 → **G3.4** G1–G3 回写） |
 | [golden_suite.md](golden_suite.md) | 行为规格；阶段 3 无新 Golden 条目 |
 | `me.halfcooler.ic2r.platform.services.*` | SPI 接口与访问器 |
-| `me.halfcooler.ic2r.forge.ForgePlatformServices` / `PlatformLifecycleForge` / `PlatformRegistryForge` | Forge 安装、lifecycle、registry（G3.2） |
+| `me.halfcooler.ic2r.forge.ForgePlatformServices` / `Platform*Forge`（8 facet，G3.6） | Forge 安装与全部 SPI 薄委托 |
 | [g3_2_neoforge_min_set.md](g3_2_neoforge_min_set.md) | G3.2 最小集 kickoff |
 | [Modernization_Progress.md](../Modernization_Progress.md) | Work Unit 队列 |
 
@@ -295,11 +295,11 @@ G3.*（本文件）
 | **调用点（E2 切片）** | `SideProxyServer`、`ItemDrill`：`envProxy.getServer()` → `PlatformServices.lifecycle().getServer()` |
 | **未做** | NeoForge 依赖/模块/入口；主构建切换；全库注册迁 SPI；Network/Item/Fluid/UI/Config 非 stub；git commit/push |
 
-### 11.2 SPI 就绪（G3.2 后）
+### 11.2 SPI 就绪（G3.2 后 → **G3.6 全 facet**）
 
 | 真实现 | stub |
 |:---|:---|
-| Lifecycle、**Registry（新）**、EnergyBridge | Network、PlayerUi、Config、ItemTransfer、FluidBridge |
+| Lifecycle、Registry、EnergyBridge、**Network / PlayerUi / Config / ItemTransfer / FluidBridge（G3.6）** | **无**（G3.6 已清 stub；`ItemTransfer#extract` 仍 EMPTY 缺口见 §14） |
 
 ### 11.3 Residual / 诚实边界
 
@@ -419,3 +419,38 @@ G3.*（本文件）
 - 本文件 §1 #4 / §4 G3.4 行 + **§13** + 相关索引句  
 - [Modernization_Progress.md](../Modernization_Progress.md) G3.4（主 Agent）  
 - **无**生产代码功能改动；**无** git commit/push  
+
+---
+
+## 14. G3.6 SPI facet 去 stub
+
+> **Work Unit**: G3.6  
+> **日期**: 2026-07-14  
+> **状态**: **done**（8 facet 真实现 + 调用点试点；**未**全库迁 EnvProxy）  
+> **验证**: `.\gradlew.bat compileJava test` → BUILD SUCCESSFUL  
+
+### 14.1 交付
+
+| 动作 | 说明 |
+|:---|:---|
+| **PlatformNetworkForge** | `registerChannel` 幂等 no-op（`FmlMod` 已注册）；send→vanilla custom payload（对齐 `NetworkManager`） |
+| **PlatformPlayerUiForge** | `openMenu`→`EnvProxy#openHandledScreen`；message/error→`SideProxy` |
+| **PlatformConfigForge** | `FMLPaths.CONFIGDIR`；register* no-op；`isCommonConfigLoaded`→`IC2RConfig.SPEC.isLoaded()` |
+| **PlatformItemTransferForge** | `createHandler`→`EnvProxy`；`insert`→`deposit`；**`extract`→EMPTY**（无公开 BE extract，javadoc 说明） |
+| **PlatformFluidBridgeForge** | `createHandler`→`EnvProxy`；drain/fill/getContained→`EnvFluidHandler` API |
+| **ForgePlatformServices** | 安装上述实现；**删除** StubFluid/Item/Network/PlayerUi/Config |
+| **调用点（≥2，实际 4）** | `IHasGui` openMenu；`StackUtil.ENV`；`FluidHandler.ENV_HANDLER`；`EventHandler.onPlayerLogin` messagePlayer |
+| **文档** | [platform_spi.md](platform_spi.md) facet 表 + G3.6 切片；本 §14 |
+
+### 14.2 诚实边界
+
+- EnvProxy / SideProxy **双轨仍在**（大量 messagePlayer / 注册等未迁）  
+- `PlatformItemTransfer#extract` **有意** stub 返回 EMPTY（domain 缺口，非偷懒整 facet）  
+- Network 通道注册 / Config 文件注册 **仍**在 `FmlMod`；SPI 面为幂等入口  
+- **无**物理多模块 / NeoForge 实现 / git commit/push  
+
+### 14.3 变更范围（G3.6）
+
+- 新建：`forge/PlatformNetworkForge.java`、`PlatformPlayerUiForge.java`、`PlatformConfigForge.java`、`PlatformItemTransferForge.java`、`PlatformFluidBridgeForge.java`  
+- 改：`forge/ForgePlatformServices.java`；`core/IHasGui.java`、`util/StackUtil.java`、`fluid/FluidHandler.java`、`event/EventHandler.java`；`platform/services/PlatformServices.java` javadoc  
+- 文档：本文件 §4 G3.6 + **§14**；[platform_spi.md](platform_spi.md)；[Modernization_Progress.md](../Modernization_Progress.md)  

@@ -6,6 +6,7 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rPlayer;
 import me.halfcooler.ic2r.core.item.EnvItemHandler;
 import me.halfcooler.ic2r.core.ref.Ic2rItemTags;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.ints.IntIterator;
@@ -60,7 +61,21 @@ public final class StackUtil
 {
 	public static final Predicate<ItemStack> anyStack = stack -> true;
 	public static final ItemStack emptyStack = ItemStack.EMPTY;
-	public static final EnvItemHandler ENV = IC2R.envProxy.createItemHandler();
+	/**
+	 * G3.6: factory via {@link PlatformServices#itemTransfer()} (Forge → EnvProxy#createItemHandler).
+	 * Touches {@link IC2R} first so {@code ForgePlatformServices.install()} has run.
+	 */
+	public static final EnvItemHandler ENV = createEnvItemHandler();
+
+	private static EnvItemHandler createEnvItemHandler()
+	{
+		// Force IC2R static init (envProxy + PlatformServices install) before SPI factory.
+		if (IC2R.envProxy == null)
+		{
+			throw new IllegalStateException("IC2R.envProxy missing before PlatformItemTransfer factory");
+		}
+		return PlatformServices.itemTransfer().createHandler();
+	}
 	static final Set<String> ignoredNbtKeys = new HashSet<>(Arrays.asList("damage", "charge", "energy", "advDmg"));
 	private static final List<TagKey<Item>> oreTags = List.of(
 		Ic2rItemTags.ORES,

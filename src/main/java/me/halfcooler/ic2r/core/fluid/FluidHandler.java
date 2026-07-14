@@ -1,6 +1,7 @@
 package me.halfcooler.ic2r.core.fluid;
 
 import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 
 import java.util.Collection;
 
@@ -21,7 +22,20 @@ import org.jetbrains.annotations.Nullable;
 
 public final class FluidHandler
 {
-	static final EnvFluidHandler ENV_HANDLER = IC2R.envProxy.createFluidStackHandler();
+	/**
+	 * G3.6: factory via {@link PlatformServices#fluid()} (Forge → EnvProxy#createFluidStackHandler).
+	 * Touches {@link IC2R} first so {@code ForgePlatformServices.install()} has run.
+	 */
+	static final EnvFluidHandler ENV_HANDLER = createEnvFluidHandler();
+
+	private static EnvFluidHandler createEnvFluidHandler()
+	{
+		if (IC2R.envProxy == null)
+		{
+			throw new IllegalStateException("IC2R.envProxy missing before PlatformFluidBridge factory");
+		}
+		return PlatformServices.fluid().createHandler();
+	}
 
 	public static EnvFluidHandler.FluidRefs createFluid(
 		ResourceLocation id,
