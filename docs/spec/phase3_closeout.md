@@ -140,7 +140,7 @@
 | G3.4 | Origin residual **核心未清零**（energy IC、标准机、network 反射、InvSlot、reactor/crop…） | P0 | **partial（G3.4 文档回写 done，见 §13）**：origin.md 已按 G1–G3 刷新切片状态；**§8.5 #4 清零仍 gap**。后续域干净室重写后再回写；清零前禁止宣称 #4 done |
 | G3.5 | EnvProxy 上帝代理仍在；**E2 done**：`isClientEnv`/`isForgeEnv`/`isFabricEnv`/`getServer` 已从 EnvProxy 删并迁 SPI；注册族/流体物品工厂未切 | P0 | **partial（E2 done）**：见 platform_spi.md G3.5 切片；下一 E3 注册族 → E4+（neoforge_migration_plan §4.2） |
 | G3.6 | ~~SPI facet 多为 stub~~ → **done**（见 **§14**）：8 facet Forge 薄委托；≥4 调用点迁 SPI；`extract` 有意 EMPTY 缺口已文档 | P1 | **done**；后续 E3 注册主路径 + 可选 Network 发包替换；勿堆 SPI 空测 |
-| G3.7 | 无物理多模块（`ic2r-common` / `ic2r-neoforge` / `ic2r-fabric`） | P1 | 逻辑边界稳定后拆 Gradle；主线默认仍可只 assemble Forge |
+| G3.7 | 物理多模块 **partial/skeleton**（文档 + `modules/` 骨架；运行时仍单模块） | P1 | **partial/skeleton（见 §15）**：映射文档 + 目录 README + `settings.gradle` 注释 include；**未**搬迁 `src/main`、**未**默认多项目。下一 Unit 满足 g3_7 §6 前置后再启用 include |
 | G3.8 | Architectury **未**引入 | P2 | **有意延期**（主文档：先手写 thin platform）；非缺陷 |
 | G3.9 | 巨型 BE / api 面瘦身 / Mixin 最小集（§8.3）未作为 W3.\* 推进 | P2 | 后置域 Unit；与 G3.4 Origin 联动 |
 | G3.10 | **继承 G1.\***：TeUpdate 仍默认、snake_case 仅试点、阶段 1 覆盖率 gap | P0 | 见 phase1_closeout；不阻塞本收口登记 |
@@ -188,7 +188,7 @@ G3.*（本文件）
 | 完整拆除 EnvProxy / SideProxy | 未做（仅 isClientEnv 切片） |
 | common 全库去 Forge import | 未做 |
 | NeoForge / Fabric 可运行产物 | 未做（仅计划） |
-| 物理多模块 Gradle | 未做 |
+| 物理多模块 Gradle | **G3.7 skeleton only**（目录/文档；默认仍单模块） |
 | Architectury | 未引入（有意） |
 | Origin 全表 residual 清零 | 未做 |
 | 为 75% 门槛堆测 | 未做 |
@@ -210,6 +210,8 @@ G3.*（本文件）
 | `me.halfcooler.ic2r.platform.services.*` | SPI 接口与访问器 |
 | `me.halfcooler.ic2r.forge.ForgePlatformServices` / `Platform*Forge`（8 facet，G3.6） | Forge 安装与全部 SPI 薄委托 |
 | [g3_2_neoforge_min_set.md](g3_2_neoforge_min_set.md) | G3.2 最小集 kickoff |
+| [g3_7_module_split.md](g3_7_module_split.md) | G3.7 物理多模块映射 + 为何不默认 include |
+| `modules/**/README.md` | G3.7 目录级骨架（无子工程 build） |
 | [Modernization_Progress.md](../Modernization_Progress.md) | Work Unit 队列 |
 
 ---
@@ -454,3 +456,40 @@ G3.*（本文件）
 - 新建：`forge/PlatformNetworkForge.java`、`PlatformPlayerUiForge.java`、`PlatformConfigForge.java`、`PlatformItemTransferForge.java`、`PlatformFluidBridgeForge.java`  
 - 改：`forge/ForgePlatformServices.java`；`core/IHasGui.java`、`util/StackUtil.java`、`fluid/FluidHandler.java`、`event/EventHandler.java`；`platform/services/PlatformServices.java` javadoc  
 - 文档：本文件 §4 G3.6 + **§14**；[platform_spi.md](platform_spi.md)；[Modernization_Progress.md](../Modernization_Progress.md)  
+
+---
+
+## 15. G3.7 物理多模块 — 文档 + 安全骨架
+
+> **Work Unit**: G3.7  
+> **日期**: 2026-07-14  
+> **状态**: **partial / skeleton**（目录与映射 **done**；Gradle 多项目默认构建 / 源码搬迁 **未**做）  
+> **规格**: [g3_7_module_split.md](g3_7_module_split.md)  
+> **验证**: `.\gradlew.bat compileJava test` → BUILD SUCCESSFUL  
+
+### 15.1 交付
+
+| 动作 | 说明 |
+|:---|:---|
+| **映射文档** | 目标 `ic2r-common` / `ic2r-forge` / `ic2r-neoforge`（+ 可选 fabric）；源码迁移映射；SPI 依赖方向 |
+| **为何不默认多项目** | core residual Forge import；单测/FG runs 成本；SPI 双轨；主产品线稳定；无 NeoForge 依赖线 |
+| **启用 include 前置** | g3_7 §6（P1–P6）：common 洁净、E3+ SPI、FG 接线、主构建隔离等 |
+| **目录骨架** | `modules/{common,forge,neoforge,fabric}/README.md` + `modules/README.md`；**无**子 `build.gradle`、**无** `src` 搬迁 |
+| **settings.gradle** | **注释掉**的 `include 'ic2r-*'` + `projectDir = modules/…` 示例；默认不激活 |
+| **未做** | 切主依赖 NeoForge；默认多模块；整棵 `src/main` 搬走；可运行 NeoForge artifact；git commit/push |
+
+### 15.2 诚实边界
+
+- **运行时仍单模块**（根 FG + `src/main`）  
+- **无**参与构建的子项目；注释 include **不得**被误开（无 build.gradle 会炸）  
+- 逻辑边界靠 SPI（G3.6）；物理边界仅骨架  
+- §8.5 #1 / #2 仍 gap / deferred  
+
+### 15.3 变更范围（G3.7）
+
+- [g3_7_module_split.md](g3_7_module_split.md)（新建）  
+- `modules/**/README.md`（新建骨架）  
+- `settings.gradle`（注释 include 示例）  
+- 本文件 §4 G3.7 行 + **§15**；[docs/spec/README.md](README.md) 索引  
+- **无**生产 Java 搬迁；**无** git commit/push  
+ 

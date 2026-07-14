@@ -14,6 +14,25 @@ plugins {
 
 rootProject.name = 'IC2R'
 
+// ---------------------------------------------------------------------------
+// G3.7 — future multi-module layout (DISABLED; documentation only)
+// Spec: docs/spec/g3_7_module_split.md
+// Do NOT uncomment until §6 preconditions are met (common free of loader
+// implementation imports, SPI call-path migration, FG runs/tests rewired).
+// Enabling these without build.gradle subprojects will break the build.
+// Default product line remains the root single-module Forge 1.20.1 project.
+// ---------------------------------------------------------------------------
+// include 'ic2r-common'
+// project(':ic2r-common').projectDir = file('modules/common')
+// include 'ic2r-forge'
+// project(':ic2r-forge').projectDir = file('modules/forge')
+// include 'ic2r-neoforge'
+// project(':ic2r-neoforge').projectDir = file('modules/neoforge')
+// // optional / post-M9:
+// // include 'ic2r-fabric'
+// // project(':ic2r-fabric').projectDir = file('modules/fabric')
+// ---------------------------------------------------------------------------
+
 def devAddons = (providers.gradleProperty('dev_addons').orElse('').get())
         .split(',')
         .collect { it.trim() }

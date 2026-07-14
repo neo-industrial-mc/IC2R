@@ -1,23 +1,23 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** G3.6  
+**last_completed:** G3.7  
 **updated:** 2026-07-14  
 
 ## Queue（G3）
 
 | ID | status | last_notes |
 |----|--------|------------|
-| G3.1–G3.5 | done | 见历史 |
-| G3.6 | done | 8 SPI facet 全 Forge 真实现（去 Stub）；IHasGui/StackUtil/FluidHandler 等迁 SPI；extract 有意 EMPTY residual |
-| G3.7 | pending | 物理多模块（ic2r-common / neoforge） |
-| G3.8+ | pending | Architectury 延期；巨型 BE 等 |
+| G3.1–G3.6 | done | 见历史 |
+| G3.7 | done | g3_7_module_split.md + modules/* README 骨架；settings 注释 include；主构建仍单模块 |
+| G3.8 | pending | Architectury 有意延期（可 skip 文档） |
+| G3.9+ | pending | 巨型 BE 瘦身等 |
 
 ## Last session
 
-- unit: G3.6
-- result: done / PASS
-- suggested_commit: `feat(platform): implement remaining SPI facets as Forge thin adapters`
+- unit: G3.7
+- result: done / PASS（partial skeleton）
+- suggested_commit: `docs: G3.7 multi-module skeleton and mapping plan`
 - verify_log: |
-    - Network/UI/Config/Item/Fluid Forge 实现；install 无 Stub ✅
-    - ≥2 调用点迁 SPI；test 绿
+    - DoD: 文档 + modules 骨架 + 注释 include ✅
+    - gradle projects: No sub-projects；test 绿
