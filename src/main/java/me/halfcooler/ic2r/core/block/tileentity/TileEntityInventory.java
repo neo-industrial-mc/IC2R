@@ -20,14 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-
-/**
- * Inventory-bearing TE. InvSlots keep domain APIs; Forge {@code ITEM_HANDLER} is exposed via
- * {@link #getInvSlotItemHandlerCap()} / {@link #createInvSlotItemHandler()} (combined
- * {@link InvSlotItemHandler} adapters, null facing) and sided {@code SidedInvWrapper} in
- * {@code EventHandlerForge} (facing ≠ null). Contract: {@code docs/spec/item_handler_contract.md}
- * (G2.1 — standard machines such as Macerator).
- */
 public abstract class TileEntityInventory extends Ic2rTileEntity implements WorldlyContainer, IInventorySlotHolder<TileEntityInventory>
 {
 	protected final ComparatorEmitter comparator = this.addComponent(new ComparatorEmitter(this));
@@ -400,36 +392,21 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	{
 		return Collections.unmodifiableList(this.invSlots);
 	}
-
-	/**
-	 * Combined Forge item handler over all InvSlots via {@link InvSlotItemHandler} (W2.1 / G2.1).
-	 * Registration order of {@link #addInventorySlot(InvSlot)} is the combined index order
-	 * (Macerator: discharge → output → upgrade → input). Insert/extract respect each slot's
-	 * {@link InvSlot#canInput()}/{@link InvSlot#canOutput()} and {@link InvSlot#accepts};
-	 * machines keep using InvSlot domain APIs. No {@code preferredSide} filter here — that applies
-	 * only on the sided {@code WorldlyContainer} path (non-null facing).
-	 */
+	
 	public List<Object> getInvSlotHandlerList()
 	{
 		if (this.cachedHandlerList == null || this.cachedHandlerList.size() != this.invSlots.size())
 		{
 			List<Object> handlers = new java.util.ArrayList<>(this.invSlots.size());
-			for (int i = 0; i < this.invSlots.size(); i++)
+			for (InvSlot invSlot : this.invSlots)
 			{
-				handlers.add(this.invSlots.get(i).getItemHandler());
+				handlers.add(invSlot.getItemHandler());
 			}
 			this.cachedHandlerList = java.util.Collections.unmodifiableList(handlers);
 		}
 		return this.cachedHandlerList;
 	}
-
-	/**
-	 * LazyOptional of {@link #createInvSlotItemHandler()} for capability attachment when
-	 * {@code facing == null}. Invalidated on slot-list change and {@link #invalidateCaps()}.
-	 * Cap wiring itself is runtime-only (no unit coverage without BE bootstrap).
-	 */
 	
-
 	@Override
 	public void invalidateCaps()
 	{

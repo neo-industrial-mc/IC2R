@@ -1,14 +1,7 @@
 package me.halfcooler.ic2r.core.block.invslot;
 
-/**
- * Pure insert/extract arithmetic for {@link InvSlotItemHandler}.
- * No Minecraft/Forge types — unit-testable without client or registry bootstrap (W2.1 / G2.1 / G2.4).
- * Combined-index helpers mirror {@code TileEntityInventory} multi-InvSlot layout for the
- * null-facing combined {@code ITEM_HANDLER} view. See {@code docs/spec/item_handler_contract.md}.
- * <p>
- * Accept / consumable-output helpers mirror {@link InvSlot#accepts}, {@link InvSlotOutput},
- * and {@link InvSlotConsumable#canOutput()} leftover-eject rules.
- */
+import me.halfcooler.ic2r.core.fluid.FluidTransferMath;
+
 public final class InvSlotTransferMath
 {
 	private InvSlotTransferMath()
@@ -84,7 +77,7 @@ public final class InvSlotTransferMath
 	 * @param slotLimit         InvSlot stack-size limit
 	 * @param maxStackSize      item max stack size
 	 * @param stacksCompatible  true if slot empty or items may merge
-	 * @return amount that would be accepted (0..incomingCount)
+	 * @return amount that would be accepted (0 to incomingCount)
 	 */
 	public static int insertableCount(int existingCount, int incomingCount, int slotLimit, int maxStackSize, boolean stacksCompatible)
 	{
@@ -125,12 +118,7 @@ public final class InvSlotTransferMath
 	 */
 	public static int remainingAfterInsert(int incomingCount, int inserted)
 	{
-		if (incomingCount <= 0 || inserted <= 0)
-		{
-			return Math.max(0, incomingCount);
-		}
-
-		return Math.max(0, incomingCount - inserted);
+		return FluidTransferMath.remainingOfferAfterFill(incomingCount, inserted);
 	}
 
 	/**
@@ -138,12 +126,7 @@ public final class InvSlotTransferMath
 	 */
 	public static int remainingAfterExtract(int existingCount, int extracted)
 	{
-		if (existingCount <= 0 || extracted <= 0)
-		{
-			return Math.max(0, existingCount);
-		}
-
-		return Math.max(0, existingCount - extracted);
+		return FluidTransferMath.remainingOfferAfterFill(existingCount, extracted);
 	}
 
 	/**

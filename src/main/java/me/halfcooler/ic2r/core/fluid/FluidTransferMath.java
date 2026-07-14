@@ -111,12 +111,7 @@ public final class FluidTransferMath
 	 */
 	public static int remainingStoredAfterDrain(int storedMb, int drainedMb)
 	{
-		if (storedMb <= 0 || drainedMb <= 0)
-		{
-			return Math.max(0, storedMb);
-		}
-
-		return Math.max(0, storedMb - drainedMb);
+		return remainingOfferAfterFill(storedMb, drainedMb);
 	}
 
 	/**

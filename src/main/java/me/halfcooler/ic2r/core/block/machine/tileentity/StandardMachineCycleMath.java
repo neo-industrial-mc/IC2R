@@ -109,19 +109,6 @@ public final class StandardMachineCycleMath
 	{
 		return recipeReady && energyStored >= energyConsume;
 	}
-
-	/**
-	 * One server-tick of standard-machine progress/energy (no inventory mutations).
-	 * <p>
-	 * Semantics frozen from {@link TileEntityStandardMachine#updateEntityServer}:
-	 * <ul>
-	 *   <li>SM-001: if can operate, progress += 1; at {@code operationLength} complete and reset to 0</li>
-	 *   <li>SM-002: on operate, consume exactly {@code energyConsume} EU</li>
-	 *   <li>SM-003: energy short → no progress advance; progress retained while recipe still ready</li>
-	 *   <li>SM-004/005: {@code recipeReady == false} (output full / no input / no match) → no energy use;
-	 *       progress forced to 0</li>
-	 * </ul>
-	 */
 	public static CycleTickResult tick(
 		short progress,
 		int operationLength,

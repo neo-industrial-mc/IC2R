@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityCokeKilnHatch extends TileEntityInventory implements IHasGui
 {
@@ -23,13 +24,13 @@ public class TileEntityCokeKilnHatch extends TileEntityInventory implements IHas
 	}
 
 	@Override
-	public boolean canPlaceItemThroughFace(int index, ItemStack stack, Direction side)
+	public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack stack, Direction side)
 	{
 		return side != this.getFacing() ? false : super.canPlaceItemThroughFace(index, stack, side);
 	}
 
 	@Override
-	public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction side)
+	public boolean canTakeItemThroughFace(int index, @NotNull ItemStack stack, @NotNull Direction side)
 	{
 		return false;
 	}
