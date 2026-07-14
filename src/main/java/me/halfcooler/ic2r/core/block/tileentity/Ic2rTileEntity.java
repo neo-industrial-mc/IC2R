@@ -9,6 +9,7 @@ import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.comp.TileEntityComponent;
 import me.halfcooler.ic2r.core.event.TickHandler;
 import me.halfcooler.ic2r.core.gui.dynamic.IGuiConditionProvider;
+import me.halfcooler.ic2r.core.network.sync.BlockEntitySync;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
@@ -62,6 +63,8 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 	private boolean active = false;
 	private byte loadState = 0;
 	private boolean enableWorldTick;
+	/** Modern SyncKey registry; empty until subclasses override {@link #registerSyncedData}. Reflection path remains active. */
+	private BlockEntitySync blockEntitySync;
 
 	public Ic2rTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
@@ -341,6 +344,30 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		ret.add("teBlk=" + ForgeRegistries.BLOCKS.getKey(this.teBlock));
 		ret.add("active");
 		return ret;
+	}
+
+	/**
+	 * Modern sync registry (W1.1 skeleton). Default is empty; does not replace
+	 * {@link #getNetworkedFields()} / reflection until dual-write (W1.2+).
+	 */
+	public final BlockEntitySync getBlockEntitySync()
+	{
+		if (this.blockEntitySync == null)
+		{
+			BlockEntitySync sync = new BlockEntitySync();
+			this.registerSyncedData(sync);
+			this.blockEntitySync = sync;
+		}
+
+		return this.blockEntitySync;
+	}
+
+	/**
+	 * Override to register {@link me.halfcooler.ic2r.core.network.sync.SyncKey}-based fields.
+	 * Default no-op — no behaviour change vs reflection-only path.
+	 */
+	protected void registerSyncedData(BlockEntitySync sync)
+	{
 	}
 
 	@Override

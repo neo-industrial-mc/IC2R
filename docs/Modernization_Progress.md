@@ -1,12 +1,12 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W0.6  
+**last_completed:** W1.1  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
 > 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
-> **阶段 0（W0.1–W0.6）已全部 done**；下一 pending 为 **W1.1 Sync 抽象骨架**。
+> **阶段 0 done**；阶段 1 进行中（last: W1.1）。
 
 ## Queue
 
@@ -18,7 +18,7 @@
 | W0.4 | done | EnergyTransferMath 可测切口 + 12 energy 测试；gradlew test 13/13 绿 |
 | W0.5 | done | naming_audit.md：网络/NBT camelCase 大面积 + 注册/lang 抽样 + P0–P2 修复序 |
 | W0.6 | done | origin.md：核心包 residual/rewritten/original/mixed 初版 |
-| W1.1 | pending | Sync 抽象骨架 |
+| W1.1 | done | SyncKey/Codec/BlockEntitySync 骨架 + BE 空钩子；反射路径保留；18 tests 绿 |
 | W1.2 | pending | 标准机同步试点 |
 | W1.3 | pending | 去反射 Tick |
 | W1.4 | pending | 清理致命味道 |
@@ -40,10 +40,11 @@
 
 ## Last session
 
-- unit: W0.6
+- unit: W1.1
 - result: done / PASS
-- suggested_commit: `docs: add origin annotations for core packages`
+- suggested_commit: `feat: add BlockEntitySync skeleton with SyncKey codecs`
 - verify_log: |
-    - DoD: origin.md 非空；residual/rewritten/original/mixed 齐全 ✅
-    - 核心域 energy/machine/recipe/invslot/network/gui 已覆盖
-    - 目录抽查与仓库相符；git 仅 docs
+    - DoD: SyncKey+Codec ✅；反射路径 NetworkManager/TeUpdate/getNetworkedFields 保留 ✅
+    - Ic2rTileEntity.registerSyncedData 默认空
+    - SyncCodecRoundTripTest 5 项；全量 test 18/18 绿
+    - 新路径尚未接入 TeUpdate（W1.2 双写）
