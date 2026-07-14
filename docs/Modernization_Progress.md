@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W0.3  
+**last_completed:** W0.4  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -14,7 +14,7 @@
 | W0.1 | done | JUnit5 + JaCoCo 已接；SmokeTest 1/1 通过；gradlew test SUCCESS |
 | W0.2 | done | docs/spec/README.md + golden_suite.md 骨架；Progress 文件就位 |
 | W0.3 | done | golden_suite 条目表：EN-IC/GT + SM + RC + NS 共 44+ 可引用 ID |
-| W0.4 | pending | EnergyNet 可测切口 + 首批测试 |
+| W0.4 | done | EnergyTransferMath 可测切口 + 12 energy 测试；gradlew test 13/13 绿 |
 | W0.5 | pending | 命名审计 |
 | W0.6 | pending | Origin 初版 |
 | W1.1 | pending | Sync 抽象骨架 |
@@ -39,10 +39,11 @@
 
 ## Last session
 
-- unit: W0.3
+- unit: W0.4
 - result: done / PASS
-- suggested_commit: `docs: fill golden suite entry tables for phase 0`
+- suggested_commit: `test: add EnergyNet pure-logic tests and EnergyTransferMath seam`
 - verify_log: |
-    - DoD: EN-IC 10 / EN-GT 10 / SM 11 / RC 7 / NS 6 条目非空 ✅
-    - §4.4 主题覆盖抽查通过
-    - git 仅 docs/spec + Progress；无 src 改动
+    - DoD: 12 energy 有意义测试 ≥3 ✅；无客户端依赖 ✅；gradlew test 13/13 ✅
+    - EnergyCalculator* 仅委托到 EnergyTransferMath，公式等价
+    - 新增 EnergyTransferMath.java + energy/*Test.java
+    - 覆盖 Spec：EN-IC-001/003，EN-GT-001–007 等（公式层）

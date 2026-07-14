@@ -587,7 +587,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 			return 0.0;
 		}
 
-		double injectAmount = offer - path.loss;
+		double injectAmount = EnergyTransferMath.icInjectAmount(offer, path.loss);
 		if (injectAmount <= 0.0)
 		{
 			return 0.0;

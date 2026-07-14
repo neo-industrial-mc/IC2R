@@ -317,7 +317,7 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 			Tile cableTile = conductorNode.getTile();
 			IEnergyConductor conductor = (IEnergyConductor) cableTile.getMainTile();
 			CableSpec cable = CableSpec.fromConductor(conductor);
-			if (packetVoltage > cable.getMaxVoltage().getVoltage())
+			if (EnergyTransferMath.gtCableOverVoltage(packetVoltage, cable.getMaxVoltage().getVoltage()))
 			{
 				cablesToRemove.add(cableTile);
 				addConductorAmpLoad(path.conductors, traversedConductors + 1, ampsToSend, conductorAmpLoads);
@@ -325,14 +325,14 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 			}
 
 			int currentLoad = conductorAmpLoads.getOrDefault(conductorNode, 0);
-			if (currentLoad + ampsToSend > cable.getMaxAmperage())
+			if (EnergyTransferMath.gtCableOverCurrent(currentLoad, ampsToSend, cable.getMaxAmperage()))
 			{
 				cablesToRemove.add(cableTile);
 				addConductorAmpLoad(path.conductors, traversedConductors + 1, ampsToSend, conductorAmpLoads);
 				return 0;
 			}
 
-			packetEU -= cable.getLossPerMeterPerAmp();
+			packetEU = EnergyTransferMath.gtReducePacketByConductor(packetEU, cable.getLossPerMeterPerAmp());
 			traversedConductors++;
 			if (packetEU <= 0)
 			{
