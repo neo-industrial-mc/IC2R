@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W1.5  
+**last_completed:** W1.6  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -22,7 +22,7 @@
 | W1.3 | done | ServerTicker/ClientTicker 显式接口；移除 getDeclaredMethod 探测；test 24/24 绿 |
 | W1.4 | done | 清零 Vector 配方死字段 + 热路径 RandomSource.create()；create(42L)/printStackTrace 豁免登记 |
 | W1.5 | done | Energy storage/energyBuffer→energy_buffer + LegacyNbt；标准机 progress；迁移测 38 tests 绿 |
-| W1.6 | pending | 注册拆分 |
+| W1.6 | done | Ic2rItems 按 8 域拆分 + 门面保留；511 字段；compile+test 绿；Blocks 未拆 |
 | W1.7 | pending | Deferred/Holder 试点 |
 | W1.8 | pending | 阶段 1 收口 |
 | W2.1 | pending | InvSlot → Handler 委托试点 |
@@ -39,12 +39,11 @@
 
 ## Last session
 
-- unit: W1.5
+- unit: W1.6
 - result: done / PASS
-- suggested_commit: `feat(nbt): snake_case energy_buffer with legacy key read for pilot domain`
+- suggested_commit: `refactor: split Ic2rItems registration into domain classes`
 - verify_log: |
-    - DoD: 写 energy_buffer；读 storage/energyBuffer 兼容 ✅；迁移测绿 ✅
-    - LegacyNbt 工具；id_migrations.md 登记
-    - 试点仅 Energy + 标准机 progress；reactor/crop 未全改
-    - 网络 guiProgress 反射 live path 保留
-    - gradlew test 38/38
+    - DoD: 仅拆 Items 8 域类；门面 Ic2rItems.XXX 保留；511 对齐 ✅
+    - 仍 envProxy.registerItem，未 Deferred（W1.7）
+    - Ic2rBlocks 未拆
+    - compileJava + test 绿
