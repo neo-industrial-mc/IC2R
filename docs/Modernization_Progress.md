@@ -1,11 +1,12 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W0.5  
+**last_completed:** W0.6  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
-> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。
+> 协议见 [Modernization_Project.md §A](Modernization_Project.md)。  
+> **阶段 0（W0.1–W0.6）已全部 done**；下一 pending 为 **W1.1 Sync 抽象骨架**。
 
 ## Queue
 
@@ -16,7 +17,7 @@
 | W0.3 | done | golden_suite 条目表：EN-IC/GT + SM + RC + NS 共 44+ 可引用 ID |
 | W0.4 | done | EnergyTransferMath 可测切口 + 12 energy 测试；gradlew test 13/13 绿 |
 | W0.5 | done | naming_audit.md：网络/NBT camelCase 大面积 + 注册/lang 抽样 + P0–P2 修复序 |
-| W0.6 | pending | Origin 初版 |
+| W0.6 | done | origin.md：核心包 residual/rewritten/original/mixed 初版 |
 | W1.1 | pending | Sync 抽象骨架 |
 | W1.2 | pending | 标准机同步试点 |
 | W1.3 | pending | 去反射 Tick |
@@ -39,10 +40,10 @@
 
 ## Last session
 
-- unit: W0.5
+- unit: W0.6
 - result: done / PASS
-- suggested_commit: `docs: add naming audit report for snake_case literals`
+- suggested_commit: `docs: add origin annotations for core packages`
 - verify_log: |
-    - DoD: naming_audit.md 非空含路径/分类/P0-P2 ✅
-    - 抽查 guiProgress / fluidReactorLookup / energyBuffer 源码命中 ✅
-    - git 仅 docs；无业务重命名
+    - DoD: origin.md 非空；residual/rewritten/original/mixed 齐全 ✅
+    - 核心域 energy/machine/recipe/invslot/network/gui 已覆盖
+    - 目录抽查与仓库相符；git 仅 docs
