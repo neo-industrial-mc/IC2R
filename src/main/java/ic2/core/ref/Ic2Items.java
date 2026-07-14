@@ -1140,65 +1140,61 @@ public final class Ic2Items {
               ResourceLocation.fromNamespaceAndPath(
                   "ic2", "textures/item/rotor/carbon_rotor_model.png")));
   public static final Item EMPTY_CELL =
-      register("empty_cell", new ItemClassicCell(new Properties(), Fluids.EMPTY, 0));
+      register("empty_cell", new ItemClassicCell(new Properties(), Fluids.EMPTY));
   public static final Item WATER_CELL =
-      register("water_cell", new ItemClassicCell(new Properties(), Fluids.WATER, 1));
+      register("water_cell", new ItemClassicCell(new Properties(), Fluids.WATER));
   public static final Item LAVA_CELL =
-      register("lava_cell", new ItemClassicCell(new Properties(), Fluids.LAVA, 1));
+      register("lava_cell", new ItemClassicCell(new Properties(), Fluids.LAVA));
   public static final Item AIR_CELL =
-      register("air_cell", new ItemClassicCell(new Properties(), Ic2Fluids.AIR.still(), 1));
+      register("air_cell", new ItemClassicCell(new Properties(), Ic2Fluids.AIR.still()));
   public static final Item ELECTROLYZED_WATER_CELL =
-      register("electrolyzed_water_cell", new ItemClassicCell(new Properties(), null, 1));
+      register("electrolyzed_water_cell", new Item(new Properties()));
   public static final Item WEED_EX_CELL =
-      register("weed_ex_cell", new ItemClassicCell(new Properties(), Ic2Fluids.WEED_EX.still(), 1));
-  public static final ItemClassicCell HYDRATION_CELL =
-      register("hydration_cell", new ItemClassicCell(new Properties().stacksTo(1), null, 10000));
+      register("weed_ex_cell", new ItemClassicCell(new Properties(), Ic2Fluids.WEED_EX.still()));
+  public static final Item HYDRATION_CELL =
+      register("hydration_cell", new ItemHydrationCell(new Properties().stacksTo(1)));
   public static final Item UU_MATTER_CELL =
       register(
-          "uu_matter_cell", new ItemClassicCell(new Properties(), Ic2Fluids.UU_MATTER.still(), 1));
+          "uu_matter_cell", new ItemClassicCell(new Properties(), Ic2Fluids.UU_MATTER.still()));
   public static final Item CONSTRUCTION_FOAM_CELL =
       register(
           "construction_foam_cell",
-          new ItemClassicCell(new Properties(), Ic2Fluids.CONSTRUCTION_FOAM.still(), 1));
+          new ItemClassicCell(new Properties(), Ic2Fluids.CONSTRUCTION_FOAM.still()));
   public static final Item COOLANT_CELL =
-      register("coolant_cell", new ItemClassicCell(new Properties(), Ic2Fluids.COOLANT.still(), 1));
+      register("coolant_cell", new ItemClassicCell(new Properties(), Ic2Fluids.COOLANT.still()));
   public static final Item CREOSOTE_CELL =
-      register(
-          "creosote_cell", new ItemClassicCell(new Properties(), Ic2Fluids.CREOSOTE.still(), 1));
+      register("creosote_cell", new ItemClassicCell(new Properties(), Ic2Fluids.CREOSOTE.still()));
   public static final Item HOT_COOLANT_CELL =
       register(
-          "hot_coolant_cell",
-          new ItemClassicCell(new Properties(), Ic2Fluids.HOT_COOLANT.still(), 1));
+          "hot_coolant_cell", new ItemClassicCell(new Properties(), Ic2Fluids.HOT_COOLANT.still()));
   public static final Item PAHOEHOE_LAVA_CELL =
       register(
           "pahoehoe_lava_cell",
-          new ItemClassicCell(new Properties(), Ic2Fluids.PAHOEHOE_LAVA.still(), 1));
+          new ItemClassicCell(new Properties(), Ic2Fluids.PAHOEHOE_LAVA.still()));
   public static final Item BIOMASS_CELL =
-      register("biomass_cell", new ItemClassicCell(new Properties(), Ic2Fluids.BIOMASS.still(), 1));
+      register("biomass_cell", new ItemClassicCell(new Properties(), Ic2Fluids.BIOMASS.still()));
   public static final Item BIOGAS_CELL =
-      register("biogas_cell", new ItemClassicCell(new Properties(), Ic2Fluids.BIOGAS.still(), 1));
+      register("biogas_cell", new ItemClassicCell(new Properties(), Ic2Fluids.BIOGAS.still()));
   public static final Item DISTILLED_WATER_CELL =
       register(
           "distilled_water_cell",
-          new ItemClassicCell(new Properties(), Ic2Fluids.DISTILLED_WATER.still(), 1));
+          new ItemClassicCell(new Properties(), Ic2Fluids.DISTILLED_WATER.still()));
   public static final Item SUPERHEATED_STEAM_CELL =
       register(
           "superheated_steam_cell",
-          new ItemClassicCell(new Properties(), Ic2Fluids.SUPERHEATED_STEAM.still(), 1));
+          new ItemClassicCell(new Properties(), Ic2Fluids.SUPERHEATED_STEAM.still()));
   public static final Item STEAM_CELL =
-      register("steam_cell", new ItemClassicCell(new Properties(), Ic2Fluids.STEAM.still(), 1));
+      register("steam_cell", new ItemClassicCell(new Properties(), Ic2Fluids.STEAM.still()));
   public static final Item HOT_WATER_CELL =
       register(
-          "hot_water_cell", new ItemClassicCell(new Properties(), Ic2Fluids.HOT_WATER.still(), 1));
+          "hot_water_cell", new ItemClassicCell(new Properties(), Ic2Fluids.HOT_WATER.still()));
   public static final Item HYDROGEN_CELL =
-      register(
-          "hydrogen_cell", new ItemClassicCell(new Properties(), Ic2Fluids.HYDROGEN.still(), 1));
+      register("hydrogen_cell", new ItemClassicCell(new Properties(), Ic2Fluids.HYDROGEN.still()));
   public static final Item OXYGEN_CELL =
-      register("oxygen_cell", new ItemClassicCell(new Properties(), Ic2Fluids.OXYGEN.still(), 1));
+      register("oxygen_cell", new ItemClassicCell(new Properties(), Ic2Fluids.OXYGEN.still()));
   public static final Item HEAVY_WATER_CELL =
       register(
-          "heavy_water_cell",
-          new ItemClassicCell(new Properties(), Ic2Fluids.HEAVY_WATER.still(), 1));
+          "heavy_water_cell", new ItemClassicCell(new Properties(), Ic2Fluids.HEAVY_WATER.still()));
   public static final Item OVERCLOCKER_UPGRADE =
       register(
           "overclocker_upgrade",
