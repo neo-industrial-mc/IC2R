@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class TileEntityBase extends TileEntityInventory
+public class TileEntityBase extends TileEntityInventory implements ServerTicker, ClientTicker
 {
 	protected Sound loopingSound;
 	protected Sound subLoopingSound;

@@ -13,6 +13,8 @@ import me.halfcooler.ic2r.core.event.TickHandler;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
@@ -38,7 +40,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class TileEntityLuminator extends Ic2rTileEntity
+public class TileEntityLuminator extends Ic2rTileEntity implements ServerTicker
 {
 	private static final Map<Direction, List<AABB>> aabbMap = getAabbMap();
 	private final Energy energy = this.addComponent(Energy.asBasicSink(this, 5.0));

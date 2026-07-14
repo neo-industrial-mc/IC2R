@@ -23,6 +23,8 @@ import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -38,7 +40,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.util.RandomSource;
 
 @NotClassic
-public class TileEntitySteamKineticGenerator extends TileEntityAbstractKineticGenerator implements IHasGui, IUpgradableBlock
+public class TileEntitySteamKineticGenerator extends TileEntityAbstractKineticGenerator implements IHasGui, IUpgradableBlock, ServerTicker
 {
 	public final InvSlotUpgrade upgradeSlot = new InvSlotUpgrade(this, "upgrade", 1);
 	public final InvSlotConsumable turbineSlot = new InvSlotConsumableItemStack(this, "Turbineslot", 1, new ItemStack(Ic2rItems.STEAM_TURBINE));

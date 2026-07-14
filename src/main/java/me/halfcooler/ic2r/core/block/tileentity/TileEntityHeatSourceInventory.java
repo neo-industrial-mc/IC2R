@@ -9,7 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class TileEntityHeatSourceInventory extends TileEntityInventory implements IHeatSource
+public abstract class TileEntityHeatSourceInventory extends TileEntityInventory implements IHeatSource, ServerTicker
 {
 	@GuiSynced
 	protected int transmitHeat;

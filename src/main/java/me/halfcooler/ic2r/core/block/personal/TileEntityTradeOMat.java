@@ -19,6 +19,8 @@ import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -38,11 +40,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 public class TileEntityTradeOMat
-	extends TileEntityInventory
-	implements IPersonalBlock,
-	IHasGui,
-	INetworkTileEntityEventListener,
-	INetworkClientTileEntityEventListener
+	extends TileEntityInventory implements IPersonalBlock, IHasGui, INetworkTileEntityEventListener, INetworkClientTileEntityEventListener, ServerTicker
 {
 	private static final int stockUpdateRate = 64;
 	private static final int EventTrade = 0;

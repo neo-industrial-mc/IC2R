@@ -17,6 +17,9 @@ import me.halfcooler.ic2r.core.util.BiomeUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
+
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -40,7 +43,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @NotClassic
-public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui
+public class TileEntityWaterKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui, ServerTicker, ClientTicker
 {
 	private static final ResourceLocation woodenRotorTexture = ResourceLocation.fromNamespaceAndPath("ic2r", "textures/item/rotor/wood_rotor_model.png");
 	public InvSlotConsumableClass rotorSlot;

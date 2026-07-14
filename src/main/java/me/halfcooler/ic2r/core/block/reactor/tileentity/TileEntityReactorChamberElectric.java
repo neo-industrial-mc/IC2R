@@ -10,6 +10,8 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -30,7 +32,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements Container, IReactorChamber, IEnergyEmitter
+public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements Container, IReactorChamber, IEnergyEmitter, ClientTicker
 {
 	public final Redstone redstone = this.addComponent(new Redstone(this));
 	protected final Fluids fluids = this.addComponent(new Fluids(this));

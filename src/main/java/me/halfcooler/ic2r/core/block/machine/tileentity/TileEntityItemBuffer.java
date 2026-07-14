@@ -14,6 +14,8 @@ import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -24,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityItemBuffer extends TileEntityInventory implements IHasGui, IUpgradableBlock
+public class TileEntityItemBuffer extends TileEntityInventory implements IHasGui, IUpgradableBlock, ServerTicker
 {
 	public final InvSlot rightcontentSlot;
 	public final InvSlot leftcontentSlot;

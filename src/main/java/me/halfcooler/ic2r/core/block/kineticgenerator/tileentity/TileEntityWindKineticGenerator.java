@@ -17,6 +17,9 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
+
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -35,7 +38,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @NotClassic
-public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui
+public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui, ServerTicker, ClientTicker
 {
 	public static final float outputModifier = 10.0F * IC2RConfig.balance.energy.kineticGenerator.wind.get().floatValue();
 	private static final ResourceLocation woodenRotorTexture = ResourceLocation.fromNamespaceAndPath("ic2r", "textures/item/rotor/wood_rotor_model.png");

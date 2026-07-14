@@ -9,6 +9,8 @@ import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.item.armor.ItemArmorHazmat;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -21,7 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-public class TileEntityTesla extends Ic2rTileEntity
+public class TileEntityTesla extends Ic2rTileEntity implements ServerTicker
 {
 	private static final DustParticleOptions effect = new DustParticleOptions(new Vector3f(0.1F, 0.1F, 1.0F), 1.0F);
 	protected final Redstone redstone;

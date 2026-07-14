@@ -20,6 +20,8 @@ import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.EnumSet;
 import java.util.List;
 
@@ -37,7 +39,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class TileEntityElectricBlock extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener, IEnergyStorage
+public abstract class TileEntityElectricBlock extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener, IEnergyStorage, ServerTicker
 {
 	public static byte redstoneModes = 7;
 	public final InvSlotCharge chargeSlot;

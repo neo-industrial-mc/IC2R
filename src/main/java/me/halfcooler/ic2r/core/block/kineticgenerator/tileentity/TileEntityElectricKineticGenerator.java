@@ -13,6 +13,8 @@ import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.Collections;
 import java.util.EnumSet;
 
@@ -26,7 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityElectricKineticGenerator extends TileEntityAbstractKineticGenerator implements IHasGui
+public class TileEntityElectricKineticGenerator extends TileEntityAbstractKineticGenerator implements IHasGui, ServerTicker
 {
 	public final int maxKU = 1000;
 	protected final Energy energy;

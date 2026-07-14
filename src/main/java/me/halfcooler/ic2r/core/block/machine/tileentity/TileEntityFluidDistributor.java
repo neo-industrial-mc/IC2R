@@ -18,6 +18,8 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -35,7 +37,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityFluidDistributor extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener
+public class TileEntityFluidDistributor extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener, ServerTicker
 {
 	public final InvSlotConsumableLiquidByTank inputSlot;
 	public final InvSlotOutput OutputSlot;

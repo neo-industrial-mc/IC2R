@@ -10,6 +10,8 @@ import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
+
 import java.util.EnumSet;
 import java.util.List;
 
@@ -29,7 +31,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock
+public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock implements ClientTicker
 {
 	private static final List<AABB> aabbs = List.of(new AABB(0.0, 0.0, 0.0, 1.0, 0.9375, 1.0));
 	private static final DustParticleOptions effect = new DustParticleOptions(new Vector3f(0.2F, 0.2F, 1.0F), 1.0F);

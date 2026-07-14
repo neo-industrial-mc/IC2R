@@ -46,6 +46,9 @@ import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 import me.halfcooler.ic2r.core.util.WorldUtil;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +82,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
-public class TileEntityNuclearReactorElectric extends TileEntityInventory implements IHasGui, IReactor, IEnergySource, IMetaDelegate, IGuiValueProvider, IElectricalNode
+public class TileEntityNuclearReactorElectric extends TileEntityInventory implements IHasGui, IReactor, IEnergySource, IMetaDelegate, IGuiValueProvider, IElectricalNode, ServerTicker, ClientTicker
 {
 	public final Fluids.InternalFluidTank inputTank;
 	public final Fluids.InternalFluidTank outputTank;

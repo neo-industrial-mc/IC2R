@@ -1,7 +1,7 @@
 # IC2R Modernization Progress
 
 **active_unit:** none  
-**last_completed:** W1.2  
+**last_completed:** W1.3  
 **updated:** 2026-07-14  
 
 > 由主 Agent 在每个 Work Unit 结束后更新。用户手动 commit。  
@@ -19,7 +19,7 @@
 | W0.6 | done | origin.md：核心包 residual/rewritten/original/mixed 初版 |
 | W1.1 | done | SyncKey/Codec/BlockEntitySync 骨架 + BE 空钩子；反射路径保留；18 tests 绿 |
 | W1.2 | done | 标准机 gui_progress/active 双写注册；NS-005 往返测；test 24/24 绿；TeUpdate 未切主 |
-| W1.3 | pending | 去反射 Tick |
+| W1.3 | done | ServerTicker/ClientTicker 显式接口；移除 getDeclaredMethod 探测；test 24/24 绿 |
 | W1.4 | pending | 清理致命味道 |
 | W1.5 | pending | NBT/网络字面量 snake_case 试点 |
 | W1.6 | pending | 注册拆分 |
@@ -39,10 +39,11 @@
 
 ## Last session
 
-- unit: W1.2
+- unit: W1.3
 - result: done / PASS
-- suggested_commit: `feat(sync): dual-write standard machine gui_progress and active`
+- suggested_commit: `refactor: replace reflective TE tick probe with ServerTicker/ClientTicker`
 - verify_log: |
-    - DoD: registerSyncedData gui_progress/active ✅；反射 getNetworkedFields 保留 ✅
-    - StandardMachineSyncRoundTripTest 6/6；全量 test 24/24 绿
-    - 未切 TeUpdate；未做 W1.3 Tick / W1.5 NBT
+    - DoD: 无 getDeclaredMethod 探测 update ✅；显式 ServerTicker/ClientTicker ✅
+    - 有 updateEntity* 的类继承链均覆盖接口（0 missing）
+    - gradlew test 24/24 绿
+    - 未做 W1.4/W1.5

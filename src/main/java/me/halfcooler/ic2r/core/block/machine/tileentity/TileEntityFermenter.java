@@ -26,6 +26,8 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -39,7 +41,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityFermenter extends TileEntityInventory implements IHasGui, IGuiValueProvider, IUpgradableBlock
+public class TileEntityFermenter extends TileEntityInventory implements IHasGui, IGuiValueProvider, IUpgradableBlock, ServerTicker
 {
 	public final InvSlotConsumableLiquidByManager fluidInputCellInSlot;
 	public final InvSlotConsumableLiquidByTank fluidOutputCellInSlot;

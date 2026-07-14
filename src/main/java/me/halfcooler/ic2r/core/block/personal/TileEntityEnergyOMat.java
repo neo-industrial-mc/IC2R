@@ -21,6 +21,8 @@ import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -39,13 +41,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityEnergyOMat
-	extends TileEntityInventory
-	implements IPersonalBlock,
-	IHasGui,
-	IEnergySink,
-	IEnergySource,
-	INetworkClientTileEntityEventListener,
-	IUpgradableBlock
+	extends TileEntityInventory implements IPersonalBlock, IHasGui, IEnergySink, IEnergySource, INetworkClientTileEntityEventListener, IUpgradableBlock, ServerTicker
 {
 	public final InvSlot demandSlot = new InvSlot(this, "demand", InvSlot.Access.NONE, 1);
 	public final InvSlotConsumableLinked inputSlot = new InvSlotConsumableLinked(this, "input", 1, this.demandSlot);

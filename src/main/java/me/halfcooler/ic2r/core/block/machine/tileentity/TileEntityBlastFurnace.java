@@ -24,6 +24,8 @@ import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
@@ -38,7 +40,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgradableBlock, IHasGui, IGuiValueProvider
+public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgradableBlock, IHasGui, IGuiValueProvider, ServerTicker
 {
 	public static int maxHeat = 50000;
 	public final InvSlotProcessableGeneric inputSlot = new InvSlotProcessableGeneric(this, "input", 1, Recipes.blast_furnace);

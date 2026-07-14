@@ -18,6 +18,7 @@ import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.LogCategory;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
@@ -39,7 +40,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityChunkLoader extends TileEntityInventory implements INetworkClientTileEntityEventListener, IHasGui, IUpgradableBlock
+public class TileEntityChunkLoader extends TileEntityInventory implements INetworkClientTileEntityEventListener, IHasGui, IUpgradableBlock, ServerTicker
 {
 	public final InvSlotUpgrade upgradeSlot;
 	public final InvSlotDischarge dischargeSlot;

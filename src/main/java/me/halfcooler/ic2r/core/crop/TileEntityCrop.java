@@ -22,6 +22,8 @@ import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +53,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.mutable.MutableObject;
 import net.minecraft.util.RandomSource;
 
-public class TileEntityCrop extends Ic2rTileEntity implements ICropTile
+public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerTicker
 {
 	public static final boolean debug = System.getProperty("ic2r.crops.debug") != null;
 	public static final boolean debugChance = debug && System.getProperty("ic2r.crops.debug").contains("chance");

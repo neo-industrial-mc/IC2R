@@ -18,6 +18,8 @@ import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 import me.halfcooler.ic2r.core.util.BiomeUtil;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.Util;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +31,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.util.RandomSource;
 
 @NotClassic
-public class TileEntitySteamGenerator extends TileEntityInventory implements IHasGui, IGuiValueProvider, INetworkClientTileEntityEventListener
+public class TileEntitySteamGenerator extends TileEntityInventory implements IHasGui, IGuiValueProvider, INetworkClientTileEntityEventListener, ServerTicker
 {
 	private static final float maxHeat = 500.0F;
 	private static final float heatPerHu = 5.0E-4F;

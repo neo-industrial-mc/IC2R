@@ -24,6 +24,8 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 import me.halfcooler.ic2r.core.util.BiomeUtil;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -35,7 +37,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntitySolarDistiller extends TileEntityInventory implements IHasGui, IUpgradableBlock
+public class TileEntitySolarDistiller extends TileEntityInventory implements IHasGui, IUpgradableBlock, ServerTicker
 {
 	public final Ic2rFluidTank inputTank;
 	public final Ic2rFluidTank outputTank;

@@ -15,6 +15,8 @@ import me.halfcooler.ic2r.core.util.DelegatingInventory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +44,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.util.RandomSource;
 
-public class TileEntityPersonalChest extends TileEntityInventory implements IPersonalBlock, IHasGui
+public class TileEntityPersonalChest extends TileEntityInventory implements IPersonalBlock, IHasGui, ClientTicker
 {
 	private static final List<AABB> aabbs = List.of(new AABB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
 	public final InvSlot contentSlot;

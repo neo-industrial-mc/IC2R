@@ -18,6 +18,8 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -27,7 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityTank extends TileEntityInventory implements IUpgradableBlock, IHasGui, INetworkClientTileEntityEventListener
+public class TileEntityTank extends TileEntityInventory implements IUpgradableBlock, IHasGui, INetworkClientTileEntityEventListener, ServerTicker
 {
 	public final InvSlotUpgrade upgradeSlot = new InvSlotUpgrade(this, "upgrade", 4);
 	@GuiSynced

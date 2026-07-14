@@ -13,6 +13,8 @@ import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityWeightedItemDistributor extends TileEntityInventory implements IHasGui, IWeightedDistributor
+public class TileEntityWeightedItemDistributor extends TileEntityInventory implements IHasGui, IWeightedDistributor, ServerTicker
 {
 	public final InvSlot buffer = new InvSlot(this, "buffer", InvSlot.Access.I, 9);
 	@ClientModifiable

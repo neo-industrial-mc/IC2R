@@ -15,6 +15,8 @@ import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.network.GuiSynced;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -27,7 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class TileEntityConversionGenerator extends TileEntityInventory implements IHasGui, IEnergySource, IElectricalNode
+public abstract class TileEntityConversionGenerator extends TileEntityInventory implements IHasGui, IEnergySource, IElectricalNode, ServerTicker
 {
 	private static final NumberFormat FORMAT = new DecimalFormat("#.#");
 	@GuiSynced

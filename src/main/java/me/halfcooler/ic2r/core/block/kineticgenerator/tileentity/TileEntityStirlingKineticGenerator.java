@@ -22,6 +22,8 @@ import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -34,7 +36,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityStirlingKineticGenerator extends TileEntityAbstractKineticGenerator implements IUpgradableBlock, IHasGui
+public class TileEntityStirlingKineticGenerator extends TileEntityAbstractKineticGenerator implements IUpgradableBlock, IHasGui, ServerTicker
 {
 	protected final Fluids fluids = this.addComponent(new Fluids(this));
 	private final int maxHeatBuffer;

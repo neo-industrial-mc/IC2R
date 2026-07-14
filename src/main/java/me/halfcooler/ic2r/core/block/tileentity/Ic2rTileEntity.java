@@ -55,7 +55,6 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 {
 	private static final List<AABB> defaultAabbs = List.of(new AABB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
 	private static final List<TileEntityComponent> emptyComponents = Collections.emptyList();
-	private static final Map<Class<?>, Ic2rTileEntity.TickSubscription> tickSubscriptions = new IdentityHashMap<>();
 	private static final boolean debugLoad = System.getProperty("ic2r.te.debugload") != null;
 	protected final Ic2rTileEntityBlock teBlock;
 	private Map<Class<? extends TileEntityComponent>, TileEntityComponent> components;
@@ -72,75 +71,24 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		this.teBlock = (Ic2rTileEntityBlock) state.getBlock();
 	}
 
-	private static synchronized Ic2rTileEntity.TickSubscription getTickSubscription(Class<?> cls)
+	/**
+	 * Whether this TE should invoke {@link #updateEntityServer()} each server tick after load.
+	 * Default: {@code this instanceof ServerTicker}. Prefer implementing {@link ServerTicker}
+	 * over overriding this; keep override for rare edge cases only.
+	 */
+	protected boolean enablesServerWorldTick()
 	{
-		Ic2rTileEntity.TickSubscription subscription = tickSubscriptions.get(cls);
-		if (subscription == null)
-		{
-			boolean hasUpdateClient = false;
-			boolean hasUpdateServer = false;
-			boolean isClient = IC2R.envProxy.isClientEnv();
+		return this instanceof ServerTicker;
+	}
 
-			for (Class<?> curCls = cls; curCls != Ic2rTileEntity.class && (!hasUpdateClient && isClient || !hasUpdateServer); curCls = curCls.getSuperclass())
-			{
-				if (!hasUpdateClient && isClient)
-				{
-					boolean found = true;
-
-					try
-					{
-						curCls.getDeclaredMethod("updateEntityClient");
-					} catch (NoSuchMethodException e)
-					{
-						found = false;
-					}
-
-					if (found)
-					{
-						hasUpdateClient = true;
-					}
-				}
-
-				if (!hasUpdateServer)
-				{
-					boolean found = true;
-
-					try
-					{
-						curCls.getDeclaredMethod("updateEntityServer");
-					} catch (NoSuchMethodException e)
-					{
-						found = false;
-					}
-
-					if (found)
-					{
-						hasUpdateServer = true;
-					}
-				}
-			}
-
-			if (hasUpdateClient)
-			{
-				if (hasUpdateServer)
-				{
-					subscription = Ic2rTileEntity.TickSubscription.Both;
-				} else
-				{
-					subscription = Ic2rTileEntity.TickSubscription.Client;
-				}
-			} else if (hasUpdateServer)
-			{
-				subscription = Ic2rTileEntity.TickSubscription.Server;
-			} else
-			{
-				subscription = Ic2rTileEntity.TickSubscription.None;
-			}
-
-			tickSubscriptions.put(cls, subscription);
-		}
-
-		return subscription;
+	/**
+	 * Whether this TE should invoke {@link #updateEntityClient()} each client tick after load.
+	 * Default: {@code this instanceof ClientTicker}. Prefer implementing {@link ClientTicker}
+	 * over overriding this; keep override for rare edge cases only.
+	 */
+	protected boolean enablesClientWorldTick()
+	{
+		return this instanceof ClientTicker;
 	}
 
 	public final Ic2rTileEntityBlock getBlockType()
@@ -214,7 +162,7 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		}
 
 		this.loadState = 2;
-		this.enableWorldTick = getTickSubscription(this.getClass()).get(this.level.isClientSide);
+		this.enableWorldTick = this.level.isClientSide ? this.enablesClientWorldTick() : this.enablesServerWorldTick();
 		if (this.components != null)
 		{
 			for (TileEntityComponent component : this.components.values())
@@ -700,25 +648,4 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		}
 	}
 
-	private enum TickSubscription
-	{
-		None(false, false),
-		Client(true, false),
-		Server(false, true),
-		Both(true, true);
-
-		final boolean client;
-		final boolean server;
-
-		TickSubscription(boolean client, boolean server)
-		{
-			this.client = client;
-			this.server = server;
-		}
-
-		boolean get(boolean isClient)
-		{
-			return isClient ? this.client : this.server;
-		}
-	}
 }

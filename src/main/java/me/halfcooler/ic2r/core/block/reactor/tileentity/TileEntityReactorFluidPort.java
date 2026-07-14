@@ -14,6 +14,8 @@ import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -25,7 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
-public class TileEntityReactorFluidPort extends TileEntityInventory implements IHasGui, IUpgradableBlock, IReactorChamber
+public class TileEntityReactorFluidPort extends TileEntityInventory implements IHasGui, IUpgradableBlock, IReactorChamber, ServerTicker
 {
 	public final InvSlotUpgrade upgradeSlot = new InvSlotUpgrade(this, "upgrade", 1);
 	protected final Fluids fluids = this.addComponent(new Fluids(this));

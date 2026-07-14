@@ -17,6 +17,8 @@ import me.halfcooler.ic2r.core.ref.Ic2rFluidTags;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 import me.halfcooler.ic2r.core.util.Util;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -31,7 +33,7 @@ import net.minecraftforge.registries.tags.ITag;
 import java.util.Objects;
 
 @NotClassic
-public class TileEntitySteamRepressurizer extends TileEntityInventory implements IHasGui
+public class TileEntitySteamRepressurizer extends TileEntityInventory implements IHasGui, ServerTicker
 {
 	private static Fluid detectedSteamFluid;
 	@GuiSynced

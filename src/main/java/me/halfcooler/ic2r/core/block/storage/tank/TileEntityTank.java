@@ -21,6 +21,8 @@ import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +47,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public abstract class TileEntityTank extends TileEntityInventory implements IHasGui, Ic2rFluidBlock, FluidBeBridge, INetworkClientTileEntityEventListener, IUpgradableBlock
+public abstract class TileEntityTank extends TileEntityInventory implements IHasGui, Ic2rFluidBlock, FluidBeBridge, INetworkClientTileEntityEventListener, IUpgradableBlock, ServerTicker
 {
 	public final InvSlotUpgrade upgradeSlot = new InvSlotUpgrade(this, "upgrade", 4);
 	protected final Fluids fluidsComponent = this.addComponent(new Fluids(this));
