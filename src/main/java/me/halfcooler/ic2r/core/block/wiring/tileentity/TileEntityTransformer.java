@@ -166,7 +166,7 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 	@Override
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		if (EnergyNetMode.fromConfig(IC2RConfig.misc.energyNetMode.get()) != EnergyNetMode.GT)
+		if (EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get()) != EnergyNetMode.GT)
 		{
 			super.appendItemTooltip(stack, tooltip, advanced);
 		}

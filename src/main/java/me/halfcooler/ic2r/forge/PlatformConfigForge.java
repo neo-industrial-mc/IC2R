@@ -29,7 +29,7 @@ public final class PlatformConfigForge implements PlatformConfig
 	@Override
 	public void registerCommonConfig(Object spec, @Nullable String relativeFileName)
 	{
-		// FmlMod already registers IC2RConfig.SPEC / IC2RUuScanConfig.SPEC — no-op.
+		// FmlMod already registers IC2RConfig.SPEC under config/ic2r/ — no-op.
 	}
 
 	@Override

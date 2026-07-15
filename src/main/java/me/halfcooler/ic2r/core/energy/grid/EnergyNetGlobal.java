@@ -37,7 +37,7 @@ public class EnergyNetGlobal implements IEnergyNet
 
 	public static void initCalculator()
 	{
-		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2RConfig.misc.energyNetMode.get());
+		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get());
 		calculator = mode == EnergyNetMode.GT ? new EnergyCalculatorGT() : new IcEnergySolver();
 	}
 

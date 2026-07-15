@@ -180,7 +180,7 @@ public final class EventHandler
 			return;
 		}
 
-		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2RConfig.misc.energyNetMode.get());
+		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get());
 		// G3.6: player message via PlatformPlayerUi (Forge → SideProxy#messagePlayer)
 		PlatformServices.playerUi().messagePlayer(
 			player,

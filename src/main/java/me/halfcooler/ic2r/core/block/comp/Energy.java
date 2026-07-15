@@ -479,7 +479,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 			return false;
 		}
 
-		if (EnergyNetMode.fromConfig(IC2RConfig.misc.energyNetMode.get()) != EnergyNetMode.GT)
+		if (EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get()) != EnergyNetMode.GT)
 		{
 			return false;
 		}

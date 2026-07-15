@@ -300,7 +300,7 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 
 	private boolean isGtEnergyNet()
 	{
-		return EnergyNetMode.fromConfig(IC2RConfig.misc.energyNetMode.get()) == EnergyNetMode.GT;
+		return EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get()) == EnergyNetMode.GT;
 	}
 
 	@Override

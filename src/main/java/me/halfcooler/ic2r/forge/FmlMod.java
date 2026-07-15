@@ -3,7 +3,6 @@ package me.halfcooler.ic2r.forge;
 import me.halfcooler.ic2r.core.event.EventHandler;
 import me.halfcooler.ic2r.core.init.IC2RClientConfig;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
-import me.halfcooler.ic2r.core.init.IC2RUuScanConfig;
 import me.halfcooler.ic2r.core.network.NetworkManager;
 import me.halfcooler.ic2r.core.loot.Ic2rLootNbtProviderTypes;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
@@ -70,12 +69,13 @@ public final class FmlMod
 		if (FMLEnvironment.dist.isClient())
 		{
 			modEventBus.register(new ClientModEventHandlerForge());
-			this.ctx.registerConfig(ModConfig.Type.CLIENT, IC2RClientConfig.SPEC);
+			this.ctx.registerConfig(ModConfig.Type.CLIENT, IC2RClientConfig.SPEC, "ic2r/ic2r-client.toml");
 		}
 
 		Ic2rFluids.init();
-		this.ctx.registerConfig(ModConfig.Type.COMMON, IC2RConfig.SPEC);
-		this.ctx.registerConfig(ModConfig.Type.COMMON, IC2RUuScanConfig.SPEC, "ic2r-uu-scan-values.toml");
+		// All IC2R configs live under config/ic2r/
+		this.ctx.registerConfig(ModConfig.Type.COMMON, IC2RConfig.SPEC, "ic2r/ic2r-common.toml");
+		// UU matter costs: config/ic2r/ic2r-uu-matter.toml (loaded by IC2RUuMatterConfig, not ForgeConfigSpec)
 		modEventBus.addListener(NanoSaberCapabilities::register);
 	}
 	

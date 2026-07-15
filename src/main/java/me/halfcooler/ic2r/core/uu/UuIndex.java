@@ -2,23 +2,24 @@ package me.halfcooler.ic2r.core.uu;
 
 import me.halfcooler.ic2r.api.recipe.Recipes;
 import me.halfcooler.ic2r.core.IC2R;
-import me.halfcooler.ic2r.core.init.IC2RConfig;
-import me.halfcooler.ic2r.core.init.IC2RUuScanConfig;
+import me.halfcooler.ic2r.core.init.IC2RUuMatterConfig;
 import me.halfcooler.ic2r.core.util.ConfigUtil;
 import me.halfcooler.ic2r.core.util.LogCategory;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.world.item.ItemStack;
 
 /**
  * Entry point for UU values used by scanner / replicator / pattern storage.
  * <p>
- * Seeds come from config; finite values for craftable items come from recipe resolvers
- * registered in {@link #init()} and applied during {@link #refresh(boolean)}.
- * Refresh must run after the server (and its {@link net.minecraft.world.item.crafting.RecipeManager}) is available.
+ * Seeds come solely from {@code config/ic2r/ic2r-uu-matter.toml}; finite values for craftable
+ * items also come from recipe resolvers registered in {@link #init()} and applied during
+ * {@link #refresh(boolean)}. Refresh must run after the server (and its
+ * {@link net.minecraft.world.item.crafting.RecipeManager}) is available.
  */
 public class UuIndex
 {
@@ -109,7 +110,7 @@ public class UuIndex
 	}
 
 	/**
-	 * Load seed values from config and rebuild the UU graph (including recipe propagation).
+	 * Load seed values from {@code ic2r-uu-matter.toml} and rebuild the UU graph (including recipe propagation).
 	 * Call when a server RecipeManager is available (e.g. {@code ServerStarting}).
 	 */
 	public void refresh(boolean reset)
@@ -119,35 +120,26 @@ public class UuIndex
 			this.init();
 		}
 
-		List<? extends String> worldScanList = IC2RUuScanConfig.values.get();
-		if (worldScanList.isEmpty())
+		IC2RUuMatterConfig.load();
+		Map<String, Double> matterValues = IC2RUuMatterConfig.getValues();
+		if (matterValues.isEmpty())
 		{
-			IC2R.log.warn(LogCategory.Uu, "No UU world scan values configured in ic2r-uu-scan-values.toml.");
-		} else
-		{
-			IC2R.log.debug(LogCategory.Uu, "Loading UU world scan values from ic2r-uu-scan-values.toml.");
-			for (String entry : worldScanList)
-			{
-				parseUuEntry(entry, "world scan");
-			}
+			IC2R.log.warn(LogCategory.Uu, "No UU matter values configured in %s.", IC2RUuMatterConfig.RELATIVE_PATH);
 		}
-
-		for (String entry : IC2RConfig.balance.uuValues.predefined.get())
+		else
 		{
-			parseUuEntry(entry, "predefined");
+			IC2R.log.debug(LogCategory.Uu, "Loading %d UU matter values from %s.", matterValues.size(), IC2RUuMatterConfig.RELATIVE_PATH);
+			for (Map.Entry<String, Double> entry : matterValues.entrySet())
+			{
+				applyUuValue(entry.getKey(), entry.getValue());
+			}
 		}
 
 		UuGraph.build(reset);
 	}
 
-	private void parseUuEntry(String entry, String category)
+	private void applyUuValue(String itemName, double value)
 	{
-		int splitPos = entry.lastIndexOf(' ');
-		if (splitPos <= 0) return;
-
-		String itemName = entry.substring(0, splitPos);
-		String valueStr = entry.substring(splitPos + 1);
-
 		ItemStack stack;
 		try
 		{
@@ -159,16 +151,16 @@ public class UuIndex
 
 		if (stack == null)
 		{
-			IC2R.log.warn(LogCategory.Uu, "UU %s config: Can't find ItemStack for %s.", category, itemName);
+			IC2R.log.warn(LogCategory.Uu, "UU matter config: Can't find ItemStack for %s.", itemName);
 			return;
 		}
 
-		try
+		if (Double.isNaN(value) || value < 0.0)
 		{
-			this.add(stack, Double.parseDouble(valueStr));
-		} catch (NumberFormatException e)
-		{
-			IC2R.log.warn(LogCategory.Uu, "UU %s config: Invalid value %s for %s.", category, valueStr, itemName);
+			IC2R.log.warn(LogCategory.Uu, "UU matter config: Invalid value %s for %s.", value, itemName);
+			return;
 		}
+
+		this.add(stack, value);
 	}
 }

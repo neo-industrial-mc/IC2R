@@ -1,8 +1,5 @@
 package me.halfcooler.ic2r.core.init;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class IC2RConfig
@@ -122,7 +119,6 @@ public class IC2RConfig
 		public final SteamGenerator steamGenerator;
 		public final SteamRepressurizer steamRepressurizer;
 		public final Fermenter fermenter;
-		public final UuValues uuValues;
 
 		Balance(ForgeConfigSpec.Builder b)
 		{
@@ -165,7 +161,6 @@ public class IC2RConfig
 			steamGenerator = new SteamGenerator(b);
 			steamRepressurizer = new SteamRepressurizer(b);
 			fermenter = new Fermenter(b);
-			uuValues = new UuValues(b);
 			b.pop();
 		}
 
@@ -382,29 +377,6 @@ public class IC2RConfig
 			}
 		}
 
-		public static class UuValues
-		{
-			public final ForgeConfigSpec.ConfigValue<List<? extends String>> predefined;
-
-			UuValues(ForgeConfigSpec.Builder b)
-			{
-				b.push("uu-values");
-				b.comment(
-					"Additional initial UU values. Format: \"mod:item value\".",
-					"A value of 1 equals cobblestone.",
-					"Recipes may cause the final value to be lower than the one specified here.",
-					"World scan defaults are configured in ic2r-uu-scan-values.toml."
-				);
-				predefined = b.defineListAllowEmpty("predefined", () ->
-				{
-					List<String> defaults = new ArrayList<>();
-					defaults.add("ic2r:iridium_ore 12000");
-					defaults.add("ic2r:iridium_shard 1333");
-					return defaults;
-				}, e -> e instanceof String);
-				b.pop();
-			}
-		}
 	}
 
 	// -- recipes -------------------------------------------------------------
@@ -461,7 +433,7 @@ public class IC2RConfig
 		public final ForgeConfigSpec.BooleanValue roundEnetLoss;
 		public final ForgeConfigSpec.BooleanValue enableEnetExplosions;
 		public final ForgeConfigSpec.BooleanValue enableEnetCableMeltdown;
-		public final ForgeConfigSpec.ConfigValue<String> energyNetMode;
+		public final ForgeConfigSpec.BooleanValue useGregTechEnergyNet;
 
 		Misc(ForgeConfigSpec.Builder b)
 		{
@@ -483,10 +455,11 @@ public class IC2RConfig
 			enableEnetExplosions = b.define("enableEnetExplosions", true);
 			b.comment("Same for cable meltdown.");
 			enableEnetCableMeltdown = b.define("enableEnetCableMeltdown", true);
-			b.push("energyNet");
-			b.comment("IC2R = classic EU packets (default); GT = voltage/current/ampere limits");
-			energyNetMode = b.define("mode", "IC2R");
-			b.pop();
+			b.comment(
+				"Use GregTech-style voltage/current/ampere energy net limits.",
+				"false (default) = classic IC2R EU packet model; true = GT V/A limits."
+			);
+			useGregTechEnergyNet = b.define("useGregTechEnergyNet", false);
 			b.pop();
 		}
 	}

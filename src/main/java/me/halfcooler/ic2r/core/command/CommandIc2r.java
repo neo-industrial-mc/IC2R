@@ -16,7 +16,6 @@ import me.halfcooler.ic2r.core.energy.grid.EnergyNetGlobal;
 import me.halfcooler.ic2r.core.energy.grid.EnergyNetSettings;
 import me.halfcooler.ic2r.core.energy.grid.GridInfo;
 import me.halfcooler.ic2r.core.item.ItemCropSeed;
-import me.halfcooler.ic2r.core.uu.DropScan;
 import me.halfcooler.ic2r.core.uu.UuGraph;
 import me.halfcooler.ic2r.core.uu.UuIndex;
 import me.halfcooler.ic2r.core.util.ConfigUtil;
@@ -36,7 +35,6 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -47,7 +45,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 public final class CommandIc2r
 {
 	private static final SimpleCommandExceptionType UNKNOWN_COMMAND = new SimpleCommandExceptionType(Component.literal("Unknown Command."));
-	private static final SuggestionProvider<CommandSourceStack> SCAN_SIZE_SUGGESTIONS = (ctx, builder) -> SharedSuggestionProvider.suggest(new String[] { "tiny", "small", "medium", "large" }, builder);
 	private static final SuggestionProvider<CommandSourceStack> DEBUG_ACTION_SUGGESTIONS = (ctx, builder) -> SharedSuggestionProvider.suggest(new String[] { "dumpUuValues", "resolveIngredient", "dumpTextures", "dumpLargeGrids", "enet" }, builder);
 	private static final SuggestionProvider<CommandSourceStack> ENET_OPTION_SUGGESTIONS = (ctx, builder) -> SharedSuggestionProvider.suggest(new String[] { "logIssues", "logUpdates" }, builder);
 	private static final SuggestionProvider<CommandSourceStack> BOOL_SUGGESTIONS = (ctx, builder) -> SharedSuggestionProvider.suggest(new String[] { "true", "false" }, builder);
@@ -97,14 +94,6 @@ public final class CommandIc2r
 		dispatcher.register(
 			Commands.literal("ic2r")
 				.requires(source -> source.hasPermission(4))
-				.then(
-					Commands.literal("uu-world-scan")
-						.then(
-							Commands.argument("size", StringArgumentType.word())
-								.suggests(SCAN_SIZE_SUGGESTIONS)
-								.executes(ctx -> cmdUuWorldScan(ctx.getSource(), StringArgumentType.getString(ctx, "size")))
-						)
-				)
 				.then(
 					Commands.literal("debug")
 						.then(Commands.literal("dumpUuValues").executes(ctx -> cmdDumpUuValues(ctx.getSource())))
@@ -180,49 +169,6 @@ public final class CommandIc2r
 						)
 				)
 		);
-	}
-
-	private static int cmdUuWorldScan(CommandSourceStack source, String size) throws CommandSyntaxException
-	{
-		int areaCount = switch (size)
-		{
-			case "tiny" -> 128;
-			case "small" -> 1024;
-			case "medium" -> 2048;
-			case "large" -> 4096;
-			default -> throw invalidUsage(source);
-		};
-
-		float time = areaCount * 0.0032F;
-		msg(source, String.format("Starting world scan, this will take about %.1f minutes with a powerful cpu.", time));
-		msg(source, "The server will not respond while the calculations are running.");
-
-		ServerLevel world = source.getLevel();
-		if (source.getEntity() instanceof ServerPlayer player)
-		{
-			world = player.serverLevel();
-		}
-
-		if (world == null)
-		{
-			msg(source, "Can't determine the world to scan.");
-			return 0;
-		}
-
-		int area = 50000;
-		int range = 5;
-		DropScan scan = new DropScan(world, range);
-
-		try
-		{
-			scan.start(area, areaCount);
-		}
-		finally
-		{
-			scan.cleanup();
-		}
-
-		return 1;
 	}
 
 	private static int cmdDumpUuValues(CommandSourceStack source)
@@ -499,6 +445,6 @@ public final class CommandIc2r
 
 	public static String getUsage()
 	{
-		return "/ic2r uu-world-scan <tiny|small|medium|large> | debug (dumpUuValues | rebuildUuGraph | resolveIngredient <name> | dumpTextures <name> <size> | dumpLargeGrids | enet (logIssues | logUpdates) (true|false)) | currentItem | itemNameWithVariant | giveCrop <owner> <name> <growth (1-31)> <gain (1-31)> <resistance (1-31)>";
+		return "/ic2r debug (dumpUuValues | rebuildUuGraph | resolveIngredient <name> | dumpTextures <name> <size> | dumpLargeGrids | enet (logIssues | logUpdates) (true|false)) | currentItem | itemNameWithVariant | giveCrop <owner> <name> <growth (1-31)> <gain (1-31)> <resistance (1-31)>";
 	}
 }

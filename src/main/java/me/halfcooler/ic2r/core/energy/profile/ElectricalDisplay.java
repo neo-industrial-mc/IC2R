@@ -66,7 +66,7 @@ public final class ElectricalDisplay
 
 	public static void appendCableTooltip(AbstractCableBlock block, List<Component> tooltip)
 	{
-		if (EnergyNetMode.fromConfig(IC2RConfig.misc.energyNetMode.get()) == EnergyNetMode.GT)
+		if (EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get()) == EnergyNetMode.GT)
 		{
 			CableSpec spec = CableSpec.forType(block.type);
 			int loss = spec.getLossPerMeterPerAmp();
