@@ -73,6 +73,8 @@ public class UuIndex {
   }
 
   public void refresh(boolean reset) {
+    UuGraph.awaitCalculation();
+
     List<? extends String> worldScanList = IC2Config.balance.uuValues.worldScan.get();
     if (worldScanList.isEmpty()) {
       IC2.log.info(

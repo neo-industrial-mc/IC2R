@@ -22,9 +22,10 @@ public class UuGraph {
   private static final Map<LeanItemStack, UuGraph.Node> nodes = new HashMap<>();
   private static final Map<Item, Set<UuGraph.Node>> itemNodes = new IdentityHashMap<>();
   private static final List<UuGraph.InitialValue> initialValues = new ArrayList<>();
-  private static volatile Future<?> calculation = null;
+  // Access is guarded by UuGraph.class through the synchronized lifecycle methods below.
+  private static Future<?> calculation = null;
 
-  public static void build(boolean reset) {
+  public static synchronized void build(boolean reset) {
     if (calculation != null) {
       throw new IllegalStateException("uu graph building is already in progress.");
     }
@@ -63,7 +64,7 @@ public class UuGraph {
     calculation = IC2.threadPool.submit(() -> UuGraph.processRecipes(transformations));
   }
 
-  public static void set(ItemStack stack, double value) {
+  public static synchronized void set(ItemStack stack, double value) {
     if (calculation != null) {
       throw new IllegalStateException(
           "setting values isn't allowed while the calculation is running, set them earlier.");
@@ -72,15 +73,15 @@ public class UuGraph {
     initialValues.add(new UuGraph.InitialValue(new LeanItemStack(stack), value));
   }
 
-  public static double get(ItemStack stack) {
-    finishCalculation();
+  public static synchronized double get(ItemStack stack) {
+    awaitCalculation();
     LeanItemStack key = new LeanItemStack(stack, 1);
     UuGraph.Node ret = nodes.get(key);
     return ret == null ? Double.POSITIVE_INFINITY : ret.value;
   }
 
-  public static ItemStack find(ItemStack stack) {
-    finishCalculation();
+  public static synchronized ItemStack find(ItemStack stack) {
+    awaitCalculation();
     LeanItemStack key = new LeanItemStack(stack, 1);
     UuGraph.Node exactNode = UuGraph.nodes.get(key);
     if (exactNode != null) {
@@ -97,8 +98,8 @@ public class UuGraph {
     }
   }
 
-  public static Iterator<Entry<ItemStack, Double>> iterator() {
-    finishCalculation();
+  public static synchronized Iterator<Entry<ItemStack, Double>> iterator() {
+    awaitCalculation();
     return new UuGraph.ValueIterator();
   }
 
@@ -163,7 +164,8 @@ public class UuGraph {
     }
   }
 
-  private static void finishCalculation() {
+  /** Waits for the current build and releases its lifecycle guard for the next refresh. */
+  static synchronized void awaitCalculation() {
     if (calculation != null) {
       try {
         calculation.get();
