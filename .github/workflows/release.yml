@@ -1,4 +1,4 @@
-name: Publish Maven package
+name: Release
 
 on:
   release:
@@ -11,12 +11,12 @@ permissions:
   packages: write
 
 concurrency:
-  group: publish-maven-${{ github.ref }}
+  group: release-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  publish:
-    name: Publish to GitHub Packages
+  release:
+    name: Release
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -36,7 +36,7 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Build mod JAR and publish Maven package
+      - name: Build and release mod JAR
         run: ./gradlew --no-daemon --stacktrace jar publishMavenJavaPublicationToGithubPackagesRepository
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
