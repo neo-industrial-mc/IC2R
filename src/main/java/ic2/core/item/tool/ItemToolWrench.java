@@ -50,6 +50,7 @@ import org.jetbrains.annotations.Nullable;
 public class ItemToolWrench extends Item
     implements PriorityUsableItem, IBoxable, BlockBreakableItem, IHitSoundOverride {
   private static final int MINE_DAMAGE = 1;
+  public static final float WRENCH_DESTROY_SPEED = 6.0F;
 
   public ItemToolWrench(Properties settings) {
     super(settings);
@@ -190,6 +191,55 @@ public class ItemToolWrench extends Item
     return RotationUtil.rotateByHit(side, hitX, hitY, hitZ);
   }
 
+  public static boolean isWrenchTarget(BlockState state) {
+    return state.is(Ic2BlockTags.MINEABLE_WITH_WRENCH) || state.getBlock() instanceof IWrenchAble;
+  }
+
+  public static InteractionResult trySetFacingFromHit(UseOnContext context, Player player) {
+    Level world = context.getLevel();
+    BlockPos pos = context.getClickedPos();
+    BlockState state = world.getBlockState(pos);
+    if (state.isAir()) {
+      return InteractionResult.FAIL;
+    }
+
+    boolean handled;
+    if (state.getBlock() instanceof IWrenchAble wrenchAble) {
+      Direction currentFacing = wrenchAble.getFacing(world, pos);
+      Direction newFacing =
+          resolveManualFacing(
+              context.getClickedFace(), player, context.getClickLocation(), pos, currentFacing);
+      wrenchAble.setFacing(world, pos, newFacing, player);
+      handled = true;
+    } else {
+      handled =
+          wrenchVanillaBlock(world, pos, context.getClickedFace(), player, state)
+              != WrenchResult.Nothing;
+    }
+
+    if (!handled) {
+      return InteractionResult.FAIL;
+    }
+
+    if (world.isClientSide) {
+      player.playSound(Ic2SoundEvents.ITEM_WRENCH_USE, 1.0F, 1.0F);
+      return InteractionResult.PASS;
+    }
+
+    return InteractionResult.SUCCESS;
+  }
+
+  public static boolean tryRemoveWithWrench(
+      Level world, Player player, BlockPos pos, BlockState state) {
+    if (!(state.getBlock() instanceof IWrenchAble wrenchAble)
+        || !wrenchAble.wrenchCanRemove(world, pos, player)) {
+      return false;
+    }
+
+    removeBlockWithWrench(world, pos, state, player, wrenchAble);
+    return true;
+  }
+
   private static String getTeName(BlockEntity te) {
     return te != null
         ? BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(te.getType()).toString()
@@ -272,9 +322,7 @@ public class ItemToolWrench extends Item
       BlockPos pos,
       BlockState state,
       @Nullable BlockEntity blockEntity) {
-    if (state.getBlock() instanceof IWrenchAble wrenchAble
-        && wrenchAble.wrenchCanRemove(world, pos, player)) {
-      removeBlockWithWrench(world, pos, state, player, wrenchAble);
+    if (tryRemoveWithWrench(world, player, pos, state)) {
       player.getMainHandItem().hurtAndBreak(MINE_DAMAGE, player, EquipmentSlot.MAINHAND);
       return false;
     }
@@ -292,13 +340,13 @@ public class ItemToolWrench extends Item
 
   @Override
   public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-    return state.is(Ic2BlockTags.MINEABLE_WITH_WRENCH) || state.getBlock() instanceof IWrenchAble;
+    return isWrenchTarget(state);
   }
 
   @Override
   public float getDestroySpeed(ItemStack stack, BlockState state) {
     if (this.isCorrectToolForDrops(stack, state)) {
-      return 6.0F;
+      return WRENCH_DESTROY_SPEED;
     }
 
     return super.getDestroySpeed(stack, state);
@@ -325,37 +373,7 @@ public class ItemToolWrench extends Item
       return InteractionResult.PASS;
     }
 
-    Level world = context.getLevel();
-    BlockPos pos = context.getClickedPos();
-    BlockState state = world.getBlockState(pos);
-    if (state.isAir()) {
-      return InteractionResult.FAIL;
-    }
-
-    boolean handled;
-    if (state.getBlock() instanceof IWrenchAble wrenchAble) {
-      Direction currentFacing = wrenchAble.getFacing(world, pos);
-      Direction newFacing =
-          resolveManualFacing(
-              context.getClickedFace(), player, context.getClickLocation(), pos, currentFacing);
-      wrenchAble.setFacing(world, pos, newFacing, player);
-      handled = true;
-    } else {
-      handled =
-          wrenchVanillaBlock(world, pos, context.getClickedFace(), player, state)
-              != WrenchResult.Nothing;
-    }
-
-    if (!handled) {
-      return InteractionResult.FAIL;
-    }
-
-    if (world.isClientSide) {
-      player.playSound(Ic2SoundEvents.ITEM_WRENCH_USE, 1.0F, 1.0F);
-      return InteractionResult.PASS;
-    }
-
-    return InteractionResult.SUCCESS;
+    return trySetFacingFromHit(context, player);
   }
 
   public void damage(ItemStack is, int damage, Player player, InteractionHand hand) {
