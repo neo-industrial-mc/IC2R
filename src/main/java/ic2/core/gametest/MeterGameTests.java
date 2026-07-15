@@ -48,6 +48,10 @@ public class MeterGameTests {
           }
 
           NodeStats stats = EnergyNet.instance.getNodeStats(source);
+          if (stats == null) {
+            return;
+          }
+
           if (!sawFlow[0]) {
             if (stats.getEnergyOut() > 0.0) {
               sawFlow[0] = true;
