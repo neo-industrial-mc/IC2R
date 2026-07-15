@@ -6,6 +6,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'com.modrinth.minotaur' version '2.+'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id 'com.vanniktech.maven.publish' version '0.37.0'
 }
 
 version = System.getenv("MOD_VERSION") ?: mod_version
@@ -19,6 +20,12 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+tasks.withType(Javadoc).configureEach {
+    failOnError = false
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.encoding = 'UTF-8'
 }
 
 mixin {
@@ -153,12 +160,111 @@ tasks.named('processResources', ProcessResources).configure {
     }
 }
 
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            artifact jar
+mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
+    
+    configure(new com.vanniktech.maven.publish.JavaLibrary(
+            new com.vanniktech.maven.publish.JavadocJar.Empty(),
+            true
+    ))
+
+    coordinates(group.toString(), base.archivesName.get(), version.toString())
+
+    pom {
+        name = mod_name
+        description = mod_description
+        inceptionYear = '2024'
+        url = 'https://github.com/HalfCooler/IC2R'
+        licenses {
+            license {
+                name = 'GNU Affero General Public License v3.0'
+                url = 'https://www.gnu.org/licenses/agpl-3.0.html'
+                distribution = 'repo'
+            }
+        }
+        developers {
+            developer {
+                id = 'HalfCooler'
+                name = 'HalfCooler'
+                url = 'https://github.com/HalfCooler'
+            }
+        }
+        scm {
+            url = 'https://github.com/HalfCooler/IC2R'
+            connection = 'scm:git:git://github.com/HalfCooler/IC2R.git'
+            developerConnection = 'scm:git:ssh://git@github.com/HalfCooler/IC2R.git'
         }
     }
+}
+
+// MixinGradle's plainJavadocJar also uses classifier "javadoc" — drop it from publish.
+tasks.configureEach { task ->
+    if (task.name == 'plainJavadocJar') {
+        task.enabled = false
+    }
+}
+
+// Load armored private key from a file path (Windows-friendly).
+// Supports: -PsigningKeyFile=..., gradle.properties signingKeyFile, or env SIGNING_KEY_FILE.
+def resolveSigningPrivateKey = {
+    def fromMemory = findProperty('signingInMemoryKey')?.toString()
+    if (fromMemory != null && fromMemory.contains('BEGIN PGP PRIVATE KEY BLOCK') && fromMemory.contains('END PGP PRIVATE KEY BLOCK')) {
+        return fromMemory
+    }
+
+    def keyFileProp = findProperty('signingKeyFile')?.toString()
+            ?: System.getenv('SIGNING_KEY_FILE')
+            ?: System.getenv('ORG_GRADLE_PROJECT_signingKeyFile')
+    if (keyFileProp == null || keyFileProp.trim().isEmpty()) {
+        return null
+    }
+
+    def keyFile = file(keyFileProp.trim())
+    if (!keyFile.isFile()) {
+        throw new GradleException("signingKeyFile does not exist: ${keyFile.absolutePath}")
+    }
+    def text = keyFile.getText('UTF-8').trim()
+    if (!text.contains('BEGIN PGP PRIVATE KEY BLOCK') || !text.contains('END PGP PRIVATE KEY BLOCK')) {
+        throw new GradleException("signingKeyFile is not a full armored private key (missing BEGIN/END): ${keyFile.absolutePath}")
+    }
+    return text
+}
+
+def signingPrivateKey = resolveSigningPrivateKey()
+if (signingPrivateKey != null) {
+    def rawKeyId = (findProperty('signing.keyId')
+            ?: findProperty('signingInMemoryKeyId')
+            ?: '').toString().trim()
+    // Gradle Signatory expects 8 hex chars; accept long Key ID by taking the last 8.
+    def keyId = rawKeyId.isEmpty() ? null : (rawKeyId.length() > 8 ? rawKeyId.substring(rawKeyId.length() - 8) : rawKeyId)
+    def password = (findProperty('signing.password')
+            ?: findProperty('signingInMemoryKeyPassword')
+            ?: '').toString()
+
+    // Force a real signatory even when multi-line in-memory props were mangled by gradle.properties.
+    signing {
+        useInMemoryPgpKeys(keyId, signingPrivateKey, password)
+    }
+    logger.lifecycle("Signing: using in-memory PGP key (keyId=${keyId ?: 'auto'})")
+}
+
+// FG maps deps to non-resolvable *_mapped_official_* coordinates.
+// Publish the mod as a leaf artifact; consumers bring their own Minecraft/Forge stack.
+publishing {
+    publications.withType(MavenPublication).configureEach {
+        pom.withXml {
+            def dependenciesNode = asNode().dependencies
+            if (dependenciesNode != null) {
+                asNode().remove(dependenciesNode)
+            }
+        }
+    }
+}
+
+// Avoid publishing Gradle Module Metadata that still lists mapped FG deps.
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
 }
 
 tasks.withType(JavaCompile).configureEach {

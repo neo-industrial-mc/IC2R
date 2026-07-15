@@ -18,7 +18,6 @@
 
 ## 可能暂时不兼容的 Mods
 
-- 机械动力 / Create。由于机械动力硬编码了 `ic2:` 命名空间下的某些物品，在注册配方时会无法找到对应的物品，导致游戏崩溃。
 - 高清修复 / Optifine。可能因为 Optifine 某些破坏性修改导致无法找到 `ResouceLocation.fromNamespaceAndPath(String, String)` 方法而崩溃。
 
 ## 其他特性
