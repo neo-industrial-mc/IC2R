@@ -341,8 +341,10 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 		return super.mouseReleased(mouseX, mouseY, state);
 	}
 
-	public boolean charTyped(char typedChar, int keyCode)
+	public boolean charTyped(char typedChar, int modifiers)
 	{
+		// 1.20+: charTyped only delivers printable characters (second arg is modifiers, not keyCode).
+		// TextBox character input is handled here; special keys go through keyPressed.
 		if (this.elementMethods.contains(GuiElement.ImplementedMethod.onKeyTyped))
 		{
 			boolean handled = false;
@@ -351,7 +353,7 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 			{
 				if (element.isEnabled())
 				{
-					handled |= element.onKeyTyped(typedChar, keyCode);
+					handled |= element.onKeyTyped(typedChar, -1);
 				}
 			}
 
@@ -361,7 +363,32 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 			}
 		}
 
-		return super.charTyped(typedChar, keyCode);
+		return super.charTyped(typedChar, modifiers);
+	}
+
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+	{
+		// Special keys (backspace, delete, arrows, ctrl+a/c/v/x, …) never reach charTyped.
+		// Forward them so TextBox can delete/edit text instead of only accepting typed digits.
+		if (this.elementMethods.contains(GuiElement.ImplementedMethod.onKeyTyped))
+		{
+			boolean handled = false;
+
+			for (GuiElement<?> element : this.elements)
+			{
+				if (element.isEnabled())
+				{
+					handled |= element.onKeyTyped('\0', keyCode);
+				}
+			}
+
+			if (handled)
+			{
+				return true;
+			}
+		}
+
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	public void removed()

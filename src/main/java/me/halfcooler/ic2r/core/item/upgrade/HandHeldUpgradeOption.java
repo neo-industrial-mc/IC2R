@@ -4,10 +4,12 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.gui.Button;
 import me.halfcooler.ic2r.core.gui.VanillaButton;
+import me.halfcooler.ic2r.core.gui.dynamic.DynamicHandHeldContainer;
 import me.halfcooler.ic2r.core.item.tool.HandHeldInventory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 
 public abstract class HandHeldUpgradeOption extends HandHeldInventory
 {
@@ -17,6 +19,16 @@ public abstract class HandHeldUpgradeOption extends HandHeldInventory
 	{
 		super(upgradeGUI.getPlayer(), upgradeGUI.getHand(), upgradeGUI.getContainerStack(), 9);
 		this.name = name;
+		// Switching from the main advanced-upgrade GUI into this sub-GUI closes the parent
+		// container. Without addMaintainedPlayer, HandHeldInventory.onScreenClosed strips the
+		// stack uid; the new sub-GUI then fails stillValid / save (GUI vanishes + warn log).
+		Player player = upgradeGUI.getPlayer();
+		if (!player.level().isClientSide
+			&& player.containerMenu instanceof DynamicHandHeldContainer
+			&& ((DynamicHandHeldContainer<?>) player.containerMenu).base instanceof HandHeldAdvancedUpgrade)
+		{
+			addMaintainedPlayer(player);
+		}
 	}
 
 	protected CompoundTag getNBT()

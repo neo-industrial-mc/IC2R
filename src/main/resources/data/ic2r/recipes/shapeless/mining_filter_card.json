@@ -5,13 +5,10 @@
       "item": "ic2r:advanced_circuit"
     },
     {
-      "item": "ic2r:advanced_circuit"
-    },
-    {
       "item": "ic2r:frequency_transmitter"
     },
     {
-      "item": "ic2r:item_buffer"
+      "item": "ic2r:hopper"
     }
     
   ],

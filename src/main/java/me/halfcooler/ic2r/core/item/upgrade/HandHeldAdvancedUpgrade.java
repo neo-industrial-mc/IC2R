@@ -1,6 +1,5 @@
 package me.halfcooler.ic2r.core.item.upgrade;
 
-import me.halfcooler.ic2r.api.network.ClientModifiable;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.IHasGui;
@@ -25,25 +24,20 @@ import net.minecraft.world.item.ItemStack;
 
 public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolographicSlotProvider, IGuiConditionProvider
 {
-	private static final int META_GUI = 0;
-	private static final int DAMAGE_GUI = 1;
-	private static final int ENERGY_GUI = 2;
+	public static final int ENERGY_GUI = 2;
 	private static final int ORE_GUI = 3;
 	private static final ResourceLocation GUI_XML = IC2R.getIdentifier("advanced_upgrade");
 	@GuiSynced
-	protected boolean meta;
+	protected boolean nbtMatch;
 	@GuiSynced
 	protected boolean energy;
-	@ClientModifiable
-	protected NbtSettings nbt;
 
 	public HandHeldAdvancedUpgrade(Player player, InteractionHand hand, ItemStack containerStack)
 	{
 		super(player, hand, checkContainerStack(player, containerStack), 9);
 		CompoundTag nbt = StackUtil.getOrCreateNbtData(containerStack);
-		this.meta = readTag(nbt, "meta");
-		this.nbt = NbtSettings.getFromNBT(getTag(nbt, "nbt").getByte("type"));
-		this.energy = readTag(nbt, "energy");
+		this.nbtMatch = NbtSettings.getFromNBT(getTag(nbt, "nbt").getByte("type")).enabled();
+		this.energy = readTag(nbt);
 	}
 
 	private static ItemStack checkContainerStack(Player player, ItemStack containerStack)
@@ -65,26 +59,45 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 		return nbt.getCompound(name + "Settings");
 	}
 
-	protected static boolean readTag(CompoundTag nbt, String name)
+	protected static boolean readTag(CompoundTag nbt)
 	{
-		return getTag(nbt, name).getBoolean("active");
+		return getTag(nbt, "energy").getBoolean("active");
+	}
+	protected static void writeEnergyTag(CompoundTag nbt, boolean active)
+	{
+		CompoundTag tag = getTag(nbt, "energy");
+		tag.putBoolean("active", active);
+		if (active && !tag.contains("type", 1))
+		{
+			tag.putByte("type", ComparisonType.DIRECT.getForNBT());
+		}
+		nbt.put("energySettings", tag);
 	}
 
-	protected static void writeTag(CompoundTag nbt, String name, boolean active)
+	protected static void writeNbtMatchTag(CompoundTag nbt, boolean exactMatch)
 	{
-		CompoundTag tag = getTag(nbt, name);
-		tag.putBoolean("active", active);
-		nbt.put(name + "Settings", tag);
+		NbtSettings setting = exactMatch ? NbtSettings.EXACT : NbtSettings.IGNORED;
+		CompoundTag tag = getTag(nbt, "nbt");
+		tag.putBoolean("active", setting.enabled());
+		tag.putByte("type", setting.getForNBT());
+		nbt.put("nbtSettings", tag);
+	}
+	public static boolean isEnergyMatchEnabled(ItemStack stack)
+	{
+		return readTag(StackUtil.getOrCreateNbtData(stack));
+	}
+	public static void openEnergyConfig(Player player, InteractionHand hand, ItemStack stack)
+	{
+		new HandHeldValueConfig(new HandHeldAdvancedUpgrade(player, hand, stack), "energy")
+			.openManagedItem(player, hand, ENERGY_GUI);
 	}
 
 	static IHasGui delegate(Player player, InteractionHand hand, ItemStack stack, int ID)
 	{
 		return switch (ID)
 		{
-			case 0 -> new HandHeldValueConfig(new HandHeldAdvancedUpgrade(player, hand, stack), "meta");
-			case 1 -> null;
-			case 2 -> new HandHeldValueConfig(new HandHeldAdvancedUpgrade(player, hand, stack), "energy");
-			case 3 -> new HandHeldOre(new HandHeldAdvancedUpgrade(player, hand, stack));
+			case ENERGY_GUI -> new HandHeldValueConfig(new HandHeldAdvancedUpgrade(player, hand, stack), "energy");
+			case ORE_GUI -> new HandHeldOre(new HandHeldAdvancedUpgrade(player, hand, stack));
 			default ->
 			{
 				IC2R.log.warn(LogCategory.Network, "Unexpected delegate ID: " + ID);
@@ -101,12 +114,10 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 		{
 			CompoundTag nbt = this.containerStack.getTag();
 			assert nbt != null;
-			writeTag(nbt, "meta", this.meta);
-			CompoundTag tag = getTag(nbt, "nbt");
-			tag.putBoolean("active", this.nbt.enabled());
-			tag.putByte("type", this.nbt.getForNBT());
-			nbt.put("nbtSettings", tag);
-			writeTag(nbt, "energy", this.energy);
+			// Drop legacy meta settings if present
+			nbt.remove("metaSettings");
+			writeNbtMatchTag(nbt, this.nbtMatch);
+			writeEnergyTag(nbt, this.energy);
 		}
 	}
 
@@ -152,29 +163,29 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 	@Override
 	public boolean getGuiState(String name)
 	{
-		if ("meta".equals(name))
-		{
-			return this.meta;
-		}
-
+		// NBT indicator only when NBT is on AND EU is off (EU makes NBT inactive)
 		if ("nbt".equals(name))
 		{
-			return this.nbt.enabled();
+			return this.nbtMatch && !this.energy;
 		}
 
-		if (!"energy".equals(name))
+		if ("energy".equals(name))
 		{
-			if ("dev".equals(name))
-			{
-				return Util.inDev();
-			} else
-			{
-				throw new IllegalArgumentException("Unexpected conditional name requested: " + name);
-			}
-		} else
-		{
-			return this.energy || this.nbt == NbtSettings.EXACT;
+			return this.energy;
 		}
+
+		// E button: open advanced EU comparison while EU Match is enabled
+		if ("energyAdvanced".equals(name))
+		{
+			return this.energy;
+		}
+
+		if ("dev".equals(name))
+		{
+			return Util.inDev();
+		}
+
+		throw new IllegalArgumentException("Unexpected conditional name requested: " + name);
 	}
 
 	@Override
@@ -187,28 +198,52 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 			event = event.substring(0, event.lastIndexOf("Dev"));
 		}
 
-		if ("meta".equals(event))
+		// DynamicGui invokes onEvent on both client (optimistic UI) and server (via container event).
+		// openManagedItem must only run on the server — LocalPlayer cannot open a MenuProvider.
+		boolean server = IC2R.sideProxy.isSimulating();
+
+		if ("nbt".equals(event))
 		{
-			if (!dev)
+			// While EU Match is on, NBT Match is inactive — do not toggle it from the main UI
+			if (this.energy)
 			{
-				this.meta = !this.meta;
-			} else
+				return;
+			}
+			this.nbtMatch = !this.nbtMatch;
+			if (server)
 			{
-				new HandHeldValueConfig(this, "meta").openManagedItem(this.player, this.hand, 0);
+				this.save();
+			}
+		} else if ("energyAdvanced".equals(event))
+		{
+			// "E" button: advanced EU comparison (only while EU Match is on)
+			if (server && this.energy)
+			{
+				new HandHeldValueConfig(this, "energy").openManagedItem(this.player, this.hand, ENERGY_GUI);
 			}
 		} else if ("energy".equals(event))
 		{
-			if (!dev)
+			if (dev)
 			{
-				this.energy = !this.energy;
+				if (server)
+				{
+					new HandHeldValueConfig(this, "energy").openManagedItem(this.player, this.hand, ENERGY_GUI);
+				}
 			} else
 			{
-				new HandHeldValueConfig(this, "energy").openManagedItem(this.player, this.hand, 2);
+				this.energy = !this.energy;
+				if (server)
+				{
+					this.save();
+				}
 			}
 		} else if ("ore".equals(event))
 		{
-			assert dev;
-			new HandHeldOre(this).openManagedItem(this.player, this.hand, 3);
+			if (server)
+			{
+				assert dev;
+				new HandHeldOre(this).openManagedItem(this.player, this.hand, ORE_GUI);
+			}
 		} else
 		{
 			super.onEvent(event);

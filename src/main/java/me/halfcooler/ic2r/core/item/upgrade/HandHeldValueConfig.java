@@ -76,7 +76,8 @@ public class HandHeldValueConfig extends HandHeldUpgradeOption
 				private final String name;
 
 				{
-					this.name = Component.translatable("ic2r.upgrade.advancedGUI." + container.base.name).getString();
+					// Prefer short unit label (e.g. "EU") over the main toggle title ("EU Match")
+					this.name = Component.translatable("ic2r.upgrade.advancedGUI." + container.base.name + ".unit").getString();
 				}
 
 				public String get()
@@ -171,8 +172,8 @@ public class HandHeldValueConfig extends HandHeldUpgradeOption
 				GuiValueConfig.this.menu.extraBox = newValue;
 				IC2R.network.get(false).sendContainerField(GuiValueConfig.this.menu, "extraBox");
 			}).withTextValidator(numberOnly).withEnableHandler(rangeEnabled));
-			this.addElement(TextLabel.create(this, 100, 47, TextProvider.ofTranslated("ic2r.upgrade.advancedGUI." + container.base.name), 4210752, false).withEnableHandler(() -> textBox.isEnabled() && !textBox.isMoved()));
-			this.addElement(TextLabel.create(this, 80, 47, TextProvider.ofTranslated("ic2r.upgrade.advancedGUI." + container.base.name), 4210752, false).withEnableHandler(() -> textBox.isEnabled() && textBox.isMoved()));
+			this.addElement(TextLabel.create(this, 100, 47, TextProvider.ofTranslated("ic2r.upgrade.advancedGUI." + container.base.name + ".unit"), 4210752, false).withEnableHandler(() -> textBox.isEnabled() && !textBox.isMoved()));
+			this.addElement(TextLabel.create(this, 80, 47, TextProvider.ofTranslated("ic2r.upgrade.advancedGUI." + container.base.name + ".unit"), 4210752, false).withEnableHandler(() -> textBox.isEnabled() && textBox.isMoved()));
 			this.addElement(new SlotGrid(this, 7, 7, 9, 1, SlotGrid.SlotStyle.Normal));
 			this.addElement(new SlotGrid(this, 7, 83, 9, 3, SlotGrid.SlotStyle.Normal));
 			this.addElement(new SlotGrid(this, 7, 141, 9, 1, SlotGrid.SlotStyle.Normal));

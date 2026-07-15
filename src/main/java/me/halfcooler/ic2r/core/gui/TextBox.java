@@ -327,13 +327,22 @@ public class TextBox extends GuiElement<TextBox>
 				case 266:
 				case 267:
 				default:
-					if (!SharedConstants.isAllowedChatCharacter(typedChar) || !this.willDraw())
+					if (SharedConstants.isAllowedChatCharacter(typedChar) && this.willDraw())
+					{
+						this.writeText(String.valueOf(typedChar));
+						break;
+					}
+
+					// Escape must bubble so the screen can close.
+					if (keyCode == 256)
 					{
 						return super.onKeyTyped(typedChar, keyCode);
 					}
 
-					this.writeText(String.valueOf(typedChar));
-					break;
+					// keyPressed path (typedChar == 0): consume while focused so inventory
+					// hotkeys (1-9 hotbar swap, inventory-close E) don't fight text editing.
+					// charTyped path with a disallowed character: ignore without consuming.
+					return typedChar == 0;
 				case 261:
 					if (Screen.hasControlDown())
 					{

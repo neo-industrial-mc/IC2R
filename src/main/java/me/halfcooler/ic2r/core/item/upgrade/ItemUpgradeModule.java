@@ -73,6 +73,16 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 		};
 	}
 
+	/**
+	 * Builds the item predicate for advanced ejector / pulling upgrades.
+	 * <ul>
+	 *   <li>Item whitelist: holographic filter slots (empty = no item restriction)</li>
+	 *   <li>NBT Match (only when EU Match is <em>off</em>): exact NBT equality with the filter;
+	 *       applies to all items</li>
+	 *   <li>EU Match (takes priority over NBT): only {@link IElectricItem}; NBT match is ignored.
+	 *       DIRECT compares charge to the filter hologram; COMPARISON / RANGE use advanced energy config</li>
+	 * </ul>
+	 */
 	private static Predicate<ItemStack> stackChecker(ItemStack stack)
 	{
 		return new Predicate<>()
@@ -114,59 +124,93 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 				return ret;
 			}
 
-			private boolean checkNBT(ItemStack stack, ItemStack filter)
+			private boolean checkNBT(ItemStack candidate, ItemStack filter)
 			{
 				return switch (this.nbt)
 				{
 					case IGNORED -> true;
-					case FUZZY -> StackUtil.checkNbtEquality(stack.getTag(), filter.getTag());
-					case EXACT -> StackUtil.checkNbtEqualityStrict(stack, filter);
+					case FUZZY -> StackUtil.checkNbtEquality(candidate.getTag(), filter.getTag());
+					case EXACT -> StackUtil.checkNbtEqualityStrict(candidate, filter);
 				};
 			}
 
-			private boolean checkEnergy(ItemStack stack, ItemStack filter)
+			/** DIRECT EU match: filter must be electric and carry a similar charge. */
+			private boolean matchesFilterCharge(ItemStack candidate, ItemStack filter)
 			{
-				assert this.energy.active;
-				assert this.energy.comparison == ComparisonType.DIRECT;
-				return filter.getItem() instanceof IElectricItem && Util.isSimilar(ElectricItem.manager.getCharge(stack), ElectricItem.manager.getCharge(filter));
+				if (!(filter.getItem() instanceof IElectricItem))
+				{
+					return false;
+				}
+				return Util.isSimilar(ElectricItem.manager.getCharge(candidate), ElectricItem.manager.getCharge(filter));
 			}
 
-			public boolean apply(ItemStack stack)
+			public boolean apply(ItemStack candidate)
 			{
 				if (!this.hasInitialised)
 				{
 					this.initialise();
 				}
-				boolean checkEnergy;
-				if (!this.energy.comparison.ignoreFilters())
+
+				// EU Match has priority: when active, NBT Match is ignored and only electric items pass.
+				if (this.energy.active)
 				{
-					if (!(stack.getItem() instanceof IElectricItem) || !this.energy.doComparison((int) ElectricItem.manager.getCharge(stack)))
+					if (!(candidate.getItem() instanceof IElectricItem))
 					{
 						return false;
 					}
 
-					checkEnergy = false;
-				} else
-				{
-					checkEnergy = this.energy.active;
-					if (checkEnergy && !(stack.getItem() instanceof IElectricItem))
+					// COMPARISON / RANGE: numeric charge gate (no filter hologram required)
+					if (!this.energy.comparison.ignoreFilters()
+						&& !this.energy.doComparison((int) ElectricItem.manager.getCharge(candidate)))
 					{
 						return false;
 					}
+
+					boolean requireDirectChargeMatch = this.energy.comparison == ComparisonType.DIRECT;
+
+					if (this.filters.isEmpty())
+					{
+						// No whitelist: any electric item that passed the numeric gate (if any)
+						return true;
+					}
+
+					for (ItemStack filter : this.filters)
+					{
+						if (filter.getItem() != candidate.getItem())
+						{
+							continue;
+						}
+						// NBT deliberately skipped while EU Match is on
+						if (requireDirectChargeMatch && !this.matchesFilterCharge(candidate, filter))
+						{
+							continue;
+						}
+						return true;
+					}
+
+					return false;
+				}
+
+				// --- NBT Match path (EU off): exact NBT for all items when enabled ---
+				if (this.filters.isEmpty())
+				{
+					return true;
 				}
 
 				for (ItemStack filter : this.filters)
 				{
-					if (filter.getItem() == stack.getItem())
+					if (filter.getItem() != candidate.getItem())
 					{
-						if (this.checkNBT(stack, filter) && (!checkEnergy || this.checkEnergy(stack, filter)))
-						{
-							return true;
-						}
+						continue;
 					}
+					if (!this.checkNBT(candidate, filter))
+					{
+						continue;
+					}
+					return true;
 				}
 
-				return this.filters.isEmpty() && this.energy.active && !checkEnergy;
+				return false;
 			}
 		};
 	}
@@ -244,19 +288,39 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.upgrade.storage", this.getExtraEnergyStorage(stack, null) * StackUtil.getSize(stack)));
 				break;
 			case ejector:
-			case advanced_ejector:
 			case fluid_ejector:
 			{
 				String side = getSideName(stack);
 				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.upgrade.ejector", Component.translatable(side)));
 				break;
 			}
+			case advanced_ejector:
+			{
+				String side = getSideName(stack);
+				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.upgrade.ejector", Component.translatable(side)));
+				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.upgrade.advanced.config"));
+				if (HandHeldAdvancedUpgrade.isEnergyMatchEnabled(stack))
+				{
+					Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.upgrade.advanced.energy_config"));
+				}
+				break;
+			}
 			case pulling:
-			case advanced_pulling:
 			case fluid_pulling:
 			{
 				String side = getSideName(stack);
 				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.upgrade.pulling", Component.translatable(side)));
+				break;
+			}
+			case advanced_pulling:
+			{
+				String side = getSideName(stack);
+				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.upgrade.pulling", Component.translatable(side)));
+				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.upgrade.advanced.config"));
+				if (HandHeldAdvancedUpgrade.isEnergyMatchEnabled(stack))
+				{
+					Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.upgrade.advanced.energy_config"));
+				}
 				break;
 			}
 			case redstone_inverter:
@@ -313,7 +377,14 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 			{
 				if (!world.isClientSide)
 				{
-					this.getInventory(player, hand, stack).openManagedItem(player, hand, null);
+					// While EU Match is enabled, sneak+use opens advanced EU comparison directly
+					if (player.isShiftKeyDown() && HandHeldAdvancedUpgrade.isEnergyMatchEnabled(stack))
+					{
+						HandHeldAdvancedUpgrade.openEnergyConfig(player, hand, stack);
+					} else
+					{
+						this.getInventory(player, hand, stack).openManagedItem(player, hand, null);
+					}
 				}
 
 				yield new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
