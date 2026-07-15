@@ -1,7 +1,6 @@
 package ic2.core.slot;
 
 import com.mojang.datafixers.util.Pair;
-import ic2.core.util.ReflectionUtil;
 import ic2.core.util.StackUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -13,8 +12,12 @@ import net.minecraft.world.item.ItemStack;
 
 public class SlotArmor extends Slot {
   private static final ResourceLocation[] EMPTY_ARMOR_SLOT_TEXTURES =
-      ReflectionUtil.getFieldValue(
-          ReflectionUtil.getField(InventoryMenu.class, ResourceLocation[].class), null);
+      new ResourceLocation[] {
+        InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS,
+        InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS,
+        InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE,
+        InventoryMenu.EMPTY_ARMOR_SLOT_HELMET
+      };
   private final EquipmentSlot armorType;
 
   public SlotArmor(Inventory inventory, EquipmentSlot armorType, int x, int y) {
