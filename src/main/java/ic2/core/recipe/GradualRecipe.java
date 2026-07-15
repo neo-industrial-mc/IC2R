@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -90,6 +91,10 @@ public class GradualRecipe implements CraftingRecipe {
     }
 
     ItemStack result = gridItem.copy();
+    // ItemStack.copy() shares the immutable CustomData component, while legacy IC2 helpers mutate
+    // its backing tag in place. Reattach a private tag before changing the result's use counter.
+    CompoundTag tag = StackUtil.getTag(result);
+    StackUtil.setTag(result, tag == null ? null : tag.copy());
     result.setCount(1);
     int use = currentUse - this.amount * chargeMaterials;
     if (use > this.item.getMaxUse()) {

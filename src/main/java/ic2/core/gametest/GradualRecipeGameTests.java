@@ -36,6 +36,10 @@ public class GradualRecipeGameTests {
         repaired.getItem() == condensator, "gradual recipe should return the RSH condensator");
     helper.assertValueEqual(
         condensator.getUse(repaired), 5000, "RSH use after one redstone repair");
+    helper.assertValueEqual(
+        condensator.getUse(damaged),
+        15000,
+        "recipe matching and assembly must not mutate the input RSH condensator");
 
     ItemStack lightlyDamaged = new ItemStack(condensator);
     condensator.setUse(lightlyDamaged, 5000);
