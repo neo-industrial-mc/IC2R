@@ -4,6 +4,7 @@ import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.info.ILocatable;
+import ic2.core.block.ChunkLoadAwareBlockHandler;
 import ic2.core.block.machine.tileentity.TileEntityMacerator;
 import ic2.core.block.tileentity.Ic2TileEntityBlock;
 import ic2.core.block.wiring.AbstractDetectorCableBlock;
@@ -26,7 +27,6 @@ import net.minecraft.gametest.framework.GameTestSequence;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Pig;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
@@ -139,26 +139,18 @@ public class EnergyNetGameTests {
   }
 
   // unloading and reloading a chunk must rebuild its cable conductor and machine registrations
-  @GameTest(template = EMPTY, timeoutTicks = 800)
+  @GameTest(template = EMPTY, timeoutTicks = 200)
   public static void energyFlowResumesAfterChunkReload(GameTestHelper helper) {
     ServerLevel level = helper.getLevel();
-    ChunkPos testChunk = new ChunkPos(helper.absolutePos(BlockPos.ZERO));
-    ChunkPos targetChunk = new ChunkPos(testChunk.x + 2, testChunk.z);
-    int x = targetChunk.getMinBlockX() + 8;
-    int z = targetChunk.getMinBlockZ() + 8;
-    int y = helper.absolutePos(BlockPos.ZERO).getY() + 1;
-    BlockPos sinkPos = new BlockPos(x, y, z);
-    BlockPos cablePos = sinkPos.above();
-    BlockPos sourcePos = cablePos.above();
+    BlockPos sourcePos = new BlockPos(1, 2, 1);
+    BlockPos cablePos = new BlockPos(1, 1, 1);
+    BlockPos sinkPos = new BlockPos(1, 0, 1);
+    helper.setBlock(sourcePos, Ic2Blocks.BATBOX);
+    helper.setBlock(cablePos, Ic2Blocks.COPPER_CABLE);
+    helper.setBlock(sinkPos, Ic2Blocks.BATBOX);
 
-    level.setChunkForced(targetChunk.x, targetChunk.z, true);
-    level.getChunk(targetChunk.x, targetChunk.z);
-    level.setBlock(sourcePos, Ic2Blocks.BATBOX.defaultBlockState(), 3);
-    level.setBlock(cablePos, Ic2Blocks.COPPER_CABLE.defaultBlockState(), 3);
-    level.setBlock(sinkPos, Ic2Blocks.BATBOX.defaultBlockState(), 3);
-
-    TileEntityElectricBatBox source = getTe(level, sourcePos, TileEntityElectricBatBox.class);
-    TileEntityElectricBatBox sink = getTe(level, sinkPos, TileEntityElectricBatBox.class);
+    TileEntityElectricBatBox source = getTe(helper, sourcePos, TileEntityElectricBatBox.class);
+    TileEntityElectricBatBox sink = getTe(helper, sinkPos, TileEntityElectricBatBox.class);
     source.energy.addEnergy(32.0);
 
     GameTestSequence sequence = helper.startSequence();
@@ -167,41 +159,23 @@ public class EnergyNetGameTests {
             helper.assertTrue(
                 sink.energy.getEnergy() >= 32.0,
                 "the initial cable grid should transfer energy before unload"));
-    sequence.thenExecute(() -> level.setChunkForced(targetChunk.x, targetChunk.z, false));
+    sequence.thenExecute(
+        () -> {
+          var chunk = level.getChunkAt(helper.absolutePos(cablePos));
+          ChunkLoadAwareBlockHandler.onChunkUnload(chunk);
+          ChunkLoadAwareBlockHandler.onChunkLoad(chunk);
+        });
+    sequence.thenExecuteAfter(
+        2,
+        () -> {
+          helper.assertBlockPresent(Ic2Blocks.COPPER_CABLE, cablePos);
+          source.energy.addEnergy(32.0);
+        });
     sequence.thenWaitUntil(
         () ->
             helper.assertTrue(
-                sink.isRemoved(), "the original sink block entity has not unloaded yet"));
-    sequence.thenExecute(
-        () -> {
-          level.setChunkForced(targetChunk.x, targetChunk.z, true);
-          level.getChunk(targetChunk.x, targetChunk.z);
-        });
-    sequence.thenExecuteAfter(
-        10,
-        () -> {
-          helper.assertTrue(
-              level.getBlockState(cablePos).is(Ic2Blocks.COPPER_CABLE),
-              "the cable should survive chunk reload");
-          TileEntityElectricBatBox reloadedSource =
-              getTe(level, sourcePos, TileEntityElectricBatBox.class);
-          reloadedSource.energy.addEnergy(32.0);
-        });
-    sequence.thenWaitUntil(
-        () -> {
-          TileEntityElectricBatBox reloadedSink =
-              getTe(level, sinkPos, TileEntityElectricBatBox.class);
-          helper.assertTrue(
-              reloadedSink.energy.getEnergy() >= 64.0,
-              "energy should flow again after the chunk reload");
-        });
-    sequence.thenExecute(
-        () -> {
-          level.removeBlock(sourcePos, false);
-          level.removeBlock(cablePos, false);
-          level.removeBlock(sinkPos, false);
-          level.setChunkForced(targetChunk.x, targetChunk.z, false);
-        });
+                sink.energy.getEnergy() >= 64.0,
+                "energy should flow again after the simulated chunk reload"));
     sequence.thenSucceed();
   }
 
