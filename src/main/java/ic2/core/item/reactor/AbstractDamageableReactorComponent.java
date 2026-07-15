@@ -80,7 +80,7 @@ public abstract class AbstractDamageableReactorComponent extends Item implements
     return true;
   }
 
-  protected int getUse(ItemStack stack) {
+  public int getUse(ItemStack stack) {
     CompoundTag nbt = StackUtil.getTag(stack);
     return nbt != null ? nbt.getInt("use") : 0;
   }
@@ -94,7 +94,7 @@ public abstract class AbstractDamageableReactorComponent extends Item implements
         .putInt("use", Math.min(this.getUse(stack) + 1, this.maxUse));
   }
 
-  protected int getMaxUse() {
+  public int getMaxUse() {
     return this.maxUse;
   }
 

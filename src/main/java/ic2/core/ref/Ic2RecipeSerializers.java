@@ -5,6 +5,7 @@ import ic2.core.IC2;
 import ic2.core.item.armor.jetpack.JetpackAttachmentRecipe;
 import ic2.core.recipe.AdvRecipe;
 import ic2.core.recipe.AdvShapelessRecipe;
+import ic2.core.recipe.GradualRecipe;
 import ic2.core.recipe.v2.BasicMachineRecipeSerializer;
 import ic2.core.recipe.v2.CannerBottleRecipeSerializer;
 import ic2.core.recipe.v2.CannerEnrichRecipeSerializer;
@@ -20,6 +21,8 @@ public final class Ic2RecipeSerializers {
       register("shaped", new AdvRecipe.Serializer());
   public static final RecipeSerializer<AdvShapelessRecipe> SHAPELESS =
       register("shapeless", new AdvShapelessRecipe.Serializer());
+  public static final RecipeSerializer<GradualRecipe> GRADUAL =
+      register("gradual", new GradualRecipe.Serializer());
   public static final RecipeSerializer<JetpackAttachmentRecipe> JETPACK_ATTACHMENT =
       register("jetpack_attachment", new JetpackAttachmentRecipe.Serializer());
   public static final WeightedMachineRecipeSerializer MACERATOR =
