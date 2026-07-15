@@ -51,7 +51,11 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
   public final int indexGridEnd;
   public final int indexBufferStart;
   public final int indexBufferEnd;
+  public final int indexToolHammer;
+  public final int indexInputHammer;
   public final int indexOutputHammer;
+  public final int indexToolCutter;
+  public final int indexInputCutter;
   public final int indexOutputCutter;
   protected final Container craftResult = new ResultContainer();
   protected final Slot[] outputs = new Slot[3];
@@ -102,7 +106,9 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
     }
 
     this.indexBufferEnd = this.slots.size();
+    this.indexToolHammer = this.slots.size();
     this.addSlot(new SlotInvSlot(tileEntity.leftCrafting.tool, 0, 7, 17));
+    this.indexInputHammer = this.slots.size();
     this.addSlot(new SlotInvSlot(tileEntity.leftCrafting.input, 0, 25, 17));
     this.indexOutputHammer = this.slots.size();
     this.outputs[1] =
@@ -114,7 +120,9 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
                 0,
                 69,
                 17));
+    this.indexToolCutter = this.slots.size();
     this.addSlot(new SlotInvSlot(tileEntity.rightCrafting.tool, 0, 91, 17));
+    this.indexInputCutter = this.slots.size();
     this.addSlot(new SlotInvSlot(tileEntity.rightCrafting.input, 0, 109, 17));
     this.indexOutputCutter = this.slots.size();
     this.outputs[2] =
