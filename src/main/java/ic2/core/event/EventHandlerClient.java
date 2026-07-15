@@ -6,6 +6,7 @@ import ic2.core.GuiOverlayer;
 import ic2.core.IC2;
 import ic2.core.fluid.FluidHandler;
 import ic2.core.item.IHandHeldInventory;
+import ic2.core.item.armor.jetpack.JetpackLogic;
 import ic2.core.item.tool.AbstractItemNanoSaber;
 import ic2.core.item.tool.ContainerToolbox;
 import ic2.core.item.upgrade.ItemUpgradeModule;
@@ -184,5 +185,16 @@ public class EventHandlerClient {
 
   public static void onDisconnect() {
     RpcHandler.onDisconnect();
+    // Ensure looping jetpack audio cannot survive into the next multiplayer session.
+    JetpackLogic.stopJetpackSound(null);
+  }
+
+  public static void onClientPlayerJoin(Player player) {
+    if (!player.level().isClientSide) {
+      return;
+    }
+
+    // Reset client-global jetpack audio when entering a new client level/session.
+    JetpackLogic.stopJetpackSound(null);
   }
 }

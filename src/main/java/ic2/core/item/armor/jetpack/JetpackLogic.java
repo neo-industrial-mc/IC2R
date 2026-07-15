@@ -170,9 +170,11 @@ public class JetpackLogic {
         jetpackSound =
             IC2.soundManager.createSound(
                 player, soundEvent, SoundSource.PLAYERS, player, 1.0F, 1.0F);
-      }
-
-      if (jetpackSound != null) {
+        if (jetpackSound != null) {
+          jetpackSound.play();
+        }
+      } else if (jetpackSound != null && !jetpackSound.isPlaying()) {
+        // Resume only if the engine dropped the instance; avoid re-play every tick.
         jetpackSound.play();
       }
     } else {
@@ -180,13 +182,26 @@ public class JetpackLogic {
     }
   }
 
+  /** Stops the local jetpack loop. Safe to call for non-local players (no-op) and on disconnect. */
   public static void stopJetpackSound(Player player) {
     if (!IC2.sideProxy.isRendering()) {
       return;
     }
 
+    // Jetpack sound is a single client-global instance for the local player only.
+    // Remote player ticks must not stop or clear it (multiplayer orphan / stuck-loop bug).
+    Player local = IC2.sideProxy.getPlayerInstance();
+    if (player != null && local != null && player != local) {
+      return;
+    }
+
     if (jetpackSound != null) {
-      IC2.soundManager.removeSound(player, jetpackSound);
+      Object owner = local != null ? local : player;
+      if (owner != null) {
+        IC2.soundManager.removeSound(owner, jetpackSound);
+      } else {
+        jetpackSound.stop();
+      }
       jetpackSound = null;
     }
 

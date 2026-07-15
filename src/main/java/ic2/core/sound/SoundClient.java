@@ -11,6 +11,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 
 public class SoundClient extends Sound {
+  /** Ticks to wait for streamed/looping sounds to become active before treating them as dead. */
+  private static final int PLAY_GRACE_TICKS = 40;
+
   private final List<SoundInstance> startedSoundList = new CopyOnWriteArrayList<>();
   public net.minecraft.client.sounds.SoundManager vanillaManager =
       Minecraft.getInstance().getSoundManager();
@@ -25,6 +28,7 @@ public class SoundClient extends Sound {
   private float pitch;
   private Item sourceItem;
   private boolean isStarted = false;
+  private int playGraceTicks = 0;
 
   protected SoundClient() {}
 
@@ -71,25 +75,25 @@ public class SoundClient extends Sound {
     DeferredSoundOps.run(
         () -> {
           if (this.repeatInstance != null) {
-            if (this.vanillaManager.isActive(this.repeatInstance)) {
+            if (this.shouldKeepCurrentInstance(this.repeatInstance)) {
               return;
             }
 
-            this.stopInstance(this.onceInstance);
-            this.stopInstance(this.repeatInstance);
+            this.stopAllStarted();
             this.repeatInstance =
                 new RepeatablePositionedSoundInstance(
                     this.soundEvent, this.soundCategory, this.volume, this.pitch, this.pos);
             this.vanillaManager.play(this.repeatInstance);
             this.startedSoundList.add(this.repeatInstance);
+            this.playGraceTicks = PLAY_GRACE_TICKS;
           }
 
           if (this.entityTrackingInstance != null) {
-            if (this.vanillaManager.isActive(this.entityTrackingInstance)) {
+            if (this.shouldKeepCurrentInstance(this.entityTrackingInstance)) {
               return;
             }
 
-            this.stopInstance(this.entityTrackingInstance);
+            this.stopAllStarted();
             this.entityTrackingInstance =
                 new EntityTrackingSoundInstance(
                     this.soundEvent, this.soundCategory, this.volume, this.pitch, this.entity);
@@ -99,8 +103,25 @@ public class SoundClient extends Sound {
 
             this.vanillaManager.play(this.entityTrackingInstance);
             this.startedSoundList.add(this.entityTrackingInstance);
+            this.playGraceTicks = PLAY_GRACE_TICKS;
           }
         });
+  }
+
+  /**
+   * Keep the current instance when it is already active, or still within the post-play grace window
+   * (streamed sounds may report inactive while buffering). Never leave untracked orphans.
+   */
+  private boolean shouldKeepCurrentInstance(SoundInstance instance) {
+    if (instance == null) {
+      return false;
+    }
+
+    if (this.vanillaManager.isActive(instance)) {
+      return true;
+    }
+
+    return this.playGraceTicks > 0 && this.startedSoundList.contains(instance);
   }
 
   @Override
@@ -129,12 +150,20 @@ public class SoundClient extends Sound {
   public void stop() {
     super.stop();
     this.isStarted = false;
-    DeferredSoundOps.run(
-        () -> {
-          this.stopInstance(this.repeatInstance);
-          this.stopInstance(this.onceInstance);
-          this.stopInstance(this.entityTrackingInstance);
-        });
+    this.playGraceTicks = 0;
+    DeferredSoundOps.run(this::stopAllStarted);
+  }
+
+  private void stopAllStarted() {
+    for (SoundInstance instance : this.startedSoundList) {
+      if (instance != null) {
+        this.vanillaManager.stop(instance);
+      }
+    }
+    this.startedSoundList.clear();
+    this.stopInstance(this.repeatInstance);
+    this.stopInstance(this.onceInstance);
+    this.stopInstance(this.entityTrackingInstance);
   }
 
   private void stopInstance(SoundInstance instance) {
@@ -150,9 +179,14 @@ public class SoundClient extends Sound {
 
   @Override
   public boolean isPlaying() {
-    return this.isPlayingSound(this.onceInstance)
+    if (this.isPlayingSound(this.onceInstance)
         || this.isPlayingSound(this.repeatInstance)
-        || this.isPlayingSound(this.entityTrackingInstance);
+        || this.isPlayingSound(this.entityTrackingInstance)) {
+      return true;
+    }
+
+    // Treat grace-window instances as playing so callers do not spam play() and spawn orphans.
+    return this.isStarted && this.playGraceTicks > 0 && !this.startedSoundList.isEmpty();
   }
 
   private void addOnFinishListener(ListenableSoundInstance instance, Runnable then) {
@@ -168,12 +202,31 @@ public class SoundClient extends Sound {
   }
 
   private void checkSoundFinished(SoundInstance instance) {
-    if (instance instanceof ListenableSoundInstance listenableSoundInstance) {
-      if (!this.vanillaManager.isActive(instance) && this.startedSoundList.contains(instance)) {
-        listenableSoundInstance.finish();
-        this.startedSoundList.remove(instance);
-      }
+    if (!(instance instanceof ListenableSoundInstance listenableSoundInstance)) {
+      return;
     }
+
+    if (!this.startedSoundList.contains(instance) || this.vanillaManager.isActive(instance)) {
+      return;
+    }
+
+    // Streamed / looping sounds may not report active immediately after play().
+    if (this.playGraceTicks > 0) {
+      return;
+    }
+
+    boolean looping =
+        instance instanceof RepeatablePositionedSoundInstance
+            || instance instanceof EntityTrackingSoundInstance;
+    if (looping && this.isStarted) {
+      // Engine dropped the loop while we still want it — clear tracking so play() can restart.
+      // Do not run finish listeners (those are for intentional start→loop transitions).
+      this.startedSoundList.remove(instance);
+      return;
+    }
+
+    listenableSoundInstance.finish();
+    this.startedSoundList.remove(instance);
   }
 
   @Override
@@ -192,11 +245,19 @@ public class SoundClient extends Sound {
 
   public void tick() {
     super.tick();
+    if (this.playGraceTicks > 0) {
+      this.playGraceTicks--;
+    }
+
     if (this.isStarted) {
       this.checkSoundFinished(this.onceInstance);
       this.checkSoundFinished(this.repeatInstance);
       this.checkSoundFinished(this.entityTrackingInstance);
-      if (this.startedSoundList.isEmpty()) {
+      if (this.startedSoundList.isEmpty()
+          && !this.isPlayingSound(this.onceInstance)
+          && !this.isPlayingSound(this.repeatInstance)
+          && !this.isPlayingSound(this.entityTrackingInstance)
+          && this.playGraceTicks <= 0) {
         this.isStarted = false;
       }
     }
