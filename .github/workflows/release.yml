@@ -39,9 +39,10 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build and release mod JAR
-        run: ./gradlew --no-daemon --stacktrace jar publishMavenJavaPublicationToGithubPackagesRepository
+        run: ./gradlew --no-daemon --stacktrace -Pmod_version="${RELEASE_VERSION}" jar publishMavenJavaPublicationToGithubPackagesRepository
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ github.event.release.tag_name || github.ref_name }}
 
       - name: Attest mod JAR
         uses: actions/attest@v4
