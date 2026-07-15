@@ -128,8 +128,8 @@ public final class EventHandler
 	public static void onInitLate()
 	{
 		long startTime = System.nanoTime();
+		// Register resolvers only; graph build needs a live RecipeManager (server start).
 		UuIndex.instance.init();
-		UuIndex.instance.refresh(true);
 		IC2R.sideProxy.onPostInit();
 		// W3.2: first common call site on PlatformLifecycle (dual-track; other sites still use envProxy)
 		IC2R.sideProxy.requestTick(!PlatformServices.lifecycle().isClient(), ChunkLoadAwareBlockHandler::init);
@@ -154,6 +154,15 @@ public final class EventHandler
 	public static void onServerStart(MinecraftServer server)
 	{
 		IC2R.sideProxy.onServerAvailable(server);
+		// Recipes (and tags) are available here — build UU graph with crafting/smelting/machine edges.
+		try
+		{
+			UuIndex.instance.refresh(true);
+			IC2R.log.info(LogCategory.Uu, "UU graph rebuilt after server start.");
+		} catch (Exception e)
+		{
+			IC2R.log.warn(LogCategory.Uu, e, "Failed to rebuild UU graph on server start.");
+		}
 	}
 
 	public static void onPlayerLogout(Player player)

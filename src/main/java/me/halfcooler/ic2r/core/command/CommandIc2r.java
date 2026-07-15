@@ -10,6 +10,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import me.halfcooler.ic2r.api.crops.CropCard;
 import me.halfcooler.ic2r.api.crops.Crops;
 import me.halfcooler.ic2r.api.recipe.IRecipeInput;
+import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.state.BlockStateUtil;
 import me.halfcooler.ic2r.core.energy.grid.EnergyNetGlobal;
 import me.halfcooler.ic2r.core.energy.grid.EnergyNetSettings;
@@ -17,7 +18,9 @@ import me.halfcooler.ic2r.core.energy.grid.GridInfo;
 import me.halfcooler.ic2r.core.item.ItemCropSeed;
 import me.halfcooler.ic2r.core.uu.DropScan;
 import me.halfcooler.ic2r.core.uu.UuGraph;
+import me.halfcooler.ic2r.core.uu.UuIndex;
 import me.halfcooler.ic2r.core.util.ConfigUtil;
+import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 import me.halfcooler.ic2r.platform.services.PlatformServices;
@@ -105,6 +108,7 @@ public final class CommandIc2r
 				.then(
 					Commands.literal("debug")
 						.then(Commands.literal("dumpUuValues").executes(ctx -> cmdDumpUuValues(ctx.getSource())))
+						.then(Commands.literal("rebuildUuGraph").executes(ctx -> cmdRebuildUuGraph(ctx.getSource())))
 						.then(
 							Commands.literal("resolveIngredient")
 								.then(
@@ -224,22 +228,46 @@ public final class CommandIc2r
 	private static int cmdDumpUuValues(CommandSourceStack source)
 	{
 		List<Entry<ItemStack, Double>> list = new ArrayList<>();
+		int infinite = 0;
 
 		for (var it = UuGraph.iterator(); it.hasNext();)
 		{
-			list.add(it.next());
+			Entry<ItemStack, Double> entry = it.next();
+			if (entry.getValue() == null || entry.getValue() >= Double.POSITIVE_INFINITY)
+			{
+				infinite++;
+			} else
+			{
+				list.add(entry);
+			}
 		}
 
-		list.sort(Comparator.comparing(a -> a.getKey().getHoverName().getString()));
-		msg(source, "UU Values:");
+		list.sort(Comparator.comparingDouble(Entry::getValue));
+		msg(source, String.format("UU Values: %d finite, %d infinite (showing finite, sorted by value):", list.size(), infinite));
 
 		for (Entry<ItemStack, Double> entry : list)
 		{
-			msg(source, String.format("  %s: %s", entry.getKey().getHoverName().getString(), entry.getValue()));
+			String line = String.format("  %s: %s", entry.getKey().getHoverName().getString(), entry.getValue());
+			msg(source, line);
+			IC2R.log.info(LogCategory.Uu, line);
 		}
 
-		msg(source, "(check console for full list)");
 		return 1;
+	}
+
+	private static int cmdRebuildUuGraph(CommandSourceStack source)
+	{
+		try
+		{
+			UuIndex.instance.refresh(true);
+			msg(source, "UU graph rebuild started/finished (see log for node counts).");
+			return 1;
+		} catch (Exception e)
+		{
+			msg(source, "UU graph rebuild failed: " + e.getMessage());
+			IC2R.log.warn(LogCategory.Uu, e, "Manual UU graph rebuild failed.");
+			return 0;
+		}
 	}
 
 	private static int cmdDebugResolveIngredient(CommandSourceStack source, String arg)
@@ -471,6 +499,6 @@ public final class CommandIc2r
 
 	public static String getUsage()
 	{
-		return "/ic2 uu-world-scan <tiny|small|medium|large> | debug (dumpUuValues | resolveIngredient <name> | dumpTextures <name> <size> | dumpLargeGrids | enet (logIssues | logUpdates) (true|false)) | currentItem | itemNameWithVariant | giveCrop <owner> <name> <growth (1-31)> <gain (1-31)> <resistance (1-31)>";
+		return "/ic2r uu-world-scan <tiny|small|medium|large> | debug (dumpUuValues | rebuildUuGraph | resolveIngredient <name> | dumpTextures <name> <size> | dumpLargeGrids | enet (logIssues | logUpdates) (true|false)) | currentItem | itemNameWithVariant | giveCrop <owner> <name> <growth (1-31)> <gain (1-31)> <resistance (1-31)>";
 	}
 }

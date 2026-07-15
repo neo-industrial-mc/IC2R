@@ -1,55 +1,93 @@
 package me.halfcooler.ic2r.core.uu;
 
 import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 
+/**
+ * Vanilla crafting table recipes → UU graph edges.
+ * Only {@link RecipeType#CRAFTING} is used so smelting / machine types are not double-counted.
+ */
 public class RecipeResolver implements IRecipeResolver
 {
 	private static final double transformCost = 1.0;
 
-	private static List<List<LeanItemStack>> toDoubleStackList(List<Ingredient> list)
+	@Override
+	public List<RecipeTransformation> getTransformations()
 	{
-		List<List<LeanItemStack>> ret = new ArrayList<>(list.size());
-
-		for (Ingredient ingredient : list)
+		RecipeManager recipeManager;
+		RegistryAccess registryAccess;
+		try
 		{
-			ItemStack[] arr = ingredient.getItems();
-			List<LeanItemStack> toAdd = new ArrayList<>(arr.length);
+			recipeManager = IC2R.sideProxy.getRecipeManager();
+			registryAccess = resolveRegistryAccess();
+		} catch (Exception e)
+		{
+			IC2R.log.debug(LogCategory.Uu, e, "Crafting recipes unavailable for UU graph.");
+			return Collections.emptyList();
+		}
 
-			for (ItemStack stack : arr)
+		if (recipeManager == null || registryAccess == null)
+		{
+			return Collections.emptyList();
+		}
+
+		List<RecipeTransformation> ret = new ArrayList<>();
+
+		for (CraftingRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING))
+		{
+			try
 			{
-				toAdd.add(new LeanItemStack(stack));
-			}
+				NonNullList<Ingredient> ingredients = recipe.getIngredients();
+				if (ingredients.isEmpty())
+				{
+					continue;
+				}
 
-			ret.add(toAdd);
+				ItemStack output = recipe.getResultItem(registryAccess);
+				if (StackUtil.isEmpty(output))
+				{
+					continue;
+				}
+
+				List<List<LeanItemStack>> inputs = RecipeUtil.convertIngredients(ingredients);
+				if (inputs.isEmpty())
+				{
+					continue;
+				}
+
+				ret.add(new RecipeTransformation(transformCost, inputs, new LeanItemStack(output)));
+			} catch (RuntimeException e)
+			{
+				IC2R.log.debug(LogCategory.Uu, e, "skipped crafting recipe for UU graph");
+			}
 		}
 
 		return ret;
 	}
 
-	@Override
-	public List<RecipeTransformation> getTransformations()
+	private static RegistryAccess resolveRegistryAccess()
 	{
-		List<RecipeTransformation> ret = new ArrayList<>();
-
-		for (Recipe<?> irecipe : IC2R.sideProxy.getRecipeManager().getRecipes())
+		MinecraftServer server = PlatformServices.lifecycle().getServer();
+		if (server != null)
 		{
-			NonNullList<Ingredient> inputs = irecipe.getIngredients();
-			ItemStack output = irecipe.getResultItem(null);
-			if (!StackUtil.isEmpty(output) && !inputs.isEmpty())
-			{
-				ret.add(new RecipeTransformation(1.0, toDoubleStackList(inputs), new LeanItemStack(output)));
-			}
+			return server.registryAccess();
 		}
 
-		return ret;
+		return null;
 	}
 }

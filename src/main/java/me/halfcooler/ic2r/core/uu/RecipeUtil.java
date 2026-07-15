@@ -48,8 +48,19 @@ class RecipeUtil
 
 			for (ItemStack stack : stacks)
 			{
-				res.add(new LeanItemStack(stack));
+				if (!stack.isEmpty())
+				{
+					res.add(new LeanItemStack(stack));
+				}
 			}
+
+			// Empty after expansion means the ingredient cannot contribute a finite path.
+			if (res.isEmpty())
+			{
+				return Collections.emptyList();
+			}
+
+			ret.add(res);
 		}
 
 		return ret;
@@ -61,7 +72,10 @@ class RecipeUtil
 
 		for (ItemStack stack : x)
 		{
-			ret.add(new LeanItemStack(stack));
+			if (!stack.isEmpty())
+			{
+				ret.add(new LeanItemStack(stack));
+			}
 		}
 
 		return ret;

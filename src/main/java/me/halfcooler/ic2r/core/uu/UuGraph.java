@@ -133,12 +133,24 @@ public class UuGraph
 
 		initialValues.clear();
 
+		int finite = 0;
 		for (UuGraph.Node node : nodes.values())
 		{
+			if (node.value < Double.POSITIVE_INFINITY)
+			{
+				finite++;
+			}
+
 			node.provides = null;
 		}
 
-		IC2R.log.debug(LogCategory.Uu, "UU graph built with %d nodes after %d ms.", nodes.size(), (System.nanoTime() - startTime) / 1000000L);
+		IC2R.log.info(
+			LogCategory.Uu,
+			"UU graph built with %d nodes (%d finite values) after %d ms.",
+			nodes.size(),
+			finite,
+			(System.nanoTime() - startTime) / 1000000L
+		);
 	}
 
 	private static UuGraph.Node getInternal(LeanItemStack stack)
