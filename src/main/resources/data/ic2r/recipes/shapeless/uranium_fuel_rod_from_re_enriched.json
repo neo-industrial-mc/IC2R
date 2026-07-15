@@ -1,0 +1,14 @@
+{
+  "type": "ic2r:shapeless",
+  "ingredients": [
+    {
+      "item": "ic2r:re_enriched_uranium_rod"
+    },
+    {
+      "tag": "forge:dusts/coal"
+    }
+  ],
+  "result": {
+    "item": "ic2r:uranium_fuel_rod"
+  }
+}

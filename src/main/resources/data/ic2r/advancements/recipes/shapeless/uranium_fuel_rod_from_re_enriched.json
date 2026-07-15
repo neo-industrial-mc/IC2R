@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_re_enriched_uranium_rod": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:re_enriched_uranium_rod"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ic2r:shapeless/uranium_fuel_rod_from_re_enriched"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_re_enriched_uranium_rod",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ic2r:shapeless/uranium_fuel_rod_from_re_enriched"
+    ]
+  },
+  "sends_telemetry_event": true
+}

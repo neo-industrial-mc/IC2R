@@ -121,8 +121,7 @@ public final class Ic2rItemsMaterials
 	public static final Item DEPLETED_MOX_FUEL_ROD = Ic2rItems.register("depleted_mox_fuel_rod", new ItemNuclearResource(new Properties(), 10, 100));
 	public static final Item DEPLETED_DUAL_MOX_FUEL_ROD = Ic2rItems.register("depleted_dual_mox_fuel_rod", new ItemNuclearResource(new Properties(), 10, 100));
 	public static final Item DEPLETED_QUAD_MOX_FUEL_ROD = Ic2rItems.register("depleted_quad_mox_fuel_rod", new ItemNuclearResource(new Properties(), 10, 100));
-	public static final Item NEAR_DEPLETED_URANIUM = Ic2rItems.register("near_depleted_uranium", new ItemNuclearResource(new Properties(), 15, 100));
-	public static final Item RE_ENRICHED_URANIUM = Ic2rItems.register("re_enriched_uranium", new ItemNuclearResource(new Properties(), 30, 100));
+	public static final Item RE_ENRICHED_URANIUM_ROD = Ic2rItems.register("re_enriched_uranium_rod", new ItemNuclearResource(new Properties(), 30, 100));
 	public static final Item ASHES = Ic2rItems.register("ashes", new Item(new Properties()));
 	public static final Item IRIDIUM_ORE = Ic2rItems.register("iridium_ore", new Item(new Properties().rarity(Rarity.RARE)));
 	public static final Item IRIDIUM_SHARD = Ic2rItems.register("iridium_shard", new Item(new Properties().rarity(Rarity.UNCOMMON)));

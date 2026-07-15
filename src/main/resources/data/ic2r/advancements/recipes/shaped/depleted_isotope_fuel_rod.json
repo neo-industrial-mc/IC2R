@@ -1,0 +1,48 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_facade_cell": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:facade_cell"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_uranium_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:uranium_ingot"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ic2r:shaped/depleted_isotope_fuel_rod"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_facade_cell",
+      "has_uranium_ingot",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ic2r:shaped/depleted_isotope_fuel_rod"
+    ]
+  },
+  "sends_telemetry_event": true
+}

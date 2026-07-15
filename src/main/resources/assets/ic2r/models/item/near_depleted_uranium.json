@@ -1,6 +1,0 @@
-{
-  "parent": "ic2r:item/default",
-  "textures": {
-    "layer0": "ic2r:item/reactor/uran_empty_cell"
-  }
-}

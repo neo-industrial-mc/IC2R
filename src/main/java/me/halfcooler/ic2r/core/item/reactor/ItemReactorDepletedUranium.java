@@ -22,7 +22,7 @@ public class ItemReactorDepletedUranium extends AbstractDamageableReactorCompone
 			int myLevel = this.getUse(stack) + 1 + reactor.getHeat() / 3000;
 			if (myLevel >= this.getMaxUse())
 			{
-				reactor.setItemAt(youX, youY, new ItemStack(Ic2rItems.RE_ENRICHED_URANIUM));
+				reactor.setItemAt(youX, youY, new ItemStack(Ic2rItems.RE_ENRICHED_URANIUM_ROD));
 			} else
 			{
 				this.setUse(stack, myLevel);
