@@ -55,6 +55,7 @@ public final class Ic2ItemTags {
   public static final TagKey<Item> RUBBER_LOGS = create("rubber_logs");
   public static final TagKey<Item> FORGE_HAMMERS = create("forge_hammers");
   public static final TagKey<Item> WIRE_CUTTERS = create("wire_cutters");
+  public static final TagKey<Item> WRENCHES = create("ic2:wrenches", "ic2:wrenches");
 
   public static void init() {}
 

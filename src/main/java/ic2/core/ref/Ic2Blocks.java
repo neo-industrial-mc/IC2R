@@ -1776,6 +1776,7 @@ public final class Ic2Blocks {
               Properties.of()
                   .mapColor(MapColor.COLOR_LIGHT_GRAY)
                   .strength(1.0F, 15.0F)
+                  .requiresCorrectToolForDrops()
                   .sound(SoundType.METAL),
               TileEntityIronStorageBox.class,
               false,
@@ -1789,6 +1790,7 @@ public final class Ic2Blocks {
               Properties.of()
                   .mapColor(MapColor.COLOR_LIGHT_GRAY)
                   .strength(1.0F, 15.0F)
+                  .requiresCorrectToolForDrops()
                   .sound(SoundType.METAL),
               TileEntityBronzeStorageBox.class,
               false,
@@ -1802,6 +1804,7 @@ public final class Ic2Blocks {
               Properties.of()
                   .mapColor(MapColor.COLOR_LIGHT_GRAY)
                   .strength(2.0F, 20.0F)
+                  .requiresCorrectToolForDrops()
                   .sound(SoundType.METAL),
               TileEntitySteelStorageBox.class,
               false,
@@ -1815,6 +1818,7 @@ public final class Ic2Blocks {
               Properties.of()
                   .mapColor(MapColor.COLOR_LIGHT_GRAY)
                   .strength(3.0F, 100.0F)
+                  .requiresCorrectToolForDrops()
                   .sound(SoundType.METAL),
               TileEntityIridiumStorageBox.class,
               false,
@@ -1828,6 +1832,7 @@ public final class Ic2Blocks {
               Properties.of()
                   .mapColor(MapColor.COLOR_LIGHT_GRAY)
                   .strength(3.0F, 15.0F)
+                  .requiresCorrectToolForDrops()
                   .sound(SoundType.METAL),
               TileEntityBronzeTank.class,
               false,
@@ -1841,6 +1846,7 @@ public final class Ic2Blocks {
               Properties.of()
                   .mapColor(MapColor.COLOR_LIGHT_GRAY)
                   .strength(3.0F, 15.0F)
+                  .requiresCorrectToolForDrops()
                   .sound(SoundType.METAL),
               TileEntityIronTank.class,
               false,
@@ -1854,6 +1860,7 @@ public final class Ic2Blocks {
               Properties.of()
                   .mapColor(MapColor.COLOR_LIGHT_GRAY)
                   .strength(4.0F, 20.0F)
+                  .requiresCorrectToolForDrops()
                   .sound(SoundType.METAL),
               TileEntitySteelTank.class,
               false,
@@ -1867,6 +1874,7 @@ public final class Ic2Blocks {
               Properties.of()
                   .mapColor(MapColor.COLOR_LIGHT_GRAY)
                   .strength(5.0F, 100.0F)
+                  .requiresCorrectToolForDrops()
                   .sound(SoundType.METAL),
               TileEntityIridiumTank.class,
               false,

@@ -1177,6 +1177,8 @@
   "item.ic2.wooden_rotor": "Kinetic Gearbox Rotor (Wood)",
   "item.ic2.wooden_rotor_blade": "Wood Rotor Blade",
   "item.ic2.wrench": "Wrench",
+  "item.ic2.wrench.tooltip.mine": "%s: Safely mine IC2 machines (drop the machine, not the casing)",
+  "item.ic2.wrench.tooltip.rotate": "%s: Set machine facing (rotate)",
   "item.ic2.yellow_painter": "Yellow Painter",
   "itemGroup.ic2.combat": "IC2 Combat",
   "itemGroup.ic2.farming": "IC2 Farming",

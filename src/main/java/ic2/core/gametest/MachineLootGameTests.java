@@ -5,6 +5,7 @@ import ic2.core.block.wiring.tileentity.TileEntityElectricBlock;
 import ic2.core.init.IC2Config;
 import ic2.core.item.tool.ItemToolWrench;
 import ic2.core.ref.Ic2Blocks;
+import ic2.core.ref.Ic2Items;
 import ic2.core.util.StackUtil;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -18,7 +19,9 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -96,6 +99,73 @@ public class MachineLootGameTests {
           helper.assertItemEntityPresent(expectedDrop, MACHINE_POS, 2.0);
           helper.assertItemEntityNotPresent(forbiddenDrop, MACHINE_POS, 2.0);
         });
+  }
+
+  @GameTest(template = EMPTY)
+  public static void manualWrenchMiningDropsMachineItself(GameTestHelper helper) {
+    helper.setBlock(MACHINE_POS, Ic2Blocks.MACERATOR);
+    ServerPlayer player = helper.makeMockServerPlayerInLevel();
+    player.setGameMode(GameType.SURVIVAL);
+    ItemStack wrench = new ItemStack(Ic2Items.WRENCH);
+    player.setItemInHand(InteractionHand.MAIN_HAND, wrench);
+
+    player.gameMode.destroyBlock(helper.absolutePos(MACHINE_POS));
+
+    helper.succeedWhen(
+        () -> {
+          helper.assertBlockPresent(Blocks.AIR, MACHINE_POS);
+          helper.assertItemEntityPresent(Ic2Blocks.MACERATOR.asItem(), MACHINE_POS, 2.0);
+          helper.assertItemEntityNotPresent(Ic2Blocks.MACHINE.asItem(), MACHINE_POS, 2.0);
+          helper.assertValueEqual(wrench.getDamageValue(), 1, "wrench damage after mining");
+        });
+  }
+
+  @GameTest(template = EMPTY)
+  public static void ironPickaxeMiningMachineDropsNothing(GameTestHelper helper) {
+    helper.setBlock(MACHINE_POS, Ic2Blocks.MACERATOR);
+    ServerPlayer player = helper.makeMockServerPlayerInLevel();
+    player.setGameMode(GameType.SURVIVAL);
+    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_PICKAXE));
+
+    player.gameMode.destroyBlock(helper.absolutePos(MACHINE_POS));
+
+    helper.succeedWhen(
+        () -> {
+          helper.assertBlockPresent(Blocks.AIR, MACHINE_POS);
+          helper.assertItemEntityNotPresent(Ic2Blocks.MACERATOR.asItem(), MACHINE_POS, 2.0);
+          helper.assertItemEntityNotPresent(Ic2Blocks.MACHINE.asItem(), MACHINE_POS, 2.0);
+        });
+  }
+
+  @GameTest(template = EMPTY)
+  public static void manualWrenchRightClickRotatesWithoutRemoving(GameTestHelper helper) {
+    helper.setBlock(MACHINE_POS, Ic2Blocks.GENERATOR);
+    ServerPlayer player = helper.makeMockServerPlayerInLevel();
+    player.setGameMode(GameType.SURVIVAL);
+    ItemStack stack = new ItemStack(Ic2Items.WRENCH);
+    player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+
+    BlockPos absolutePos = helper.absolutePos(MACHINE_POS);
+    Direction facingBefore =
+        ((Ic2TileEntityBlock) Ic2Blocks.GENERATOR).getFacing(helper.getLevel(), absolutePos);
+    Direction newFacing = facingBefore.getClockWise();
+    InteractionResult result =
+        ((ItemToolWrench) Ic2Items.WRENCH)
+            .onItemUseFirst(stack, Ic2GameTestUtil.useOn(helper, player, MACHINE_POS, newFacing));
+    InteractionResult repeatedResult =
+        ((ItemToolWrench) Ic2Items.WRENCH)
+            .onItemUseFirst(stack, Ic2GameTestUtil.useOn(helper, player, MACHINE_POS, newFacing));
+
+    helper.assertValueEqual(result, InteractionResult.SUCCESS, "wrench use result");
+    helper.assertValueEqual(
+        repeatedResult, InteractionResult.SUCCESS, "repeated wrench use result");
+    helper.assertBlockPresent(Ic2Blocks.GENERATOR, MACHINE_POS);
+    helper.assertValueEqual(
+        ((Ic2TileEntityBlock) Ic2Blocks.GENERATOR).getFacing(helper.getLevel(), absolutePos),
+        newFacing,
+        "machine facing after rotation");
+    helper.assertValueEqual(stack.getDamageValue(), 0, "right-click must not damage wrench");
+    helper.succeed();
   }
 
   @GameTest(template = EMPTY)

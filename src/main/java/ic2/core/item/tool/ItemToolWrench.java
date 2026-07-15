@@ -4,27 +4,36 @@ import ic2.api.item.BlockBreakableItem;
 import ic2.api.item.IBoxable;
 import ic2.api.tile.IWrenchAble;
 import ic2.core.IC2;
+import ic2.core.IHitSoundOverride;
 import ic2.core.init.IC2Config;
 import ic2.core.item.PriorityUsableItem;
+import ic2.core.ref.Ic2BlockTags;
 import ic2.core.ref.Ic2ItemTags;
 import ic2.core.ref.Ic2SoundEvents;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.LogCategory;
+import ic2.core.util.RotationUtil;
 import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -32,11 +41,16 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemToolWrench extends Item
-    implements PriorityUsableItem, IBoxable, BlockBreakableItem {
+    implements PriorityUsableItem, IBoxable, BlockBreakableItem, IHitSoundOverride {
+  private static final int MINE_DAMAGE = 1;
+
   public ItemToolWrench(Properties settings) {
     super(settings);
   }
@@ -161,6 +175,21 @@ public class ItemToolWrench extends Item
     return sideHit.getAxisDirection() == AxisDirection.POSITIVE != player.isShiftKeyDown();
   }
 
+  private static Direction resolveManualFacing(
+      Direction side, Player player, Vec3 hitLocation, BlockPos pos, Direction currentFacing) {
+    if (IC2.keyboard.isAltKeyDown(player)) {
+      Axis axis = side.getAxis();
+      return isAltRotationClockwise(side, player)
+          ? currentFacing.getClockWise(axis)
+          : currentFacing.getCounterClockWise(axis);
+    }
+
+    float hitX = (float) (hitLocation.x - pos.getX());
+    float hitY = (float) (hitLocation.y - pos.getY());
+    float hitZ = (float) (hitLocation.z - pos.getZ());
+    return RotationUtil.rotateByHit(side, hitX, hitY, hitZ);
+  }
+
   private static String getTeName(BlockEntity te) {
     return te != null
         ? BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(te.getType()).toString()
@@ -246,7 +275,7 @@ public class ItemToolWrench extends Item
     if (state.getBlock() instanceof IWrenchAble wrenchAble
         && wrenchAble.wrenchCanRemove(world, pos, player)) {
       removeBlockWithWrench(world, pos, state, player, wrenchAble);
-      player.getMainHandItem().hurtAndBreak(10, player, EquipmentSlot.MAINHAND);
+      player.getMainHandItem().hurtAndBreak(MINE_DAMAGE, player, EquipmentSlot.MAINHAND);
       return false;
     }
 
@@ -262,8 +291,13 @@ public class ItemToolWrench extends Item
       @Nullable BlockEntity blockEntity) {}
 
   @Override
+  public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+    return state.is(Ic2BlockTags.MINEABLE_WITH_WRENCH) || state.getBlock() instanceof IWrenchAble;
+  }
+
+  @Override
   public float getDestroySpeed(ItemStack stack, BlockState state) {
-    if (state.getBlock() instanceof IWrenchAble) {
+    if (this.isCorrectToolForDrops(stack, state)) {
       return 6.0F;
     }
 
@@ -276,9 +310,13 @@ public class ItemToolWrench extends Item
     return true;
   }
 
+  public boolean canTakeDamage(ItemStack stack, int amount) {
+    return true;
+  }
+
   @Override
   public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-    if (!this.canTakeDamage()) {
+    if (!this.canTakeDamage(stack, 1)) {
       return InteractionResult.FAIL;
     }
 
@@ -287,15 +325,37 @@ public class ItemToolWrench extends Item
       return InteractionResult.PASS;
     }
 
-    int useResult = onWrenchUse(player, context, this.canTakeDamage());
-    return switch (useResult) {
-      case -2 -> InteractionResult.PASS;
-      case -1 -> InteractionResult.FAIL;
-      default -> {
-        this.damage(stack, useResult, player, context.getHand());
-        yield InteractionResult.SUCCESS;
-      }
-    };
+    Level world = context.getLevel();
+    BlockPos pos = context.getClickedPos();
+    BlockState state = world.getBlockState(pos);
+    if (state.isAir()) {
+      return InteractionResult.FAIL;
+    }
+
+    boolean handled;
+    if (state.getBlock() instanceof IWrenchAble wrenchAble) {
+      Direction currentFacing = wrenchAble.getFacing(world, pos);
+      Direction newFacing =
+          resolveManualFacing(
+              context.getClickedFace(), player, context.getClickLocation(), pos, currentFacing);
+      wrenchAble.setFacing(world, pos, newFacing, player);
+      handled = true;
+    } else {
+      handled =
+          wrenchVanillaBlock(world, pos, context.getClickedFace(), player, state)
+              != WrenchResult.Nothing;
+    }
+
+    if (!handled) {
+      return InteractionResult.FAIL;
+    }
+
+    if (world.isClientSide) {
+      player.playSound(Ic2SoundEvents.ITEM_WRENCH_USE, 1.0F, 1.0F);
+      return InteractionResult.PASS;
+    }
+
+    return InteractionResult.SUCCESS;
   }
 
   public void damage(ItemStack is, int damage, Player player, InteractionHand hand) {
@@ -312,6 +372,42 @@ public class ItemToolWrench extends Item
 
   public boolean isValidRepairItem(@NotNull ItemStack toRepair, ItemStack repair) {
     return repair.is(Ic2ItemTags.BRONZE_INGOTS);
+  }
+
+  public boolean isEnchantable(@NotNull ItemStack stack) {
+    return false;
+  }
+
+  @OnlyIn(Dist.CLIENT)
+  public void appendHoverText(
+      @NotNull ItemStack stack,
+      Item.TooltipContext context,
+      List<Component> info,
+      @NotNull TooltipFlag flag) {
+    Component attackKey = Minecraft.getInstance().options.keyAttack.getTranslatedKeyMessage();
+    Component useKey = Minecraft.getInstance().options.keyUse.getTranslatedKeyMessage();
+    Ic2Tooltip.add(info, Component.translatable("item.ic2.wrench.tooltip.mine", attackKey));
+    Ic2Tooltip.add(info, Component.translatable("item.ic2.wrench.tooltip.rotate", useKey));
+  }
+
+  @OnlyIn(Dist.CLIENT)
+  @Override
+  public SoundEvent getHitSoundForBlock(
+      LocalPlayer player, Level world, BlockPos pos, ItemStack stack) {
+    return null;
+  }
+
+  @OnlyIn(Dist.CLIENT)
+  @Override
+  public SoundEvent getBreakSoundForBlock(
+      LocalPlayer player, Level world, BlockPos pos, ItemStack stack) {
+    if (player.getAbilities().instabuild) {
+      return null;
+    }
+
+    return world.getBlockState(pos).getBlock() instanceof IWrenchAble
+        ? Ic2SoundEvents.ITEM_WRENCH_USE
+        : null;
   }
 
   public enum WrenchResult {

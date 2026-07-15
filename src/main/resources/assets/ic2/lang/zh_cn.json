@@ -1169,6 +1169,8 @@
   "item.ic2.wooden_rotor": "木转子",
   "item.ic2.wooden_rotor_blade": "木扇叶",
   "item.ic2.wrench": "扳手",
+  "item.ic2.wrench.tooltip.mine": "%s：安全拆除 IC2 机器（掉落机器本体，而非机壳）",
+  "item.ic2.wrench.tooltip.rotate": "%s：设置机器朝向（旋转）",
   "item.ic2.yellow_painter": "黄色刷子",
   "itemGroup.ic2.combat": "工业2战斗用品",
   "itemGroup.ic2.farming": "工业2农业",
