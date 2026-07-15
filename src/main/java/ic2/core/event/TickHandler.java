@@ -1,6 +1,7 @@
 package ic2.core.event;
 
 import ic2.core.IC2;
+import ic2.core.block.ChunkLoadAwareBlockHandler;
 import java.util.Map;
 import java.util.WeakHashMap;
 import net.minecraft.world.level.Level;
@@ -13,6 +14,8 @@ public class TickHandler {
 
   public static void onWorldTickStart(Level world) {
     if (!world.isClientSide) {
+      ChunkLoadAwareBlockHandler.onWorldTick(world);
+
       WorldData worldData = WorldData.get(world, false);
       if (worldData != null) {
         world.getProfiler().push("updates");

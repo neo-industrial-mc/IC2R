@@ -160,6 +160,24 @@ public class EnergyNetLocal {
     }
   }
 
+  void requeueAddition(GridChange change) {
+    if (change == null || change.type != GridChange.Type.ADDITION) {
+      return;
+    }
+
+    if (this.gridAdditionsMap.putIfAbsent(change.ioTile, change) != null) {
+      return;
+    }
+
+    this.gridChangesQueue.add(change);
+    if (EnergyNetSettings.logGridUpdatesVerbose) {
+      IC2.log.debug(
+          LogCategory.EnergyNet,
+          "Re-queued addition of %s (chunk not ready).",
+          Util.toString(change.ioTile, this.getWorld(), change.pos));
+    }
+  }
+
   public Collection<Tile> getSources() {
     return this.sources;
   }

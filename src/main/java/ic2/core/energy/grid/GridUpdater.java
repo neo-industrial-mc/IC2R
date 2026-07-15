@@ -143,8 +143,29 @@ class GridUpdater implements Runnable {
   }
 
   private void prepareUpdate() {
+    List<GridChange> retryAdditions = null;
+    var iterator = this.changes.iterator();
+    while (iterator.hasNext()) {
+      GridChange change = iterator.next();
+      if (ChangeHandler.prepareSync(this.enet, change)) {
+        continue;
+      }
 
-    this.changes.removeIf(change -> !ChangeHandler.prepareSync(this.enet, change));
+      iterator.remove();
+      if (change.type == GridChange.Type.ADDITION && !this.enet.getWorld().isLoaded(change.pos)) {
+        if (retryAdditions == null) {
+          retryAdditions = new ArrayList<>();
+        }
+
+        retryAdditions.add(change);
+      }
+    }
+
+    if (retryAdditions != null) {
+      for (GridChange change : retryAdditions) {
+        this.enet.requeueAddition(change);
+      }
+    }
   }
 
   private void updateGrid() {

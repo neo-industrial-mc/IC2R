@@ -22,9 +22,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.gametest.framework.GameTestSequence;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
@@ -134,6 +136,73 @@ public class EnergyNetGameTests {
               helper, macerator.getEnergy(), 320.0, "macerator buffer after short run");
           Ic2GameTestAssertions.assertNear(helper, batbox.energy.getEnergy(), 0.0, "batbox buffer");
         });
+  }
+
+  // unloading and reloading a chunk must rebuild its cable conductor and machine registrations
+  @GameTest(template = EMPTY, timeoutTicks = 800)
+  public static void energyFlowResumesAfterChunkReload(GameTestHelper helper) {
+    ServerLevel level = helper.getLevel();
+    ChunkPos testChunk = new ChunkPos(helper.absolutePos(BlockPos.ZERO));
+    ChunkPos targetChunk = new ChunkPos(testChunk.x + 2, testChunk.z);
+    int x = targetChunk.getMinBlockX() + 8;
+    int z = targetChunk.getMinBlockZ() + 8;
+    int y = helper.absolutePos(BlockPos.ZERO).getY() + 1;
+    BlockPos sinkPos = new BlockPos(x, y, z);
+    BlockPos cablePos = sinkPos.above();
+    BlockPos sourcePos = cablePos.above();
+
+    level.setChunkForced(targetChunk.x, targetChunk.z, true);
+    level.getChunk(targetChunk.x, targetChunk.z);
+    level.setBlock(sourcePos, Ic2Blocks.BATBOX.defaultBlockState(), 3);
+    level.setBlock(cablePos, Ic2Blocks.COPPER_CABLE.defaultBlockState(), 3);
+    level.setBlock(sinkPos, Ic2Blocks.BATBOX.defaultBlockState(), 3);
+
+    TileEntityElectricBatBox source = getTe(level, sourcePos, TileEntityElectricBatBox.class);
+    TileEntityElectricBatBox sink = getTe(level, sinkPos, TileEntityElectricBatBox.class);
+    source.energy.addEnergy(32.0);
+
+    GameTestSequence sequence = helper.startSequence();
+    sequence.thenWaitUntil(
+        () ->
+            helper.assertTrue(
+                sink.energy.getEnergy() >= 32.0,
+                "the initial cable grid should transfer energy before unload"));
+    sequence.thenExecute(() -> level.setChunkForced(targetChunk.x, targetChunk.z, false));
+    sequence.thenWaitUntil(
+        () ->
+            helper.assertTrue(
+                sink.isRemoved(), "the original sink block entity has not unloaded yet"));
+    sequence.thenExecute(
+        () -> {
+          level.setChunkForced(targetChunk.x, targetChunk.z, true);
+          level.getChunk(targetChunk.x, targetChunk.z);
+        });
+    sequence.thenExecuteAfter(
+        10,
+        () -> {
+          helper.assertTrue(
+              level.getBlockState(cablePos).is(Ic2Blocks.COPPER_CABLE),
+              "the cable should survive chunk reload");
+          TileEntityElectricBatBox reloadedSource =
+              getTe(level, sourcePos, TileEntityElectricBatBox.class);
+          reloadedSource.energy.addEnergy(32.0);
+        });
+    sequence.thenWaitUntil(
+        () -> {
+          TileEntityElectricBatBox reloadedSink =
+              getTe(level, sinkPos, TileEntityElectricBatBox.class);
+          helper.assertTrue(
+              reloadedSink.energy.getEnergy() >= 64.0,
+              "energy should flow again after the chunk reload");
+        });
+    sequence.thenExecute(
+        () -> {
+          level.removeBlock(sourcePos, false);
+          level.removeBlock(cablePos, false);
+          level.removeBlock(sinkPos, false);
+          level.setChunkForced(targetChunk.x, targetChunk.z, false);
+        });
+    sequence.thenSucceed();
   }
 
   // 6 copper cables accumulate 1.202 EU path loss, floored to a whole 1 EU per packet
@@ -651,6 +720,16 @@ public class EnergyNetGameTests {
   private static <T extends BlockEntity> T getTe(
       GameTestHelper helper, BlockPos pos, Class<T> type) {
     BlockEntity be = helper.getBlockEntity(pos);
+    if (!type.isInstance(be)) {
+      throw new IllegalStateException(
+          "expected " + type.getSimpleName() + " at " + pos + ", found " + be);
+    }
+
+    return type.cast(be);
+  }
+
+  private static <T extends BlockEntity> T getTe(ServerLevel level, BlockPos pos, Class<T> type) {
+    BlockEntity be = level.getBlockEntity(pos);
     if (!type.isInstance(be)) {
       throw new IllegalStateException(
           "expected " + type.getSimpleName() + " at " + pos + ", found " + be);

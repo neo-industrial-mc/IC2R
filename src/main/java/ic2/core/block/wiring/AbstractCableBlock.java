@@ -574,7 +574,9 @@ public abstract class AbstractCableBlock extends PipeBlock
 
   public void onPlace(
       BlockState state, Level world, BlockPos pos, BlockState oldState, boolean notify) {
-    this.addToEnet(state, world, pos, true);
+    if (!world.isClientSide) {
+      this.addToEnet(state, world, pos, true);
+    }
     if (this.isFoam() && state.getValue(foamProperty).isSoft()) {
       this.scheduleFoamHardeningTick(world, pos);
     }
@@ -582,7 +584,9 @@ public abstract class AbstractCableBlock extends PipeBlock
 
   @Override
   public void onLoad(BlockState state, Level world, BlockPos pos) {
-    this.addToEnet(state, world, pos, false);
+    if (!world.isClientSide) {
+      this.addToEnet(state, world, pos, false);
+    }
     if (this.isFoam() && state.getValue(foamProperty).isSoft()) {
       this.scheduleFoamHardeningTick(world, pos);
     }
@@ -590,16 +594,33 @@ public abstract class AbstractCableBlock extends PipeBlock
 
   @Override
   public void onUnload(BlockState state, Level world, BlockPos pos) {
-    this.removeFromEnet(state, world, pos);
-  }
-
-  protected void addToEnet(BlockState state, Level world, BlockPos pos, boolean checkConflicting) {
-    if (!checkConflicting || EnergyNet.instance.getTile(world, pos) == null) {
-      EnergyNet.instance.addLocatableTile(new AbstractCableBlock.Conductor(state, world, pos));
+    if (!world.isClientSide) {
+      this.removeFromEnet(state, world, pos);
     }
   }
 
+  protected void addToEnet(BlockState state, Level world, BlockPos pos, boolean checkConflicting) {
+    if (world.isClientSide) {
+      return;
+    }
+
+    IEnergyTile existing = EnergyNet.instance.getTile(world, pos);
+    if (existing != null) {
+      if (checkConflicting) {
+        return;
+      }
+
+      EnergyNet.instance.removeTile(existing);
+    }
+
+    EnergyNet.instance.addLocatableTile(new AbstractCableBlock.Conductor(state, world, pos));
+  }
+
   protected void removeFromEnet(BlockState state, Level world, BlockPos pos) {
+    if (world.isClientSide) {
+      return;
+    }
+
     IEnergyTile tile = EnergyNet.instance.getTile(world, pos);
     if (tile != null) {
       EnergyNet.instance.removeTile(tile);
