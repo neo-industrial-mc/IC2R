@@ -11,6 +11,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -148,7 +149,7 @@ public final class PlatformRegistryForge implements PlatformRegistry
 	}
 
 	@Override
-	public <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation id, Codec<T> codec)
+	public <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation id, MapCodec<T> codec)
 	{
 		return proxy().registerFoliagePlacer(id, codec);
 	}

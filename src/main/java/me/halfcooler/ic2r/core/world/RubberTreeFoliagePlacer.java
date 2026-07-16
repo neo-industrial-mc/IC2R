@@ -1,6 +1,6 @@
 package me.halfcooler.ic2r.core.world;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.halfcooler.ic2r.core.IC2R;
 
@@ -14,7 +14,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.TreeConfigurati
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 import org.jetbrains.annotations.NotNull;
-import com.mojang.serialization.MapCodec;
 
 public final class RubberTreeFoliagePlacer extends FoliagePlacer
 {
@@ -36,9 +35,10 @@ public final class RubberTreeFoliagePlacer extends FoliagePlacer
 	{
 	}
 
-	private static <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer()
+	private static FoliagePlacerType<RubberTreeFoliagePlacer> registerFoliagePlacer()
 	{
-		return IC2R.envProxy.registerFoliagePlacer(IC2R.getIdentifier("rubber_tree"), (Codec<T>) RubberTreeFoliagePlacer.CODEC);
+		// 1.21+: FoliagePlacerType takes MapCodec, not Codec
+		return IC2R.envProxy.registerFoliagePlacer(IC2R.getIdentifier("rubber_tree"), CODEC);
 	}
 
 	protected @NotNull FoliagePlacerType<?> type()

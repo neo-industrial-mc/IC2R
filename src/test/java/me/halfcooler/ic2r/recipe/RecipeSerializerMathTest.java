@@ -65,7 +65,7 @@ class RecipeSerializerMathTest
 	@Test
 	void macerator_datapack_has_basic_machine_keys() throws Exception
 	{
-		String resource = "data/ic2r/recipes/macerator/cobblestone_to_sand.json";
+		String resource = "data/ic2r/recipe/macerator/cobblestone_to_sand.json";
 		try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource))
 		{
 			assertNotNull(in, "expected classpath resource " + resource);

@@ -1,0 +1,37 @@
+{
+  "parent": "ic2r:ic2r/build_generator/build_compressor/root",
+  "display": {
+    "icon": {
+      "id": "ic2r:nuclear_reactor"
+    },
+    "title": {
+      "translate": "advancements.ic2r.build_nuclear_reactor"
+    },
+    "description": {
+      "translate": "advancements.ic2r.build_nuclear_reactor.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ic2r:nuclear_reactor": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:nuclear_reactor"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ic2r:nuclear_reactor"
+    ]
+  ]
+}

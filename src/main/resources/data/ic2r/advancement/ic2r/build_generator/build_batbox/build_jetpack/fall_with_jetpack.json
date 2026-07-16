@@ -1,0 +1,28 @@
+{
+  "parent": "ic2r:ic2r/build_generator/build_batbox/build_jetpack",
+  "display": {
+    "icon": {
+      "id": "ic2r:jetpack"
+    },
+    "title": {
+      "translate": "advancements.ic2r.fall_with_jetpack"
+    },
+    "description": {
+      "translate": "advancements.ic2r.fall_with_jetpack.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ]
+}

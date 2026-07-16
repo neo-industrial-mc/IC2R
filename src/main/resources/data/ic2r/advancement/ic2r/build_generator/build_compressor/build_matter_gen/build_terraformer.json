@@ -1,0 +1,37 @@
+{
+  "parent": "ic2r:ic2r/build_generator/build_compressor/build_matter_gen",
+  "display": {
+    "icon": {
+      "id": "ic2r:terraformer"
+    },
+    "title": {
+      "translate": "advancements.ic2r.build_terraformer"
+    },
+    "description": {
+      "translate": "advancements.ic2r.build_terraformer.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ic2r:terraformer": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:terraformer"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ic2r:terraformer"
+    ]
+  ]
+}

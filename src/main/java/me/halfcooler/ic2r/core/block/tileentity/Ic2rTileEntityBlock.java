@@ -459,7 +459,13 @@ public final class Ic2rTileEntityBlock extends Block implements EntityBlock, IWr
 		}
 	}
 
-	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit)
+	/**
+	 * 1.21: {@code Block.use} was split into {@link #useWithoutItem} / {@link #useItemOn}.
+	 * Holding an item still reaches this method when {@code useItemOn} returns
+	 * {@link net.minecraft.world.ItemInteractionResult#PASS_TO_DEFAULT_BLOCK_INTERACTION}.
+	 */
+	@Override
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit)
 	{
 		if (player.isShiftKeyDown())
 		{
@@ -467,7 +473,8 @@ public final class Ic2rTileEntityBlock extends Block implements EntityBlock, IWr
 		}
 
 		Ic2rTileEntity te = getTe(world, pos);
-		return te == null ? InteractionResult.PASS : te.onActivated(player, hand, hit.getDirection(), hit.getLocation());
+		// MAIN_HAND: useWithoutItem has no hand; item-in-hand path falls through from useItemOn(MAIN_HAND)
+		return te == null ? InteractionResult.PASS : te.onActivated(player, InteractionHand.MAIN_HAND, hit.getDirection(), hit.getLocation());
 	}
 
 	@Override

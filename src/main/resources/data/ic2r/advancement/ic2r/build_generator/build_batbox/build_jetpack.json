@@ -1,0 +1,50 @@
+{
+  "parent": "ic2r:ic2r/build_generator/build_batbox/root",
+  "display": {
+    "icon": {
+      "id": "ic2r:jetpack_electric"
+    },
+    "title": {
+      "translate": "advancements.ic2r.build_jetpack"
+    },
+    "description": {
+      "translate": "advancements.ic2r.build_jetpack.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ic2r:jetpack": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:jetpack"
+            ]
+          }
+        ]
+      }
+    },
+    "ic2r:jetpack_electric": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:jetpack_electric"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ic2r:jetpack",
+      "ic2r:jetpack_electric"
+    ]
+  ]
+}

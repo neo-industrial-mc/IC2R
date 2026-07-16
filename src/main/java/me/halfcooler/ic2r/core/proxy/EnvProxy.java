@@ -2,6 +2,7 @@ package me.halfcooler.ic2r.core.proxy;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import me.halfcooler.ic2r.core.Ic2rItemGroupType;
 import me.halfcooler.ic2r.core.fluid.EnvFluidHandler;
 import me.halfcooler.ic2r.core.item.EnvItemHandler;
@@ -99,7 +100,7 @@ public interface EnvProxy
 
 	void registerPlacementModifierType(ResourceLocation var1, PlacementModifierType<?> var2);
 
-	<T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation var1, Codec<T> var2);
+	<T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation var1, MapCodec<T> var2);
 
 	<T extends Recipe<?>> RecipeType<T> registerRecipeType(ResourceLocation var1);
 

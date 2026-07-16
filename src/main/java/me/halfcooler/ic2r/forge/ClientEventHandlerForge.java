@@ -21,7 +21,6 @@ import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
-import net.neoforged.neoforge.client.event.sound.SoundEngineLoadEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -44,12 +43,6 @@ public final class ClientEventHandlerForge
 	public void onClientTickEnd(ClientTickEvent.Post event)
 	{
 		DeferredSoundOps.flush();
-	}
-
-	@SubscribeEvent
-	public void onSoundSetup(SoundEngineLoadEvent event)
-	{
-		EventHandlerClient.onSoundSetup();
 	}
 
 	@SubscribeEvent
@@ -114,8 +107,9 @@ public final class ClientEventHandlerForge
 	}
 
 	@SubscribeEvent
-	public void onGuiCreate(ScreenEvent.Init event)
+	public void onGuiCreate(ScreenEvent.Init.Post event)
 	{
+		// ScreenEvent.Init is abstract in NeoForge 1.21+; subscribe to Pre/Post concrete types.
 		EventHandlerClient.onGuiCreate(event.getScreen(), event.getListenersList(), event::addListener);
 	}
 

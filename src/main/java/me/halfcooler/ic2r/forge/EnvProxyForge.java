@@ -11,6 +11,7 @@ import me.halfcooler.ic2r.api.event.RetextureEvent;
 import me.halfcooler.ic2r.api.item.IElectricItem;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rItemGroupType;
+import me.halfcooler.ic2r.core.Ic2rPotion;
 import me.halfcooler.ic2r.core.fluid.EnvFluidHandler;
 import me.halfcooler.ic2r.core.item.BlockItemEnergyStorage;
 import me.halfcooler.ic2r.core.item.ElectricItemManager;
@@ -48,6 +49,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -173,9 +175,29 @@ public final class EnvProxyForge implements EnvProxy
 		return WoodType.register(new WoodType("ic2r:" + name, BlockSetType.OAK));
 	}
 
+	/**
+	 * Queue entries on {@link #statusEffectRegistry} <b>before</b> any
+	 * {@code RegisterEvent} for {@code MOB_EFFECT}. Calling this (or
+	 * {@link #registerStatusEffect}) after that event freezes the DeferredRegister
+	 * and throws {@link IllegalStateException}.
+	 * <p>
+	 * Invoked from {@link FmlMod} constructor — not from {@code onInitEarly}
+	 * (which runs during BLOCK registration, after MOB_EFFECT has already frozen).
+	 */
+	static void queueCoreStatusEffects()
+	{
+		statusEffectRegistry.register("radiation", () ->
+		{
+			Ic2rPotion effect = new Ic2rPotion(MobEffectCategory.HARMFUL, 5149489);
+			Ic2rPotion.radiation = effect;
+			return effect;
+		});
+	}
+
 	@Override
 	public void registerStatusEffect(ResourceLocation id, MobEffect effect)
 	{
+		// Must be called before MOB_EFFECT RegisterEvent (mod constructor / static init).
 		statusEffectRegistry.register(id.getPath(), () -> effect);
 	}
 
@@ -232,12 +254,10 @@ public final class EnvProxyForge implements EnvProxy
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation id, Codec<T> codec)
+	public <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation id, MapCodec<T> codec)
 	{
-		// Call sites pass MapCodec cast as Codec; recover MapCodec (required by 1.21 FoliagePlacerType).
-		MapCodec<T> mapCodec = (MapCodec<T>) (Object) codec;
-		FoliagePlacerType<T> type = new FoliagePlacerType<>(mapCodec);
+		// 1.21+: FoliagePlacerType constructor takes MapCodec, not Codec
+		FoliagePlacerType<T> type = new FoliagePlacerType<>(codec);
 		foliagePlacerRegistry.register(id.getPath(), () -> type);
 		return type;
 	}

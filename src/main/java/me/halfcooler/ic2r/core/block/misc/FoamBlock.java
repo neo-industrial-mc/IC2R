@@ -89,16 +89,36 @@ public class FoamBlock extends Block
 		}
 	}
 
-	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit)
+	@Override
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit)
 	{
-		if (StackUtil.consume(player, hand, StackUtil.sameItem(Blocks.SAND), 1))
+		// Sand-in-hand path: useItemOn default PASS_TO_DEFAULT then useWithoutItem (main hand only)
+		if (StackUtil.consume(player, InteractionHand.MAIN_HAND, StackUtil.sameItem(Blocks.SAND), 1))
 		{
 			world.setBlockAndUpdate(pos, state.getValue(typeProperty).getResult());
 			return InteractionResult.SUCCESS;
 		} else
 		{
-			return InteractionResult.FAIL;
+			return InteractionResult.PASS;
 		}
+	}
+
+	@Override
+	protected @NotNull net.minecraft.world.ItemInteractionResult useItemOn(
+		@NotNull ItemStack stack,
+		@NotNull BlockState state,
+		@NotNull Level world,
+		@NotNull BlockPos pos,
+		@NotNull Player player,
+		@NotNull InteractionHand hand,
+		@NotNull BlockHitResult hit)
+	{
+		if (StackUtil.consume(player, hand, StackUtil.sameItem(Blocks.SAND), 1))
+		{
+			world.setBlockAndUpdate(pos, state.getValue(typeProperty).getResult());
+			return net.minecraft.world.ItemInteractionResult.sidedSuccess(world.isClientSide);
+		}
+		return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	public enum FoamType implements StringRepresentable

@@ -28,7 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -83,14 +82,8 @@ public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements 
 	protected InteractionResult onActivated(Player player, InteractionHand hand, Direction side, Vec3 hit)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
-		if (reactor != null)
-		{
-			Level world = this.getLevel();
-			return reactor.getBlockType().use(reactor.getBlockState(), world, reactor.getBlockPos(), player, hand, new BlockHitResult(hit, side, reactor.getBlockPos(), false));
-		} else
-		{
-			return InteractionResult.PASS;
-		}
+		// Same package can call protected onActivated (matches TileEntityReactorAccessHatch)
+		return reactor != null ? reactor.onActivated(player, hand, side, hit) : InteractionResult.PASS;
 	}
 
 	@Override

@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_forest",
+  "features": [
+    "ic2r:trees_rubber_forest"
+  ],
+  "step": "vegetal_decoration"
+}

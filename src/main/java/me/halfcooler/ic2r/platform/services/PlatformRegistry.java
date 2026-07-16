@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.core.BlockPos;
@@ -85,7 +86,7 @@ public interface PlatformRegistry
 
 	void registerPlacementModifierType(ResourceLocation id, PlacementModifierType<?> type);
 
-	<T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation id, Codec<T> codec);
+	<T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation id, MapCodec<T> codec);
 
 	<T extends Recipe<?>> RecipeType<T> registerRecipeType(ResourceLocation id);
 

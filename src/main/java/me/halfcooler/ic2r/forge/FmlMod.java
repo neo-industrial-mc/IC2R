@@ -49,6 +49,9 @@ public final class FmlMod {
         // Force class-loading of *Blocks definition files so DeferredRegister entries
         // exist before BLOCKS DeferredRegister processes during RegisterEvent.
         Ic2rBlocks.init();
+        // MOB_EFFECT RegisterEvent fires BEFORE BLOCK. Status effects must be queued
+        // here (mod constructor), never inside onInitEarly / RegisterEvent.BLOCK.
+        EnvProxyForge.queueCoreStatusEffects();
         Ic2rArmorMaterials.REGISTRY.register(modEventBus);
         EnvProxyForge.BLOCKS.register(modEventBus);
         modEventBus.register(this);

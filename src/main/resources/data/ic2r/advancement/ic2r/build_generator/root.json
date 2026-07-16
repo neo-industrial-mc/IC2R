@@ -1,0 +1,37 @@
+{
+  "parent": "ic2r:ic2r/acquire_resin/acquire_insulated_cable",
+  "display": {
+    "icon": {
+      "id": "ic2r:generator"
+    },
+    "title": {
+      "translate": "advancements.ic2r.build_generator"
+    },
+    "description": {
+      "translate": "advancements.ic2r.build_generator.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ic2r:generator": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:generator"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ic2r:generator"
+    ]
+  ]
+}

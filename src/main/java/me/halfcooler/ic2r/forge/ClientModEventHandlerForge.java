@@ -18,6 +18,7 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.sound.SoundEngineLoadEvent;
 
 public final class ClientModEventHandlerForge
 {
@@ -124,5 +125,12 @@ public final class ClientModEventHandlerForge
 				ItemBlockRenderTypes.setRenderLayer(block, reg.layer());
 			}
 		}
+	}
+
+	/** SoundEngineLoadEvent is IModBusEvent — must be on mod bus, not NeoForge.EVENT_BUS. */
+	@SubscribeEvent
+	public void onSoundSetup(SoundEngineLoadEvent event)
+	{
+		EventHandlerClient.onSoundSetup();
 	}
 }

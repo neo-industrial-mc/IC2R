@@ -1,0 +1,37 @@
+{
+  "parent": "ic2r:ic2r/acquire_resin",
+  "display": {
+    "icon": {
+      "id": "ic2r:copper_cable"
+    },
+    "title": {
+      "translate": "advancements.ic2r.build_cable"
+    },
+    "description": {
+      "translate": "advancements.ic2r.build_cable.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ic2r:copper_cable": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:copper_cable"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ic2r:copper_cable"
+    ]
+  ]
+}

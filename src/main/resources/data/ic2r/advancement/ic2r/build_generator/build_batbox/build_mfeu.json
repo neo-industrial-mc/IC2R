@@ -1,0 +1,37 @@
+{
+  "parent": "ic2r:ic2r/build_generator/build_batbox/root",
+  "display": {
+    "icon": {
+      "id": "ic2r:mfe"
+    },
+    "title": {
+      "translate": "advancements.ic2r.build_mfe"
+    },
+    "description": {
+      "translate": "advancements.ic2r.build_mfe.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ic2r:mfe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ic2r:mfe"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ic2r:mfe"
+    ]
+  ]
+}
