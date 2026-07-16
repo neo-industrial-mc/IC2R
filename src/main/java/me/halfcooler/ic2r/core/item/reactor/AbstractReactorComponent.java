@@ -4,7 +4,6 @@ import me.halfcooler.ic2r.api.reactor.IReactor;
 import me.halfcooler.ic2r.api.reactor.IReactorComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 
 public abstract class AbstractReactorComponent extends Item implements IReactorComponent
 {

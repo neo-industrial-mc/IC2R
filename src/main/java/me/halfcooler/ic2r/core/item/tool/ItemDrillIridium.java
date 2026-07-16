@@ -97,7 +97,7 @@ public class ItemDrillIridium extends ItemDrill
 	}
 
 	@Override
-	public @NotNull InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
+	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand)
 	{
 		if (!world.isClientSide && IC2R.keyboard.isModeSwitchKeyDown(player))
 		{

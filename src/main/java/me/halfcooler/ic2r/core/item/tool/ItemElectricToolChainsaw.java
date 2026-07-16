@@ -23,7 +23,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -32,7 +31,6 @@ import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -73,14 +71,14 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext world, List<Component> list, TooltipFlag par4)
+	public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext world, @NotNull List<Component> list, @NotNull TooltipFlag par4)
 	{
 		super.appendHoverText(stack, world, list, par4);
 		Ic2rTooltip.add(list, Component.translatable("item.ic2r.tooltip.mode.switch", KeyboardClient.modeSwitchKey.getKey().getDisplayName(), Minecraft.getInstance().options.keyUse.getKey().getDisplayName()));
 	}
 
 	@Override
-	public @NotNull InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
+	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand)
 	{
 		if (world.isClientSide)
 		{
@@ -105,13 +103,13 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	}
 
 	@Override
-	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
+	public boolean isCorrectToolForDrops(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
 		return super.isCorrectToolForDrops(stack, state) || state.is(Blocks.COBWEB) || Util.canShear(state);
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
 		return !this.canUse(stack) || !state.is(BlockTags.MINEABLE_WITH_AXE) && !state.is(Blocks.COBWEB) && !Util.canShear(state) ? 1.0F : this.getToolSpeed();
 	}

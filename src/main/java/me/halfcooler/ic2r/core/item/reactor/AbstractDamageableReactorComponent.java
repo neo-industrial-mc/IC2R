@@ -15,9 +15,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.core.component.DataComponents;
 
 public abstract class AbstractDamageableReactorComponent extends Item implements IReactorComponent
 {
@@ -70,7 +68,7 @@ public abstract class AbstractDamageableReactorComponent extends Item implements
 		return 0.0F;
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, world, tooltip, advanced);
 		Ic2rTooltip.add(tooltip, Component.translatable("ic2r.reactoritem.durability", this.getMaxUse() - this.getUse(stack), this.getMaxUse()));

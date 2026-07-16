@@ -30,7 +30,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.server.level.ServerLevel;
@@ -58,12 +57,8 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadAwareBlock, SimpleWaterloggedBlock
 {
-	/**
-	 * Cables are registry-created (type/insulation), not data-driven via codec.
-	 * Provide a unit codec so PipeBlock's abstract codec() is satisfied.
-	 */
 	@Override
-	protected com.mojang.serialization.MapCodec<? extends PipeBlock> codec()
+	protected com.mojang.serialization.@NotNull MapCodec<? extends PipeBlock> codec()
 	{
 		return com.mojang.serialization.MapCodec.unit(this);
 	}

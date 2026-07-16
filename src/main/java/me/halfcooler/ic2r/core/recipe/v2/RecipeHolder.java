@@ -11,13 +11,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * IC2R machine recipe wrapper implementing the vanilla {@link Recipe} SPI so it can be
- * loaded via datapack RecipeManager. Matching for machines uses {@link #recipe()} directly.
- * <p>
- * Note: in 1.21 vanilla introduced its own {@code net.minecraft.world.item.crafting.RecipeHolder}
- * which wraps this type when returned from {@link net.minecraft.world.item.crafting.RecipeManager#getAllRecipesFor}.
- */
 public record RecipeHolder<I, O>(MachineRecipe<I, O> recipe, ResourceLocation id, RecipeSerializer<?> serializer,
                                  RecipeType<?> type)
 	implements Recipe<RecipeInput>

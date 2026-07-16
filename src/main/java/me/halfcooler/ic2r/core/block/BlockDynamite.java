@@ -148,7 +148,6 @@ public class BlockDynamite extends Block
 	{
 		if (state.getValue(FACING).getOpposite() == direction && !state.canSurvive(level, pos))
 		{
-			// noLootTable: destroyBlock would not drop — refund the stick like classic IC2R.
 			if (level instanceof Level realLevel && !realLevel.isClientSide)
 			{
 				Block.popResource(realLevel, pos, new ItemStack(Ic2rItems.DYNAMITE));

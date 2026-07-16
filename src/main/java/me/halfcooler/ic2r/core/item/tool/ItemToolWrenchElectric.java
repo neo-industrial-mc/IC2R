@@ -19,19 +19,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -102,13 +100,13 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 	}
 
 	@Override
-	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
+	public boolean isCorrectToolForDrops(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
 		return ItemToolWrench.isWrenchTarget(state);
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
 		if (this.isCorrectToolForDrops(stack, state) && this.canTakeDamage(stack, MINE_ENERGY_UNITS))
 		{
@@ -145,7 +143,7 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext world, List<Component> tooltip, TooltipFlag flag)
+	public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag)
 	{
 		super.appendHoverText(stack, world, tooltip, flag);
 		Component attackKey = Minecraft.getInstance().options.keyAttack.getTranslatedKeyMessage();

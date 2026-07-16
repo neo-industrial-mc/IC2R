@@ -23,7 +23,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -32,11 +31,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -74,13 +70,13 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 	}
 
 	@Override
-	public boolean isBarVisible(ItemStack stack)
+	public boolean isBarVisible(@NotNull ItemStack stack)
 	{
 		return !stack.getHoverName().getString().equals("ic2r:tab_icon");
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext world, List<Component> list, TooltipFlag par4)
+	public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext world, @NotNull List<Component> list, @NotNull TooltipFlag par4)
 	{
 		super.appendHoverText(stack, world, list, par4);
 		CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);
@@ -130,7 +126,7 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 	}
 
 	@Override
-	public @NotNull InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
+	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand)
 	{
 		ItemStack stack = StackUtil.get(player, hand);
 		if (!IC2R.sideProxy.isSimulating())

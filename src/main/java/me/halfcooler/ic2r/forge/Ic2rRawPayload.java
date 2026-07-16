@@ -6,11 +6,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-
-/**
- * Thin NeoForge 1.21 wrapper for the legacy IC2R custom channel byte payloads.
- * Framing of the GrowingBuffer protocol is unchanged; only the packet envelope is modernized.
- */
 public record Ic2rRawPayload(byte[] data) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<Ic2rRawPayload> TYPE =

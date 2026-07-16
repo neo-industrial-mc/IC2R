@@ -17,14 +17,6 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.chunk.PalettedContainer;
 
-/**
- * Dispatches {@link ChunkLoadAwareBlock#onLoad}/{@link ChunkLoadAwareBlock#onUnload} for
- * non-BlockEntity blocks (primarily cables).
- * <p>
- * Chunk load callbacks are deferred to the next world tick. {@code ChunkEvent.Load} can fire
- * before the chunk is fully visible in {@link Level#isLoaded}, and EnergyNet permanently drops
- * additions that fail that check — which is the multiplayer “cables die after rejoin” bug.
- */
 public final class ChunkLoadAwareBlockHandler
 {
 	private static final Map<BlockState, ChunkLoadAwareBlock> stateMap = new IdentityHashMap<>();

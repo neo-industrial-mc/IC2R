@@ -35,7 +35,7 @@ public abstract class AbstractDetectorCableBlock extends AbstractCableBlock
 	}
 
 	@Override
-	public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean notify)
+	public void onPlace(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull BlockState oldState, boolean notify)
 	{
 		super.onPlace(state, world, pos, oldState, notify);
 		world.scheduleTick(pos, this, world.getRandom().nextInt(32));

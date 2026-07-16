@@ -19,11 +19,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
-
-/**
- * NeoForge implementation of {@link PlatformNetwork}.
- * Primary channel {@link NetworkManager#channelId} is registered via {@link RegisterPayloadHandlersEvent}.
- */
 public final class PlatformNetworkForge implements PlatformNetwork
 {
 	private final Set<ResourceLocation> registered =

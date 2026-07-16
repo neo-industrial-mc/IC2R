@@ -23,7 +23,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -35,21 +34,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.DiggerItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class ItemElectricTool extends DiggerItem implements IElectricItem, INetworkItemEventListener, IItemHudInfo
 {
@@ -229,7 +222,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		return false;
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag context)
+	public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag context)
 	{
 		ElectricItemTooltipHandler.addTooltip(stack, tooltip);
 	}
@@ -341,7 +334,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		}
 	}
 
-	public boolean onDroppedByPlayer(ItemStack stack, Player player)
+	public boolean onDroppedByPlayer(@NotNull ItemStack stack, @NotNull Player player)
 	{
 		this.clearSound(player);
 		return true;

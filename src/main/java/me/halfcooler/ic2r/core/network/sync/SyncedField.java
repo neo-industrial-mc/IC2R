@@ -6,12 +6,6 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-/**
- * Binding of a {@link SyncKey} to host get/set accessors for type-safe payload R/W.
- * <p>
- * Does not perform reflection; callers supply explicit accessors (W1.2+ machine migration).
- */
 public final class SyncedField<T>
 {
 	private final SyncKey<T> key;

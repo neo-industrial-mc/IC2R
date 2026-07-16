@@ -116,7 +116,7 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
 		if (isActive(stack))
 		{
@@ -138,7 +138,7 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
 	}
 
 	@Override
-	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity source)
+	public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity source)
 	{
 		if (!isActive(stack))
 		{
@@ -206,7 +206,7 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
 	}
 
 	@Override
-	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, InteractionHand hand)
+	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand)
 	{
 		ItemStack stack = StackUtil.get(player, hand);
 		if (isActive(stack) || ElectricItem.manager.canUse(stack, 16.0))
@@ -240,7 +240,7 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean par5)
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level world, @NotNull Entity entity, int slot, boolean par5)
 	{
 		super.inventoryTick(stack, world, entity, slot, par5 && isActive(stack));
 		if (!isActive(stack))

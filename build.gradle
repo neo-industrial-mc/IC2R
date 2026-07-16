@@ -1,10 +1,9 @@
 plugins {
     id 'idea'
     id 'jacoco'
-    id 'signing'
-    id 'maven-publish'
     id 'net.neoforged.moddev' version '2.0.141'
     id 'com.modrinth.minotaur' version '2.+'
+    // Applies maven-publish + signing; talks to Central Portal upload API (not Maven PUT).
     id 'com.vanniktech.maven.publish' version '0.37.0'
 }
 
@@ -51,22 +50,22 @@ neoForge {
     runs {
         client {
             client()
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
         server {
             server()
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
         gameTestServer {
             type = "gameTestServer"
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
 
         data {
             data()
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
         configureEach {
@@ -130,54 +129,63 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifactId = base.archivesName.get()
-            pom {
-                name = mod_name
-                description = mod_description
-                url = mod_url
-                licenses {
-                    license {
-                        name = mod_license
-                        url = mod_license_url
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'halfcooler'
-                        name = 'HalfCooler'
-                        email = 'qq1836143240@outlook.com'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:${mod_url}.git'
-                    developerConnection = 'scm:git:${mod_url}.git'
-                    url = mod_url
-                }
+tasks.configureEach { task ->
+    if (task.name == 'plainJavadocJar') {
+        task.enabled = false
+    }
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
+
+    coordinates(group.toString(), base.archivesName.get(), version.toString())
+
+    pom {
+        name = mod_name
+        description = mod_description
+        inceptionYear = '2026'
+        url = 'https://github.com/HalfCooler/IC2R'
+        licenses {
+            license {
+                name = 'GNU Affero General Public License v3.0'
+                url = 'https://www.gnu.org/licenses/agpl-3.0.html'
+                distribution = 'repo'
             }
         }
-    }
-    repositories {
-        maven {
-            name = "Central"
-            url = uri("https://central.sonatype.com/api/v1/publisher")
-            credentials {
-                username = project.findProperty("mavenCentralUsername")
-                password = project.findProperty("mavenCentralPassword")
+        developers {
+            developer {
+                id = 'HalfCooler'
+                name = 'HalfCooler'
+                url = 'https://github.com/HalfCooler'
             }
+        }
+        scm {
+            url = 'https://github.com/HalfCooler/IC2R'
+            connection = 'scm:git:git://github.com/HalfCooler/IC2R.git'
+            developerConnection = 'scm:git:ssh://git@github.com/HalfCooler/IC2R.git'
         }
     }
 }
 
+// Keep existing signingKeyFile layout; also works with standard signingInMemoryKey* props.
 signing {
-    sign publishing.publications.mavenJava
+    def keyId = findProperty('signing.keyId')
+    def keyFile = findProperty('signingKeyFile')
+    def password = findProperty('signing.password')
+    if (keyId != null && keyFile != null && password != null) {
+        useInMemoryPgpKeys(keyId.toString(), file(keyFile.toString()).text, password.toString())
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc).configureEach {
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.docEncoding = 'UTF-8'
 }
 
 idea {

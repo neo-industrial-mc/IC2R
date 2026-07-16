@@ -64,7 +64,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -75,7 +74,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -190,11 +188,7 @@ public class Ic2rJeiPlugin implements IModPlugin
 		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.ELECTRIC_FURNACE.get()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.INDUCTION_FURNACE.get()), RecipeTypes.SMELTING);
 	}
-
-	/**
-	 * Wires {@link RecipeButton} overlays (guidef {@code type="recipe"} / metal former & canner GUIs)
-	 * so clicking a progress bar opens the matching JEI recipe category.
-	 */
+	
 	@Override
 	public void onRuntimeAvailable(@NotNull IJeiRuntime jeiRuntime)
 	{

@@ -8,9 +8,7 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemReactorHeatStorage extends AbstractDamageableReactorComponent
@@ -66,7 +64,7 @@ public class ItemReactorHeatStorage extends AbstractDamageableReactorComponent
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, world, tooltip, advanced);
 		if (this.getUse(stack) > 0)

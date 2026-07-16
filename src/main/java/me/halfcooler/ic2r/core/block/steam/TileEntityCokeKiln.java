@@ -30,7 +30,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -38,7 +37,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
 
 public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiValueProvider
 {
@@ -206,13 +204,9 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 
 				Ic2rFluidStack fs = this.currentRecipe.outputFluid.copy();
 				int filled = ((TileEntityCokeKilnGrate) grate).fluidTank.fillMb(fs, true);
-				if (filled < fs.getAmountMb())
-				{
-					return false;
-				}
+				return filled >= fs.getAmountMb();
 			}
 
-			return true;
 		}
 		else
 		{
@@ -250,8 +244,8 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 				}
 			}
 
-			return true;
 		}
+		return true;
 	}
 
 	protected CokeRecipe findRecipe(ItemStack input)
@@ -354,7 +348,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 		int fDX = -facing.getStepX();
 		int fDZ = -facing.getStepZ();
 
-		// Bottom layer (y-1): 3x3, centre = Grate, rest = RefractoryBricks
+		// Bottom layer (y-1): 3x3, center = Grate, rest = RefractoryBricks
 		for (int x = -1; x <= 1; x++)
 		{
 			for (int z = -1; z <= 1; z++)
@@ -377,7 +371,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 			}
 		}
 
-		// Middle layer (y=0): 3x3, centre = AIR, controller on outer edge
+		// Middle layer (y=0): 3x3, center = AIR, controller on outer edge
 		for (int x = -1; x <= 1; x++)
 		{
 			for (int z = -1; z <= 1; z++)
@@ -407,7 +401,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 			}
 		}
 
-		// Top layer (y+1): 3x3, centre = Hatch, rest = RefractoryBricks
+		// Top layer (y+1): 3x3, center = Hatch, rest = RefractoryBricks
 		for (int x = -1; x <= 1; x++)
 		{
 			for (int z = -1; z <= 1; z++)
@@ -474,10 +468,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 		Ic2rTooltip.add(tooltip, Component.literal(" Top Layer - 3x3 of Refractory Blocks with a Coke Kiln Hatch in the centre"));
 		Ic2rTooltip.add(tooltip, Component.literal(""));
 	}
-
-	/**
-	 * @param inputItem null for tag-based matching (logWood)
-	 */
+	
 	public record CokeRecipe(Item inputItem, ItemStack outputItem, Ic2rFluidStack outputFluid, int operationDuration,
 	                         boolean matchLogs)
 		{

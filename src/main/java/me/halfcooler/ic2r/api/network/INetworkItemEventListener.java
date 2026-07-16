@@ -1,7 +1,6 @@
 package me.halfcooler.ic2r.api.network;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
 public interface INetworkItemEventListener

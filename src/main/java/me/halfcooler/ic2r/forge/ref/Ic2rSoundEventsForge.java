@@ -12,11 +12,6 @@ import java.lang.reflect.Modifier;
 import java.util.function.Supplier;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/**
- * Forge-side {@link DeferredRegister} + {@link RegistryObject} wiring for IC2R sound events.
- * Replaces the core {@link Supplier} stubs with resolved {@link RegistryObject} instances
- * after registration.
- */
 public final class Ic2rSoundEventsForge
 {
 	public static final DeferredRegister<SoundEvent> REGISTRY =

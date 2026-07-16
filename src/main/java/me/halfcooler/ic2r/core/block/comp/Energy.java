@@ -417,12 +417,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		this.profile.setRecipePower(0);
 		this.profile.setMaxSinkAmperageOverride(2);
 	}
-
-	/**
-	 * Continuous charge buffer (e.g. matter fabricator): accept at the current sink-tier voltage
-	 * with a high amperage cap. Do not pass buffer capacity as recipe power — that inflates the
-	 * working voltage and can leave an unfillable remainder under the GT packet model.
-	 */
+	
 	public void configureEnergyBuffer(int maxAmperage)
 	{
 		VoltageTier tier = VoltageTier.fromIcTier(this.sinkTier);

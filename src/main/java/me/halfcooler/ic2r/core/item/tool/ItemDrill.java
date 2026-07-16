@@ -19,7 +19,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
@@ -28,6 +27,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSoundOverride
 {
@@ -72,7 +72,7 @@ public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSou
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
 		float speed = super.getDestroySpeed(stack, state);
 		if (speed == 1.0F)
