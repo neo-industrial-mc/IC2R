@@ -36,27 +36,32 @@ public class ItemArmorStaticBoots extends ItemArmorUtility
 			return;
 		}
 
+		// 1.21: getOrCreateNbtData returns a copy — persist position via editTag.
 		CompoundTag compound = StackUtil.getOrCreateNbtData(stack);
 		boolean isNotWalking = player.isPassenger() || player.isInWater();
-		if (!compound.contains("x") || isNotWalking)
+		int lastX = compound.contains("x") && !isNotWalking ? compound.getInt("x") : player.blockPosition().getX();
+		int lastZ = compound.contains("z") && !isNotWalking ? compound.getInt("z") : player.blockPosition().getZ();
+		if (!compound.contains("x") || isNotWalking || !compound.contains("z"))
 		{
-			compound.putInt("x", player.blockPosition().getX());
+			int x = lastX;
+			int z = lastZ;
+			StackUtil.editTag(stack, nbt ->
+			{
+				nbt.putInt("x", x);
+				nbt.putInt("z", z);
+			});
 		}
 
-		if (!compound.contains("z") || isNotWalking)
-		{
-			compound.putInt("z", player.blockPosition().getZ());
-		}
-
-		int lastX = compound.getInt("x");
-		int lastZ = compound.getInt("z");
 		int currentX = player.blockPosition().getX();
 		int currentZ = player.blockPosition().getZ();
 		double distance = Math.sqrt((lastX - currentX) * (lastX - currentX) + (lastZ - currentZ) * (lastZ - currentZ));
 		if (distance >= 5.0)
 		{
-			compound.putInt("x", currentX);
-			compound.putInt("z", currentZ);
+			StackUtil.editTag(stack, nbt ->
+			{
+				nbt.putInt("x", currentX);
+				nbt.putInt("z", currentZ);
+			});
 			ElectricItem.manager.charge(chestArmor, Math.min(3.0, distance / 5.0), Integer.MAX_VALUE, true, false);
 		}
 	}

@@ -81,7 +81,9 @@ public class ItemArmorNightVisionGoggles extends ItemArmorUtility implements IEl
 					active = !active;
 					if (IC2R.sideProxy.isSimulating())
 					{
-						nbtData.putBoolean("active", active);
+						// 1.21: persist toggle state via editTag (getOrCreateNbtData returns a copy)
+						boolean enabled = active;
+						StackUtil.editTag(stack, nbt -> nbt.putBoolean("active", enabled));
 						if (active)
 						{
 							IC2R.sideProxy.messagePlayer(player, "ic2r.night_vision.mode.enabled");
@@ -92,7 +94,7 @@ public class ItemArmorNightVisionGoggles extends ItemArmorUtility implements IEl
 					}
 				}
 
-				ItemArmorNanoSuit.getNightVisionOrNot(stack, player, nbtData, toggleTimer, active);
+				ItemArmorNanoSuit.getNightVisionOrNot(stack, player, toggleTimer, active);
 			}
 		}
 	}

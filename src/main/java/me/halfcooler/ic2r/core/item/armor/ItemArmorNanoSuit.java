@@ -40,11 +40,13 @@ public class ItemArmorNanoSuit extends ItemArmorElectric implements IItemHudProv
 		super(material, slot, settings, 1000000.0, 1600.0, 3);
 	}
 
-	static void getNightVisionOrNot(@NotNull ItemStack stack, Player player, CompoundTag nbtData, byte toggleTimer, boolean isNightVisionEnabled)
+	static void getNightVisionOrNot(@NotNull ItemStack stack, Player player, byte toggleTimer, boolean isNightVisionEnabled)
 	{
+		// 1.21: CUSTOM_DATA mutations must go through editTag/setTag — getOrCreateNbtData returns a copy.
 		if (IC2R.sideProxy.isSimulating() && toggleTimer > 0)
 		{
-			nbtData.putByte("toggle_timer", --toggleTimer);
+			byte newTimer = (byte) (toggleTimer - 1);
+			StackUtil.editTag(stack, nbt -> nbt.putByte("toggle_timer", newTimer));
 		}
 
 		if (isNightVisionEnabled && IC2R.sideProxy.isSimulating() && ElectricItem.manager.use(stack, 1.0, player))
@@ -105,7 +107,6 @@ public class ItemArmorNanoSuit extends ItemArmorElectric implements IItemHudProv
 		{
 			CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);
 			byte toggleTimer = nbtData.getByte("toggle_timer");
-			boolean ret = false;
 			if (slot == EquipmentSlot.HEAD.getIndex())
 			{
 				boolean isNightVisionEnabled = nbtData.getBoolean("night_vision");
@@ -116,7 +117,8 @@ public class ItemArmorNanoSuit extends ItemArmorElectric implements IItemHudProv
 					isNightVisionEnabled = !isNightVisionEnabled;
 					if (IC2R.sideProxy.isSimulating())
 					{
-						nbtData.putBoolean("night_vision", isNightVisionEnabled);
+						boolean enabled = isNightVisionEnabled;
+						StackUtil.editTag(stack, nbt -> nbt.putBoolean("night_vision", enabled));
 						if (isNightVisionEnabled)
 						{
 							IC2R.sideProxy.messagePlayer(player, "ic2r.night_vision.mode.enabled");
@@ -140,12 +142,13 @@ public class ItemArmorNanoSuit extends ItemArmorElectric implements IItemHudProv
 
 					if (IC2R.sideProxy.isSimulating())
 					{
-						nbtData.putShort("hud_mode", hubmode);
+						short mode = hubmode;
+						StackUtil.editTag(stack, nbt -> nbt.putShort("hud_mode", mode));
 						IC2R.sideProxy.messagePlayer(player, Component.translatable(HudMode.getFromID(hubmode).getTranslationKey()).getString());
 					}
 				}
 
-				getNightVisionOrNot(stack, player, nbtData, toggleTimer, isNightVisionEnabled);
+				getNightVisionOrNot(stack, player, toggleTimer, isNightVisionEnabled);
 			}
 		}
 	}

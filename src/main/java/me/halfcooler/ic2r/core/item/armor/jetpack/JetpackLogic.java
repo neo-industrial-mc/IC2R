@@ -143,7 +143,9 @@ public class JetpackLogic
 				hoverMode = !hoverMode;
 				if (!world.isClientSide())
 				{
-					nbtData.putBoolean("hover_mode", hoverMode);
+					// 1.21: persist toggle state via editTag (getOrCreateNbtData returns a copy)
+					boolean enabled = hoverMode;
+					StackUtil.editTag(stack, nbt -> nbt.putBoolean("hover_mode", enabled));
 					if (hoverMode)
 					{
 						IC2R.sideProxy.messagePlayer(player, "ic2r.hover_mode.enabled");
@@ -159,14 +161,16 @@ public class JetpackLogic
 				jetpackUsed = useJetpack(player, hoverMode, jetpack, stack);
 				if (player.onGround() && hoverMode && !world.isClientSide())
 				{
-					nbtData.putBoolean("hover_mode", false);
+					hoverMode = false;
+					StackUtil.editTag(stack, nbt -> nbt.putBoolean("hover_mode", false));
 					IC2R.sideProxy.messagePlayer(player, "ic2r.hover_mode.disabled");
 				}
 			}
 
 			if (!world.isClientSide() && toggleTimer > 0)
 			{
-				nbtData.putByte("toggle_timer", --toggleTimer);
+				byte newTimer = (byte) (toggleTimer - 1);
+				StackUtil.editTag(stack, nbt -> nbt.putByte("toggle_timer", newTimer));
 			}
 
 			updateJetpackSound(player, jetpackUsed, jetpack);

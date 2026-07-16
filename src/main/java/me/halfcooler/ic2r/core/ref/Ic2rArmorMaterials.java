@@ -81,12 +81,14 @@ public final class Ic2rArmorMaterials
 			defense.put(ArmorItem.Type.LEGGINGS, protectionAmounts[1]);
 			defense.put(ArmorItem.Type.CHESTPLATE, protectionAmounts[2]);
 			defense.put(ArmorItem.Type.HELMET, protectionAmounts[3]);
+			// Texture path: assets/ic2r/textures/models/armor/ic2_<name>_layer_{1|2}.png
+			// (legacy IC2 asset names keep the "ic2_" prefix on disk)
 			return new ArmorMaterial(
 				defense,
 				enchantAbility,
 				equipSound,
 				repair,
-				List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("ic2r", name))),
+				List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("ic2r", "ic2_" + name))),
 				toughness,
 				0.0F
 			);

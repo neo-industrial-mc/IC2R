@@ -303,6 +303,7 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 				}
 			}
 
+			// 1.21: getOrCreateNbtData returns a copy — all writes must use editTag/setTag.
 			boolean Nightvision = nbtData.getBoolean("night_vision");
 			short hudmode = nbtData.getShort("hud_mode");
 			if (IC2R.keyboard.isAltKeyDown(player) && IC2R.keyboard.isModeSwitchKeyDown(player) && toggleTimer == 0)
@@ -311,7 +312,8 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 				Nightvision = !Nightvision;
 				if (IC2R.sideProxy.isSimulating())
 				{
-					nbtData.putBoolean("night_vision", Nightvision);
+					boolean enabled = Nightvision;
+					StackUtil.editTag(stack, nbt -> nbt.putBoolean("night_vision", enabled));
 					if (Nightvision)
 					{
 						IC2R.sideProxy.messagePlayer(player, "ic2r.night_vision.mode.enabled");
@@ -335,14 +337,16 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 
 				if (IC2R.sideProxy.isSimulating())
 				{
-					nbtData.putShort("hud_mode", hudmode);
+					short mode = hudmode;
+					StackUtil.editTag(stack, nbt -> nbt.putShort("hud_mode", mode));
 					IC2R.sideProxy.messagePlayer(player, Component.translatable(HudMode.getFromID(hudmode).getTranslationKey()).getString());
 				}
 			}
 
 			if (IC2R.sideProxy.isSimulating() && toggleTimer > 0)
 			{
-				nbtData.putByte("toggle_timer", --toggleTimer);
+				byte newTimer = (byte) (toggleTimer - 1);
+				StackUtil.editTag(stack, nbt -> nbt.putByte("toggle_timer", newTimer));
 			}
 
 			if (Nightvision && IC2R.sideProxy.isSimulating() && ElectricItem.manager.use(stack, 1.0, player))
@@ -366,7 +370,8 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 				speedEnabled = !speedEnabled;
 				if (IC2R.sideProxy.isSimulating())
 				{
-					nbtData.putBoolean("speed_enabled", speedEnabled);
+					boolean enabled = speedEnabled;
+					StackUtil.editTag(stack, nbt -> nbt.putBoolean("speed_enabled", enabled));
 					if (speedEnabled)
 					{
 						IC2R.sideProxy.messagePlayer(player, "ic2r.speed.mode.enabled");
@@ -379,7 +384,8 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 
 			if (IC2R.sideProxy.isSimulating() && toggleTimer > 0)
 			{
-				nbtData.putByte("toggle_timer", --toggleTimer);
+				byte newTimer = (byte) (toggleTimer - 1);
+				StackUtil.editTag(stack, nbt -> nbt.putByte("toggle_timer", newTimer));
 			}
 
 			if (speedEnabled)
@@ -406,7 +412,8 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 						ret = true;
 					}
 
-					nbtData.putByte("speed_ticker", speedTicker);
+					byte ticker = speedTicker;
+					StackUtil.editTag(stack, nbt -> nbt.putByte("speed_ticker", ticker));
 					float speed = 0.22F;
 					if (player.isInWater())
 					{
@@ -433,7 +440,8 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 				jumpEnabled = !jumpEnabled;
 				if (IC2R.sideProxy.isSimulating())
 				{
-					nbtData.putBoolean("jump_enabled", jumpEnabled);
+					boolean enabled = jumpEnabled;
+					StackUtil.editTag(stack, nbt -> nbt.putBoolean("jump_enabled", enabled));
 					if (jumpEnabled)
 					{
 						IC2R.sideProxy.messagePlayer(player, "ic2r.jump.mode.enabled");
@@ -446,7 +454,8 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 
 			if (IC2R.sideProxy.isSimulating() && toggleTimer > 0)
 			{
-				nbtData.putByte("toggle_timer", --toggleTimer);
+				byte newTimer = (byte) (toggleTimer - 1);
+				StackUtil.editTag(stack, nbt -> nbt.putByte("toggle_timer", newTimer));
 			}
 
 			if (jumpEnabled)
@@ -462,7 +471,8 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 
 					if (player.onGround() != wasOnGround)
 					{
-						nbtData.putBoolean("on_ground", player.onGround());
+						boolean onGround = player.onGround();
+						StackUtil.editTag(stack, nbt -> nbt.putBoolean("on_ground", onGround));
 					}
 				}
 
