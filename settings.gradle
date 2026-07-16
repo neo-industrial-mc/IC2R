@@ -1,29 +1,9 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven {
-            name = 'MinecraftForge'
-            url = 'https://maven.minecraftforge.net/'
-        }
     }
 }
 
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
-}
-
-rootProject.name = 'IC2R'
-
-def devAddons = (providers.gradleProperty('dev_addons').orElse('').get())
-        .split(',')
-        .collect { it.trim() }
-        .findAll { !it.isEmpty() }
-
-def addonsDir = file('addons')
-devAddons.each { addon ->
-    def addonDir = new File(addonsDir, addon)
-    if (addonDir.isDirectory() && new File(addonDir, 'build.gradle').isFile()) {
-        include addon
-        project(":$addon").projectDir = addonDir
-    }
 }

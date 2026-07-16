@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "me.halfcooler.ic2r.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "refmap": "ic2r.refmap.json",
   "minVersion": "0.8",
   "mixins": [

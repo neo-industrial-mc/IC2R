@@ -1,120 +1,25 @@
 plugins {
-    id 'eclipse'
     id 'idea'
-    id 'maven-publish'
     id 'jacoco'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'signing'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.141'
     id 'com.modrinth.minotaur' version '2.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
     id 'com.vanniktech.maven.publish' version '0.37.0'
 }
 
-version = System.getenv("MOD_VERSION") ?: mod_version
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+version = mod_version
 group = mod_group_id
 
-base {
-    archivesName = "${mod_id}-forge"
-}
+sourceSets.main.resources {
+    srcDir('src/generated/resources')
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
-tasks.withType(Javadoc).configureEach {
-    failOnError = false
-    options.addStringOption('Xdoclint:none', '-quiet')
-    options.encoding = 'UTF-8'
-}
-
-mixin {
-    add sourceSets.main, "ic2r.refmap.json"
-    config "ic2r.mixins.json"
-}
-
-println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-
-def devAddons = (findProperty('dev_addons') ?: '')
-        .toString()
-        .split(',')
-        .collect { it.trim() }
-        .findAll { !it.isEmpty() }
-
-def resolvedDevAddons = devAddons.findAll { addon ->
-    def addonProject = findProject(":$addon")
-    if (addonProject == null) {
-        logger.lifecycle("Dev addon '$addon' not found in addons/, skipping.")
-        return false
-    }
-    true
-}
-
-resolvedDevAddons.each { addon ->
-    evaluationDependsOn(":$addon")
-}
-
-static def resolveAddonModId(addonProject) {
-    def propsFile = addonProject.file('gradle.properties')
-    if (!propsFile.isFile()) {
-        throw new GradleException("Cannot determine mod id for dev addon '${addonProject.name}': gradle.properties not found.")
-    }
-
-    def props = new Properties()
-    propsFile.withInputStream { props.load(it) }
-
-    def modId = props.getProperty('mod_id')
-    if (modId != null && !modId.trim().isEmpty()) {
-        return modId.trim()
-    }
-
-    def modIdEntry = props.find { key, _ -> key.toString().endsWith('_mod_id') }
-    if (modIdEntry != null) {
-        return modIdEntry.value.toString().trim()
-    }
-
-    throw new GradleException("Cannot determine mod id for dev addon '${addonProject.name}'. " +
-            'Set mod_id or *_mod_id in the addon gradle.properties.')
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-minecraft {
-    mappings channel: mapping_channel, version: mapping_version
-    copyIdeResources = true
-
-    runs {
-        configureEach {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-                resolvedDevAddons.each { addon ->
-                    def addonProject = project(":$addon")
-                    create(resolveAddonModId(addonProject)) {
-                        source addonProject.sourceSets.main
-                    }
-                }
-            }
-        }
-        client {
-            property 'forge.enabledGameTestNamespaces', mod_id
-        }
-        server {
-            property 'forge.enabledGameTestNamespaces', mod_id
-            args '--nogui'
-        }
-        gameTestServer {
-            property 'forge.enabledGameTestNamespaces', mod_id
-        }
-        data {
-            workingDirectory project.file('run')
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-        }
-    }
+    exclude("**/*.bbmodel")
+    exclude("src/generated/**/.cache")
 }
 
 repositories {
@@ -123,241 +28,147 @@ repositories {
     maven { url = "https://api.modrinth.com/maven" }
 }
 
+base {
+    archivesName = "${mod_id}-neoforge"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+
+    withSourcesJar()
+    withJavadocJar()
+}
+
+neoForge {
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
+
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation "mezz.jei:jei-1.21.1-neoforge:${jei_version}"
     
-    // JEI
-    compileOnly "mezz.jei:jei-1.20.1-forge-api:${jei_version}"
-    runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
+    compileOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}:api"
 
-    // AE2
-    compileOnly fg.deobf("maven.modrinth:ae2:7KVs6HMQ")
-    // compileOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}:api"
+    implementation "maven.modrinth:jade:${jade_version}+neoforge"
 
-    // Jade
-    compileOnly "maven.modrinth:jade:${jade_version}+forge"
-    runtimeOnly fg.deobf("maven.modrinth:jade:${jade_version}+forge")
-
-    // Unit tests
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
 
-reobf {
-}
-
-tasks.named('processResources', ProcessResources).configure {
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var replaceProperties = [
-            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
-            forge_version       : forge_version, forge_version_range: forge_version_range,
-            loader_version_range: loader_version_range,
-            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-            mod_authors         : mod_authors, mod_description: mod_description,
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
     ]
     inputs.properties replaceProperties
-
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-        expand replaceProperties + [project: project]
-    }
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
 }
 
-mavenPublishing {
-    publishToMavenCentral()
-    signAllPublications()
-    
-    configure(new com.vanniktech.maven.publish.JavaLibrary(
-            new com.vanniktech.maven.publish.JavadocJar.Empty(),
-            true
-    ))
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
 
-    coordinates(group.toString(), base.archivesName.get(), version.toString())
-
-    pom {
-        name = mod_name
-        description = mod_description
-        inceptionYear = '2024'
-        url = 'https://github.com/HalfCooler/IC2R'
-        licenses {
-            license {
-                name = 'GNU Affero General Public License v3.0'
-                url = 'https://www.gnu.org/licenses/agpl-3.0.html'
-                distribution = 'repo'
-            }
-        }
-        developers {
-            developer {
-                id = 'HalfCooler'
-                name = 'HalfCooler'
-                url = 'https://github.com/HalfCooler'
-            }
-        }
-        scm {
-            url = 'https://github.com/HalfCooler/IC2R'
-            connection = 'scm:git:git://github.com/HalfCooler/IC2R.git'
-            developerConnection = 'scm:git:ssh://git@github.com/HalfCooler/IC2R.git'
-        }
-    }
-}
-
-// MixinGradle's plainJavadocJar also uses classifier "javadoc" — drop it from publish.
-tasks.configureEach { task ->
-    if (task.name == 'plainJavadocJar') {
-        task.enabled = false
-    }
-}
-
-// Load armored private key from a file path (Windows-friendly).
-// Supports: -PsigningKeyFile=..., gradle.properties signingKeyFile, or env SIGNING_KEY_FILE.
-def resolveSigningPrivateKey = {
-    def fromMemory = findProperty('signingInMemoryKey')?.toString()
-    if (fromMemory != null && fromMemory.contains('BEGIN PGP PRIVATE KEY BLOCK') && fromMemory.contains('END PGP PRIVATE KEY BLOCK')) {
-        return fromMemory
-    }
-
-    def keyFileProp = findProperty('signingKeyFile')?.toString()
-            ?: System.getenv('SIGNING_KEY_FILE')
-            ?: System.getenv('ORG_GRADLE_PROJECT_signingKeyFile')
-    if (keyFileProp == null || keyFileProp.trim().isEmpty()) {
-        return null
-    }
-
-    def keyFile = file(keyFileProp.trim())
-    if (!keyFile.isFile()) {
-        throw new GradleException("signingKeyFile does not exist: ${keyFile.absolutePath}")
-    }
-    def text = keyFile.getText('UTF-8').trim()
-    if (!text.contains('BEGIN PGP PRIVATE KEY BLOCK') || !text.contains('END PGP PRIVATE KEY BLOCK')) {
-        throw new GradleException("signingKeyFile is not a full armored private key (missing BEGIN/END): ${keyFile.absolutePath}")
-    }
-    return text
-}
-
-def signingPrivateKey = resolveSigningPrivateKey()
-if (signingPrivateKey != null) {
-    def rawKeyId = (findProperty('signing.keyId')
-            ?: findProperty('signingInMemoryKeyId')
-            ?: '').toString().trim()
-    // Gradle Signatory expects 8 hex chars; accept long Key ID by taking the last 8.
-    def keyId = rawKeyId.isEmpty() ? null : (rawKeyId.length() > 8 ? rawKeyId.substring(rawKeyId.length() - 8) : rawKeyId)
-    def password = (findProperty('signing.password')
-            ?: findProperty('signingInMemoryKeyPassword')
-            ?: '').toString()
-
-    // Force a real signatory even when multi-line in-memory props were mangled by gradle.properties.
-    signing {
-        useInMemoryPgpKeys(keyId, signingPrivateKey, password)
-    }
-    logger.lifecycle("Signing: using in-memory PGP key (keyId=${keyId ?: 'auto'})")
-}
-
-// FG maps deps to non-resolvable *_mapped_official_* coordinates.
-// Publish the mod as a leaf artifact; consumers bring their own Minecraft/Forge stack.
 publishing {
-    publications.withType(MavenPublication).configureEach {
-        pom.withXml {
-            def dependenciesNode = asNode().dependencies
-            if (dependenciesNode != null) {
-                asNode().remove(dependenciesNode)
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId = base.archivesName.get()
+            pom {
+                name = mod_name
+                description = mod_description
+                url = mod_url
+                licenses {
+                    license {
+                        name = mod_license
+                        url = mod_license_url
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'halfcooler'
+                        name = 'HalfCooler'
+                        email = 'qq1836143240@outlook.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:${mod_url}.git'
+                    developerConnection = 'scm:git:${mod_url}.git'
+                    url = mod_url
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "Central"
+            url = uri("https://central.sonatype.com/api/v1/publisher")
+            credentials {
+                username = project.findProperty("mavenCentralUsername")
+                password = project.findProperty("mavenCentralPassword")
             }
         }
     }
 }
 
-// Avoid publishing Gradle Module Metadata that still lists mapped FG deps.
-tasks.withType(GenerateModuleMetadata).configureEach {
-    enabled = false
+signing {
+    sign publishing.publications.mavenJava
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-tasks.named('test', Test).configure {
-    useJUnitPlatform()
-}
-
-jacoco {
-    toolVersion = '0.8.11'
-}
-
-tasks.named('jacocoTestReport', JacocoReport).configure {
-    dependsOn tasks.named('test')
-    reports {
-        xml.required = true
-        html.required = true
-    }
-}
-
-tasks.register('syncVersion') {
-    description = 'Sync mod_version to release.md and README.md'
-    group = 'versioning'
-
-    doLast {
-        def versionPattern = /^20\.1\.(\d+)$/
-        
-        def propsFile = file('gradle.properties')
-        def props = new Properties()
-        propsFile.withInputStream { props.load(it) }
-        def currentVersion = props['mod_version']
-
-        def matcher = currentVersion =~ versionPattern
-        if (!matcher) {
-            throw new GradleException("Incorrect mod version: $currentVersion, expected: 20.1.xxx")
-        }
-        def currentXxx = matcher[0][1] as int
-        
-        def versionFile = file('build/syncVersion/lastVersion.txt')
-        def lastXxx = -1
-        def lastVersion = 'None'
-        if (versionFile.exists()) {
-            lastVersion = versionFile.text.trim()
-            def lastMatcher = lastVersion =~ versionPattern
-            if (lastMatcher) {
-                lastXxx = lastMatcher[0][1] as int
-            }
-        }
-        
-        if (currentXxx <= lastXxx) {
-            def lineNum = 1
-            propsFile.eachLine { line ->
-                if (line.startsWith('mod_version=')) {
-                    throw new GradleException("gradle.properties:${lineNum}: Current version is ${currentVersion}, but last synced version is ${lastVersion}")
-                }
-                lineNum++
-            }
-            return
-        }
-
-        versionFile.parentFile.mkdirs()
-        versionFile.text = currentVersion
-        println "syncVersion: Version has been recorded as $currentVersion"
-        
-        def releaseFile = file('release.md')
-        if (releaseFile.exists()) {
-            def releaseLines = releaseFile.readLines()
-            releaseLines[0] = "# $currentVersion"
-            releaseFile.text = releaseLines.join('\n') + '\n'
-            println "syncVersion: release.md title has been updated to # $currentVersion"
-        } else {
-            println "syncVersion: release.md not found, skipping"
-        }
-        
-        def readmeFile = file('README.md')
-        if (readmeFile.exists()) {
-            def readmeText = readmeFile.text
-            def shieldsVersion = currentVersion.replace('-', '--')
-            def badgePattern = ~/<img src="https:\/\/img\.shields\.io\/badge\/Version-[^"]+" alt="Version [^"]*">/
-            def newBadge = "<img src=\"https://img.shields.io/badge/Version-${shieldsVersion}-blue\" alt=\"Version ${currentVersion}\">"
-            if (readmeText.find(badgePattern)) {
-                readmeText = readmeText.replaceAll(badgePattern, newBadge)
-                readmeFile.text = readmeText
-                println "syncVersion: README.md Version badge has been updated"
-            } else {
-                println "syncVersion: Version badge not found in README.md, skipping"
-            }
-        } else {
-            println "syncVersion: README.md not found, skipping"
-        }
-
-        println "syncVersion: Sync completed ($currentVersion)"
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
     }
 }

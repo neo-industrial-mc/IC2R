@@ -7,14 +7,11 @@
 
 [IC++](https://github.com/HalfCooler/ICPlusPlus) Teleport Portal
 
-Add this mod Gradle dependency: In `build.gradle`, adjust the imported packages as needed for `deobf` (if errors occur).
+Add this mod Gradle dependency: In `build.gradle`.
 
 ```gradle
 repositories { mavenCentral() }
-
-in dependencies { }:
-compileOnly "io.github.halfcooler:ic2r-forge:{$ic2r_version}"
-runtimeOnly "io.github.halfcooler:ic2r-forge:{$ic2r_version}"
+dependencies { implementation "io.github.halfcooler:ic2r-neoforge:{$ic2r_version}" }
 ```
 
 ## Write Before
@@ -23,7 +20,7 @@ IC2 is probably dead. There is no official response to the open source, and the 
 
 But the community's voice has never stopped. Players have been waiting for too long, waiting for an IC2 that can run on higher versions and retain its original flavor.
 
-Thus, someone stepped forward. [IC2CR](https://github.com/yu1745/ic2-fabric) pioneered the open-source effort, targeting the 1.20.1 Fabric platform with considerable momentum. It remains unclear how much the original work has been altered, but it is no longer a successor to IC2.
+Thus, someone stepped forward. [IC2CR](https://github.com/yu1745/ic2-fabric) pioneered the open-source effort. It remains unclear how much the original work has been altered, but it is no longer a successor to IC2.
 
 Our goal is: **To bring IC2, along with its attached and interacting mods, as complete and modernized as possible to 1.20.1 and beyond, while minimizing changes to existing functionality and values.**
 
@@ -71,7 +68,7 @@ The repository license is GNU Affero General Public License v3.0 (AGPLv3). See [
 
 ## Quick Start
 
-Please use Java 17 to build and compile this branch.
+Please use Java 21 to build and compile this branch.
 
 For more information, please refer to [Release](./release.md).
 
