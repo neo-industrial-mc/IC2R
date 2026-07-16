@@ -297,18 +297,35 @@ public final class StackUtil
 	/**
 	 * 1.21 data-component replacement for {@code ItemStack#getOrCreateTag()}.
 	 * Returns a mutable copy; callers that mutate must {@link #setTag} to persist.
+	 * Prefer {@link #editTag} when mutating.
 	 */
 	public static CompoundTag getOrCreateNbtData(ItemStack stack)
 	{
 		CompoundTag ret = getTag(stack);
-		if (ret == null)
-		{
-			ret = new CompoundTag();
-			setTag(stack, ret);
-		}
-		return ret;
+		return ret != null ? ret : new CompoundTag();
 	}
 
+	/**
+	 * Mutate CUSTOM_DATA safely under 1.21 data components (copy → edit → write back).
+	 * Empty tags are removed from the stack.
+	 */
+	public static void editTag(ItemStack stack, java.util.function.Consumer<CompoundTag> editor)
+	{
+		if (stack == null || stack.isEmpty() || editor == null)
+		{
+			return;
+		}
+		net.minecraft.world.item.component.CustomData.update(
+			net.minecraft.core.component.DataComponents.CUSTOM_DATA,
+			stack,
+			editor
+		);
+	}
+
+	/**
+	 * Persist NBT onto the stack. {@code null} or empty removes {@code CUSTOM_DATA}.
+	 * Never pass {@code null} to {@code CustomData.of} — it NPEs.
+	 */
 	public static void setTag(ItemStack stack, @Nullable CompoundTag tag)
 	{
 		if (stack == null || stack.isEmpty())
@@ -321,7 +338,20 @@ public final class StackUtil
 		}
 		else
 		{
-			stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(tag));
+			net.minecraft.world.item.component.CustomData.set(
+				net.minecraft.core.component.DataComponents.CUSTOM_DATA,
+				stack,
+				tag
+			);
+		}
+	}
+
+	/** Clear CUSTOM_DATA without risking {@code CustomData.of(null)}. */
+	public static void removeTag(ItemStack stack)
+	{
+		if (stack != null && !stack.isEmpty())
+		{
+			stack.remove(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
 		}
 	}
 

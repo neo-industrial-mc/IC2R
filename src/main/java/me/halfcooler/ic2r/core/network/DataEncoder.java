@@ -597,7 +597,7 @@ public final class DataEncoder
 				Item item = decode(is, Item.class);
 				CompoundTag nbt = (CompoundTag) decode(is);
 				ItemStack ret = new ItemStack(item, size);
-				ret.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
+				StackUtil.setTag(ret, nbt);
 				return ret;
 			}
 			case Long:
@@ -659,7 +659,7 @@ public final class DataEncoder
 			if (srcT.getItem() == dstT.getItem())
 			{
 				dstT.setCount(srcT.getCount());
-				dstT.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(StackUtil.getTag(srcT)));
+				StackUtil.setTag(dstT, StackUtil.getTag(srcT));
 				return true;
 			} else
 			{

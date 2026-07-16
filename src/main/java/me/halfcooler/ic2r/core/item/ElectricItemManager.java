@@ -16,7 +16,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.component.DataComponents;
 
 public class ElectricItemManager implements IElectricItemManager
 {
@@ -70,28 +69,29 @@ public class ElectricItemManager implements IElectricItemManager
 				if (newCharge > 0.0)
 				{
 					tNBT.putDouble("charge", newCharge);
-				} else
+				}
+				else
 				{
 					tNBT.remove("charge");
-					if (tNBT.isEmpty())
-					{
-						stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
-					}
 				}
+				// 1.21: getOrCreateNbtData returns a copy — must write back
+				StackUtil.setTag(stack, tNBT);
 
 				if (stack.getItem() instanceof IElectricItem)
 				{
 					item = (IElectricItem) stack.getItem();
 					int maxDamage = DamageHandler.getMaxDamage(stack);
 					DamageHandler.setDamage(stack, mapChargeLevelToDamage(newCharge, item.getMaxCharge(stack), maxDamage), true);
-				} else
+				}
+				else
 				{
 					DamageHandler.setDamage(stack, 0, true);
 				}
 			}
 
 			return amount;
-		} else
+		}
+		else
 		{
 			return 0.0;
 		}
@@ -126,21 +126,22 @@ public class ElectricItemManager implements IElectricItemManager
 			if (newCharge > 0.0)
 			{
 				tNBT.putDouble("charge", newCharge);
-			} else
+			}
+			else
 			{
 				tNBT.remove("charge");
-				if (tNBT.isEmpty())
-				{
-					stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
-				}
 			}
+			// 1.21: getOrCreateNbtData returns a copy — must write back
+			// setTag(null/empty) removes CUSTOM_DATA; never CustomData.of(null)
+			StackUtil.setTag(stack, tNBT);
 
 			if (stack.getItem() instanceof IElectricItem)
 			{
 				item = (IElectricItem) stack.getItem();
 				int maxDamage = DamageHandler.getMaxDamage(stack);
 				DamageHandler.setDamage(stack, mapChargeLevelToDamage(newCharge, item.getMaxCharge(stack), maxDamage), true);
-			} else
+			}
+			else
 			{
 				DamageHandler.setDamage(stack, 0, true);
 			}

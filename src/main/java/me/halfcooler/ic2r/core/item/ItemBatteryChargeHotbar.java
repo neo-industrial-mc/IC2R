@@ -103,8 +103,7 @@ public class ItemBatteryChargeHotbar extends ItemBattery implements IBoxable
 
 	public void setMode(ItemStack stack, Mode mode)
 	{
-		CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
-		nbt.putByte("mode", (byte) mode.ordinal());
+		StackUtil.editTag(stack, nbt -> nbt.putByte("mode", (byte) mode.ordinal()));
 	}
 
 	public Mode getMode(ItemStack stack)

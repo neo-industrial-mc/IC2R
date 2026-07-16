@@ -246,8 +246,8 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 			double totalEnergy = this.energy.getEnergy();
 			if (retainedRatio > 0.0 && totalEnergy > 0.0)
 			{
-				CompoundTag nbt = StackUtil.getOrCreateNbtData(drop);
-				nbt.putDouble("energy", totalEnergy * retainedRatio);
+				double retained = totalEnergy * retainedRatio;
+				StackUtil.editTag(drop, nbt -> nbt.putDouble("energy", retained));
 			}
 		}
 

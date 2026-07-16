@@ -12,7 +12,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.component.DataComponents;
 
 public class Covers extends TileEntityComponent
 {
@@ -28,8 +27,7 @@ public class Covers extends TileEntityComponent
 		if (StackUtil.isEmpty(this.covers[side.ordinal()]))
 		{
 			ItemStack ret = cover.copy();
-			CompoundTag nbtTagCompound = StackUtil.getOrCreateNbtData(ret);
-			nbtTagCompound.putByte("side", (byte) side.ordinal());
+			StackUtil.editTag(ret, nbt -> nbt.putByte("side", (byte) side.ordinal()));
 			this.covers[side.ordinal()] = ret;
 		}
 	}
@@ -37,7 +35,7 @@ public class Covers extends TileEntityComponent
 	public ItemStack removeCover(Direction side)
 	{
 		ItemStack ret = this.covers[side.ordinal()];
-		ret.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
+		StackUtil.removeTag(ret);
 		this.covers[side.ordinal()] = null;
 		return ret;
 	}

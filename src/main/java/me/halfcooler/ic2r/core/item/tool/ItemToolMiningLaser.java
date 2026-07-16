@@ -139,7 +139,8 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 		if (IC2R.keyboard.isModeSwitchKeyDown(player))
 		{
 			laserSetting = (laserSetting + 1) % 8;
-			nbtData.putInt("laser_setting", laserSetting);
+			final int newSetting = laserSetting;
+			StackUtil.editTag(stack, nbt -> nbt.putInt("laser_setting", newSetting));
 			IC2R.sideProxy.messagePlayer(player, "item.ic2r.mining_laser.tooltip.mode", getModeString(laserSetting));
 		} else
 		{

@@ -306,7 +306,7 @@ public final class EnvProxyForge implements EnvProxy
 						if (item instanceof BlockItemEnergyStorage energyItem)
 						{
 							ItemStack chargedStack = new ItemStack(item);
-							StackUtil.getOrCreateNbtData(chargedStack).putDouble("energy", energyItem.maxEnergy);
+							StackUtil.editTag(chargedStack, nbt -> nbt.putDouble("energy", energyItem.maxEnergy));
 							output.accept(chargedStack);
 						}
 						if (item instanceof ItemArmorFluidTank tankItem)

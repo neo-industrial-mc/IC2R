@@ -173,7 +173,7 @@ public abstract class HandHeldInventory implements IHasGui
 				PLAYERS_IN_GUI.remove(player);
 			} else
 			{
-				StackUtil.getOrCreateNbtData(this.containerStack).remove("uid");
+				StackUtil.editTag(this.containerStack, nbt -> nbt.remove("uid"));
 			}
 		}
 	}
@@ -251,7 +251,7 @@ public abstract class HandHeldInventory implements IHasGui
 					}
 				}
 
-				StackUtil.getOrCreateNbtData(this.containerStack).put("Items", contentList);
+				StackUtil.editTag(this.containerStack, nbt -> nbt.put("Items", contentList));
 
 				try
 				{
@@ -319,7 +319,7 @@ public abstract class HandHeldInventory implements IHasGui
 			}
 		}
 
-		StackUtil.getOrCreateNbtData(stack).put("Items", contentList);
+		StackUtil.editTag(stack, nbt -> nbt.put("Items", contentList));
 		assert StackUtil.getOrCreateNbtData(stack).getInt("uid") == 0;
 		this.clearContent();
 	}

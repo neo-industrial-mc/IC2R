@@ -87,14 +87,15 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 
 		if (IC2R.keyboard.isModeSwitchKeyDown(player))
 		{
-			CompoundTag compoundTag = StackUtil.getOrCreateNbtData(StackUtil.get(player, hand));
-			if (compoundTag.getBoolean("disableShear"))
+			ItemStack held = StackUtil.get(player, hand);
+			boolean disableShear = StackUtil.getOrCreateNbtData(held).getBoolean("disableShear");
+			StackUtil.editTag(held, nbt -> nbt.putBoolean("disableShear", !disableShear));
+			if (disableShear)
 			{
-				compoundTag.putBoolean("disableShear", false);
 				IC2R.sideProxy.messagePlayer(player, Component.translatable("item.ic2r.mining_laser.tooltip.mode", Component.translatable("item.ic2r.mining_laser.tooltip.mode.normal")));
-			} else
+			}
+			else
 			{
-				compoundTag.putBoolean("disableShear", true);
 				IC2R.sideProxy.messagePlayer(player, Component.translatable("item.ic2r.mining_laser.tooltip.mode", Component.translatable("item.ic2r.mining_laser.tooltip.mode.no_shear")));
 			}
 		}

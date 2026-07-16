@@ -950,7 +950,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 			{
 				if (drop.getItem() != Ic2rItems.CROP_SEED_BACK)
 				{
-					drop.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
+					StackUtil.removeTag(drop);
 				}
 
 				StackUtil.dropAsEntity(world, this.worldPosition, drop);

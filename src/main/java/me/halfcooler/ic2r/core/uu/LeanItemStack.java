@@ -5,7 +5,6 @@ import me.halfcooler.ic2r.core.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.component.DataComponents;
 
 public class LeanItemStack
 {
@@ -92,7 +91,7 @@ public class LeanItemStack
 		}
 
 		ItemStack ret = new ItemStack(this.item, this.size);
-		ret.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(this.nbt));
+		StackUtil.setTag(ret, this.nbt);
 		return ret;
 	}
 

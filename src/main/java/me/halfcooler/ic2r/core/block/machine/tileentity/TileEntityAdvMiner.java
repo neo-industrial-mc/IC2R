@@ -408,8 +408,8 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 			double retainedRatio = IC2RConfig.balance.energyRetainedInStorageBlockDrops.get();
 			if (retainedRatio > 0.0)
 			{
-				CompoundTag nbt = StackUtil.getOrCreateNbtData(drop);
-				nbt.putDouble("energy", this.energy.getEnergy() * retainedRatio);
+				double retained = this.energy.getEnergy() * retainedRatio;
+				StackUtil.editTag(drop, nbt -> nbt.putDouble("energy", retained));
 			}
 		}
 

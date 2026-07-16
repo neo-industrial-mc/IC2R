@@ -96,10 +96,11 @@ public class ItemHydrationCell extends Item
 	{
 		if (uses <= 0)
 		{
-			stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
-		} else
+			StackUtil.removeTag(stack);
+		}
+		else
 		{
-			stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag().putInt("uses", uses);
+			StackUtil.editTag(stack, nbt -> nbt.putInt("uses", uses));
 		}
 	}
 

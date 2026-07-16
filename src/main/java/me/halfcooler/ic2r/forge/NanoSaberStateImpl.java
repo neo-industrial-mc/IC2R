@@ -27,7 +27,7 @@ final class NanoSaberStateImpl implements INanoSaberState
 	@Override
 	public void setActive(boolean active)
 	{
-		StackUtil.getOrCreateNbtData(this.stack).putBoolean(NBT_ACTIVE, active);
+		StackUtil.editTag(this.stack, nbt -> nbt.putBoolean(NBT_ACTIVE, active));
 	}
 
 	@Override

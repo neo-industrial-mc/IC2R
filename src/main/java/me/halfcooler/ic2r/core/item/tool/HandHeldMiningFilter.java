@@ -27,8 +27,7 @@ public class HandHeldMiningFilter extends HandHeldInventory
 	@Override
 	protected void save()
 	{
-		CompoundTag nbt = StackUtil.getOrCreateNbtData(this.containerStack);
-		nbt.putBoolean("blacklist", this.blacklist);
+		StackUtil.editTag(this.containerStack, nbt -> nbt.putBoolean("blacklist", this.blacklist));
 		super.save();
 	}
 

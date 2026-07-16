@@ -117,7 +117,7 @@ public class TileEntityIndustrialWorkbench extends TileEntityInventory implement
 	public ItemStack adjustDrop(ItemStack drop, boolean wrench)
 	{
 		drop = super.adjustDrop(drop, wrench);
-		StackUtil.getOrCreateNbtData(drop).putBoolean("PLACED", true);
+		StackUtil.editTag(drop, nbt -> nbt.putBoolean("PLACED", true));
 		return drop;
 	}
 

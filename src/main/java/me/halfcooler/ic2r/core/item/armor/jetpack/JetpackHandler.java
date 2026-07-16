@@ -70,19 +70,16 @@ public class JetpackHandler implements IBackupElectricItemManager
 
 		if (!value)
 		{
-			if (!stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA))
+			if (!stack.has(DataComponents.CUSTOM_DATA))
 			{
 				return;
 			}
 
-			StackUtil.getTag(stack).remove("hasIC2RJetpack");
-			if (StackUtil.getTag(stack).isEmpty())
-			{
-				stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
-			}
-		} else if (stack.getEquipmentSlot() == EquipmentSlot.CHEST)
+			StackUtil.editTag(stack, nbt -> nbt.remove("hasIC2RJetpack"));
+		}
+		else if (stack.getEquipmentSlot() == EquipmentSlot.CHEST)
 		{
-			StackUtil.getOrCreateNbtData(stack).putBoolean("hasIC2RJetpack", true);
+			StackUtil.editTag(stack, nbt -> nbt.putBoolean("hasIC2RJetpack", true));
 		}
 	}
 
@@ -120,11 +117,22 @@ public class JetpackHandler implements IBackupElectricItemManager
 			amount = Math.min(amount, getTransferLimit());
 		}
 
-		double charge = stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) ? StackUtil.getTag(stack).getDouble("charge") : 0.0;
+		double charge = stack.has(DataComponents.CUSTOM_DATA) ? StackUtil.getOrCreateNbtData(stack).getDouble("charge") : 0.0;
 		amount = Math.min(amount, this.getMaxCharge(stack) - charge);
 		if (!simulate)
 		{
-			StackUtil.getOrCreateNbtData(stack).putDouble("charge", charge + amount);
+			double newCharge = charge + amount;
+			StackUtil.editTag(stack, nbt ->
+			{
+				if (newCharge > 0.0)
+				{
+					nbt.putDouble("charge", newCharge);
+				}
+				else
+				{
+					nbt.remove("charge");
+				}
+			});
 		}
 
 		return amount;
@@ -133,33 +141,34 @@ public class JetpackHandler implements IBackupElectricItemManager
 	@Override
 	public double discharge(ItemStack stack, double amount, int tier, boolean ignoreTransferLimit, boolean externally, boolean simulate)
 	{
-		if (!externally && this.getTier(stack) <= tier && stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA))
+		if (!externally && this.getTier(stack) <= tier && stack.has(DataComponents.CUSTOM_DATA))
 		{
 			if (!ignoreTransferLimit)
 			{
 				amount = Math.min(amount, getTransferLimit());
 			}
 
-			double charge = StackUtil.getTag(stack).getDouble("charge");
+			double charge = StackUtil.getOrCreateNbtData(stack).getDouble("charge");
 			amount = Math.min(amount, charge);
 			if (!simulate)
 			{
-				charge -= amount;
-				if (charge == 0.0)
+				double newCharge = charge - amount;
+				StackUtil.editTag(stack, nbt ->
 				{
-					StackUtil.getTag(stack).remove("charge");
-					if (StackUtil.getTag(stack).isEmpty())
+					if (newCharge > 0.0)
 					{
-						stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
+						nbt.putDouble("charge", newCharge);
 					}
-				} else
-				{
-					StackUtil.getTag(stack).putDouble("charge", charge);
-				}
+					else
+					{
+						nbt.remove("charge");
+					}
+				});
 			}
 
 			return amount;
-		} else
+		}
+		else
 		{
 			return 0.0;
 		}
