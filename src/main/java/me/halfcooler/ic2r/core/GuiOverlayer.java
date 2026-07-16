@@ -137,7 +137,10 @@ public class GuiOverlayer
 						}
 						else
 						{
-							List<Component> tooltip = rightItem.getTooltipLines(this.mc.player, hudMode == HudMode.ADVANCED ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+							List<Component> tooltip = rightItem.getTooltipLines(
+								net.minecraft.world.item.Item.TooltipContext.of(this.mc.level),
+								this.mc.player,
+								hudMode == HudMode.ADVANCED ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
 							if (tooltip.size() > 1)
 							{
 								for (int l = 1; l < tooltip.size(); l++)
@@ -170,7 +173,10 @@ public class GuiOverlayer
 						}
 						else
 						{
-							List<Component> tooltip = leftItem.getTooltipLines(this.mc.player, hudMode == HudMode.ADVANCED ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+							List<Component> tooltip = leftItem.getTooltipLines(
+								net.minecraft.world.item.Item.TooltipContext.of(this.mc.level),
+								this.mc.player,
+								hudMode == HudMode.ADVANCED ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
 							if (tooltip.size() > 1)
 							{
 								for (int l = 1; l < tooltip.size(); l++)

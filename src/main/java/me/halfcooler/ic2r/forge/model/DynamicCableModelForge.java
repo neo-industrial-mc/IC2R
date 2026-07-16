@@ -81,11 +81,10 @@ final class DynamicCableModelForge extends DynamicCableModel<List<BakedQuad>[], 
 		ModelBaker bakery,
 		Function<Material, TextureAtlasSprite> spriteGetter,
 		ModelState modelTransform,
-		ItemOverrides overrides,
-		ResourceLocation modelLocation
+		ItemOverrides overrides
 	)
 	{
-		return super.bake(bakery, spriteGetter, modelTransform, modelLocation);
+		return super.bake(bakery, spriteGetter, modelTransform);
 	}
 
 	public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter world, @NotNull BlockPos pos, BlockState state, @NotNull ModelData tileData)

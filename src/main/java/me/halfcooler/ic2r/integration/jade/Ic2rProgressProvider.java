@@ -14,8 +14,6 @@ import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import snownee.jade.api.Accessor;
 import snownee.jade.api.view.ClientViewGroup;
 import snownee.jade.api.view.IClientExtensionProvider;
@@ -38,7 +36,7 @@ import snownee.jade.api.view.ViewGroup;
  * Progress is only shown while {@code > 0}. Client display (visibility, text, colors)
  * is controlled by Jade's plugin config (progress options under IC2R).
  */
-public enum Ic2rProgressProvider implements IServerExtensionProvider<Object, CompoundTag>, IClientExtensionProvider<CompoundTag, ProgressView>
+public enum Ic2rProgressProvider implements IServerExtensionProvider<CompoundTag>, IClientExtensionProvider<CompoundTag, ProgressView>
 {
 	INSTANCE;
 
@@ -57,8 +55,9 @@ public enum Ic2rProgressProvider implements IServerExtensionProvider<Object, Com
 	}
 
 	@Override
-	public List<ViewGroup<CompoundTag>> getGroups(ServerPlayer player, ServerLevel world, Object target, boolean showDetails)
+	public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor)
 	{
+		Object target = accessor.getTarget();
 		ProgressSnapshot snap = resolve(target);
 		if (snap == null || snap.ratio <= MIN_VISIBLE)
 		{

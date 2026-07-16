@@ -1,5 +1,7 @@
 package me.halfcooler.ic2r.forge.model;
 
+import me.halfcooler.ic2r.core.util.StackUtil;
+
 import com.mojang.blaze3d.platform.NativeImage;
 import me.halfcooler.ic2r.core.item.tool.ItemObscurator;
 
@@ -59,7 +61,7 @@ public final class MaskOverlayItemModel implements Ic2rModel, BakedModel
 		)
 		{
 			List<BakedQuad> overlayQuads = List.of();
-			CompoundTag nbt = stack.getTag();
+			CompoundTag nbt = StackUtil.getTag(stack);
 			if (nbt != null)
 			{
 				BlockState state = ItemObscurator.getState(nbt);
@@ -247,8 +249,7 @@ public final class MaskOverlayItemModel implements Ic2rModel, BakedModel
 		ModelBaker bakery,
 		Function<Material, TextureAtlasSprite> spriteGetter,
 		ModelState modelTransform,
-		ItemOverrides overrides,
-		ResourceLocation modelLocation
+		ItemOverrides overrides
 	)
 	{
 		this.baseModel = bakery.bake(this.baseModelLocation, modelTransform, spriteGetter);

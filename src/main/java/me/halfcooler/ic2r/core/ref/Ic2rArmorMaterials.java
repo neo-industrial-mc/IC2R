@@ -1,103 +1,95 @@
 package me.halfcooler.ic2r.core.ref;
 
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
-public enum Ic2rArmorMaterials implements ArmorMaterial
+/**
+ * NeoForge 1.21 armor materials are registry entries ({@link Holder}{@code <ArmorMaterial>}), not enums.
+ */
+public final class Ic2rArmorMaterials
 {
-	BRONZE("ic2r:ic2_bronze", 15, new int[] { 2, 5, 6, 2 }, 9, 0.0F, () -> Ingredient.of(Ic2rItems.BRONZE_INGOT)),
-	ALLOY("ic2r:ic2_alloy", 50, new int[] { 4, 7, 9, 4 }, 12, 2.0F, () -> Ingredient.of(Ic2rItems.ALLOY)),
-	NANO_SUIT("ic2r:ic2_nano", 0, new int[] { 0, 0, 0, 0 }, 0, 2.0F, Ingredient::of),
-	QUANTUM_SUIT("ic2r:ic2_quantum", 0, new int[] { 0, 0, 0, 0 }, 0, 2.0F, Ingredient::of),
-	NIGHT_VISION_GOGGLES("ic2r:ic2_night_vision", 0, new int[] { 0, 0, 0, 3 }, 0, 2.0F, Ingredient::of),
-	SOLAR_HELMET("ic2r:ic2_solar_helmet", 0, new int[] { 0, 0, 0, 3 }, 0, 0.0F, Ingredient::of),
-	STATIC_BOOTS("ic2r:ic2_static_boots", SoundEvents.ARMOR_EQUIP_LEATHER, new int[] { 3, 0, 0, 0 }, 0.0F),
-	HAZMAT("ic2r:ic2_hazmat", SoundEvents.ARMOR_EQUIP_LEATHER, new int[] { 3, 6, 8, 3 }, 2.0F),
-	CF_PACK("ic2r:ic2_cf_pack", SoundEvents.ARMOR_EQUIP_IRON, new int[] { 0, 0, 8, 0 }, 2.0f),
-	JET_PACK("ic2r:ic2_jet_pack", SoundEvents.ARMOR_EQUIP_IRON, new int[] { 0, 0, 8, 0 }, 2.0F),
-	JET_PACK_ELECTRIC("ic2r:ic2_jet_pack_electric", SoundEvents.ARMOR_EQUIP_IRON, new int[] { 0, 0, 8, 0 }, 2.0F),
-	BAT_PACK("ic2r:ic2_bat_pack", SoundEvents.ARMOR_EQUIP_IRON, new int[] { 0, 0, 8, 0 }, 2.0F),
-	ADVANCED_BAT_PACK("ic2r:ic2_advanced_bat_pack", SoundEvents.ARMOR_EQUIP_IRON, new int[] { 0, 0, 8, 0 }, 2.0F),
-	ENERGY_PACK("ic2r:ic2_energy_pack", SoundEvents.ARMOR_EQUIP_IRON, new int[] { 0, 0, 8, 0 }, 2.0F),
-	LAP_PACK("ic2r:ic2_lap_pack", SoundEvents.ARMOR_EQUIP_IRON, new int[] { 0, 0, 8, 0 }, 2.0F);
+	public static final DeferredRegister<ArmorMaterial> REGISTRY =
+		DeferredRegister.create(Registries.ARMOR_MATERIAL, "ic2r");
 
-	private static final int[] BASE_DURABILITY = new int[] { 13, 15, 16, 11 };
-	private final String name;
-	private final int durabilityMultiplier;
-	private final int[] protectionAmounts;
-	private final int enchantAbility;
-	private final SoundEvent equipSound;
-	private final float toughness;
-	private final float knockbackResistance;
-	private final Supplier<Ingredient> repairIngredientSupplier;
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> BRONZE =
+		register("bronze", 15, new int[] { 2, 5, 6, 2 }, 9, 0.0F, () -> Ingredient.of(Ic2rItems.BRONZE_INGOT), SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ALLOY =
+		register("alloy", 50, new int[] { 4, 7, 9, 4 }, 12, 2.0F, () -> Ingredient.of(Ic2rItems.ALLOY), SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> NANO_SUIT =
+		register("nano", 0, new int[] { 0, 0, 0, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> QUANTUM_SUIT =
+		register("quantum", 0, new int[] { 0, 0, 0, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> NIGHT_VISION_GOGGLES =
+		register("night_vision", 0, new int[] { 0, 0, 0, 3 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> SOLAR_HELMET =
+		register("solar_helmet", 0, new int[] { 0, 0, 0, 3 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> STATIC_BOOTS =
+		register("static_boots", 0, new int[] { 3, 0, 0, 0 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_LEATHER);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> HAZMAT =
+		register("hazmat", 0, new int[] { 3, 6, 8, 3 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_LEATHER);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> CF_PACK =
+		register("cf_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> JET_PACK =
+		register("jet_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> JET_PACK_ELECTRIC =
+		register("jet_pack_electric", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> BAT_PACK =
+		register("bat_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ADVANCED_BAT_PACK =
+		register("advanced_bat_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ENERGY_PACK =
+		register("energy_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> LAP_PACK =
+		register("lap_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 
-	Ic2rArmorMaterials(String name, int durabilityMultiplier, int[] protectionAmounts, int enchantAbility, float toughness, Supplier<Ingredient> repairIngredientSupplier)
+	private Ic2rArmorMaterials()
 	{
-		this.name = name;
-		this.durabilityMultiplier = durabilityMultiplier;
-		this.protectionAmounts = protectionAmounts;
-		this.enchantAbility = enchantAbility;
-		this.equipSound = SoundEvents.ARMOR_EQUIP_IRON;
-		this.toughness = toughness;
-		this.knockbackResistance = (float) 0.0;
-		this.repairIngredientSupplier = repairIngredientSupplier;
-	}
-	
-	Ic2rArmorMaterials(String name, SoundEvent equipSound, int[] protectionAmounts, float toughness)
-	{
-		this.name = name;
-		this.durabilityMultiplier = 0;
-		this.enchantAbility = 0;
-		this.equipSound = equipSound;
-		this.knockbackResistance = 0.0F;
-		this.protectionAmounts = protectionAmounts;
-		this.toughness = toughness;
-		this.repairIngredientSupplier = Ingredient::of;
 	}
 
-	public int getDurabilityForType(ArmorItem.Type type)
+	/**
+	 * protectionAmounts index order matches legacy IC2: boots, leggings, chest, helmet
+	 * (same as {@link EquipmentSlot} FEET/LEGS/CHEST/HEAD index).
+	 */
+	private static DeferredHolder<ArmorMaterial, ArmorMaterial> register(
+		String name,
+		int durabilityMultiplierUnused,
+		int[] protectionAmounts,
+		int enchantAbility,
+		float toughness,
+		Supplier<Ingredient> repair,
+		Holder<SoundEvent> equipSound
+	)
 	{
-		return BASE_DURABILITY[type.getSlot().getIndex()] * this.durabilityMultiplier;
-	}
-
-	public int getDefenseForType(ArmorItem.Type type)
-	{
-		return this.protectionAmounts[type.getSlot().getIndex()];
-	}
-
-	public int getEnchantmentValue()
-	{
-		return this.enchantAbility;
-	}
-
-	public @NotNull SoundEvent getEquipSound()
-	{
-		return this.equipSound;
-	}
-
-	public @NotNull Ingredient getRepairIngredient()
-	{
-		return this.repairIngredientSupplier.get();
-	}
-
-	public @NotNull String getName()
-	{
-		return this.name;
-	}
-
-	public float getToughness()
-	{
-		return this.toughness;
-	}
-
-	public float getKnockbackResistance()
-	{
-		return this.knockbackResistance;
+		return REGISTRY.register(name, () -> {
+			Map<ArmorItem.Type, Integer> defense = new EnumMap<>(ArmorItem.Type.class);
+			// ArmorItem.Type order: HELMET, CHESTPLATE, LEGGINGS, BOOTS, BODY
+			// Legacy array: [boots, legs, chest, helmet] by EquipmentSlot index
+			defense.put(ArmorItem.Type.BOOTS, protectionAmounts[0]);
+			defense.put(ArmorItem.Type.LEGGINGS, protectionAmounts[1]);
+			defense.put(ArmorItem.Type.CHESTPLATE, protectionAmounts[2]);
+			defense.put(ArmorItem.Type.HELMET, protectionAmounts[3]);
+			return new ArmorMaterial(
+				defense,
+				enchantAbility,
+				equipSound,
+				repair,
+				List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("ic2r", name))),
+				toughness,
+				0.0F
+			);
+		});
 	}
 }

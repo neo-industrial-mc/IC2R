@@ -47,10 +47,11 @@ public class VanillaSmeltingResolver implements IRecipeResolver
 
 		List<RecipeTransformation> ret = new ArrayList<>();
 
-		for (SmeltingRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING))
+		for (var vanillaHolder : recipeManager.getAllRecipesFor(RecipeType.SMELTING))
 		{
 			try
 			{
+				SmeltingRecipe recipe = vanillaHolder.value();
 				List<List<LeanItemStack>> inputs = RecipeUtil.convertIngredients(recipe.getIngredients());
 				if (inputs.isEmpty())
 				{

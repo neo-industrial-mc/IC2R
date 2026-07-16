@@ -27,7 +27,7 @@ public class SlotArmor extends Slot
 	public boolean mayPlace(ItemStack stack)
 	{
 		Item item = stack.getItem();
-		return item == null ? false : Mob.getEquipmentSlotForItem(stack) == this.armorType;
+		return item != null && stack.getEquipmentSlot() == this.armorType;
 	}
 
 	public Pair<ResourceLocation, ResourceLocation> getNoItemIcon()

@@ -3,8 +3,8 @@ package me.halfcooler.ic2r.forge;
 import me.halfcooler.ic2r.core.event.EventHandler;
 import me.halfcooler.ic2r.core.init.IC2RClientConfig;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
-import me.halfcooler.ic2r.core.network.NetworkManager;
 import me.halfcooler.ic2r.core.loot.Ic2rLootNbtProviderTypes;
+import me.halfcooler.ic2r.core.ref.Ic2rArmorMaterials;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 import me.halfcooler.ic2r.forge.ref.Ic2rSoundEventsForge;
@@ -19,16 +19,16 @@ import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfigur
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.IExtensionPoint.DisplayTest;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @Mod("ic2r")
 public final class FmlMod {
@@ -37,19 +37,19 @@ public final class FmlMod {
 
     public static FmlMod instance;
 
-    private final FMLJavaModLoadingContext ctx;
+    private final ModContainer modContainer;
 
     private List<Runnable> toRunAfterRegistryInit = new ArrayList<>();
 
-    public FmlMod(FMLJavaModLoadingContext ctx, ModContainer modContainer) {
+    public FmlMod(IEventBus modEventBus, ModContainer modContainer) {
         instance = this;
-        this.ctx = ctx;
+        this.modContainer = modContainer;
         // W3.2: install platform SPI before common code may use PlatformServices
         ForgePlatformServices.install();
-        IEventBus modEventBus = this.ctx.getModEventBus();
-        // Force class-loading of *Blocks definition files so RegistryObject entries
+        // Force class-loading of *Blocks definition files so DeferredRegister entries
         // exist before BLOCKS DeferredRegister processes during RegisterEvent.
         Ic2rBlocks.init();
+        Ic2rArmorMaterials.REGISTRY.register(modEventBus);
         EnvProxyForge.BLOCKS.register(modEventBus);
         modEventBus.register(this);
         EnvProxyForge.blockEntityRegistry.register(modEventBus);
@@ -67,13 +67,19 @@ public final class FmlMod {
         Ic2rSoundEventsForge.register(modEventBus);
         if (FMLEnvironment.dist.isClient()) {
             modEventBus.register(new ClientModEventHandlerForge());
-            this.ctx.registerConfig(ModConfig.Type.CLIENT, IC2RClientConfig.SPEC, "ic2r/ic2r-client.toml");
+            modContainer.registerConfig(ModConfig.Type.CLIENT, IC2RClientConfig.SPEC, "ic2r/ic2r-client.toml");
         }
         Ic2rFluids.init();
         // All IC2R configs live under config/ic2r/
-        this.ctx.registerConfig(ModConfig.Type.COMMON, IC2RConfig.SPEC, "ic2r/ic2r-common.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, IC2RConfig.SPEC, "ic2r/ic2r-common.toml");
         // UU matter costs: config/ic2r/ic2r-uu-matter.toml (loaded by IC2RUuMatterConfig, not ModConfigSpec)
-        modEventBus.addListener(NanoSaberCapabilities::register);
+        modEventBus.addListener(Ic2rCapabilities::register);
+        modEventBus.addListener(this::registerPayloads);
+    }
+
+    private void registerPayloads(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar("1").optional();
+        registrar.playBidirectional(Ic2rRawPayload.TYPE, Ic2rRawPayload.STREAM_CODEC, ForgeNetworkHandler::handle);
     }
 
     @SubscribeEvent
@@ -83,8 +89,6 @@ public final class FmlMod {
         if (FMLEnvironment.dist.isClient()) {
             NeoForge.EVENT_BUS.register(new ClientEventHandlerForge());
         }
-        NetworkRegistry.newEventChannel(NetworkManager.channelId, () -> "0", v -> true, v -> true).registerObject(new ForgeNetworkHandler());
-        this.ctx.registerExtensionPoint(DisplayTest.class, () -> new DisplayTest(() -> "OH, NO!", (in, net) -> true));
         if (!loadState.compareAndSet(1, 2)) {
             throw new IllegalStateException();
         }
@@ -147,11 +151,14 @@ public final class FmlMod {
 
     @SubscribeEvent
     public void registerLate(RegisterEvent event) {
-        if (event.getRegistryKey() == ForgeRegistries.Keys.HOLDER_SET_TYPES) {
-            for (Runnable runnable : this.toRunAfterRegistryInit) {
-                runnable.run();
+        // Run post-registry hooks once registries are largely populated (fluid types is late enough).
+        if (event.getRegistryKey() == NeoForgeRegistries.Keys.FLUID_TYPES) {
+            if (this.toRunAfterRegistryInit != null) {
+                for (Runnable runnable : this.toRunAfterRegistryInit) {
+                    runnable.run();
+                }
+                this.toRunAfterRegistryInit = null;
             }
-            this.toRunAfterRegistryInit = null;
         }
     }
 

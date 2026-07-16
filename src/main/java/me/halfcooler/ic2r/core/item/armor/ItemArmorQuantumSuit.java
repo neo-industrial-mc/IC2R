@@ -26,10 +26,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -47,18 +51,32 @@ import net.minecraft.core.Holder;
 public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack, IHazmatLike, IItemHudProvider
 {
 	public static final int[] CHARGED_PROTECTION = new int[] { 3, 6, 8, 3 };
-	protected static final Map<MobEffect, Integer> potionRemovalCost = new IdentityHashMap<>();
+	protected static final Map<Holder<MobEffect>, Integer> potionRemovalCost = new IdentityHashMap<>();
 
 	static
 	{
 		potionRemovalCost.put(MobEffects.POISON, 10000);
-		potionRemovalCost.put(Ic2rPotion.radiation, 10000);
 		potionRemovalCost.put(MobEffects.WITHER, 25000);
 	}
 
-	private static int getPotionRemovalCost(MobEffect potion, MobEffectInstance effect, int baseCost)
+	private static Integer getBaseRemovalCost(Holder<MobEffect> potion)
 	{
-		if (potion == Ic2rPotion.radiation)
+		Integer cost = potionRemovalCost.get(potion);
+		if (cost != null)
+		{
+			return cost;
+		}
+		// Radiation is registered after this class may load; match by effect instance.
+		if (Ic2rPotion.radiation != null && potion.value() == Ic2rPotion.radiation)
+		{
+			return 10000;
+		}
+		return null;
+	}
+
+	private static int getPotionRemovalCost(Holder<MobEffect> potion, MobEffectInstance effect, int baseCost)
+	{
+		if (Ic2rPotion.radiation != null && potion.value() == Ic2rPotion.radiation)
 		{
 			// IC2R radiation uses high amplifier values for damage scaling, not vanilla potion levels.
 			return baseCost + effect.getAmplifier() * 100;
@@ -69,7 +87,7 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 
 	private static final Map<Player, Float> jumpCharges = new WeakHashMap<>();
 
-	public ItemArmorQuantumSuit(ArmorMaterial material, EquipmentSlot armorType, Properties settings)
+	public ItemArmorQuantumSuit(Holder<ArmorMaterial> material, EquipmentSlot armorType, Properties settings)
 	{
 		super(material, armorType, settings, 1.0E7, 12000.0, 4);
 	}
@@ -99,8 +117,8 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 			nbt.remove("color");
 			if (nbt.isEmpty())
 			{
-				assert stack.getTag() != null;
-				stack.getTag().remove("display");
+				assert StackUtil.getTag(stack) != null;
+				StackUtil.getTag(stack).remove("display");
 			}
 		}
 	}
@@ -120,7 +138,7 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 
 	private CompoundTag getDisplayNbt(ItemStack stack, boolean create)
 	{
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		if (nbt == null)
 		{
 			if (!create)
@@ -169,7 +187,6 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 		return true;
 	}
 
-	@Override
 	public @NotNull Rarity getRarity(@NotNull ItemStack stack)
 	{
 		return Rarity.RARE;
@@ -273,7 +290,7 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 				for (MobEffectInstance effect : new LinkedList<>(player.getActiveEffects()))
 				{
 					Holder<MobEffect> potion = effect.getEffect();
-					Integer baseCost = potionRemovalCost.get(potion);
+					Integer baseCost = getBaseRemovalCost(potion);
 					if (baseCost != null)
 					{
 						int cost = getPotionRemovalCost(potion, effect, baseCost);

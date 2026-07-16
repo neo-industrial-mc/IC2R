@@ -4,21 +4,16 @@ import me.halfcooler.ic2r.core.block.comp.Fluids;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.capabilities.Capability;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * Lazily wraps BlockFluidCapImpl, resolving the Fluids component on first
- * capability query. This works around the Forge issue where
- * AttachCapabilitiesEvent fires BEFORE the BE constructor completes,
- * so hasComponent(Fluids.class) always returns false during the event.
+ * Lazily wraps {@link BlockFluidCapImpl}, resolving the Fluids component on first
+ * capability query. Capability providers may run before BE construction fully finishes.
  */
-final class LazyBlockFluidCapImpl implements ICapabilityProvider {
+final class LazyBlockFluidCapImpl {
 
     private final BlockEntity be;
-
     private BlockFluidCapImpl delegate;
 
     LazyBlockFluidCapImpl(BlockEntity be) {
@@ -35,10 +30,9 @@ final class LazyBlockFluidCapImpl implements ICapabilityProvider {
         return this.delegate;
     }
 
-    @Override
-    @NotNull
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing) {
+    @Nullable
+    public IFluidHandler getHandler(@Nullable Direction facing) {
         BlockFluidCapImpl d = this.resolve();
-        return d != null ? d.getCapability(capability, facing) : LazyOptional.empty();
+        return d != null ? d.getHandler(facing) : null;
     }
 }

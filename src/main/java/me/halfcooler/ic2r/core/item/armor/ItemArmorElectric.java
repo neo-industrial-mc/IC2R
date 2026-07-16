@@ -1,25 +1,23 @@
 package me.halfcooler.ic2r.core.item.armor;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.ImmutableMultimap.Builder;
+import net.minecraft.core.Holder;
+
 import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.api.item.IElectricItem;
 import me.halfcooler.ic2r.core.item.ElectricItemManager;
 import me.halfcooler.ic2r.core.item.ElectricItemTooltipHandler;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -29,23 +27,16 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class ItemArmorElectric extends ItemArmorIC2R implements IElectricItem
 {
-	public static final UUID[] MODIFIERS = new UUID[] {
-		UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"),
-		UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"),
-		UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"),
-		UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150")
-	};
 	protected final double maxCharge;
 	protected final double transferLimit;
 	protected final int tier;
 
-	public ItemArmorElectric(ArmorMaterial material, EquipmentSlot slot, Properties settings, double maxCharge, double transferLimit, int tier)
+	public ItemArmorElectric(Holder<ArmorMaterial> material, EquipmentSlot slot, Properties settings, double maxCharge, double transferLimit, int tier)
 	{
 		super(material, slot, settings);
 		this.maxCharge = maxCharge;
@@ -68,7 +59,7 @@ public abstract class ItemArmorElectric extends ItemArmorIC2R implements IElectr
 
 		for (EquipmentSlot slot : EquipmentSlot.values())
 		{
-			if (slot.getType() != EquipmentSlot.Type.ARMOR)
+			if (slot.getType() != EquipmentSlot.Type.HUMANOID_ARMOR)
 			{
 				continue;
 			}
@@ -181,64 +172,46 @@ public abstract class ItemArmorElectric extends ItemArmorIC2R implements IElectr
 		return Mth.hsvToRgb((float) (ElectricItem.manager.getChargeLevel(stack) / 3.0), 1.0F, 1.0F);
 	}
 
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot)
+	/**
+	 * Charge-sensitive armor protection: replace default armor value when the piece has energy.
+	 */
+	@Override
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack)
 	{
-		if (slot != this.getEquipmentSlot())
-		{
-			return this.getDefaultAttributeModifiers(slot);
-		}
-
-		boolean hasCharge = ElectricItem.manager.getCharge(stack) >= ((ItemArmorElectric) stack.getItem()).getEnergyPerDamage();
+		ItemAttributeModifiers defaults = super.getDefaultAttributeModifiers(stack);
+		boolean hasCharge = ElectricItem.manager.getCharge(stack) >= this.getEnergyPerDamage();
 		if (!hasCharge)
 		{
-			return this.getDefaultAttributeModifiers(slot);
+			return defaults;
 		}
 
 		Item armor = stack.getItem();
+		EquipmentSlot slot = this.getEquipmentSlot();
 		int protection;
 		if (armor instanceof ItemArmorNanoSuit)
 		{
 			protection = ItemArmorNanoSuit.CHARGED_PROTECTION[slot.getIndex()];
+		} else if (armor instanceof ItemArmorQuantumSuit)
+		{
+			protection = ItemArmorQuantumSuit.CHARGED_PROTECTION[slot.getIndex()];
 		} else
 		{
-			if (!(armor instanceof ItemArmorQuantumSuit))
-			{
-				return this.getDefaultAttributeModifiers(slot);
-			}
-
-			protection = ItemArmorQuantumSuit.CHARGED_PROTECTION[slot.getIndex()];
+			return defaults;
 		}
 
-		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		Multimap<Attribute, AttributeModifier> defaults = this.getDefaultAttributeModifiers(slot);
-		for (Attribute attribute : defaults.keySet())
+		ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
+		EquipmentSlotGroup group = EquipmentSlotGroup.bySlot(slot);
+		ResourceLocation armorId = ResourceLocation.withDefaultNamespace("armor." + this.getType().getName());
+		ResourceLocation armorModId = ResourceLocation.fromNamespaceAndPath("ic2r", "charged_armor." + this.getType().getName());
+
+		defaults.forEach(group, (attribute, modifier) ->
 		{
-			if (attribute != Attributes.ARMOR)
+			if (!attribute.is(Attributes.ARMOR) || !modifier.is(armorId))
 			{
-				builder.putAll(attribute, defaults.get(attribute));
+				builder.add(attribute, modifier, group);
 			}
-		}
-
-		Attribute attr = Attributes.ARMOR;
-		UUID uuid = MODIFIERS[slot.getIndex()];
-		Collection<AttributeModifier> plain = defaults.get(attr);
-		if (plain != null)
-		{
-			for (AttributeModifier modifier : plain)
-			{
-				if (!modifier.getId().equals(uuid))
-				{
-					builder.put(attr, modifier);
-				}
-			}
-		}
-
-		builder.put(attr, new AttributeModifier(uuid, "Armor modifier", protection, Operation.ADDITION));
+		});
+		builder.add(Attributes.ARMOR, new AttributeModifier(armorModId, protection, Operation.ADD_VALUE), group);
 		return builder.build();
-	}
-
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack)
-	{
-		return this.getAttributeModifiers(stack, slot);
 	}
 }

@@ -104,8 +104,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		nbt.put("InvSlots", invSlotsTag);
 	}
 
-	public int getContainerSize()
-	{
+	public int getContainerSize() {
 		int ret = 0;
 
 		for (InvSlot invSlot : this.invSlots)
@@ -408,10 +407,9 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		return this.cachedHandlerList;
 	}
 	
-	@Override
-	public void invalidateCaps()
+	/** NeoForge 1.21 removed invalidateCaps; clear local handler cache when inventory layout changes. */
+	public void invalidateItemHandlerCache()
 	{
-		super.invalidateCaps();
 		this.cachedHandlerList = null;
 	}
 

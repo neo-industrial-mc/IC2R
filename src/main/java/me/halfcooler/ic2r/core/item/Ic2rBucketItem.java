@@ -47,7 +47,7 @@ public abstract class Ic2rBucketItem extends BucketItem
 
 	public Ic2rBucketItem(Fluid fluid, Properties settings)
 	{
-		super(() -> fluid, settings);
+		super(fluid, settings);
 		this.fluid = fluid;
 		this.getDrainableFluidList();
 	}
@@ -213,7 +213,7 @@ public abstract class Ic2rBucketItem extends BucketItem
 		BlockState blockState = world.getBlockState(pos);
 		Block block = blockState.getBlock();
 		boolean bl = blockState.canBeReplaced(fluid);
-		boolean bl2 = blockState.isAir() || bl || block instanceof LiquidBlockContainer && ((LiquidBlockContainer) block).canPlaceLiquid(world, pos, blockState, fluid);
+		boolean bl2 = blockState.isAir() || bl || block instanceof LiquidBlockContainer && ((LiquidBlockContainer) block).canPlaceLiquid(player, world, pos, blockState, fluid);
 		if (!bl2)
 		{
 			return hitResult != null && this.emptyContents(player, world, hitResult.getBlockPos().relative(hitResult.getDirection()), null, fluid);
@@ -257,7 +257,7 @@ public abstract class Ic2rBucketItem extends BucketItem
 
 	protected boolean canBlockContainFluid(@NotNull Level worldIn, @NotNull BlockPos posIn, BlockState blockstate, Fluid fluid)
 	{
-		return blockstate.getBlock() instanceof LiquidBlockContainer && ((LiquidBlockContainer) blockstate.getBlock()).canPlaceLiquid(worldIn, posIn, blockstate, fluid);
+		return blockstate.getBlock() instanceof LiquidBlockContainer && ((LiquidBlockContainer) blockstate.getBlock()).canPlaceLiquid(null, worldIn, posIn, blockstate, fluid);
 	}
 
 	protected void playEmptySound(@Nullable Player player, LevelAccessor world, @NotNull BlockPos pos, Fluid fluid)

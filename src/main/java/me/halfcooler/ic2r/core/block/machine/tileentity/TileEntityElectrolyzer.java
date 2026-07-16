@@ -211,6 +211,6 @@ public class TileEntityElectrolyzer extends TileEntityElectricMachine implements
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_ELECTROLYZER_LOOP.value();
+		return Ic2rSoundEvents.MACHINE_ELECTROLYZER_LOOP.get();
 	}
 }

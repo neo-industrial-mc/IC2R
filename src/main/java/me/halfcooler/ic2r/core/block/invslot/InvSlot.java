@@ -14,7 +14,9 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -72,7 +74,7 @@ public class InvSlot implements Iterable<ItemStack>
 		{
 			CompoundTag contentTag = contentsTag.getCompound(i);
 			int index = contentTag.getByte("Index") & 255;
-			if (index >= this.getContainerSize())
+			if (index >= this.size())
 			{
 				IC2R.log
 					.error(
@@ -84,7 +86,7 @@ public class InvSlot implements Iterable<ItemStack>
 					);
 			} else
 			{
-				ItemStack stack = ItemStack.of(contentTag);
+				ItemStack stack = ItemStack.parseOptional(RegistryAccess.EMPTY, contentTag);
 				if (StackUtil.isEmpty(stack))
 				{
 					IC2R.log
@@ -133,7 +135,12 @@ public class InvSlot implements Iterable<ItemStack>
 			{
 				CompoundTag contentTag = new CompoundTag();
 				contentTag.putByte("Index", (byte) i);
-				content.save(contentTag);
+				Tag saved = content.save(RegistryAccess.EMPTY);
+				if (saved instanceof CompoundTag savedCompound) {
+					for (String key : savedCompound.getAllKeys()) {
+						contentTag.put(key, savedCompound.get(key));
+					}
+				}
 				contentsTag.add(contentTag);
 			}
 		}

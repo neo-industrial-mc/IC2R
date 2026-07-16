@@ -25,7 +25,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.PressurePlateBlock.Sensitivity;
+
 import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -49,41 +49,29 @@ public final class Ic2rBlocksBuilding
 	{
 	}
 
-	public static final DeferredHolder<LeavesBlock, LeavesBlock> RUBBER_LEAVES = EnvProxyForge.BLOCKS.register("rubber_leaves", () -> new LeavesBlock(Properties.of().strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion().isValidSpawn(Ic2rBlocks::canSpawnOnLeaves).isSuffocating(Ic2rBlocks::never).isViewBlocking(Ic2rBlocks::never)));
-	public static final DeferredHolder<RubberLogBlock, RubberLogBlock> RUBBER_LOG = EnvProxyForge.BLOCKS.register("rubber_log", () -> new RubberLogBlock(Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN).randomTicks().strength(2.0F, 3.0f).sound(SoundType.WOOD)));
-	public static final DeferredHolder<RotatedPillarBlock, RotatedPillarBlock> STRIPPED_RUBBER_LOG = EnvProxyForge.BLOCKS.register("stripped_rubber_log", () -> new RotatedPillarBlock(Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
-	public static final DeferredHolder<RubberWoodBlock, RubberWoodBlock> RUBBER_WOOD = EnvProxyForge.BLOCKS.register("rubber_wood", () -> new RubberWoodBlock(Properties.of().mapColor(MapColor.COLOR_BROWN).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
+	public static final DeferredHolder<Block, LeavesBlock> RUBBER_LEAVES = EnvProxyForge.BLOCKS.register("rubber_leaves", () -> new LeavesBlock(Properties.of().strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion().isValidSpawn(Ic2rBlocks::canSpawnOnLeaves).isSuffocating(Ic2rBlocks::never).isViewBlocking(Ic2rBlocks::never)));
+	public static final DeferredHolder<Block, RubberLogBlock> RUBBER_LOG = EnvProxyForge.BLOCKS.register("rubber_log", () -> new RubberLogBlock(Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN).randomTicks().strength(2.0F, 3.0f).sound(SoundType.WOOD)));
+	public static final DeferredHolder<Block, RotatedPillarBlock> STRIPPED_RUBBER_LOG = EnvProxyForge.BLOCKS.register("stripped_rubber_log", () -> new RotatedPillarBlock(Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
+	public static final DeferredHolder<Block, RubberWoodBlock> RUBBER_WOOD = EnvProxyForge.BLOCKS.register("rubber_wood", () -> new RubberWoodBlock(Properties.of().mapColor(MapColor.COLOR_BROWN).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
 	public static final DeferredHolder<Block, Block> STRIPPED_RUBBER_WOOD = EnvProxyForge.BLOCKS.register("stripped_rubber_wood", () -> new Block(Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
-	public static final DeferredHolder<Block, Block> RUBBER_SAPLING = EnvProxyForge.BLOCKS.register("rubber_sapling", () -> new SaplingBlock(new TreeGrower()
-	{
-		protected ResourceKey<ConfiguredFeature<?, ?>> getConfiguredFeature(@NotNull RandomSource random, boolean bees)
-		{
-			return ResourceKey.create(Registries.CONFIGURED_FEATURE, IC2R.getIdentifier("rubber_tree"));
-		}
-	}, Properties.of().noCollission().randomTicks().instabreak().sound(SoundType.GRASS))
-	{
-	});
+	private static final TreeGrower RUBBER_TREE_GROWER = new TreeGrower(
+		"ic2r_rubber",
+		java.util.Optional.empty(),
+		java.util.Optional.of(ResourceKey.create(Registries.CONFIGURED_FEATURE, IC2R.getIdentifier("rubber_tree"))),
+		java.util.Optional.empty()
+	);
+	public static final DeferredHolder<Block, Block> RUBBER_SAPLING = EnvProxyForge.BLOCKS.register("rubber_sapling", () -> new SaplingBlock(RUBBER_TREE_GROWER, Properties.of().noCollission().randomTicks().instabreak().sound(SoundType.GRASS)));
 	public static final DeferredHolder<Block, Block> RUBBER_PLANKS = EnvProxyForge.BLOCKS.register("rubber_planks", () -> new Block(Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
-	public static final DeferredHolder<Block, Block> RUBBER_BUTTON = EnvProxyForge.BLOCKS.register("rubber_button", () -> new ButtonBlock(Properties.of().noCollission().strength(0.5F).sound(SoundType.WOOD), BlockSetType.OAK, 30, false)
-	{
-	});
-	public static final DeferredHolder<Block, Block> RUBBER_DOOR = EnvProxyForge.BLOCKS.register("rubber_door", () -> new DoorBlock(Properties.of().mapColor(MapColor.PODZOL).strength(3.0F).sound(SoundType.WOOD).noOcclusion(), BlockSetType.OAK)
-	{
-	});
+	public static final DeferredHolder<Block, Block> RUBBER_BUTTON = EnvProxyForge.BLOCKS.register("rubber_button", () -> new ButtonBlock(BlockSetType.OAK, 30, Properties.of().noCollission().strength(0.5F).sound(SoundType.WOOD)));
+	public static final DeferredHolder<Block, Block> RUBBER_DOOR = EnvProxyForge.BLOCKS.register("rubber_door", () -> new DoorBlock(BlockSetType.OAK, Properties.of().mapColor(MapColor.PODZOL).strength(3.0F).sound(SoundType.WOOD).noOcclusion()));
 	public static final DeferredHolder<Block, Block> RUBBER_FENCE = EnvProxyForge.BLOCKS.register("rubber_fence", () -> new FenceBlock(Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
-	public static final DeferredHolder<Block, Block> RUBBER_FENCE_GATE = EnvProxyForge.BLOCKS.register("rubber_fence_gate", () -> new FenceGateBlock(Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD), WoodType.OAK));
-	public static final DeferredHolder<Block, Block> RUBBER_PRESSURE_PLATE = EnvProxyForge.BLOCKS.register("rubber_pressure_plate", () -> new PressurePlateBlock(Sensitivity.EVERYTHING, Properties.of().mapColor(MapColor.PODZOL).noCollission().strength(0.5F).sound(SoundType.WOOD), BlockSetType.OAK)
-	{
-	});
+	public static final DeferredHolder<Block, Block> RUBBER_FENCE_GATE = EnvProxyForge.BLOCKS.register("rubber_fence_gate", () -> new FenceGateBlock(WoodType.OAK, Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+	public static final DeferredHolder<Block, Block> RUBBER_PRESSURE_PLATE = EnvProxyForge.BLOCKS.register("rubber_pressure_plate", () -> new PressurePlateBlock(BlockSetType.OAK, Properties.of().mapColor(MapColor.PODZOL).noCollission().strength(0.5F).sound(SoundType.WOOD)));
 	public static final DeferredHolder<Block, Block> RUBBER_SIGN = EnvProxyForge.BLOCKS.register("rubber_sign", () -> new Ic2rSignBlock(Properties.of().mapColor(MapColor.PODZOL).noCollission().strength(1.0F).sound(SoundType.WOOD), Ic2rSignType.RUBBER));
-	public static final DeferredHolder<Block, Block> RUBBER_WALL_SIGN = EnvProxyForge.BLOCKS.register("rubber_wall_sign", () -> new Ic2rWallSignBlock(Properties.of().mapColor(MapColor.PODZOL).noCollission().strength(1.0F).sound(SoundType.WOOD).lootFrom(BuiltInRegistries.BLOCK.getResourceKey(RUBBER_SIGN.get()).flatMap(BuiltInRegistries.BLOCK::getHolder).orElseThrow()), Ic2rSignType.RUBBER));
+	public static final DeferredHolder<Block, Block> RUBBER_WALL_SIGN = EnvProxyForge.BLOCKS.register("rubber_wall_sign", () -> new Ic2rWallSignBlock(Properties.of().mapColor(MapColor.PODZOL).noCollission().strength(1.0F).sound(SoundType.WOOD).lootFrom(RUBBER_SIGN), Ic2rSignType.RUBBER));
 	public static final DeferredHolder<Block, Block> RUBBER_SLAB = EnvProxyForge.BLOCKS.register("rubber_slab", () -> new SlabBlock(Properties.of().mapColor(MapColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
-	public static final DeferredHolder<Block, Block> RUBBER_STAIRS = EnvProxyForge.BLOCKS.register("rubber_stairs", () -> new StairBlock(() -> RUBBER_PLANKS.get().defaultBlockState(), Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD))
-	{
-	});
-	public static final DeferredHolder<Block, Block> RUBBER_TRAPDOOR = EnvProxyForge.BLOCKS.register("rubber_trapdoor", () -> new TrapDoorBlock(Properties.of().mapColor(MapColor.PODZOL).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn(Ic2rBlocks::never), BlockSetType.OAK)
-	{
-	});
+	public static final DeferredHolder<Block, Block> RUBBER_STAIRS = EnvProxyForge.BLOCKS.register("rubber_stairs", () -> new StairBlock(RUBBER_PLANKS.get().defaultBlockState(), Properties.of().mapColor(MapColor.PODZOL).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+	public static final DeferredHolder<Block, Block> RUBBER_TRAPDOOR = EnvProxyForge.BLOCKS.register("rubber_trapdoor", () -> new TrapDoorBlock(BlockSetType.OAK, Properties.of().mapColor(MapColor.PODZOL).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn(Ic2rBlocks::never)));
 	public static final DeferredHolder<Block, Block> IRON_FENCE = EnvProxyForge.BLOCKS.register("iron_fence", () -> new Ic2rFenceBlock(Properties.of().strength(5.0F, 10.0F), true));
 	public static final DeferredHolder<Block, Block> RESIN_SHEET = EnvProxyForge.BLOCKS.register("resin_sheet", () -> new Ic2rSheetBlock(Properties.of().strength(1.6F, 0.5F)));
 	public static final DeferredHolder<Block, Block> RUBBER_SHEET = EnvProxyForge.BLOCKS.register("rubber_sheet", () -> new Ic2rSheetBlock(Properties.of().strength(0.8F, 2.0F)));
@@ -92,9 +80,7 @@ public final class Ic2rBlocksBuilding
 	public static final DeferredHolder<Block, Block> FOAM = EnvProxyForge.BLOCKS.register("foam", () -> new FoamBlock(Properties.of().noOcclusion().strength(0.01F, 10.0F).randomTicks().sound(SoundType.WOOL)));
 	public static final DeferredHolder<Block, Block> MINING_PIPE = EnvProxyForge.BLOCKS.register("mining_pipe", () -> new MiningPipeBlock(Properties.of().strength(6.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 	public static final DeferredHolder<Block, Block> MINING_PIPE_TIP = EnvProxyForge.BLOCKS.register("mining_pipe_tip", () -> new Block(Properties.of().strength(6.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-	public static final DeferredHolder<Block, Block> REINFORCED_DOOR = EnvProxyForge.BLOCKS.register("reinforced_door", () -> new DoorBlock(Properties.of().strength(50.0F, 150.0F).sound(SoundType.METAL), BlockSetType.IRON)
-	{
-	});
+	public static final DeferredHolder<Block, Block> REINFORCED_DOOR = EnvProxyForge.BLOCKS.register("reinforced_door", () -> new DoorBlock(BlockSetType.IRON, Properties.of().strength(50.0F, 150.0F).sound(SoundType.METAL)));
 	public static final DeferredHolder<Block, Block> ITNT = EnvProxyForge.BLOCKS.register("itnt", () -> Ic2rTileEntityBlock.create(Properties.of().strength(0.0F, 0.0F).sound(SoundType.GRASS), TileEntityITnt.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
 	public static final DeferredHolder<Block, Block> NUKE = EnvProxyForge.BLOCKS.register("nuke", () -> Ic2rTileEntityBlock.create(Properties.of().strength(0.0F, 0.0F).sound(SoundType.GRASS), TileEntityNuke.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
 	public static final DeferredHolder<Block, Block> DYNAMITE = EnvProxyForge.BLOCKS.register("dynamite", () -> new BlockDynamite());

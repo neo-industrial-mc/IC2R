@@ -29,7 +29,6 @@ public class ItemCropAnalyzer extends BaseElectricItem implements IHandHeldInven
 		super(settings, 100000.0, 128.0, 2);
 	}
 
-	@Override
 	public @NotNull Rarity getRarity(@NotNull ItemStack stack)
 	{
 		return Rarity.UNCOMMON;

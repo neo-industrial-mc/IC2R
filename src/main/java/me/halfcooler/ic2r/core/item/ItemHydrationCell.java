@@ -1,5 +1,7 @@
 package me.halfcooler.ic2r.core.item;
 
+import me.halfcooler.ic2r.core.util.StackUtil;
+
 import me.halfcooler.ic2r.core.crop.TileEntityCrop;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import net.minecraft.nbt.CompoundTag;
@@ -86,7 +88,7 @@ public class ItemHydrationCell extends Item
 
 	private int getUsage(ItemStack stack)
 	{
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		return nbt != null ? nbt.getInt("uses") : 0;
 	}
 

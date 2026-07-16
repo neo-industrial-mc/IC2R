@@ -20,7 +20,7 @@ final class NanoSaberStateImpl implements INanoSaberState
 	@Override
 	public boolean isActive()
 	{
-		CompoundTag nbt = this.stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		return nbt != null && nbt.getBoolean(NBT_ACTIVE);
 	}
 

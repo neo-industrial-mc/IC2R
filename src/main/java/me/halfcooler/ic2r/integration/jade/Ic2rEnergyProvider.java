@@ -92,6 +92,6 @@ public enum Ic2rEnergyProvider implements IBlockComponentProvider, IServerDataPr
 		Component text = JadeConfigHelper.formatEnergyText(stored, capacity, ratio);
 
 		IElementHelper helper = IElementHelper.get();
-		tooltip.add(helper.progress(ratio, text, JadeConfigHelper.energyStyle(), BoxStyle.DEFAULT, true));
+		tooltip.add(helper.progress(ratio, text, JadeConfigHelper.energyStyle(), BoxStyle.getNestedBox(), true));
 	}
 }

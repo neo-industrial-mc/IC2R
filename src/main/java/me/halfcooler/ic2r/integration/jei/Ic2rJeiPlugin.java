@@ -374,7 +374,9 @@ public class Ic2rJeiPlugin implements IModPlugin
 		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
 		BiConsumer<RecipeType<IORecipeWrapper>, net.minecraft.world.item.crafting.RecipeType<RecipeHolder<IRecipeInput, Collection<ItemStack>>>> registerBasic = (id, type) ->
 		{
-			List<IORecipeWrapper> recipeList = recipeManager.getAllRecipesFor(type).stream().map(r -> new IORecipeWrapper(r.recipe())).toList();
+			List<IORecipeWrapper> recipeList = recipeManager.getAllRecipesFor(type).stream()
+				.map(r -> new IORecipeWrapper(r.value().recipe()))
+				.toList();
 			registration.addRecipes(id, recipeList);
 		};
 		registerBasic.accept(this.BLAST_FURNACE, Ic2rRecipeTypes.BLAST_FURNACE);
@@ -388,10 +390,14 @@ public class Ic2rJeiPlugin implements IModPlugin
 		registerBasic.accept(this.METAL_FORMER_ROLLING, Ic2rRecipeTypes.METAL_FORMER_ROLLING);
 		registerBasic.accept(this.ORE_WASHER, Ic2rRecipeTypes.ORE_WASHER);
 
-		List<CannerBottleRecipeWrapper> cannerBottleRecipes = recipeManager.getAllRecipesFor(Ic2rRecipeTypes.CANNER_BOTTLE).stream().map(r -> new CannerBottleRecipeWrapper(r.recipe())).toList();
+		List<CannerBottleRecipeWrapper> cannerBottleRecipes = recipeManager.getAllRecipesFor(Ic2rRecipeTypes.CANNER_BOTTLE).stream()
+			.map(r -> new CannerBottleRecipeWrapper(r.value().recipe()))
+			.toList();
 		registration.addRecipes(this.CANNER_BOTTLE, cannerBottleRecipes);
 
-		List<CannerEnrichRecipeWrapper> cannerEnrichRecipes = recipeManager.getAllRecipesFor(Ic2rRecipeTypes.CANNER_ENRICH).stream().map(r -> new CannerEnrichRecipeWrapper(r.recipe())).toList();
+		List<CannerEnrichRecipeWrapper> cannerEnrichRecipes = recipeManager.getAllRecipesFor(Ic2rRecipeTypes.CANNER_ENRICH).stream()
+			.map(r -> new CannerEnrichRecipeWrapper(r.value().recipe()))
+			.toList();
 		registration.addRecipes(this.CANNER_ENRICH, cannerEnrichRecipes);
 
 		List<CannerEmptyLiquidRecipeWrapper> emptyLiquidRecipes = new ArrayList<>();
@@ -428,9 +434,10 @@ public class Ic2rJeiPlugin implements IModPlugin
 			}
 
 			@Override
+			@SuppressWarnings("unchecked")
 			public @NotNull RecipeType<CraftingRecipe> getRecipeType()
 			{
-				return RecipeTypes.CRAFTING;
+				return (RecipeType<CraftingRecipe>) (RecipeType<?>) RecipeTypes.CRAFTING;
 			}
 
 			@Override
@@ -496,9 +503,10 @@ public class Ic2rJeiPlugin implements IModPlugin
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public @NotNull RecipeType<CraftingRecipe> getRecipeType()
 		{
-			return RecipeTypes.CRAFTING;
+			return (RecipeType<CraftingRecipe>) (RecipeType<?>) RecipeTypes.CRAFTING;
 		}
 
 		@Override

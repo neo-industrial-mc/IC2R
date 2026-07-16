@@ -58,7 +58,11 @@ final class ItemGroupIconSupplier implements Supplier<ItemStack>
 			case GENERATORS_AND_WIRING -> new ItemStack(Ic2rItems.GENERATOR);
 			case TOOLS_AND_UTILITIES -> new ItemStack(Ic2rItems.WRENCH);
 			case FLUID_CELLS -> new ItemStack(Ic2rItems.FACADE_CELL);
-			case COMBAT -> new ItemStack(Ic2rItems.NANO_SABER).setHoverName(Component.nullToEmpty("ic2r:tab_icon"));
+			case COMBAT -> {
+				ItemStack icon = new ItemStack(Ic2rItems.NANO_SABER);
+				icon.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, Component.nullToEmpty("ic2r:tab_icon"));
+				yield icon;
+			}
 			case MATERIALS -> new ItemStack(Ic2rItems.RUBBER);
 			case FARMING -> new ItemStack(Ic2rItems.CROP_SEED_BACK);
 		};

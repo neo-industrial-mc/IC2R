@@ -66,7 +66,12 @@ final class EnvItemHandlerForge implements EnvItemHandler
 	@Nullable
 	private static EnvItemHandlerForge.HandlerForge getStorage(BlockEntity source, Direction dir, @Nullable Set<Container> personalInventories)
 	{
-		BlockEntity target = source.level().getBlockEntity(source.getBlockPos().relative(dir));
+		Level level = source.getLevel();
+		if (level == null)
+		{
+			return null;
+		}
+		BlockEntity target = level.getBlockEntity(source.getBlockPos().relative(dir));
 		GameProfile profile = source instanceof IPersonalBlock ? ((IPersonalBlock) source).getOwner() : null;
 		return EnvItemHandlerForge.HandlerForge.ofNullable(getStorage(target, dir.getOpposite(), profile, personalInventories), dir);
 	}

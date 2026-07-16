@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
@@ -64,8 +65,8 @@ public final class Ic2rItemsTools
 	public static final Item WRENCH = Ic2rItems.register("wrench", new ItemToolWrench(new Properties().durability(120)));
 	public static final Item BRONZE_AXE = Ic2rItems.register("bronze_axe", new Ic2rAxe(Ic2rToolMaterials.BRONZE, 6.0F, -3.1F, new Properties()));
 	public static final Item BRONZE_HOE = Ic2rItems.register("bronze_hoe", new Ic2rHoe(Ic2rToolMaterials.BRONZE, -2, -1.0F, new Properties()));
-	public static final Item BRONZE_SWORD = Ic2rItems.register("bronze_sword", new SwordItem(Ic2rToolMaterials.BRONZE, 3, -2.4F, new Properties()));
-	public static final Item BRONZE_SHOVEL = Ic2rItems.register("bronze_shovel", new ShovelItem(Ic2rToolMaterials.BRONZE, 1.5F, -3.0F, new Properties()));
+	public static final Item BRONZE_SWORD = Ic2rItems.register("bronze_sword", new SwordItem(Ic2rToolMaterials.BRONZE, new Properties().attributes(SwordItem.createAttributes(Ic2rToolMaterials.BRONZE, 3, -2.4F))));
+	public static final Item BRONZE_SHOVEL = Ic2rItems.register("bronze_shovel", new ShovelItem(Ic2rToolMaterials.BRONZE, new Properties().attributes(DiggerItem.createAttributes(Ic2rToolMaterials.BRONZE, 1.5F, -3.0F))));
 	public static final Item BRONZE_PICKAXE = Ic2rItems.register("bronze_pickaxe", new Ic2rPickaxe(Ic2rToolMaterials.BRONZE, 1, -2.8F, new Properties()));
 	public static final Item FREQUENCY_TRANSMITTER = Ic2rItems.register("frequency_transmitter", new ItemFrequencyTransmitter(new Properties().stacksTo(1)));
 	public static final Item REMOTE = Ic2rItems.register("remote", new ItemRemote(new Properties()));

@@ -1,5 +1,7 @@
 package me.halfcooler.ic2r.core.item;
 
+import net.minecraft.core.RegistryAccess;
+
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
@@ -41,14 +43,14 @@ public class ItemCrystalMemory extends Item
 	{
 		CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
 		CompoundTag contentTag = nbt.getCompound("Pattern");
-		return ItemStack.of(contentTag);
+		return ItemStack.parseOptional(RegistryAccess.EMPTY, contentTag);
 	}
 
 	public void writeContentsTag(ItemStack stack, ItemStack recorded)
 	{
 		CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
 		CompoundTag contentTag = new CompoundTag();
-		recorded.save(contentTag);
+		recorded.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
 		nbt.put("Pattern", contentTag);
 	}
 }

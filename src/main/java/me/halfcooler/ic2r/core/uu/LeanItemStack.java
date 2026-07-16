@@ -26,12 +26,12 @@ public class LeanItemStack
 
 	public LeanItemStack(ItemStack stack)
 	{
-		this(stack.getItem(), stack.getTag(), StackUtil.getSize(stack));
+		this(stack.getItem(), StackUtil.getTag(stack), StackUtil.getSize(stack));
 	}
 
 	public LeanItemStack(ItemStack stack, int size)
 	{
-		this(stack.getItem(), stack.getTag(), size);
+		this(stack.getItem(), StackUtil.getTag(stack), size);
 	}
 
 	public LeanItemStack(Item item, CompoundTag nbt, int size)

@@ -21,7 +21,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +43,7 @@ public class ItemBatteryChargeHotbar extends ItemBattery implements IBoxable
 		Mode mode = getMode(stack);
 		Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.mode",
 			Component.translatable("ic2r.tooltip.mode." + mode.name().toLowerCase(Locale.ENGLISH))));
-		if (world != null && world.isClientSide)
+		if (world != null && world.level() != null && world.level().isClientSide)
 		{
 			showBoxableTip(tooltip, mode);
 		}

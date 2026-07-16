@@ -61,7 +61,7 @@ public class WorldUtil
 		}
 
 		world.setBlock(pos, strippedBlockState, 11);
-		mainHandItem.hurtAndBreak(1, player, p -> p.onEquippedItemBroken(player.getUsedItemHand()));
+		mainHandItem.hurtAndBreak(1, player, net.minecraft.world.entity.LivingEntity.getSlotForHand(player.getUsedItemHand()));
 	}
 
 	public interface ITileEntityResultHandler

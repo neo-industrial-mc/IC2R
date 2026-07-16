@@ -23,6 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -32,6 +33,7 @@ import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
 public class RecipeIo
 {
@@ -67,9 +69,13 @@ public class RecipeIo
 				}
 				case ITEM_DATA ->
 				{
-					Item item = GsonHelper.getAsItem(object, "item");
+					Item item = GsonHelper.getAsItem(object, "item").value();
 					ItemStack stack = new ItemStack(item, count);
-					stack.setTag(asNbt(object.get("data"), "data"));
+					CompoundTag data = asNbt(object.get("data"), "data");
+					if (data != null)
+					{
+						stack.set(DataComponents.CUSTOM_DATA, CustomData.of(data));
+					}
 					return new RecipeInputItemStack(stack);
 				}
 				case ANY ->
@@ -89,7 +95,48 @@ public class RecipeIo
 			}
 		}
 
-		return new RecipeInputIngredient(Ingredient.fromJson(json), count);
+		return new RecipeInputIngredient(parseIngredient(json), count);
+	}
+
+	public static Ingredient parseIngredient(JsonElement json)
+	{
+		return Ingredient.CODEC.parse(JsonOps.INSTANCE, json)
+			.getOrThrow(msg -> new JsonSyntaxException("Invalid ingredient: " + msg));
+	}
+
+	public static JsonElement ingredientToJson(Ingredient ingredient)
+	{
+		return Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, ingredient)
+			.getOrThrow(msg -> new IllegalStateException("Failed to encode ingredient: " + msg));
+	}
+
+	public static void writeItemStack(FriendlyByteBuf buf, ItemStack stack)
+	{
+		ItemStack.OPTIONAL_STREAM_CODEC.encode(asRegistryBuf(buf), stack);
+	}
+
+	public static ItemStack readItemStack(FriendlyByteBuf buf)
+	{
+		return ItemStack.OPTIONAL_STREAM_CODEC.decode(asRegistryBuf(buf));
+	}
+
+	public static void writeIngredient(FriendlyByteBuf buf, Ingredient ingredient)
+	{
+		Ingredient.CONTENTS_STREAM_CODEC.encode(asRegistryBuf(buf), ingredient);
+	}
+
+	public static Ingredient readIngredient(FriendlyByteBuf buf)
+	{
+		return Ingredient.CONTENTS_STREAM_CODEC.decode(asRegistryBuf(buf));
+	}
+
+	private static RegistryFriendlyByteBuf asRegistryBuf(FriendlyByteBuf buf)
+	{
+		if (buf instanceof RegistryFriendlyByteBuf registryBuf)
+		{
+			return registryBuf;
+		}
+		throw new IllegalStateException("Expected RegistryFriendlyByteBuf for item/ingredient network IO, got " + buf.getClass().getName());
 	}
 
 	private static RecipeInputMultiple parseMultiple(JsonArray array, int count)
@@ -159,22 +206,28 @@ public class RecipeIo
 
 	public static ItemStack parseOutput(JsonObject json)
 	{
-		Item item = GsonHelper.getAsItem(json, "item");
+		Item item = GsonHelper.getAsItem(json, "item").value();
 		int count = GsonHelper.getAsInt(json, "count", 1);
 		CompoundTag nbt = getNbt(json);
 		ItemStack stack = new ItemStack(item, count);
-		stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
+		if (nbt != null)
+		{
+			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
+		}
 		return stack;
 	}
 
 	public static void parseWeightedOutput(JsonObject json, RecipeOutputWeighted randomOutput)
 	{
-		Item item = GsonHelper.getAsItem(json, "item");
+		Item item = GsonHelper.getAsItem(json, "item").value();
 		int count = GsonHelper.getAsInt(json, "count", 1);
 		int weight = GsonHelper.getAsInt(json, "weight", 1);
 		CompoundTag nbt = getNbt(json);
 		ItemStack stack = new ItemStack(item, count);
-		stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
+		if (nbt != null)
+		{
+			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
+		}
 		randomOutput.addOutput(stack, weight);
 	}
 
@@ -221,12 +274,12 @@ public class RecipeIo
 		} else if (input instanceof RecipeInputIngredient ingredient)
 		{
 			buf.writeByte(1);
-			ingredient.getIngredient().toNetwork(buf);
+			writeIngredient(buf, ingredient.getIngredient());
 			buf.writeVarInt(ingredient.getAmount());
 		} else if (input instanceof RecipeInputItemStack stack)
 		{
 			buf.writeByte(2);
-			buf.writeItem(stack.input);
+			writeItemStack(buf, stack.input);
 		} else
 		{
 			if (!(input instanceof RecipeInputMultiple mult))
@@ -251,8 +304,8 @@ public class RecipeIo
 		return switch (buf.readByte())
 		{
 			case 0 -> new RecipeInputFluidContainer(BuiltInRegistries.FLUID.byId(buf.readVarInt()), buf.readVarInt());
-			case 1 -> new RecipeInputIngredient(Ingredient.fromNetwork(buf), buf.readVarInt());
-			case 2 -> new RecipeInputItemStack(buf.readItem());
+			case 1 -> new RecipeInputIngredient(readIngredient(buf), buf.readVarInt());
+			case 2 -> new RecipeInputItemStack(readItemStack(buf));
 			case 3 ->
 			{
 				IRecipeInput[] inputs = new IRecipeInput[buf.readVarInt()];
@@ -274,7 +327,7 @@ public class RecipeIo
 
 		for (ItemStack stack : output)
 		{
-			buf.writeItem(stack);
+			writeItemStack(buf, stack);
 		}
 	}
 
@@ -288,7 +341,7 @@ public class RecipeIo
 		buf.writeVarInt(outputs.getOutputs().size());
 		outputs.forEach((stack, weight) ->
 		{
-			buf.writeItem(stack);
+			writeItemStack(buf, stack);
 			buf.writeInt(weight);
 		});
 	}
@@ -300,7 +353,7 @@ public class RecipeIo
 
 		for (int i = 0; i < amount; i++)
 		{
-			stacks.add(buf.readItem());
+			stacks.add(readItemStack(buf));
 		}
 
 		return stacks;
@@ -317,7 +370,7 @@ public class RecipeIo
 
 		for (int i = 0; i < amount; i++)
 		{
-			outputs.addOutput(buf.readItem(), buf.readInt());
+			outputs.addOutput(readItemStack(buf), buf.readInt());
 		}
 
 		return outputs;

@@ -1,26 +1,29 @@
 package me.halfcooler.ic2r.core.recipe;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.MapCodec;
 import me.halfcooler.ic2r.core.item.reactor.AbstractDamageableReactorComponent;
+import me.halfcooler.ic2r.core.recipe.v2.JsonRecipeCodecs;
+import me.halfcooler.ic2r.core.recipe.v2.RecipeIo;
 import me.halfcooler.ic2r.core.ref.Ic2rRecipeSerializers;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.core.RegistryAccess;
 
 /**
  * Shapeless crafting recipe that reduces custom durability ("use") on
@@ -31,6 +34,8 @@ import net.minecraft.core.RegistryAccess;
  */
 public class GradualRecipe implements CraftingRecipe
 {
+	private static final ResourceLocation RUNTIME_ID = ResourceLocation.fromNamespaceAndPath("ic2r", "gradual");
+
 	private final ResourceLocation id;
 	private final AbstractDamageableReactorComponent item;
 	private final ItemStack chargeMaterial;
@@ -47,18 +52,18 @@ public class GradualRecipe implements CraftingRecipe
 	}
 
 	@Override
-	public boolean matches(@NotNull CraftingContainer inv, @NotNull Level world)
+	public boolean matches(@NotNull CraftingInput inv, @NotNull Level world)
 	{
-		return !this.assemble(inv, null).isEmpty();
+		return !this.assemble(inv, world.registryAccess()).isEmpty();
 	}
 
 	@Override
-	public @NotNull ItemStack assemble(@NotNull CraftingContainer inv, @NotNull RegistryAccess registryAccess)
+	public @NotNull ItemStack assemble(@NotNull CraftingInput inv, @NotNull HolderLookup.Provider registryAccess)
 	{
 		ItemStack gridItem = null;
 		int chargeMats = 0;
 
-		for (int slot = 0; slot < inv.getContainerSize(); slot++)
+		for (int slot = 0; slot < inv.size(); slot++)
 		{
 			ItemStack stack = inv.getItem(slot);
 			if (StackUtil.isEmpty(stack))
@@ -115,7 +120,7 @@ public class GradualRecipe implements CraftingRecipe
 	}
 
 	@Override
-	public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess)
+	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider registryAccess)
 	{
 		return new ItemStack(this.item);
 	}
@@ -140,7 +145,6 @@ public class GradualRecipe implements CraftingRecipe
 		return true;
 	}
 
-	@Override
 	public @NotNull ResourceLocation getId()
 	{
 		return this.id;
@@ -175,23 +179,25 @@ public class GradualRecipe implements CraftingRecipe
 
 	public static class Serializer implements RecipeSerializer<GradualRecipe>
 	{
-		@Override
-		public @NotNull GradualRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json)
+		private final MapCodec<GradualRecipe> codec = JsonRecipeCodecs.mapCodec(this::fromJsonObject);
+		private final StreamCodec<RegistryFriendlyByteBuf, GradualRecipe> streamCodec =
+			JsonRecipeCodecs.streamCodec(this::fromNetworkBuf, this::toNetworkBuf);
+
+		private GradualRecipe fromJsonObject(JsonObject json)
 		{
-			Item item = GsonHelper.getAsItem(json, "item");
+			Item item = GsonHelper.getAsItem(json, "item").value();
 			if (!(item instanceof AbstractDamageableReactorComponent component))
 			{
 				throw new IllegalArgumentException("Gradual recipe item must be a damageable reactor component: " + item);
 			}
 
-			ItemStack chargeMaterial = net.minecraft.world.item.crafting.ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "charge_material"));
+			ItemStack chargeMaterial = RecipeIo.parseOutput(GsonHelper.getAsJsonObject(json, "charge_material"));
 			int amount = GsonHelper.getAsInt(json, "amount");
 			boolean hidden = GsonHelper.getAsBoolean(json, "hidden", false);
-			return new GradualRecipe(id, component, chargeMaterial, amount, hidden);
+			return new GradualRecipe(RUNTIME_ID, component, chargeMaterial, amount, hidden);
 		}
 
-		@Override
-		public GradualRecipe fromNetwork(@NotNull ResourceLocation id, FriendlyByteBuf buf)
+		private GradualRecipe fromNetworkBuf(RegistryFriendlyByteBuf buf)
 		{
 			Item item = BuiltInRegistries.ITEM.byId(buf.readVarInt());
 			if (!(item instanceof AbstractDamageableReactorComponent component))
@@ -199,19 +205,30 @@ public class GradualRecipe implements CraftingRecipe
 				throw new IllegalStateException("Gradual recipe item is not a damageable reactor component: " + item);
 			}
 
-			ItemStack chargeMaterial = buf.readItem();
+			ItemStack chargeMaterial = RecipeIo.readItemStack(buf);
 			int amount = buf.readVarInt();
 			boolean hidden = buf.readBoolean();
-			return new GradualRecipe(id, component, chargeMaterial, amount, hidden);
+			return new GradualRecipe(RUNTIME_ID, component, chargeMaterial, amount, hidden);
+		}
+
+		private void toNetworkBuf(RegistryFriendlyByteBuf buf, GradualRecipe recipe)
+		{
+			buf.writeVarInt(BuiltInRegistries.ITEM.getId(recipe.item));
+			RecipeIo.writeItemStack(buf, recipe.chargeMaterial);
+			buf.writeVarInt(recipe.amount);
+			buf.writeBoolean(recipe.hidden);
 		}
 
 		@Override
-		public void toNetwork(FriendlyByteBuf buf, GradualRecipe recipe)
+		public @NotNull MapCodec<GradualRecipe> codec()
 		{
-			buf.writeVarInt(BuiltInRegistries.ITEM.getId(recipe.item));
-			buf.writeItem(recipe.chargeMaterial);
-			buf.writeVarInt(recipe.amount);
-			buf.writeBoolean(recipe.hidden);
+			return this.codec;
+		}
+
+		@Override
+		public @NotNull StreamCodec<RegistryFriendlyByteBuf, GradualRecipe> streamCodec()
+		{
+			return this.streamCodec;
 		}
 	}
 }

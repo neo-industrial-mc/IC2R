@@ -65,7 +65,7 @@ public class TileEntityGenerator extends TileEntityBaseGenerator implements IGui
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.GENERATOR_GENERATOR_LOOP.value();
+		return Ic2rSoundEvents.GENERATOR_GENERATOR_LOOP.get();
 	}
 
 	@Override

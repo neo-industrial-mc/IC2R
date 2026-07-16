@@ -370,7 +370,7 @@ public final class CommandIc2r
 					Util.getName(stack.getItem()),
 					stack.getDamageValue(),
 					stack.getMaxDamage(),
-					stack.getTag()
+					StackUtil.getTag(stack)
 				)
 			);
 			msg(source, "Current Item excluding amount: " + ConfigUtil.fromStack(stack));

@@ -136,7 +136,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 		}
 
 		MinecraftServer server = world.getServer();
-		return server == null ? null : server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, inventory, world).orElse(null);
+		return server == null ? null : server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, inventory.asCraftInput(), world).map(net.minecraft.world.item.crafting.RecipeHolder::value).orElse(null);
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 			if (world.getServer() != null)
 			{
 				CraftingRecipe recipe = this.getRecipe(this.craftMatrix);
-				ItemStack output = recipe == null ? ItemStack.EMPTY : recipe.assemble(this.craftMatrix, world.registryAccess());
+				ItemStack output = recipe == null ? ItemStack.EMPTY : recipe.assemble(this.craftMatrix.asCraftInput(), world.registryAccess());
 				this.craftResult.setItem(0, output);
 			}
 		}
@@ -251,7 +251,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 							Ic2rCraftingResultSlot outputSlot = (Ic2rCraftingResultSlot) craftingSlot;
 							CraftingContainer inputInv = outputSlot.getInput();
 							CraftingRecipe recipe = this.getRecipe(inputInv);
-							if (recipe != null && StackUtil.checkItemEquality(recipe.assemble(inputInv, this.base.getLevel().registryAccess()), start))
+							if (recipe != null && StackUtil.checkItemEquality(recipe.assemble(inputInv.asCraftInput(), this.base.getLevel().registryAccess()), start))
 							{
 								sourceItemStack = craftingSlot.getItem();
 								start = sourceItemStack.copy();

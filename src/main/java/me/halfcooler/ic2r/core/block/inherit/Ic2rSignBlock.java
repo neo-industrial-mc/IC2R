@@ -12,7 +12,7 @@ public class Ic2rSignBlock extends StandingSignBlock
 {
 	public Ic2rSignBlock(Properties settings, WoodType signType)
 	{
-		super(settings, signType);
+		super(signType, settings);
 	}
 
 	public @NotNull BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state)

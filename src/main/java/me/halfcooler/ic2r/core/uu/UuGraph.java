@@ -98,7 +98,7 @@ public class UuGraph
 			return exactNode.stack.toMcStack();
 		} else
 		{
-			LeanItemStack search = new LeanItemStack(stack.getItem(), stack.getTag(), StackUtil.getSize(stack));
+			LeanItemStack search = new LeanItemStack(stack.getItem(), StackUtil.getTag(stack), StackUtil.getSize(stack));
 			Collection<UuGraph.Node> nodes = getAll(search);
 			if (nodes.isEmpty())
 			{

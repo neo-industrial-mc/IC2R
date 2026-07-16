@@ -138,7 +138,7 @@ public class TileEntityLuminator extends Ic2rTileEntity implements ServerTicker
 		AABB bounds = aabbMap.get(this.getFacing()).get(0).move(this.worldPosition);
 		for (Monster monster : this.getLevel().getEntitiesOfClass(Monster.class, bounds, Entity::isAlive))
 		{
-			boolean isUndead = monster.getMobType() == MobType.UNDEAD;
+			boolean isUndead = monster.getType().is(net.minecraft.tags.EntityTypeTags.UNDEAD);
 			monster.setRemainingFireTicks(isUndead ? 20 : 10);
 		}
 	}

@@ -190,7 +190,7 @@ public class JetpackLogic
 
 		if (jetpackUsed)
 		{
-			SoundEvent soundEvent = jetpack instanceof ItemArmorJetpack ? Ic2rSoundEvents.ITEM_JETPACK_FIRE.value() : Ic2rSoundEvents.ITEM_JETPACK_LOOP.value();
+			SoundEvent soundEvent = jetpack instanceof ItemArmorJetpack ? Ic2rSoundEvents.ITEM_JETPACK_FIRE.get() : Ic2rSoundEvents.ITEM_JETPACK_LOOP.get();
 			if (jetpackSound == null || jetpackSoundEvent != soundEvent)
 			{
 				stopJetpackSound(player);

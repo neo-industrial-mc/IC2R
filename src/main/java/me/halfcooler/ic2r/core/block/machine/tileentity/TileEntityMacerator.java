@@ -53,13 +53,13 @@ public class TileEntityMacerator extends TileEntityStandardMachine<IRecipeInput,
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_MACERATOR_OPERATE.value();
+		return Ic2rSoundEvents.MACHINE_MACERATOR_OPERATE.get();
 	}
 
 	@Override
 	public SoundEvent getInterruptSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_INTERRUPT1.value();
+		return Ic2rSoundEvents.MACHINE_INTERRUPT1.get();
 	}
 
 	@Override

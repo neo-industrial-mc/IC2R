@@ -73,6 +73,6 @@ public class ItemBattery extends BaseElectricItem implements INetworkItemEventLi
 	@Override
 	public void onNetworkEvent(ItemStack stack, Player player, int event)
 	{
-		player.playSound(Ic2rSoundEvents.ITEM_BATTERY_USE.value(), 1.0F, 1.0F);
+		player.playSound(Ic2rSoundEvents.ITEM_BATTERY_USE.get(), 1.0F, 1.0F);
 	}
 }

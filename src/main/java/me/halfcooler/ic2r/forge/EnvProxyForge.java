@@ -2,6 +2,7 @@ package me.halfcooler.ic2r.forge;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import me.halfcooler.ic2r.api.crops.Crops;
 import me.halfcooler.ic2r.api.crops.CropCard;
 import me.halfcooler.ic2r.api.energy.ProfileEvent;
@@ -157,7 +158,7 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public void registerItem(ResourceLocation id, Item item)
 	{
-		BuiltInRegistries.ITEM.register(id, item);
+		pendingItemRegistrations.add(() -> Registry.register(BuiltInRegistries.ITEM, id, item));
 	}
 
 	@Override
@@ -197,7 +198,8 @@ public final class EnvProxyForge implements EnvProxy
 	public GameEvent registerGameEvent(String id, int range)
 	{
 		ResourceLocation identifier = IC2R.getIdentifier(id);
-		return Registry.register(BuiltInRegistries.GAME_EVENT, identifier, new GameEvent(identifier.toString(), range));
+		// GameEvent is a record of notification radius only; name comes from registry key.
+		return Registry.register(BuiltInRegistries.GAME_EVENT, identifier, new GameEvent(range));
 	}
 
 	@Override
@@ -230,9 +232,12 @@ public final class EnvProxyForge implements EnvProxy
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation id, Codec<T> codec)
 	{
-		FoliagePlacerType<T> type = new FoliagePlacerType<>(codec);
+		// Call sites pass MapCodec cast as Codec; recover MapCodec (required by 1.21 FoliagePlacerType).
+		MapCodec<T> mapCodec = (MapCodec<T>) (Object) codec;
+		FoliagePlacerType<T> type = new FoliagePlacerType<>(mapCodec);
 		foliagePlacerRegistry.register(id.getPath(), () -> type);
 		return type;
 	}
@@ -450,7 +455,8 @@ public final class EnvProxyForge implements EnvProxy
 	public boolean announceExplosion(Level world, Entity entity, Vec3 pos, double power, LivingEntity igniter, int radiationRange, double rangeLimit)
 	{
 		ExplosionEvent event = new ExplosionEvent(world, entity, pos, power, igniter, radiationRange, rangeLimit);
-		return !NeoForge.EVENT_BUS.post(event);
+		NeoForge.EVENT_BUS.post(event);
+		return !event.isCanceled();
 	}
 
 	record TabRegistration(ResourceLocation id, Supplier<ItemStack> icon, Ic2rItemGroupType groupType)

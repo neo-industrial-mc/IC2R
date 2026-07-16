@@ -12,6 +12,7 @@ import java.util.Arrays;
 
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -81,7 +83,10 @@ public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSou
 		Player player = getPlayerHoldingItem(stack);
 		if (player != null)
 		{
-			if (player.isEyeInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player))
+			if (player.isEyeInFluid(FluidTags.WATER)
+				&& EnchantmentHelper.getEnchantmentLevel(
+					player.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.AQUA_AFFINITY),
+					player) <= 0)
 			{
 				speed *= 3.0F;
 			}
@@ -155,7 +160,7 @@ public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSou
 	@Override
 	protected SoundEvent getIdleSound(LivingEntity player, ItemStack stack)
 	{
-		return stack.getItem() == Ic2rItems.DRILL ? Ic2rSoundEvents.ITEM_DRILL_IDLE.value() : null;
+		return stack.getItem() == Ic2rItems.DRILL ? Ic2rSoundEvents.ITEM_DRILL_IDLE.get() : null;
 	}
 
 	@Override
@@ -168,6 +173,6 @@ public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSou
 	public SoundEvent getBreakSoundForBlock(LocalPlayer player, Level world, BlockPos pos, ItemStack stack)
 	{
 		Block block = world.getBlockState(pos).getBlock();
-		return block.defaultDestroyTime() >= 3.0F ? Ic2rSoundEvents.ITEM_DRILL_HARD.value() : Ic2rSoundEvents.ITEM_DRILL_SOFT.value();
+		return block.defaultDestroyTime() >= 3.0F ? Ic2rSoundEvents.ITEM_DRILL_HARD.get() : Ic2rSoundEvents.ITEM_DRILL_SOFT.get();
 	}
 }

@@ -29,8 +29,7 @@ public class TileEntityReactorAccessHatch extends TileEntityReactorVessel implem
 		return reactor != null ? reactor.onActivated(player, hand, side, hit) : InteractionResult.PASS;
 	}
 
-	public int getContainerSize()
-	{
+	public int getContainerSize() {
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
 		return reactor != null ? reactor.getContainerSize() : 0;
 	}

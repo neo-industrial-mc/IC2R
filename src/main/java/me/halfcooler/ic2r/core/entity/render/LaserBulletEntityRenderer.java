@@ -76,12 +76,12 @@ public class LaserBulletEntityRenderer extends EntityRenderer<LaserBulletEntity>
 		int light
 	)
 	{
-		vertexConsumer.vertex(positionMatrix, x, y, z)
-			.color(255, 255, 255, 255)
+		vertexConsumer.addVertex(positionMatrix, (float) x, (float) y, (float) z)
+			.setColor(255, 255, 255, 255)
 			.setUv(u, v)
 			.setOverlay(OverlayTexture.NO_OVERLAY)
 			.setLight(light)
-			.normal(normalMatrix, normalX, normalY, normalZ)
+			.setNormal((float) normalX, (float) normalY, (float) normalZ)
 			;
 	}
 

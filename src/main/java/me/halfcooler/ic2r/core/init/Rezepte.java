@@ -43,8 +43,10 @@ public class Rezepte
 		{
 			MatterAmplifierRecipeManager manager = new MatterAmplifierRecipeManager();
 
-			for (RecipeHolder<IRecipeInput, Integer> holder : recipeManager.getAllRecipesFor(Ic2rRecipeTypes.MATTER_FABRICATOR))
+			// 1.21 RecipeManager wraps recipes in vanilla RecipeHolder; unwrap .value()
+			for (var vanillaHolder : recipeManager.getAllRecipesFor(Ic2rRecipeTypes.MATTER_FABRICATOR))
 			{
+				RecipeHolder<IRecipeInput, Integer> holder = vanillaHolder.value();
 				manager.addRecipe(holder.recipe().getInput(), holder.recipe().getOutput(), null, false);
 			}
 
@@ -54,8 +56,9 @@ public class Rezepte
 		{
 			CannerBottleRecipeManager manager = new CannerBottleRecipeManager();
 
-			for (RecipeHolder<ICannerBottleRecipeManager.Input, ItemStack> holder : recipeManager.getAllRecipesFor(Ic2rRecipeTypes.CANNER_BOTTLE))
+			for (var vanillaHolder : recipeManager.getAllRecipesFor(Ic2rRecipeTypes.CANNER_BOTTLE))
 			{
+				RecipeHolder<ICannerBottleRecipeManager.Input, ItemStack> holder = vanillaHolder.value();
 				manager.addRecipe(holder.recipe().getInput(), holder.recipe().getOutput(), null, false);
 			}
 
@@ -65,8 +68,9 @@ public class Rezepte
 		{
 			CannerEnrichRecipeManager manager = new CannerEnrichRecipeManager();
 
-			for (RecipeHolder<ICannerEnrichRecipeManager.Input, Ic2rFluidStack> holder : recipeManager.getAllRecipesFor(Ic2rRecipeTypes.CANNER_ENRICH))
+			for (var vanillaHolder : recipeManager.getAllRecipesFor(Ic2rRecipeTypes.CANNER_ENRICH))
 			{
+				RecipeHolder<ICannerEnrichRecipeManager.Input, Ic2rFluidStack> holder = vanillaHolder.value();
 				manager.addRecipe(holder.recipe().getInput(), holder.recipe().getOutput(), null, false);
 			}
 

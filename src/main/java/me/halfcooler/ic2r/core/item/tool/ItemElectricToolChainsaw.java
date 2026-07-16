@@ -30,7 +30,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -105,13 +107,13 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	@Override
 	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
-		return super.isCorrectToolForDrops(state) || state.is(Blocks.COBWEB) || Util.canShear(state);
+		return super.isCorrectToolForDrops(stack, state) || state.is(Blocks.COBWEB) || Util.canShear(state);
 	}
 
 	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
-		return !this.canUse(stack) || !state.is(BlockTags.MINEABLE_WITH_AXE) && !state.is(Blocks.COBWEB) && !Util.canShear(state) ? 1.0F : this.speed;
+		return !this.canUse(stack) || !state.is(BlockTags.MINEABLE_WITH_AXE) && !state.is(Blocks.COBWEB) && !Util.canShear(state) ? 1.0F : this.getToolSpeed();
 	}
 
 	@Override
@@ -199,7 +201,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 
 	public SoundEvent getToolUsingSound()
 	{
-		return IC2R.random.nextBoolean() ? Ic2rSoundEvents.ITEM_CHAINSAW_USE1.value() : Ic2rSoundEvents.ITEM_CHAINSAW_USE2.value();
+		return IC2R.random.nextBoolean() ? Ic2rSoundEvents.ITEM_CHAINSAW_USE1.get() : Ic2rSoundEvents.ITEM_CHAINSAW_USE2.get();
 	}
 
 	@Override
@@ -217,13 +219,13 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	@Override
 	protected SoundEvent getIdleSound(LivingEntity player, ItemStack stack)
 	{
-		return Ic2rSoundEvents.ITEM_CHAINSAW_IDLE.value();
+		return Ic2rSoundEvents.ITEM_CHAINSAW_IDLE.get();
 	}
 
 	@Override
 	protected SoundEvent getStopSound(LivingEntity player, ItemStack stack)
 	{
-		return Ic2rSoundEvents.ITEM_CHAINSAW_STOP.value();
+		return Ic2rSoundEvents.ITEM_CHAINSAW_STOP.get();
 	}
 
 	@Override

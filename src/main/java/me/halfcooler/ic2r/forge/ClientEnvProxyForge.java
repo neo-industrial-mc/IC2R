@@ -11,7 +11,6 @@ import java.util.List;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -30,8 +29,8 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 public final class ClientEnvProxyForge implements ClientEnvProxy
 {
@@ -42,11 +41,13 @@ public final class ClientEnvProxyForge implements ClientEnvProxy
 	static List<ClientEnvProxyForge.BlockLayerRegistration> blockLayerRegistrations = new ArrayList<>();
 	static List<ClientEnvProxyForge.EntityRendererRegistration<?>> entityRendererRegistrations = new ArrayList<>();
 	static List<ClientEnvProxyForge.BlockEntityRendererRegistration<?>> blockEntityRendererRegistrations = new ArrayList<>();
+	/** Deferred until {@link net.neoforged.neoforge.client.event.RegisterMenuScreensEvent} (MenuScreens.register is private). */
+	static List<ClientEnvProxyForge.ScreenRegistration<?>> screenRegistrations = new ArrayList<>();
 
 	@Override
 	public <H extends AbstractContainerMenu> void registerScreen(MenuType<H> type, ClientEnvProxy.ScreenFactory<H> factory)
 	{
-		MenuScreens.register(type, factory::create);
+		screenRegistrations.add(new ClientEnvProxyForge.ScreenRegistration<>(type, factory));
 	}
 
 	@Override
@@ -156,6 +157,10 @@ public final class ClientEnvProxyForge implements ClientEnvProxy
 	}
 
 	record ItemColorProviderRegistration(ItemColor provider, ItemLike... items)
+	{
+	}
+
+	record ScreenRegistration<H extends AbstractContainerMenu>(MenuType<H> type, ClientEnvProxy.ScreenFactory<H> factory)
 	{
 	}
 }

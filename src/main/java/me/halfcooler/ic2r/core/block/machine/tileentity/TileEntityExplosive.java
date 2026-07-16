@@ -67,7 +67,7 @@ public abstract class TileEntityExplosive extends TileEntityInventory implements
 		Entity source = explosion.getIndirectSourceEntity();
 		if (source == null)
 		{
-			source = explosion.getDamageSource().getEntity();
+			source = explosion.getDirectSourceEntity();
 		}
 
 		this.explode(source instanceof LivingEntity living ? living : null, true);

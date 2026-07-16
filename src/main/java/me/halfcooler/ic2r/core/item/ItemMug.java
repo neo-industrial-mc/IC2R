@@ -93,7 +93,7 @@ public class ItemMug extends Item implements ItemLike
 		}
 	}
 
-	private int amplifyEffect(Player player, MobEffect potion, int maxAmplifier, int extraDuration)
+	private int amplifyEffect(Player player, net.minecraft.core.Holder<MobEffect> potion, int maxAmplifier, int extraDuration)
 	{
 		MobEffectInstance eff = player.getEffect(potion);
 		if (eff != null)
@@ -106,7 +106,6 @@ public class ItemMug extends Item implements ItemLike
 			}
 
 			newDur += extraDuration;
-			assert potion == eff.getEffect();
 			player.addEffect(new MobEffectInstance(potion, newDur, newAmp));
 			return newAmp;
 		} else

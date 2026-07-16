@@ -1,5 +1,7 @@
 package me.halfcooler.ic2r.core.block.transport.cover;
 
+import net.minecraft.core.RegistryAccess;
+
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.comp.TileEntityComponent;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
@@ -65,7 +67,7 @@ public class Covers extends TileEntityComponent
 				IC2R.log.error(LogCategory.Block, "Can't load cover for %s, index %d is out of bounds.", Util.toString(this.parent), index);
 			} else
 			{
-				ItemStack cover = ItemStack.of(coverTag);
+				ItemStack cover = ItemStack.parseOptional(RegistryAccess.EMPTY, coverTag);
 				if (StackUtil.isEmpty(cover))
 				{
 					IC2R.log
@@ -112,7 +114,7 @@ public class Covers extends TileEntityComponent
 			{
 				CompoundTag coverTag = new CompoundTag();
 				coverTag.putByte("facing", (byte) facing.ordinal());
-				cover.save(coverTag);
+				cover.save(net.minecraft.core.RegistryAccess.EMPTY, coverTag);
 				coversTag.add(coverTag);
 			}
 		}

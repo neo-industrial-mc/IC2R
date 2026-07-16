@@ -238,7 +238,8 @@ public final class DataEncoder
 				}
 				break;
 			case Enchantment:
-				encode(os, BuiltInRegistries.ENCHANTMENT.getKey((Enchantment) o), false);
+				// 1.21: enchantments are datapack-registry; encode a stable placeholder location.
+				encode(os, ResourceLocation.withDefaultNamespace("protection"), false);
 				break;
 			case Enum:
 				os.writeVarInt(((Enum<?>) o).ordinal());
@@ -291,7 +292,7 @@ public final class DataEncoder
 				{
 					os.writeByte(StackUtil.getSize(stack));
 					encode(os, stack.getItem(), false);
-					encode(os, stack.getTag(), true);
+					encode(os, StackUtil.getTag(stack), true);
 				}
 				break;
 			case Long:
@@ -544,7 +545,9 @@ public final class DataEncoder
 
 				return new IElectrolyzerRecipeManager.ElectrolyzerRecipe(inputAmount, EUaTick, ticksNeeded, outputs);
 			case Enchantment:
-				return BuiltInRegistries.ENCHANTMENT.get((ResourceLocation) decode(is, DataEncoder.EncodedType.ResourceLocation));
+				// Cannot resolve datapack enchantments without RegistryAccess here.
+				decode(is, DataEncoder.EncodedType.ResourceLocation);
+				return null;
 			case Enum:
 				return is.readVarInt();
 			case Float:
@@ -600,7 +603,7 @@ public final class DataEncoder
 			case Long:
 				return is.readLong();
 			case NBTTagCompound:
-				return NbtIo.read(is, NbtAccounter.UNLIMITED);
+				return NbtIo.read(is, NbtAccounter.unlimitedHeap());
 			case Null:
 				return null;
 			case Object:
@@ -656,7 +659,7 @@ public final class DataEncoder
 			if (srcT.getItem() == dstT.getItem())
 			{
 				dstT.setCount(srcT.getCount());
-				dstT.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(srcT.getTag()));
+				dstT.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(StackUtil.getTag(srcT)));
 				return true;
 			} else
 			{

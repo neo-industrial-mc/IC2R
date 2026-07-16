@@ -1,16 +1,14 @@
 package me.halfcooler.ic2r.forge.util;
 
 import me.halfcooler.ic2r.core.util.PumpUtil;
-import me.halfcooler.ic2r.core.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.IFluidBlock;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Forge-side {@link PumpUtil.PumpFluidAccess} that delegates to {@link IFluidBlock}.
+ * NeoForge-side {@link PumpUtil.PumpFluidAccess}.
+ * {@code IFluidBlock} was removed; liquid handling falls through to vanilla {@code LiquidBlock}.
  */
 public final class PumpUtilForge implements PumpUtil.PumpFluidAccess
 {
@@ -27,18 +25,7 @@ public final class PumpUtilForge implements PumpUtil.PumpFluidAccess
 	@Nullable
 	public Integer getForgeFluidDecay(BlockState state, Level world, BlockPos pos)
 	{
-		Block block = state.getBlock();
-		if (block instanceof IFluidBlock fb)
-		{
-			if (fb.canDrain(world, pos))
-			{
-				return 0;
-			}
-
-			float level = Math.abs(fb.getFilledPercentage(world, pos));
-			return 7 - Util.limit(Math.round(6.0F * level), 0, 6);
-		}
-
-		return null; // not a forge fluid block; caller falls through to LiquidBlock check
+		// No NeoForge IFluidBlock equivalent; caller uses LiquidBlock path.
+		return null;
 	}
 }

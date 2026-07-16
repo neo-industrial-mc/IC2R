@@ -49,10 +49,11 @@ public class RecipeResolver implements IRecipeResolver
 
 		List<RecipeTransformation> ret = new ArrayList<>();
 
-		for (CraftingRecipe recipe : recipeManager.getAllRecipesFor(RecipeType.CRAFTING))
+		for (var vanillaHolder : recipeManager.getAllRecipesFor(RecipeType.CRAFTING))
 		{
 			try
 			{
+				CraftingRecipe recipe = vanillaHolder.value();
 				NonNullList<Ingredient> ingredients = recipe.getIngredients();
 				if (ingredients.isEmpty())
 				{

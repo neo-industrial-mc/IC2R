@@ -23,8 +23,11 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -107,7 +110,7 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
-		if (this.isCorrectToolForDrops(state) && this.canTakeDamage(stack, MINE_ENERGY_UNITS))
+		if (this.isCorrectToolForDrops(stack, state) && this.canTakeDamage(stack, MINE_ENERGY_UNITS))
 		{
 			return ItemToolWrench.WRENCH_DESTROY_SPEED;
 		}
@@ -166,7 +169,7 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 		}
 
 		return world.getBlockState(pos).getBlock() instanceof IWrenchAble
-			? Ic2rSoundEvents.ITEM_WRENCH_USE.value()
+			? Ic2rSoundEvents.ITEM_WRENCH_USE.get()
 			: null;
 	}
 }

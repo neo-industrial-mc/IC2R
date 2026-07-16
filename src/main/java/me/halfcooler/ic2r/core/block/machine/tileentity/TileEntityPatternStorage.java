@@ -94,7 +94,7 @@ public class TileEntityPatternStorage extends TileEntityInventory implements IHa
 		for (int i = 0; i < patternList.size(); i++)
 		{
 			CompoundTag contentTag = patternList.getCompound(i);
-			ItemStack Item = ItemStack.of(contentTag);
+			ItemStack Item = ItemStack.parseOptional(RegistryAccess.EMPTY, contentTag);
 			this.addPattern(Item);
 		}
 

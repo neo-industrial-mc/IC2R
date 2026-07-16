@@ -12,7 +12,7 @@ public class BlockStateUtil
 {
 	public static String getVariantString(BlockState state)
 	{
-		ImmutableMap<Property<?>, Comparable<?>> properties = state.getValues();
+		java.util.Map<Property<?>, Comparable<?>> properties = state.getValues();
 		if (properties.isEmpty())
 		{
 			return "normal";

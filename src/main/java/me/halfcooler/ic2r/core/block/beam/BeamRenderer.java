@@ -66,12 +66,12 @@ public class BeamRenderer extends EntityRenderer<ParticleEntity>
 				v = v1;
 			}
 
-			vertexConsumer.vertex(positionMatrix, x, y, 0.0F)
-				.color(red, green, blue, alpha)
+			vertexConsumer.addVertex(positionMatrix, x, y, 0.0F)
+				.setColor(red, green, blue, alpha)
 				.setUv(u, v)
 				.setOverlay(OverlayTexture.NO_OVERLAY)
 				.setLight(light)
-				.normal(normalMatrix, 0.0F, 1.0F, 0.0F)
+				.setNormal(entry, 0.0F, 1.0F, 0.0F)
 				;
 		}
 

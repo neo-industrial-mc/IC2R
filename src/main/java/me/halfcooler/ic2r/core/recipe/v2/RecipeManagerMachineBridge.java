@@ -55,9 +55,9 @@ public final class RecipeManagerMachineBridge
 	{
 		BasicMachineRecipeManager manager = new BasicMachineRecipeManager();
 
-		for (RecipeHolder<IRecipeInput, Collection<ItemStack>> holder : recipeManager.getAllRecipesFor(type))
+		for (var vanillaHolder : recipeManager.getAllRecipesFor(type))
 		{
-			manager.addRecipe(holder.recipe(), false);
+			manager.addRecipe(vanillaHolder.value().recipe(), false);
 		}
 
 		return manager;
@@ -107,7 +107,9 @@ public final class RecipeManagerMachineBridge
 		boolean hasRecipeRemainder
 	)
 	{
-		List<RecipeHolder<IRecipeInput, Collection<ItemStack>>> holders = recipeManager.getAllRecipesFor(type);
+		List<RecipeHolder<IRecipeInput, Collection<ItemStack>>> holders = recipeManager.getAllRecipesFor(type).stream()
+			.map(net.minecraft.world.item.crafting.RecipeHolder::value)
+			.toList();
 		return findMatching(holders, input, hasRecipeRemainder);
 	}
 }

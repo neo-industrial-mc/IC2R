@@ -227,6 +227,6 @@ public class TileEntityIronFurnace extends TileEntityBase implements IHasGui, IG
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_FURNACE_IRON_OPERATE.value();
+		return Ic2rSoundEvents.MACHINE_FURNACE_IRON_OPERATE.get();
 	}
 }

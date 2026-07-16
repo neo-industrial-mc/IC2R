@@ -674,7 +674,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_MINER_OPERATE.value();
+		return Ic2rSoundEvents.MACHINE_MINER_OPERATE.get();
 	}
 
 	@Override

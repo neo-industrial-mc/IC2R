@@ -1,5 +1,7 @@
 package me.halfcooler.ic2r.core.crop;
 
+import me.halfcooler.ic2r.core.util.StackUtil;
+
 import me.halfcooler.ic2r.api.crops.BaseSeed;
 import me.halfcooler.ic2r.api.crops.CropCard;
 import me.halfcooler.ic2r.api.crops.CropProperties;
@@ -286,7 +288,7 @@ public class Ic2rCrops extends Crops
 			return this.getCropCard("ic2r", identifier.getPath());
 		} else
 		{
-			CompoundTag nbt = stack.getTag();
+			CompoundTag nbt = StackUtil.getTag(stack);
 			if (nbt == null)
 			{
 				return null;

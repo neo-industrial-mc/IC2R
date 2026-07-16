@@ -29,7 +29,7 @@ public final class ShearableAccessForge implements ItemElectricToolChainsaw.Shea
 	@Override
 	public boolean isShearable(Entity entity, ItemStack stack, Level level, BlockPos pos)
 	{
-		return entity instanceof IShearable shearable && shearable.isShearable(stack, level, pos);
+		return entity instanceof IShearable shearable && shearable.isShearable(null, stack, level, pos);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public final class ShearableAccessForge implements ItemElectricToolChainsaw.Shea
 	{
 		if (entity instanceof IShearable shearable)
 		{
-			return shearable.onSheared(player, stack, level, pos, 0);
+			return shearable.onSheared(player, stack, level, pos);
 		}
 		return Collections.emptyList();
 	}

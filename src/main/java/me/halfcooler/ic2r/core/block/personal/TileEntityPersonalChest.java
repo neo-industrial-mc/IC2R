@@ -25,7 +25,7 @@ import java.util.WeakHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import me.halfcooler.ic2r.core.util.GameProfileNbt;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -94,7 +94,7 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("ownerGameProfile"))
 		{
-			this.owner = NbtUtils.readGameProfile(nbt.getCompound("ownerGameProfile"));
+			this.owner = GameProfileNbt.read(nbt.getCompound("ownerGameProfile"));
 		}
 	}
 
@@ -105,7 +105,7 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 		if (this.owner != null)
 		{
 			CompoundTag ownerNbt = new CompoundTag();
-			NbtUtils.writeGameProfile(ownerNbt, this.owner);
+			GameProfileNbt.write(ownerNbt, this.owner);
 			nbt.put("ownerGameProfile", ownerNbt);
 		}
 	}

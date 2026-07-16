@@ -8,11 +8,6 @@ public class DetectorFoamCableBlock extends AbstractDetectorCableBlock
 {
     public static final com.mojang.serialization.MapCodec<DetectorFoamCableBlock> CODEC = simpleCodec(DetectorFoamCableBlock::new);
 
-    @Override
-    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec() {
-        return CODEC;
-    }
-
 	protected DetectorFoamCableBlock(Properties settings)
 	{
 		super(settings);

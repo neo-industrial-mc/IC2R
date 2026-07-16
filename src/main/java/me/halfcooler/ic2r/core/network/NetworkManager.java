@@ -29,12 +29,12 @@ import java.util.zip.DeflaterOutputStream;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import me.halfcooler.ic2r.forge.Ic2rRawPayload;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -802,8 +802,6 @@ public class NetworkManager implements INetworkManager
 	{
 		assert !this.isClient();
 		ByteBuf data = makePacket(buffer, advancePos);
-		ServerGamePacketListenerImpl handler = player.connection;
-		Packet<?> packet = new ClientboundCustomPayloadPacket(channelId, new FriendlyByteBuf(data));
-		handler.send(packet);
+		PacketDistributor.sendToPlayer(player, Ic2rRawPayload.fromByteBuf(data));
 	}
 }

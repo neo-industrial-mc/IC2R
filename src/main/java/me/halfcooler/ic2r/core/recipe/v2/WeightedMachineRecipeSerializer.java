@@ -2,16 +2,14 @@ package me.halfcooler.ic2r.core.recipe.v2;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.MapCodec;
 import me.halfcooler.ic2r.api.recipe.IRecipeInput;
 import me.halfcooler.ic2r.api.recipe.MachineRecipe;
 import me.halfcooler.ic2r.api.recipe.MachineRecipeWeighted;
 import me.halfcooler.ic2r.api.recipe.RecipeOutputWeighted;
-
-import java.util.Collection;
-import java.util.function.Function;
-
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
@@ -20,19 +18,28 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.function.Function;
+
 public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeHolder<IRecipeInput, Collection<ItemStack>>>
 {
+	private static final ResourceLocation RUNTIME_ID = ResourceLocation.fromNamespaceAndPath("ic2r", "runtime");
+
 	private final RecipeType<?> recipeType;
 	@Nullable
 	private final Function<JsonObject, CompoundTag> metaProcessor;
+	private final MapCodec<RecipeHolder<IRecipeInput, Collection<ItemStack>>> codec;
+	private final StreamCodec<RegistryFriendlyByteBuf, RecipeHolder<IRecipeInput, Collection<ItemStack>>> streamCodec;
 
 	public WeightedMachineRecipeSerializer(RecipeType<?> recipeType, @Nullable Function<JsonObject, CompoundTag> metaProcessor)
 	{
 		this.recipeType = recipeType;
 		this.metaProcessor = metaProcessor;
+		this.codec = JsonRecipeCodecs.mapCodec(this::fromJsonObject);
+		this.streamCodec = JsonRecipeCodecs.streamCodec(this::fromNetworkBuf, this::toNetworkBuf);
 	}
 
-	public @NotNull RecipeHolder<IRecipeInput, Collection<ItemStack>> fromJson(@NotNull ResourceLocation id, JsonObject json)
+	private RecipeHolder<IRecipeInput, Collection<ItemStack>> fromJsonObject(JsonObject json)
 	{
 		IRecipeInput input = RecipeIo.parseInput(json.get("ingredient"));
 		RecipeOutputWeighted output = new RecipeOutputWeighted();
@@ -48,11 +55,10 @@ public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeH
 		{
 			machineRecipe = new MachineRecipe<>(input, RecipeIo.parseOutputs(resultJsonObj, "result"));
 		}
-
-		return new RecipeHolder<>(machineRecipe, id, this, this.recipeType);
+		return new RecipeHolder<>(machineRecipe, RUNTIME_ID, this, this.recipeType);
 	}
 
-	public RecipeHolder<IRecipeInput, Collection<ItemStack>> fromNetwork(@NotNull ResourceLocation id, FriendlyByteBuf buf)
+	private RecipeHolder<IRecipeInput, Collection<ItemStack>> fromNetworkBuf(RegistryFriendlyByteBuf buf)
 	{
 		byte type = buf.readByte();
 		MachineRecipe<IRecipeInput, Collection<ItemStack>> machineRecipe;
@@ -63,11 +69,10 @@ public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeH
 		{
 			machineRecipe = new MachineRecipe<>(RecipeIo.readInput(buf), RecipeIo.readOutput(buf), buf.readNbt());
 		}
-
-		return new RecipeHolder<>(machineRecipe, id, this, this.recipeType);
+		return new RecipeHolder<>(machineRecipe, RUNTIME_ID, this, this.recipeType);
 	}
 
-	public void toNetwork(@NotNull FriendlyByteBuf buf, RecipeHolder<IRecipeInput, Collection<ItemStack>> recipe)
+	private void toNetworkBuf(RegistryFriendlyByteBuf buf, RecipeHolder<IRecipeInput, Collection<ItemStack>> recipe)
 	{
 		MachineRecipe<IRecipeInput, Collection<ItemStack>> machineRecipe = recipe.recipe();
 		if (machineRecipe instanceof MachineRecipeWeighted<?> machineRecipeWeighted)
@@ -81,7 +86,18 @@ public class WeightedMachineRecipeSerializer implements RecipeSerializer<RecipeH
 			RecipeIo.writeInput(buf, machineRecipe.getInput());
 			RecipeIo.writeOutput(buf, machineRecipe.getOutput());
 		}
-
 		buf.writeNbt(machineRecipe.getMetaData());
+	}
+
+	@Override
+	public @NotNull MapCodec<RecipeHolder<IRecipeInput, Collection<ItemStack>>> codec()
+	{
+		return this.codec;
+	}
+
+	@Override
+	public @NotNull StreamCodec<RegistryFriendlyByteBuf, RecipeHolder<IRecipeInput, Collection<ItemStack>>> streamCodec()
+	{
+		return this.streamCodec;
 	}
 }

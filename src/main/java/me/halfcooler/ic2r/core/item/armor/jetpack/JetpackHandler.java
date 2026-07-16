@@ -75,12 +75,12 @@ public class JetpackHandler implements IBackupElectricItemManager
 				return;
 			}
 
-			stack.getTag().remove("hasIC2RJetpack");
-			if (stack.getTag().isEmpty())
+			StackUtil.getTag(stack).remove("hasIC2RJetpack");
+			if (StackUtil.getTag(stack).isEmpty())
 			{
 				stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
 			}
-		} else if (Mob.getEquipmentSlotForItem(stack) == EquipmentSlot.CHEST)
+		} else if (stack.getEquipmentSlot() == EquipmentSlot.CHEST)
 		{
 			StackUtil.getOrCreateNbtData(stack).putBoolean("hasIC2RJetpack", true);
 		}
@@ -88,7 +88,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 
 	public static boolean hasJetpackAttached(ItemStack stack)
 	{
-		return !StackUtil.isEmpty(stack) && Mob.getEquipmentSlotForItem(stack) == EquipmentSlot.CHEST && stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) && stack.getTag().getBoolean("hasIC2RJetpack");
+		return !StackUtil.isEmpty(stack) && stack.getEquipmentSlot() == EquipmentSlot.CHEST && stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) && StackUtil.getTag(stack).getBoolean("hasIC2RJetpack");
 	}
 
 	public static boolean hasJetpack(ItemStack stack)
@@ -120,7 +120,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 			amount = Math.min(amount, getTransferLimit());
 		}
 
-		double charge = stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) ? stack.getTag().getDouble("charge") : 0.0;
+		double charge = stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) ? StackUtil.getTag(stack).getDouble("charge") : 0.0;
 		amount = Math.min(amount, this.getMaxCharge(stack) - charge);
 		if (!simulate)
 		{
@@ -140,21 +140,21 @@ public class JetpackHandler implements IBackupElectricItemManager
 				amount = Math.min(amount, getTransferLimit());
 			}
 
-			double charge = stack.getTag().getDouble("charge");
+			double charge = StackUtil.getTag(stack).getDouble("charge");
 			amount = Math.min(amount, charge);
 			if (!simulate)
 			{
 				charge -= amount;
 				if (charge == 0.0)
 				{
-					stack.getTag().remove("charge");
-					if (stack.getTag().isEmpty())
+					StackUtil.getTag(stack).remove("charge");
+					if (StackUtil.getTag(stack).isEmpty())
 					{
 						stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
 					}
 				} else
 				{
-					stack.getTag().putDouble("charge", charge);
+					StackUtil.getTag(stack).putDouble("charge", charge);
 				}
 			}
 

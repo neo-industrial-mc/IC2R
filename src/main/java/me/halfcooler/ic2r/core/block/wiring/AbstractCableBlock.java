@@ -58,6 +58,16 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadAwareBlock, SimpleWaterloggedBlock
 {
+	/**
+	 * Cables are registry-created (type/insulation), not data-driven via codec.
+	 * Provide a unit codec so PipeBlock's abstract codec() is satisfied.
+	 */
+	@Override
+	protected com.mojang.serialization.MapCodec<? extends PipeBlock> codec()
+	{
+		return com.mojang.serialization.MapCodec.unit(this);
+	}
+
 	public static final DyeColor DEFAULT_COLOR = DyeColor.BLACK;
 	public static final EnumProperty<DyeColor> colorProperty = EnumProperty.create("color", DyeColor.class);
 	public static final EnumProperty<CableFoam> foamProperty = EnumProperty.create("foam", CableFoam.class);
@@ -436,7 +446,7 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	}
 
 	@Override
-	public @NotNull ItemStack getCloneItemStack(@NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull BlockState state)
+	public @NotNull ItemStack getCloneItemStack(@NotNull net.minecraft.world.level.LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state)
 	{
 		if (this.isFoam())
 		{

@@ -63,7 +63,7 @@ public class TileEntityGeoGenerator extends TileEntityBaseGenerator
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.GENERATOR_GEOTHERMAL_LOOP.value();
+		return Ic2rSoundEvents.GENERATOR_GEOTHERMAL_LOOP.get();
 	}
 
 	@Override

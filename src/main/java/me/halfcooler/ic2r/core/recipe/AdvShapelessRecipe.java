@@ -3,10 +3,12 @@ package me.halfcooler.ic2r.core.recipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.serialization.MapCodec;
 import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.api.recipe.IRecipeInput;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.item.tool.ItemToolCrafting;
+import me.halfcooler.ic2r.core.recipe.v2.JsonRecipeCodecs;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeIo;
 import me.halfcooler.ic2r.core.ref.Ic2rRecipeSerializers;
 import me.halfcooler.ic2r.core.util.StackUtil;
@@ -15,25 +17,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.core.RegistryAccess;
 
 public class AdvShapelessRecipe implements CraftingRecipe
 {
+	private static final ResourceLocation RUNTIME_ID = ResourceLocation.fromNamespaceAndPath("ic2r", "shapeless");
+
 	public final ItemStack output;
 	public final IRecipeInput[] input;
 	public final boolean hidden;
 	public final boolean consuming;
+	/** Internal id only; vanilla wraps recipes in RecipeHolder. */
 	private final ResourceLocation id;
 
 	public AdvShapelessRecipe(ResourceLocation id, IRecipeInput[] input, ItemStack output, boolean hidden, boolean consuming)
@@ -45,14 +52,15 @@ public class AdvShapelessRecipe implements CraftingRecipe
 		this.consuming = consuming;
 	}
 
-	public boolean matches(@NotNull CraftingContainer inventorycrafting, @NotNull Level world)
+	@Override
+	public boolean matches(@NotNull CraftingInput inventorycrafting, @NotNull Level world)
 	{
 		return this.assemble(inventorycrafting) != StackUtil.emptyStack;
 	}
 
-	public ItemStack assemble(CraftingContainer inventorycrafting)
+	public ItemStack assemble(CraftingInput inventorycrafting)
 	{
-		int offerSize = inventorycrafting.getContainerSize();
+		int offerSize = inventorycrafting.size();
 		if (offerSize < this.input.length)
 		{
 			return StackUtil.emptyStack;
@@ -96,7 +104,8 @@ public class AdvShapelessRecipe implements CraftingRecipe
 		return this.output;
 	}
 
-	public @NotNull ItemStack getResultItem(net.minecraft.core.@NotNull RegistryAccess registryAccess)
+	@Override
+	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider registryAccess)
 	{
 		return this.output;
 	}
@@ -107,14 +116,14 @@ public class AdvShapelessRecipe implements CraftingRecipe
 	}
 
 	@Override
-	public @NotNull NonNullList<ItemStack> getRemainingItems(@NotNull CraftingContainer inv)
+	public @NotNull NonNullList<ItemStack> getRemainingItems(@NotNull CraftingInput inv)
 	{
 		if (this.consuming)
 		{
-			return NonNullList.withSize(inv.getContainerSize(), StackUtil.emptyStack);
+			return NonNullList.withSize(inv.size(), StackUtil.emptyStack);
 		}
 
-		NonNullList<ItemStack> defaultedList = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+		NonNullList<ItemStack> defaultedList = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 
 		for (int i = 0; i < defaultedList.size(); i++)
 		{
@@ -139,11 +148,13 @@ public class AdvShapelessRecipe implements CraftingRecipe
 		return defaultedList;
 	}
 
+	@Override
 	public boolean canCraftInDimensions(int x, int y)
 	{
 		return x * y >= this.input.length;
 	}
 
+	@Override
 	public @NotNull NonNullList<Ingredient> getIngredients()
 	{
 		NonNullList<Ingredient> list = NonNullList.create();
@@ -158,6 +169,7 @@ public class AdvShapelessRecipe implements CraftingRecipe
 		return list;
 	}
 
+	@Override
 	public boolean isSpecial()
 	{
 		return this.hidden;
@@ -169,16 +181,18 @@ public class AdvShapelessRecipe implements CraftingRecipe
 	}
 
 	@Override
-	public @NotNull ItemStack assemble(net.minecraft.world.inventory.@NotNull CraftingContainer inventory, net.minecraft.core.@NotNull RegistryAccess registryAccess)
+	public @NotNull ItemStack assemble(@NotNull CraftingInput inventory, @NotNull HolderLookup.Provider registryAccess)
 	{
 		return this.assemble(inventory);
 	}
 
-	public net.minecraft.world.item.crafting.@NotNull CraftingBookCategory category()
+	@Override
+	public @NotNull CraftingBookCategory category()
 	{
-		return net.minecraft.world.item.crafting.CraftingBookCategory.MISC;
+		return CraftingBookCategory.MISC;
 	}
 
+	@Override
 	public @NotNull RecipeSerializer<?> getSerializer()
 	{
 		return Ic2rRecipeSerializers.SHAPELESS;
@@ -186,6 +200,10 @@ public class AdvShapelessRecipe implements CraftingRecipe
 
 	public static class Serializer implements RecipeSerializer<AdvShapelessRecipe>
 	{
+		private final MapCodec<AdvShapelessRecipe> codec = JsonRecipeCodecs.mapCodec(this::fromJsonObject);
+		private final StreamCodec<RegistryFriendlyByteBuf, AdvShapelessRecipe> streamCodec =
+			JsonRecipeCodecs.streamCodec(this::fromNetworkBuf, this::toNetworkBuf);
+
 		private static IRecipeInput[] getIngredients(JsonArray json)
 		{
 			IRecipeInput[] inputs = new IRecipeInput[json.size()];
@@ -198,7 +216,7 @@ public class AdvShapelessRecipe implements CraftingRecipe
 			return inputs;
 		}
 
-		public @NotNull AdvShapelessRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json)
+		private AdvShapelessRecipe fromJsonObject(JsonObject json)
 		{
 			IRecipeInput[] ingredients = getIngredients(GsonHelper.getAsJsonArray(json, "ingredients"));
 			if (ingredients.length == 0)
@@ -214,10 +232,10 @@ public class AdvShapelessRecipe implements CraftingRecipe
 			ItemStack result = RecipeIo.parseOutput(GsonHelper.getAsJsonObject(json, "result"));
 			boolean consuming = GsonHelper.getAsBoolean(json, "consuming", false);
 			boolean hidden = GsonHelper.getAsBoolean(json, "hidden", false);
-			return new AdvShapelessRecipe(id, ingredients, result, hidden, consuming);
+			return new AdvShapelessRecipe(RUNTIME_ID, ingredients, result, hidden, consuming);
 		}
 
-		public AdvShapelessRecipe fromNetwork(@NotNull ResourceLocation id, FriendlyByteBuf buf)
+		private AdvShapelessRecipe fromNetworkBuf(RegistryFriendlyByteBuf buf)
 		{
 			IRecipeInput[] inputs = new IRecipeInput[buf.readVarInt()];
 
@@ -226,10 +244,16 @@ public class AdvShapelessRecipe implements CraftingRecipe
 				inputs[i] = RecipeIo.readInput(buf);
 			}
 
-			return new AdvShapelessRecipe(id, inputs, buf.readItem(), buf.readBoolean(), buf.readBoolean());
+			return new AdvShapelessRecipe(
+				RUNTIME_ID,
+				inputs,
+				RecipeIo.readItemStack(buf),
+				buf.readBoolean(),
+				buf.readBoolean()
+			);
 		}
 
-		public void toNetwork(FriendlyByteBuf buf, AdvShapelessRecipe recipe)
+		private void toNetworkBuf(RegistryFriendlyByteBuf buf, AdvShapelessRecipe recipe)
 		{
 			buf.writeVarInt(recipe.input.length);
 
@@ -238,9 +262,21 @@ public class AdvShapelessRecipe implements CraftingRecipe
 				RecipeIo.writeInput(buf, input);
 			}
 
-			buf.writeItem(recipe.output);
+			RecipeIo.writeItemStack(buf, recipe.output);
 			buf.writeBoolean(recipe.hidden);
 			buf.writeBoolean(recipe.consuming);
+		}
+
+		@Override
+		public @NotNull MapCodec<AdvShapelessRecipe> codec()
+		{
+			return this.codec;
+		}
+
+		@Override
+		public @NotNull StreamCodec<RegistryFriendlyByteBuf, AdvShapelessRecipe> streamCodec()
+		{
+			return this.streamCodec;
 		}
 	}
 }

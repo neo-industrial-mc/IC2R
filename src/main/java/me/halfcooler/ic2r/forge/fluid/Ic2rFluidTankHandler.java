@@ -4,7 +4,6 @@ import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
 
-import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -110,11 +109,11 @@ public record Ic2rFluidTankHandler(Ic2rFluidTank tank) implements IFluidHandler
 			return Ic2rFluidStack.EMPTY;
 		}
 
-		CompoundTag tag = resource.getTag();
+		// FluidStack tags were replaced by data components; domain layer does not keep fluid NBT.
 		return FluidHandler.createFluidStackMb(
 			resource.getFluid(),
 			resource.getAmount(),
-			tag != null ? tag.copy() : null
+			null
 		);
 	}
 
@@ -125,12 +124,7 @@ public record Ic2rFluidTankHandler(Ic2rFluidTank tank) implements IFluidHandler
 			return FluidStack.EMPTY;
 		}
 
-		CompoundTag nbt = FluidHandler.getFluidStackNbt(fs);
-		if (nbt == null)
-		{
-			return new FluidStack(fs.getFluid(), fs.getAmountMb());
-		}
-
-		return new FluidStack(fs.getFluid(), fs.getAmountMb(), nbt.copy());
+		// NeoForge 1.21 FluidStack no longer takes CompoundTag; domain NBT is unused.
+		return new FluidStack(fs.getFluid(), fs.getAmountMb());
 	}
 }

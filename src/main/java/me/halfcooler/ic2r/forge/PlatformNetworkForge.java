@@ -10,32 +10,22 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Forge implementation of {@link PlatformNetwork} (G3.6).
- * <p>
- * Primary channel {@link NetworkManager#channelId} is registered in {@link FmlMod}
- * via {@code NetworkRegistry.newEventChannel(...).registerObject(ForgeNetworkHandler)}.
- * {@link #registerChannel} is therefore an <strong>idempotent no-op</strong> for the
- * runtime channel (and records other ids without re-wiring handlers).
- * <p>
- * Send paths mirror {@link NetworkManager} / {@code NetworkManagerClient}: vanilla
- * custom-payload packets on the given channel id (payload already framed by caller).
+ * NeoForge implementation of {@link PlatformNetwork}.
+ * Primary channel {@link NetworkManager#channelId} is registered via {@link RegisterPayloadHandlersEvent}.
  */
 public final class PlatformNetworkForge implements PlatformNetwork
 {
-	/** Channels known as registered (FmlMod pre-seeds the primary NetworkManager id). */
 	private final Set<ResourceLocation> registered =
 		Collections.newSetFromMap(new ConcurrentHashMap<>());
 
@@ -51,8 +41,6 @@ public final class PlatformNetworkForge implements PlatformNetwork
 		{
 			return;
 		}
-		// Idempotent: FmlMod already registered NetworkManager.channelId + ForgeNetworkHandler.
-		// Extra channel ids are recorded only — current IC2R uses a single custom channel.
 		this.registered.add(channelId);
 	}
 
@@ -63,7 +51,11 @@ public final class PlatformNetworkForge implements PlatformNetwork
 		{
 			return;
 		}
-		player.connection.send(new ClientboundCustomPayloadPacket(channelId, copyPayload(payload)));
+		// Primary channel uses typed payload; other ids are currently unused at runtime.
+		if (NetworkManager.channelId.equals(channelId))
+		{
+			PacketDistributor.sendToPlayer(player, Ic2rRawPayload.fromFriendly(payload));
+		}
 	}
 
 	@Override
@@ -71,32 +63,11 @@ public final class PlatformNetworkForge implements PlatformNetwork
 	{
 		if (channelId == null || payload == null || FMLEnvironment.dist != Dist.CLIENT)
 		{
-			// Dedicated server / wrong side: SPI allows no-op.
 			return;
 		}
-		// Reflection avoids hard client type linkage on dedicated-server class load paths.
-		try
+		if (NetworkManager.channelId.equals(channelId))
 		{
-			Class<?> mcClass = Class.forName("net.minecraft.client.Minecraft");
-			Object mc = mcClass.getMethod("getInstance").invoke(null);
-			if (mc == null)
-			{
-				return;
-			}
-			Object connection = mcClass.getMethod("getConnection").invoke(mc);
-			if (connection == null)
-			{
-				return;
-			}
-			Class<?> packetClass = Class.forName("net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket");
-			Object packet = packetClass
-				.getConstructor(ResourceLocation.class, FriendlyByteBuf.class)
-				.newInstance(channelId, copyPayload(payload));
-			connection.getClass().getMethod("send", Packet.class).invoke(connection, packet);
-		}
-		catch (ReflectiveOperationException ignored)
-		{
-			// Client connection unavailable.
+			PacketDistributor.sendToServer(Ic2rRawPayload.fromFriendly(payload));
 		}
 	}
 
@@ -109,18 +80,19 @@ public final class PlatformNetworkForge implements PlatformNetwork
 		}
 		if (!(around instanceof ServerPlayer serverPlayer))
 		{
-			// Draft SPI: dimension-wide fan-out when around is null is implementation-defined;
-			// without a player anchor we no-op (avoids accidental global spam).
 			return;
 		}
 		if (!(serverPlayer.level() instanceof ServerLevel level))
 		{
 			return;
 		}
-		// Fresh packet per recipient so buffer consumption cannot cross players.
+		if (!NetworkManager.channelId.equals(channelId))
+		{
+			return;
+		}
 		for (ServerPlayer tracking : level.getChunkSource().chunkMap.getPlayers(new ChunkPos(serverPlayer.blockPosition()), false))
 		{
-			tracking.connection.send(new ClientboundCustomPayloadPacket(channelId, copyPayload(payload)));
+			PacketDistributor.sendToPlayer(tracking, Ic2rRawPayload.fromFriendly(payload));
 		}
 	}
 

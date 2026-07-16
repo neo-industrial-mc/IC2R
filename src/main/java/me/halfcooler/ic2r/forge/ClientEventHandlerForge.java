@@ -9,6 +9,12 @@ import me.halfcooler.ic2r.core.proxy.SideProxyClient;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
@@ -17,17 +23,8 @@ import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.event.sound.SoundEngineLoadEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 public final class ClientEventHandlerForge
 {
@@ -38,15 +35,15 @@ public final class ClientEventHandlerForge
 	}
 
 	@SubscribeEvent
-	public void onClientTick(ClientTickEvent.Post event)
+	public void onClientTickStart(ClientTickEvent.Pre event)
 	{
-		if (event.phase == TickEvent.Phase.START)
-		{
-			TickHandler.onClientTick();
-		} else if (event.phase == TickEvent.Phase.END)
-		{
-			DeferredSoundOps.flush();
-		}
+		TickHandler.onClientTick();
+	}
+
+	@SubscribeEvent
+	public void onClientTickEnd(ClientTickEvent.Post event)
+	{
+		DeferredSoundOps.flush();
 	}
 
 	@SubscribeEvent
@@ -95,8 +92,9 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent
 	public void onDrawBlockHighlight(RenderHighlightEvent.Block event)
 	{
+		float partialTick = event.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 		if (EventHandlerClient.onDrawBlockHighlight(
-			SideProxyClient.mc.player, event.getTarget(), event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource()
+			SideProxyClient.mc.player, event.getTarget(), partialTick, event.getPoseStack(), event.getMultiBufferSource()
 		))
 		{
 			event.setCanceled(true);
@@ -106,8 +104,9 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onDrawBlockHighlightLast(RenderHighlightEvent.Block event)
 	{
+		float partialTick = event.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 		if (EventHandlerClient.onDrawBlockHighlightLast(
-			SideProxyClient.mc.player, event.getTarget(), event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource()
+			SideProxyClient.mc.player, event.getTarget(), partialTick, event.getPoseStack(), event.getMultiBufferSource()
 		))
 		{
 			event.setCanceled(true);
@@ -123,7 +122,7 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent
 	public void onRenderHotBar(RenderGuiLayerEvent.Post event)
 	{
-		if (event.getOverlay() == VanillaGuiOverlay.HOTBAR.type())
+		if (event.getName().equals(VanillaGuiLayers.HOTBAR))
 		{
 			EventHandlerClient.onRenderHotBar(event.getGuiGraphics());
 		}

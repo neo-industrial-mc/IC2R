@@ -8,7 +8,7 @@ import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.config.IWailaConfig;
 import snownee.jade.api.ui.IDisplayHelper;
 import snownee.jade.api.ui.IElementHelper;
-import snownee.jade.api.ui.IProgressStyle;
+import snownee.jade.api.ui.ProgressStyle;
 
 /**
  * Client-side helpers for reading IC2R options from Jade's plugin config UI.
@@ -127,12 +127,12 @@ public final class JadeConfigHelper
 		return parseColor(plugin().getString(Ic2rJadePluginConfigs.ENERGY_COLOR2), 0xFF660000);
 	}
 
-	public static IProgressStyle progressStyle()
+	public static ProgressStyle progressStyle()
 	{
 		return IElementHelper.get().progressStyle().color(progressColor(), progressColor2());
 	}
 
-	public static IProgressStyle energyStyle()
+	public static ProgressStyle energyStyle()
 	{
 		return IElementHelper.get().progressStyle().color(energyColor(), energyColor2());
 	}

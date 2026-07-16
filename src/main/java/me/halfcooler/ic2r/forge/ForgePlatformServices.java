@@ -7,7 +7,7 @@ import me.halfcooler.ic2r.forge.fluid.Ic2rFluidTankHandler;
 import me.halfcooler.ic2r.forge.item.tool.ShearableAccessForge;
 import me.halfcooler.ic2r.forge.util.PumpUtilForge;
 import me.halfcooler.ic2r.platform.services.PlatformServices;
-import net.neoforged.neoforge.event.EventHooks;
+
 
 /**
  * Wires Forge SPI adapters into {@link PlatformServices}.
@@ -40,9 +40,10 @@ public final class ForgePlatformServices
 		{
 			Ic2rFluidTank.setHandlerFactory(Ic2rFluidTankHandler::new);
 			InvSlot.setHandlerFactory(me.halfcooler.ic2r.forge.block.invslot.InvSlotItemHandler::new);
-			Ic2rBucketItem.setBucketUseHook(EventHooks::onBucketUse);
-				PumpUtilForge.install();
-				ShearableAccessForge.install();
+			// EventHooks.onBucketUse was removed in NeoForge 1.21; no global bucket-use cancel hook.
+			Ic2rBucketItem.setBucketUseHook((player, level, stack, hit) -> null);
+			PumpUtilForge.install();
+			ShearableAccessForge.install();
 			PlatformServices.install(
 				new PlatformRegistryForge(),
 				new PlatformEnergyBridgeForge(),

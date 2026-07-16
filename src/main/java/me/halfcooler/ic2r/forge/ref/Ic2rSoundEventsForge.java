@@ -102,7 +102,7 @@ public final class Ic2rSoundEventsForge
 			for (Field forgeField : forgeFields)
 			{
 				if (!Modifier.isStatic(forgeField.getModifiers())) continue;
-				if (!RegistryObject.class.isAssignableFrom(forgeField.getType())) continue;
+				if (!DeferredHolder.class.isAssignableFrom(forgeField.getType())) continue;
 
 				String name = forgeField.getName();
 				Field coreField;

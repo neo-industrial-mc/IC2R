@@ -123,12 +123,12 @@ public class RubberLogBlock extends RotatedPillarBlock
 		return false;
 	}
 
-	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit)
+	@Override
+	protected @NotNull net.minecraft.world.ItemInteractionResult useItemOn(@NotNull ItemStack mainHandItem, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit)
 	{
-		ItemStack mainHandItem = player.getMainHandItem();
 		if (!(mainHandItem.getItem() instanceof AxeItem))
 		{
-			return super.use(state, world, pos, player, hand, hit);
+			return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		}
 
 		WorldUtil.strip(state, world, pos, player, mainHandItem, Ic2rBlocks.STRIPPED_RUBBER_LOG.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, state.getValue(RotatedPillarBlock.AXIS)));
@@ -138,7 +138,7 @@ public class RubberLogBlock extends RotatedPillarBlock
 			this.dropResin(world, pos, world.random.nextInt(2) + 1);
 		}
 
-		return InteractionResult.sidedSuccess(world.isClientSide);
+		return net.minecraft.world.ItemInteractionResult.sidedSuccess(world.isClientSide);
 	}
 
 	private void dropResin(Level world, BlockPos pos, int amount)

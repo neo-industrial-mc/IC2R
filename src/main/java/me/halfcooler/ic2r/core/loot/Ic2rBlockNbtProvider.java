@@ -1,9 +1,7 @@
 package me.halfcooler.ic2r.core.loot;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.mojang.serialization.MapCodec;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 
 import java.util.Set;
@@ -24,6 +22,7 @@ import net.minecraft.core.component.DataComponents;
 public class Ic2rBlockNbtProvider implements NbtProvider
 {
 	public static final Ic2rBlockNbtProvider BLOCK_NBT = new Ic2rBlockNbtProvider();
+	public static final MapCodec<Ic2rBlockNbtProvider> CODEC = MapCodec.unit(BLOCK_NBT);
 
 	@Nullable
 	public Tag get(LootContext context)
@@ -38,9 +37,9 @@ public class Ic2rBlockNbtProvider implements NbtProvider
 		if (blockEntity instanceof Ic2rTileEntity tileEntity)
 		{
 			ItemStack stack = tileEntity.adjustDrop(state.getBlock().asItem().getDefaultInstance(), false);
-			if (stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA))
+			if (stack.has(DataComponents.CUSTOM_DATA))
 			{
-				return stack.getTag();
+				return stack.get(DataComponents.CUSTOM_DATA).copyTag();
 			}
 		}
 
@@ -55,17 +54,5 @@ public class Ic2rBlockNbtProvider implements NbtProvider
 	public @NotNull LootNbtProviderType getType()
 	{
 		return Ic2rLootNbtProviderTypes.BLOCK_NBT;
-	}
-
-	public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<Ic2rBlockNbtProvider>
-	{
-		public void serialize(@NotNull JsonObject jsonObject, @NotNull Ic2rBlockNbtProvider ic2BlockNbtProvider, @NotNull JsonSerializationContext jsonSerializationContext)
-		{
-		}
-
-		public @NotNull Ic2rBlockNbtProvider deserialize(@NotNull JsonObject jsonObject, @NotNull JsonDeserializationContext jsonDeserializationContext)
-		{
-			return new Ic2rBlockNbtProvider();
-		}
 	}
 }

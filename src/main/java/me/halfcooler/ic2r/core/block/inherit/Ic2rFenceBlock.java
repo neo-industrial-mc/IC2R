@@ -36,8 +36,9 @@ import org.jetbrains.annotations.NotNull;
 public class Ic2rFenceBlock extends FenceBlock
 {
     @Override
-    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec() {
-        return simpleCodec(properties -> new Ic2rFenceBlock(properties, this.canBoost));
+    public com.mojang.serialization.MapCodec<FenceBlock> codec() {
+        // FenceBlock.codec is MapCodec<FenceBlock> (invariant); use base fence codec for data-driven path.
+        return FenceBlock.CODEC;
     }
 
 	public static final Map<Direction, BooleanProperty> connectProperties = getConnectProperties();

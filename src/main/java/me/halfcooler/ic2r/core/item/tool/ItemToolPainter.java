@@ -25,9 +25,13 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BannerBlock;
@@ -107,7 +111,7 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 			boolean isDamaged = this.damagePainter(stack, player, hand, this.color);
 			if (world.isClientSide)
 			{
-				player.playSound(Ic2rSoundEvents.ITEM_PAINTER_USE.value(), 1.0F, 1.0F);
+				player.playSound(Ic2rSoundEvents.ITEM_PAINTER_USE.get(), 1.0F, 1.0F);
 				if (isDamaged) player.playSound(SoundEvents.ITEM_BREAK, 1.0F, 1.0F);
 			}
 
@@ -228,10 +232,10 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 					return false;
 				}
 
-				CompoundTag shulkerNbt = shulkerBlockEntity.saveWithId();
+				CompoundTag shulkerNbt = shulkerBlockEntity.saveWithFullMetadata(world.registryAccess());
 				BlockState newShulkerBoxState = ShulkerBoxBlock.getBlockByColor(color.dyeColor).withPropertiesOf(state);
 				world.setBlockAndUpdate(pos, newShulkerBoxState);
-				BlockEntity newShulkerBlockEntity = BlockEntity.loadStatic(pos, newShulkerBoxState, shulkerNbt);
+				BlockEntity newShulkerBlockEntity = BlockEntity.loadStatic(pos, newShulkerBoxState, shulkerNbt, world.registryAccess());
 				world.setBlockEntity(newShulkerBlockEntity);
 				return true;
 			} else
@@ -291,7 +295,7 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 	public boolean damagePainter(ItemStack stack, Player player, InteractionHand hand, Ic2rColor color)
 	{
 		assert color != null;
-		stack.hurt(1, player.getRandom(), player instanceof ServerPlayer ? (ServerPlayer) player : null);
+		stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
 		if (stack.getDamageValue() >= stack.getMaxDamage())
 		{
 			CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);

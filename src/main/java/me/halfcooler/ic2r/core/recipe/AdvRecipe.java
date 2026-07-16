@@ -5,15 +5,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.MapCodec;
 import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.api.recipe.IRecipeInput;
 import me.halfcooler.ic2r.compat.Ic2rCraftingRecipe;
 import me.halfcooler.ic2r.core.init.IC2RClientConfig;
+import me.halfcooler.ic2r.core.recipe.v2.JsonRecipeCodecs;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeIo;
 import me.halfcooler.ic2r.core.ref.Ic2rRecipeSerializers;
 
 import me.halfcooler.ic2r.core.util.StackUtil;
-import me.halfcooler.ic2r.core.util.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,22 +25,22 @@ import java.util.Map.Entry;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.core.RegistryAccess;
 
 public class AdvRecipe implements Ic2rCraftingRecipe
 {
-	private static final boolean debug = Util.hasAssertions();
+	private static final ResourceLocation RUNTIME_ID = ResourceLocation.fromNamespaceAndPath("ic2r", "shaped");
+
 	public final ItemStack output;
 	public final IRecipeInput[] input;
 	public final IRecipeInput[] inputMirrored;
@@ -49,6 +50,7 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 	public final int inputHeight;
 	public final boolean hidden;
 	public final boolean consuming;
+	/** Internal id only; vanilla wraps recipes in RecipeHolder. */
 	private final ResourceLocation id;
 
 	private AdvRecipe(ResourceLocation id, int width, int height, boolean mirror, int mask, IRecipeInput[] input, ItemStack result, boolean isConsuming, boolean isHidden)
@@ -185,14 +187,15 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 		return false;
 	}
 
-	public boolean matches(@NotNull CraftingContainer inventoryCrafting, @NotNull Level world)
+	@Override
+	public boolean matches(@NotNull CraftingInput inventoryCrafting, @NotNull Level world)
 	{
 		return this.assemble(inventoryCrafting) != StackUtil.emptyStack;
 	}
 
-	public ItemStack assemble(CraftingContainer inventoryCrafting)
+	public ItemStack assemble(CraftingInput inventoryCrafting)
 	{
-		int size = inventoryCrafting.getContainerSize();
+		int size = inventoryCrafting.size();
 		int mask = 0;
 
 		for (int i = 0; i < size; i++)
@@ -235,7 +238,8 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 		return this.output;
 	}
 
-	public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess)
+	@Override
+	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider registryAccess)
 	{
 		return this.output;
 	}
@@ -245,9 +249,9 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 		return canShow(this.input, this.output, this.hidden);
 	}
 
-	private ItemStack checkItems(Container inventory, IRecipeInput[] request)
+	private ItemStack checkItems(CraftingInput inventory, IRecipeInput[] request)
 	{
-		int size = inventory.getContainerSize();
+		int size = inventory.size();
 		double outputCharge = 0.0;
 		int i = 0;
 		int j = 0;
@@ -274,11 +278,12 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 	}
 
 	@Override
-	public @NotNull NonNullList<ItemStack> getRemainingItems(@NotNull CraftingContainer inv)
+	public @NotNull NonNullList<ItemStack> getRemainingItems(@NotNull CraftingInput inv)
 	{
-		return this.consuming ? NonNullList.withSize(inv.getContainerSize(), StackUtil.emptyStack) : Ic2rCraftingRecipe.super.getRemainingItems(inv);
+		return this.consuming ? NonNullList.withSize(inv.size(), StackUtil.emptyStack) : Ic2rCraftingRecipe.super.getRemainingItems(inv);
 	}
 
+	@Override
 	public boolean canCraftInDimensions(int x, int y)
 	{
 		return this.inputWidth <= x && this.inputHeight <= y;
@@ -296,6 +301,7 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 		return this.inputHeight;
 	}
 
+	@Override
 	public @NotNull NonNullList<Ingredient> getIngredients()
 	{
 		NonNullList<Ingredient> list = NonNullList.create();
@@ -322,6 +328,7 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 		return list;
 	}
 
+	@Override
 	public boolean isSpecial()
 	{
 		return this.hidden;
@@ -333,16 +340,18 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 	}
 
 	@Override
-	public @NotNull ItemStack assemble(@NotNull CraftingContainer inventory, @NotNull RegistryAccess registryAccess)
+	public @NotNull ItemStack assemble(@NotNull CraftingInput inventory, @NotNull HolderLookup.Provider registryAccess)
 	{
 		return this.assemble(inventory);
 	}
 
+	@Override
 	public @NotNull CraftingBookCategory category()
 	{
 		return CraftingBookCategory.MISC;
 	}
 
+	@Override
 	public @NotNull RecipeSerializer<?> getSerializer()
 	{
 		return Ic2rRecipeSerializers.SHAPED;
@@ -350,6 +359,10 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 
 	public static final class Serializer implements RecipeSerializer<AdvRecipe>
 	{
+		private final MapCodec<AdvRecipe> codec = JsonRecipeCodecs.mapCodec(this::fromJsonObject);
+		private final StreamCodec<RegistryFriendlyByteBuf, AdvRecipe> streamCodec =
+			JsonRecipeCodecs.streamCodec(this::fromNetworkBuf, this::toNetworkBuf);
+
 		private static Map<String, IRecipeInput> readSymbols(JsonObject json)
 		{
 			HashMap<String, IRecipeInput> map = Maps.newHashMap();
@@ -437,7 +450,7 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 			}
 		}
 
-		public @NotNull AdvRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json)
+		private AdvRecipe fromJsonObject(JsonObject json)
 		{
 			Map<String, IRecipeInput> symbols = readSymbols(GsonHelper.getAsJsonObject(json, "key"));
 			String[] pattern = getPattern(GsonHelper.getAsJsonArray(json, "pattern"));
@@ -447,10 +460,10 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 			ItemStack result = RecipeIo.parseOutput(GsonHelper.getAsJsonObject(json, "result"));
 			boolean consuming = GsonHelper.getAsBoolean(json, "consuming", false);
 			boolean hidden = GsonHelper.getAsBoolean(json, "hidden", false);
-			return AdvRecipe.create(id, width, height, ingredients, result, consuming, hidden);
+			return AdvRecipe.create(RUNTIME_ID, width, height, ingredients, result, consuming, hidden);
 		}
 
-		public AdvRecipe fromNetwork(@NotNull ResourceLocation id, FriendlyByteBuf buf)
+		private AdvRecipe fromNetworkBuf(RegistryFriendlyByteBuf buf)
 		{
 			IRecipeInput[] ingredients = new IRecipeInput[buf.readVarInt()];
 
@@ -459,10 +472,20 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 				ingredients[i] = RecipeIo.readInput(buf);
 			}
 
-			return new AdvRecipe(id, buf.readVarInt(), buf.readVarInt(), buf.readBoolean(), buf.readInt(), ingredients, buf.readItem(), buf.readBoolean(), buf.readBoolean());
+			return new AdvRecipe(
+				RUNTIME_ID,
+				buf.readVarInt(),
+				buf.readVarInt(),
+				buf.readBoolean(),
+				buf.readInt(),
+				ingredients,
+				RecipeIo.readItemStack(buf),
+				buf.readBoolean(),
+				buf.readBoolean()
+			);
 		}
 
-		public void toNetwork(FriendlyByteBuf buf, AdvRecipe recipe)
+		private void toNetworkBuf(RegistryFriendlyByteBuf buf, AdvRecipe recipe)
 		{
 			buf.writeVarInt(recipe.input.length);
 
@@ -475,9 +498,21 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 			buf.writeVarInt(recipe.inputHeight);
 			buf.writeBoolean(recipe.inputMirrored != null);
 			buf.writeInt(recipe.masks[0]);
-			buf.writeItem(recipe.output);
+			RecipeIo.writeItemStack(buf, recipe.output);
 			buf.writeBoolean(recipe.consuming);
 			buf.writeBoolean(recipe.hidden);
+		}
+
+		@Override
+		public @NotNull MapCodec<AdvRecipe> codec()
+		{
+			return this.codec;
+		}
+
+		@Override
+		public @NotNull StreamCodec<RegistryFriendlyByteBuf, AdvRecipe> streamCodec()
+		{
+			return this.streamCodec;
 		}
 	}
 }

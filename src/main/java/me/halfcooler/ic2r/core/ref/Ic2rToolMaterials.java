@@ -2,8 +2,11 @@ package me.halfcooler.ic2r.core.ref;
 
 import java.util.function.Supplier;
 
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 public enum Ic2rToolMaterials implements Tier
@@ -43,9 +46,23 @@ public enum Ic2rToolMaterials implements Tier
 		return this.attackDamage;
 	}
 
-	public int getLevel()
+	/** Legacy mining level (0 wood … 4 netherite+). Kept for IC2R logic that still needs it. */
+	public int getMiningLevel()
 	{
 		return this.miningLevel;
+	}
+
+	@Override
+	public TagKey<Block> getIncorrectBlocksForDrops()
+	{
+		return switch (this.miningLevel)
+		{
+			case 0 -> BlockTags.INCORRECT_FOR_WOODEN_TOOL;
+			case 1 -> BlockTags.INCORRECT_FOR_STONE_TOOL;
+			case 2 -> BlockTags.INCORRECT_FOR_IRON_TOOL;
+			case 3 -> BlockTags.INCORRECT_FOR_DIAMOND_TOOL;
+			default -> BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
+		};
 	}
 
 	public int getEnchantmentValue()

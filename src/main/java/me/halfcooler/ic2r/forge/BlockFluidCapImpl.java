@@ -5,45 +5,39 @@ import me.halfcooler.ic2r.core.fluid.Ic2rFluidBlock;
 import me.halfcooler.ic2r.core.util.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.capabilities.Capability;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-final class BlockFluidCapImpl implements ICapabilityProvider {
+/**
+ * NeoForge 1.21 fluid capability adapter for {@link Ic2rFluidBlock} block entities.
+ * Returns a sided {@link IFluidHandler}; registration is via {@link RegisterCapabilitiesEvent}.
+ */
+final class BlockFluidCapImpl {
 
     private final Ic2rFluidBlock parent;
-
     private final BlockEntity be;
-
-    private final LazyOptional<IFluidHandler>[] sides;
+    private final IFluidHandler[] sides;
 
     public BlockFluidCapImpl(Ic2rFluidBlock fluidBlock, BlockEntity be) {
         this.parent = fluidBlock;
         this.be = be;
-        this.sides = new LazyOptional[Util.ALL_DIRS.length];
+        this.sides = new IFluidHandler[Util.ALL_DIRS.length];
         for (Direction dir : Util.ALL_DIRS) {
-            this.sides[dir.ordinal()] = LazyOptional.of(new BlockFluidCapImpl.SideHandler(dir));
+            this.sides[dir.ordinal()] = new SideHandler(dir);
         }
     }
 
-    @Override
-    @NotNull
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing) {
-        if (capability != Capabilities.FluidHandler.BLOCK) {
-            return LazyOptional.empty();
-        }
+    @Nullable
+    public IFluidHandler getHandler(@Nullable Direction facing) {
         if (facing == null) {
-            return (LazyOptional<T>) this.sides[0];
+            return this.sides[0];
         }
-        return (LazyOptional<T>) this.sides[facing.ordinal()];
+        return this.sides[facing.ordinal()];
     }
 
-    private class SideHandler implements IFluidHandler, NonNullSupplier<IFluidHandler> {
+    private class SideHandler implements IFluidHandler {
 
         private final Direction side;
 
@@ -103,14 +97,19 @@ final class BlockFluidCapImpl implements ICapabilityProvider {
         @Override
         @NotNull
         public FluidStack drain(int amount, IFluidHandler.FluidAction action) {
-            return amount <= 0 ? FluidStack.EMPTY : EnvFluidHandlerForge.getForgeFs(BlockFluidCapImpl.this.parent.drainMb(null, null, null, BlockFluidCapImpl.this.be, this.side, amount, action.simulate()));
+            return amount <= 0
+                ? FluidStack.EMPTY
+                : EnvFluidHandlerForge.getForgeFs(
+                    BlockFluidCapImpl.this.parent.drainMb(
+                        null, null, null, BlockFluidCapImpl.this.be, this.side, amount, action.simulate()));
         }
 
         @Override
         @NotNull
         public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) {
             if (resource != null && !resource.isEmpty()) {
-                int amount = BlockFluidCapImpl.this.parent.drainMb(null, null, null, BlockFluidCapImpl.this.be, this.side, new Ic2rFluidStackImpl(resource), action.simulate());
+                int amount = BlockFluidCapImpl.this.parent.drainMb(
+                    null, null, null, BlockFluidCapImpl.this.be, this.side, new Ic2rFluidStackImpl(resource), action.simulate());
                 if (amount <= 0) {
                     return FluidStack.EMPTY;
                 }
@@ -124,12 +123,10 @@ final class BlockFluidCapImpl implements ICapabilityProvider {
 
         @Override
         public int fill(FluidStack resource, IFluidHandler.FluidAction action) {
-            return resource != null && !resource.isEmpty() ? BlockFluidCapImpl.this.parent.fillMb(null, null, null, BlockFluidCapImpl.this.be, this.side, new Ic2rFluidStackImpl(resource), action.simulate()) : 0;
-        }
-
-        @NotNull
-        public IFluidHandler get() {
-            return this;
+            return resource != null && !resource.isEmpty()
+                ? BlockFluidCapImpl.this.parent.fillMb(
+                    null, null, null, BlockFluidCapImpl.this.be, this.side, new Ic2rFluidStackImpl(resource), action.simulate())
+                : 0;
         }
     }
 }

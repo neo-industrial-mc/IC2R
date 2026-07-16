@@ -1,5 +1,7 @@
 package me.halfcooler.ic2r.core.item;
 
+import me.halfcooler.ic2r.core.util.StackUtil;
+
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.item.tool.HandHeldInventory;
 import net.minecraft.network.protocol.game.ClientboundSetCarriedItemPacket;
@@ -81,7 +83,7 @@ public class ContainerHandHeldInventory<T extends HandHeldInventory> extends Con
 			ItemStack held = this.getCarried();
 			if (this.base.isThisContainer(held))
 			{
-				held.getTag().remove("uid");
+				StackUtil.getTag(held).remove("uid");
 			}
 		}
 	}

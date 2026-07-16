@@ -106,7 +106,7 @@ public class TileEntityIndustrialWorkbench extends TileEntityInventory implement
 	public void onPlaced(ItemStack stack, LivingEntity placer, Direction facing)
 	{
 		super.onPlaced(stack, placer, facing);
-		if (!stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) || !stack.getTag().contains("PLACED"))
+		if (!stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) || !StackUtil.getTag(stack).contains("PLACED"))
 		{
 			this.leftCrafting.tool.put(new ItemStack(Ic2rItems.FORGE_HAMMER));
 			this.rightCrafting.tool.put(new ItemStack(Ic2rItems.CUTTER));
@@ -293,12 +293,12 @@ public class TileEntityIndustrialWorkbench extends TileEntityInventory implement
 					return false;
 				}
 
-				if (this.recipe != null && this.recipe.matches(this.crafting, world))
+				if (this.recipe != null && this.recipe.matches(this.crafting.asCraftInput(), world))
 				{
 					return true;
 				}
 
-				this.recipe = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this.crafting, world).orElse(null);
+				this.recipe = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this.crafting.asCraftInput(), world).map(net.minecraft.world.item.crafting.RecipeHolder::value).orElse(null);
 				return this.recipe != null;
 			} else
 			{
@@ -313,7 +313,7 @@ public class TileEntityIndustrialWorkbench extends TileEntityInventory implement
 				return StackUtil.emptyStack;
 			}
 			Level world = this.tool.base.getParent().getLevel();
-			return this.recipe.assemble(this.crafting, world.registryAccess());
+			return this.recipe.assemble(this.crafting.asCraftInput(), world.registryAccess());
 		}
 	}
 }

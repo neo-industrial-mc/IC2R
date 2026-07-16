@@ -23,8 +23,7 @@ public class DelegatingInventory implements Container
 		this.parent.clearContent();
 	}
 
-	public int getContainerSize()
-	{
+	public int getContainerSize() {
 		return this.parent.getContainerSize();
 	}
 

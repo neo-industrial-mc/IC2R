@@ -156,7 +156,7 @@ public class ItemDebug extends Item implements PriorityUsableItem, ISpecialElect
 			ItemStack entStack = ((ItemEntity) entity).getItem();
 			String name = Util.getName(entStack.getItem()).toString();
 			output.both("[%s] item id: %s size: %s name: %s", plat, name, StackUtil.getSize(entStack), entStack.getDescriptionId());
-			output.console("NBT: %s", entStack.getTag());
+			output.console("NBT: %s", StackUtil.getTag(entStack));
 		}
 
 		output.flush(player);
@@ -165,7 +165,7 @@ public class ItemDebug extends Item implements PriorityUsableItem, ISpecialElect
 
 	private static ItemDebug.Mode getMode(ItemStack stack)
 	{
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		int modeIdx = nbt != null ? nbt.getInt("mode") : 0;
 		if (modeIdx < 0 || modeIdx >= ItemDebug.Mode.modes.length)
 		{

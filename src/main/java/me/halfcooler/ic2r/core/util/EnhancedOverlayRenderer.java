@@ -234,7 +234,7 @@ public final class EnhancedOverlayRenderer
 		dy /= len;
 		dz /= len;
 
-		consumer.addVertex(matrix, x1, y1, z1).color(R, G, B, A).normal(normalMatrix, dx, dy, dz);
-		consumer.addVertex(matrix, x2, y2, z2).color(R, G, B, A).normal(normalMatrix, dx, dy, dz);
+		consumer.addVertex(matrix, x1, y1, z1).setColor(R, G, B, A).setNormal(dx, dy, dz);
+		consumer.addVertex(matrix, x2, y2, z2).setColor(R, G, B, A).setNormal(dx, dy, dz);
 	}
 }

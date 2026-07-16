@@ -10,7 +10,7 @@ public interface StandardFluidItem extends Ic2rFluidItem
 {
 	static Ic2rFluidStack getFs(ItemStack stack)
 	{
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		if (nbt == null)
 		{
 			return null;

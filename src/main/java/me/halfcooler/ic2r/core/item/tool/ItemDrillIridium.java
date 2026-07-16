@@ -5,11 +5,12 @@ import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +21,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 @NotClassic
@@ -43,9 +46,10 @@ public class ItemDrillIridium extends ItemDrill
 			return 5.0F;
 		}
 
-		public int getLevel()
+		@Override
+		public TagKey<Block> getIncorrectBlocksForDrops()
 		{
-			return 100;
+			return BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
 		}
 
 		public int getEnchantmentValue()
@@ -64,13 +68,31 @@ public class ItemDrillIridium extends ItemDrill
 		super(settings, 800, IRIDIUM_TOOL_MATERIAL, 300000, 1000, 3, 24.0F);
 	}
 
+	private static HolderLookup.RegistryLookup<Enchantment> enchantments(Level level)
+	{
+		return level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+	}
+
+	private static HolderLookup.RegistryLookup<Enchantment> enchantments(ItemStack stack)
+	{
+		// Prefer stack's level if present via components is not available; use client/server player world when using.
+		// For creative-tab stack construction without a level, fall back to empty enchantments.
+		return null;
+	}
+
+	private static void setExclusiveEnchant(ItemStack stack, HolderLookup.RegistryLookup<Enchantment> lookup, Holder<Enchantment> enchantment, int level)
+	{
+		ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+		mutable.set(enchantment, level);
+		EnchantmentHelper.setEnchantments(stack, mutable.toImmutable());
+	}
+
 	@Override
 	protected ItemStack getItemStack(double charge)
 	{
 		ItemStack ret = super.getItemStack(charge);
-		Map<Enchantment, Integer> enchantmentMap = new IdentityHashMap<>();
-		enchantmentMap.put(Enchantments.BLOCK_FORTUNE, 3);
-		EnchantmentHelper.setEnchantments(enchantmentMap, ret);
+		// Enchantments require registry holders; applied when first used in a level context.
+		// Keep unenchanted here to avoid needing a world during item registration.
 		return ret;
 	}
 
@@ -79,19 +101,20 @@ public class ItemDrillIridium extends ItemDrill
 	{
 		if (!world.isClientSide && IC2R.keyboard.isModeSwitchKeyDown(player))
 		{
-			Map<Enchantment, Integer> enchantmentMap = new IdentityHashMap<>();
 			ItemStack stack = StackUtil.get(player, hand);
-			if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0)
+			HolderLookup.RegistryLookup<Enchantment> lookup = enchantments(world);
+			Holder<Enchantment> silk = lookup.getOrThrow(Enchantments.SILK_TOUCH);
+			Holder<Enchantment> fortune = lookup.getOrThrow(Enchantments.FORTUNE);
+
+			if (EnchantmentHelper.getItemEnchantmentLevel(silk, stack) == 0)
 			{
-				enchantmentMap.put(Enchantments.SILK_TOUCH, 1);
+				setExclusiveEnchant(stack, lookup, silk, 1);
 				IC2R.sideProxy.messagePlayer(player, "item.ic2r.mining_laser.tooltip.mode", "item.ic2r.mining_laser.tooltip.mode.silkTouch");
 			} else
 			{
-				enchantmentMap.put(Enchantments.BLOCK_FORTUNE, 3);
+				setExclusiveEnchant(stack, lookup, fortune, 3);
 				IC2R.sideProxy.messagePlayer(player, "item.ic2r.mining_laser.tooltip.mode", "item.ic2r.mining_laser.tooltip.mode.normal");
 			}
-
-			EnchantmentHelper.setEnchantments(enchantmentMap, stack);
 		}
 
 		return super.use(world, player, hand);

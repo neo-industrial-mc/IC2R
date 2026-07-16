@@ -1,5 +1,7 @@
 package me.halfcooler.ic2r.core.item.reactor;
 
+import me.halfcooler.ic2r.core.util.StackUtil;
+
 import me.halfcooler.ic2r.api.reactor.IReactor;
 import me.halfcooler.ic2r.api.reactor.IReactorComponent;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
@@ -82,7 +84,7 @@ public abstract class AbstractDamageableReactorComponent extends Item implements
 
 	public int getUse(ItemStack stack)
 	{
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		return nbt != null ? nbt.getInt("use") : 0;
 	}
 

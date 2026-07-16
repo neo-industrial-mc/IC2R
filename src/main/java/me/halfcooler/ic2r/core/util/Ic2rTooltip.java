@@ -3,7 +3,7 @@ package me.halfcooler.ic2r.core.util;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public final class Ic2rTooltip
 			return true;
 		}
 
-		if (component.getContents() instanceof LiteralContents literal && literal.text().indexOf('§') >= 0)
+		if (component.getContents() instanceof PlainTextContents.LiteralContents literal && literal.text().indexOf('§') >= 0)
 		{
 			return true;
 		}

@@ -241,18 +241,16 @@ public class TextBox extends GuiElement<TextBox>
 			startX = this.x + this.width;
 		}
 
-		Tesselator tessellator = Tesselator.getInstance();
-		BufferBuilder buffer = tessellator.getBuilder();
 		RenderSystem.setShader(GameRenderer::getPositionShader);
 		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(LogicOp.OR_REVERSE);
-		buffer = Tesselator.getInstance().begin(Mode.QUADS, DefaultVertexFormat.POSITION);
-		buffer.vertex(startX, endY, 0.0);
-		buffer.vertex(endX, endY, 0.0);
-		buffer.vertex(endX, startY, 0.0);
-		buffer.vertex(startX, startY, 0.0);
-		tessellator.end();
+		BufferBuilder buffer = Tesselator.getInstance().begin(Mode.QUADS, DefaultVertexFormat.POSITION);
+		buffer.addVertex(startX, endY, 0.0F);
+		buffer.addVertex(endX, endY, 0.0F);
+		buffer.addVertex(endX, startY, 0.0F);
+		buffer.addVertex(startX, startY, 0.0F);
+		com.mojang.blaze3d.vertex.BufferUploader.drawWithShader(buffer.buildOrThrow());
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.disableColorLogicOp();
 	}
@@ -326,7 +324,7 @@ public class TextBox extends GuiElement<TextBox>
 				case 266:
 				case 267:
 				default:
-					if (SharedConstants.isAllowedChatCharacter(typedChar) && this.willDraw())
+					if (net.minecraft.util.StringUtil.isAllowedChatCharacter(typedChar) && this.willDraw())
 					{
 						this.writeText(String.valueOf(typedChar));
 						break;
@@ -416,7 +414,7 @@ public class TextBox extends GuiElement<TextBox>
 	public void writeText(String textToWrite)
 	{
 		StringBuilder newText = new StringBuilder();
-		String cleanString = SharedConstants.filterText(textToWrite);
+		String cleanString = net.minecraft.util.StringUtil.filterText(textToWrite);
 		int start = Math.min(this.cursor, this.selectionEnd);
 		int end = Math.max(this.cursor, this.selectionEnd);
 		int insertionPoint = this.maxTextLength - this.text.length() - (start - end);

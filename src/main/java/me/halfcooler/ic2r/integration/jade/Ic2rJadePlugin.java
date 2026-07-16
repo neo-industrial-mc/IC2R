@@ -34,9 +34,8 @@ public class Ic2rJadePlugin implements IWailaPlugin
 
 		// Jade harvest-tool icon (wrench + ✔/✕), same system as pickaxe on ores.
 		// Blocks in ic2r:mineable/wrench show the wrench; main-hand isCorrectToolForDrops drives the mark.
-		HarvestToolProvider.registerHandler(new SimpleToolHandler(
-			"wrench",
-			Ic2rBlockTags.MINEABLE_WITH_WRENCH,
-			Ic2rItems.WRENCH));
+		HarvestToolProvider.registerHandler(SimpleToolHandler.create(
+			net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("ic2r", "wrench"),
+			java.util.List.of(Ic2rItems.WRENCH)));
 	}
 }

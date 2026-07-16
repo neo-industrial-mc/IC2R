@@ -30,6 +30,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -112,7 +113,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 
 		if (world.isClientSide)
 		{
-			player.playSound(Ic2rSoundEvents.ITEM_WRENCH_USE.value(), 1.0F, 1.0F);
+			player.playSound(Ic2rSoundEvents.ITEM_WRENCH_USE.get(), 1.0F, 1.0F);
 			return InteractionResult.PASS;
 		}
 
@@ -207,7 +208,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	{
 		if (tryRemoveWithWrench(world, player, pos, state))
 		{
-			player.getMainHandItem().hurtAndBreak(MINE_DAMAGE, player, p -> p.onEquippedItemBroken(p.getUsedItemHand()));
+			player.getMainHandItem().hurtAndBreak(MINE_DAMAGE, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
 			return false;
 		}
 
@@ -233,7 +234,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	@Override
 	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
-		if (this.isCorrectToolForDrops(state))
+		if (this.isCorrectToolForDrops(stack, state))
 		{
 			return WRENCH_DESTROY_SPEED;
 		}
@@ -275,7 +276,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 
 	public void damage(ItemStack is, int damage, Player player, InteractionHand hand)
 	{
-		is.hurtAndBreak(damage, player, p -> p.onEquippedItemBroken(hand));
+		is.hurtAndBreak(damage, player, LivingEntity.getSlotForHand(hand));
 	}
 
 	@Override
@@ -324,7 +325,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		}
 
 		return world.getBlockState(pos).getBlock() instanceof IWrenchAble
-			? Ic2rSoundEvents.ITEM_WRENCH_USE.value()
+			? Ic2rSoundEvents.ITEM_WRENCH_USE.get()
 			: null;
 	}
 }

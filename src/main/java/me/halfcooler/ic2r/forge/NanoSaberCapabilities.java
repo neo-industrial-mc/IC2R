@@ -1,36 +1,31 @@
 package me.halfcooler.ic2r.forge;
 
 import me.halfcooler.ic2r.api.item.INanoSaberState;
+import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.item.tool.AbstractItemNanoSaber;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capability;
-import net.neoforged.neoforge.capabilities.CapabilityManager;
-import net.neoforged.neoforge.capabilities.CapabilityToken;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 public final class NanoSaberCapabilities {
 
-    public static final Capability<INanoSaberState> NANO_SABER_STATE = CapabilityManager.get(new CapabilityToken<>() {
-    });
+    public static final ItemCapability<INanoSaberState, Void> NANO_SABER_STATE =
+        ItemCapability.createVoid(IC2R.getIdentifier("nano_saber_state"), INanoSaberState.class);
 
     private NanoSaberCapabilities() {
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        event.register(INanoSaberState.class);
+        // Item providers are registered in Ic2rCapabilities for items that implement AbstractItemNanoSaber.
     }
 
     public static INanoSaberState getState(ItemStack stack) {
         if (StackUtil.isEmpty(stack) || !(stack.getItem() instanceof AbstractItemNanoSaber)) {
             return InactiveNanoSaberState.INSTANCE;
         }
-        LazyOptional<INanoSaberState> optional = stack.getCapability(NANO_SABER_STATE, null);
-        if (!optional.isPresent()) {
-            return InactiveNanoSaberState.INSTANCE;
-        }
-        return optional.orElse(InactiveNanoSaberState.INSTANCE);
+        INanoSaberState state = stack.getCapability(NANO_SABER_STATE);
+        return state != null ? state : InactiveNanoSaberState.INSTANCE;
     }
 
     public static boolean isActive(ItemStack stack) {

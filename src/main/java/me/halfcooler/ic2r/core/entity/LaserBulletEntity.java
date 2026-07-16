@@ -77,9 +77,10 @@ public class LaserBulletEntity extends ThrowableProjectile
 		this.isExplosiveMode = isExplosiveMode;
 	}
 
-	protected float getGravity()
+	@Override
+	protected double getDefaultGravity()
 	{
-		return 0.0F;
+		return 0.0;
 	}
 
 	protected void defineSynchedData(SynchedEntityData.Builder builder)
@@ -285,10 +286,12 @@ public class LaserBulletEntity extends ThrowableProjectile
 			inputItemStack = new ItemStack(targetBlock.asItem());
 		}
 
-		SmeltingRecipe recipe = IC2R.sideProxy.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(inputItemStack), this.getCommandSenderWorld()).orElse(null);
-		if (recipe != null)
+		var recipeHolder = IC2R.sideProxy.getRecipeManager()
+			.getRecipeFor(RecipeType.SMELTING, new net.minecraft.world.item.crafting.SingleRecipeInput(inputItemStack), this.level())
+			.orElse(null);
+		if (recipeHolder != null)
 		{
-			ItemStack replacementStack = recipe.getResultItem(this.getCommandSenderWorld().registryAccess());
+			ItemStack replacementStack = recipeHolder.value().getResultItem(this.level().registryAccess());
 			if (!StackUtil.isEmpty(replacementStack))
 			{
 				replacementList.add(replacementStack);

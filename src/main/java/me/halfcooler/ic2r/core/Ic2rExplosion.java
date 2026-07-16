@@ -187,7 +187,7 @@ public class Ic2rExplosion extends Explosion
 				BlockPos end = pos.offset(range, range, range);
 				this.chunkCache = new PathNavigationRegion(this.worldObj, start, end);
 
-				for (Entity entity : this.worldObj.getEntities(this.exploder, new AABB(start, end)))
+				for (Entity entity : this.worldObj.getEntities(this.exploder, AABB.encapsulatingFullBlocks(start, end)))
 				{
 					if (entity instanceof LivingEntity || entity instanceof ItemEntity)
 					{

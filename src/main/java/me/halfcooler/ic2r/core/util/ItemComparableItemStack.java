@@ -1,5 +1,7 @@
 package me.halfcooler.ic2r.core.util;
 
+import me.halfcooler.ic2r.core.util.StackUtil;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +16,7 @@ public class ItemComparableItemStack
 	public ItemComparableItemStack(ItemStack stack, boolean copyNbt)
 	{
 		this.item = stack.getItem();
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		if (nbt != null)
 		{
 			if (nbt.isEmpty())

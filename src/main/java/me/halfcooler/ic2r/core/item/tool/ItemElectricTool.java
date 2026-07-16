@@ -33,11 +33,17 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -67,11 +73,18 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 		this(settings, 2.0F, operationEnergyCost, material, effectiveBlocks);
 	}
 
+	private final float toolSpeed;
+
 	private ItemElectricTool(Properties settings, float attackDamage, int operationEnergyCost, Tier material, Collection<TagKey<Block>> effectiveBlocks)
 	{
-		super(attackDamage, (float) -3.0, material, effectiveBlocks.isEmpty() ? Ic2rBlockTags.EMPTY : effectiveBlocks.iterator().next(), settings);
+		super(
+			material,
+			effectiveBlocks.isEmpty() ? Ic2rBlockTags.EMPTY : effectiveBlocks.iterator().next(),
+			settings.attributes(DiggerItem.createAttributes(material, attackDamage, -3.0F))
+		);
 		this.operationEnergyCost = operationEnergyCost;
 		this.effectiveBlocks = effectiveBlocks;
+		this.toolSpeed = material.getSpeed();
 	}
 
 	public static boolean consumeEnergy(ItemStack stack, double amount, int tier, LivingEntity entity)
@@ -137,27 +150,21 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 
 	public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
-		return this.isEffective(state) && ElectricItem.manager.canUse(stack, this.operationEnergyCost) ? this.speed : 1.0F;
-	}
-
-	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
-	{
-		int level = this.getTier().getLevel();
-		return (level >= 3 || !state.is(BlockTags.NEEDS_DIAMOND_TOOL)) && (level >= 2 || !state.is(BlockTags.NEEDS_IRON_TOOL)) && (level >= 1 || !state.is(BlockTags.NEEDS_STONE_TOOL)) && this.isEffective(state);
+		return this.isEffective(state) && ElectricItem.manager.canUse(stack, this.operationEnergyCost) ? this.toolSpeed : 1.0F;
 	}
 
 	/**
-	 * Forge routes {@link ItemStack#isCorrectToolForDrops} to this stack-sensitive
-	 * override on {@link DiggerItem}, not to {@link #isCorrectToolForDrops(BlockState)}.
-	 * Subclasses (wrench, chainsaw, drills) implement the BlockState form — keep them
-	 * wired by delegating here. Without this, the parent only checks the single
-	 * digger tag (often {@link Ic2rBlockTags#EMPTY} for the electric wrench), so Jade
-	 * shows ✕ and mining uses the incorrect-tool penalty (÷100 instead of ÷30).
+	 * Stack-sensitive tool check. Energy-aware effective-block rules.
 	 */
 	@Override
 	public boolean isCorrectToolForDrops(@NotNull ItemStack stack, @NotNull BlockState state)
 	{
-		return this.isCorrectToolForDrops(state);
+		return this.isEffective(state) && super.isCorrectToolForDrops(stack, state);
+	}
+
+	protected float getToolSpeed()
+	{
+		return this.toolSpeed;
 	}
 
 	private boolean isEffective(BlockState state)
@@ -357,7 +364,7 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 
 	public SoundEvent getShutdownSound()
 	{
-		return Ic2rSoundEvents.ITEM_ELECTRIC_SHUTDOWN.value();
+		return Ic2rSoundEvents.ITEM_ELECTRIC_SHUTDOWN.get();
 	}
 
 	public boolean isBarVisible(@NotNull ItemStack stack)

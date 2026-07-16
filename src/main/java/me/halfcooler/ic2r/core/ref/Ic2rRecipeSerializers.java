@@ -23,7 +23,7 @@ public final class Ic2rRecipeSerializers
 	public static final RecipeSerializer<AdvRecipe> SHAPED = register("shaped", new AdvRecipe.Serializer());
 	public static final RecipeSerializer<AdvShapelessRecipe> SHAPELESS = register("shapeless", new AdvShapelessRecipe.Serializer());
 	public static final RecipeSerializer<GradualRecipe> GRADUAL = register("gradual", new GradualRecipe.Serializer());
-	public static final RecipeSerializer<JetpackAttachmentRecipe> JETPACK_ATTACHMENT = register("jetpack_attachment", new JetpackAttachmentRecipe.Serializer());
+	public static final RecipeSerializer<JetpackAttachmentRecipe> JETPACK_ATTACHMENT = register("jetpack_attachment", JetpackAttachmentRecipe.SERIALIZER);
 	public static final WeightedMachineRecipeSerializer MACERATOR = register("macerator", new WeightedMachineRecipeSerializer(Ic2rRecipeTypes.MACERATOR, null));
 	public static final BasicMachineRecipeSerializer EXTRACTOR = register("extractor", new BasicMachineRecipeSerializer(Ic2rRecipeTypes.EXTRACTOR, null));
 	public static final BasicMachineRecipeSerializer COMPRESSOR = register("compressor", new BasicMachineRecipeSerializer(Ic2rRecipeTypes.COMPRESSOR, null));

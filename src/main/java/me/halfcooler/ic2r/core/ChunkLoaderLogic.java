@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
@@ -28,6 +29,10 @@ public final class ChunkLoaderLogic
 	private static final TicketType<ChunkPos> ticketType = TicketType.create(
 		IC2R.getIdentifier("chunk_loader").toString(), Comparator.comparingLong(ChunkPos::toLong)
 	);
+	private static final SavedData.Factory<SavedState> FACTORY = new SavedData.Factory<>(
+		SavedState::new,
+		SavedState::load
+	);
 
 	public static void addChunkLoader(ServerLevel world, BlockPos pos, LongSet chunks)
 	{
@@ -37,9 +42,9 @@ public final class ChunkLoaderLogic
 			throw new IllegalArgumentException("missing own position");
 		}
 
-		ChunkLoaderLogic.SavedState state = world.getDataStorage()
-			.computeIfAbsent(SavedState::new, SavedState::new, savedStateId);
+		ChunkLoaderLogic.SavedState state = world.getDataStorage().computeIfAbsent(FACTORY, savedStateId);
 		state.chunksToChunkLoaders.computeIfAbsent(loaderChunk, ignore -> new ObjectOpenHashSet<>(1)).add(pos);
+		state.setDirty();
 		WorldData worldData = WorldData.get(world);
 
 		for (long chunk : chunks)
@@ -58,7 +63,7 @@ public final class ChunkLoaderLogic
 
 	public static void removeChunkLoader(ServerLevel world, BlockPos pos)
 	{
-		ChunkLoaderLogic.SavedState state = world.getDataStorage().get(SavedState::new, savedStateId);
+		ChunkLoaderLogic.SavedState state = world.getDataStorage().get(FACTORY, savedStateId);
 		if (state != null)
 		{
 			long chunkPos = ChunkPos.asLong(pos);
@@ -67,6 +72,7 @@ public final class ChunkLoaderLogic
 			{
 				state.chunksToChunkLoaders.remove(chunkPos);
 			}
+			state.setDirty();
 		}
 
 		WorldData worldData = WorldData.get(world, false);
@@ -148,7 +154,7 @@ public final class ChunkLoaderLogic
 
 	public static void onWorldLoad(ServerLevel world)
 	{
-		ChunkLoaderLogic.SavedState state = world.getDataStorage().get(SavedState::new, savedStateId);
+		ChunkLoaderLogic.SavedState state = world.getDataStorage().get(FACTORY, savedStateId);
 		if (state != null && !state.chunksToChunkLoaders.isEmpty())
 		{
 			WorldData worldData = WorldData.get(world);
@@ -173,7 +179,7 @@ public final class ChunkLoaderLogic
 	{
 		assert !chunk.getLevel().isClientSide;
 		ServerLevel world = (ServerLevel) chunk.getLevel();
-		ChunkLoaderLogic.SavedState state = world.getDataStorage().get(SavedState::new, savedStateId);
+		ChunkLoaderLogic.SavedState state = world.getDataStorage().get(FACTORY, savedStateId);
 		if (state != null && !state.chunksToChunkLoaders.isEmpty())
 		{
 			Set<BlockPos> loaders = state.chunksToChunkLoaders.get(chunk.getPos().toLong());
@@ -209,19 +215,22 @@ public final class ChunkLoaderLogic
 		{
 		}
 
-		SavedState(CompoundTag nbt)
+		static SavedState load(CompoundTag nbt, HolderLookup.Provider registries)
 		{
+			SavedState state = new SavedState();
 			ListTag loaders = nbt.getList("loaders", 10);
 
 			for (int i = 0; i < loaders.size(); i++)
 			{
 				CompoundTag contentTag = loaders.getCompound(i);
 				BlockPos pos = new BlockPos(contentTag.getInt("x"), contentTag.getInt("y"), contentTag.getInt("z"));
-				this.chunksToChunkLoaders.computeIfAbsent(ChunkPos.asLong(pos), ignore -> new ObjectOpenHashSet<>(1)).add(pos);
+				state.chunksToChunkLoaders.computeIfAbsent(ChunkPos.asLong(pos), ignore -> new ObjectOpenHashSet<>(1)).add(pos);
 			}
+			return state;
 		}
 
-		public @NotNull CompoundTag save(CompoundTag nbt)
+		@Override
+		public @NotNull CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries)
 		{
 			ListTag loaders = new ListTag();
 			nbt.put("loaders", loaders);

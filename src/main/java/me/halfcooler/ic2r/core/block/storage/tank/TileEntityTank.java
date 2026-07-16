@@ -107,7 +107,7 @@ public abstract class TileEntityTank extends TileEntityInventory implements IHas
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
 		Ic2rTooltip.add(tooltip, Component.translatable("item.ic2r.tank.tooltip", contents.getCapacity()));
-		CompoundTag nbt = stack.getTag();
+		CompoundTag nbt = StackUtil.getTag(stack);
 		if (nbt != null && !nbt.contains("Empty"))
 		{
 			Ic2rFluidStack fluidStack = Ic2rFluidStack.read(nbt);

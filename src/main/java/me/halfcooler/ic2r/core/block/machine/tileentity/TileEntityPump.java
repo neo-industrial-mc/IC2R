@@ -297,7 +297,7 @@ public class TileEntityPump extends TileEntityElectricMachine implements IHasGui
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_PUMP_OPERATE.value();
+		return Ic2rSoundEvents.MACHINE_PUMP_OPERATE.get();
 	}
 
 	@Override

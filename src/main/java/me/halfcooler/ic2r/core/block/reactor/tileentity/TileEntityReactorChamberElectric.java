@@ -115,8 +115,7 @@ public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements 
 		}
 	}
 
-	public int getContainerSize()
-	{
+	public int getContainerSize() {
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
 		return reactor != null ? reactor.getContainerSize() : 0;
 	}

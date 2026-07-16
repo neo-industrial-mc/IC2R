@@ -30,9 +30,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -357,20 +361,20 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 			case 0:
 			case 3:
 			case 4:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SHOOT.value());
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SHOOT.get());
 				break;
 			case 1:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LOW_FOCUS.value());
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LOW_FOCUS.get());
 				break;
 			case 2:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LONG_RANGE.value());
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LONG_RANGE.get());
 				break;
 			case 5:
 			case 7:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SCATTER.value());
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SCATTER.get());
 				break;
 			case 6:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_EXPLOSIVE.value());
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_EXPLOSIVE.get());
 		}
 	}
 }

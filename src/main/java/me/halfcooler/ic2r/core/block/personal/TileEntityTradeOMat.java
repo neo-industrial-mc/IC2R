@@ -26,7 +26,7 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import me.halfcooler.ic2r.core.util.GameProfileNbt;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -71,7 +71,7 @@ public class TileEntityTradeOMat
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("ownerGameProfile"))
 		{
-			this.owner = NbtUtils.readGameProfile(nbt.getCompound("ownerGameProfile"));
+			this.owner = GameProfileNbt.read(nbt.getCompound("ownerGameProfile"));
 		}
 
 		this.totalTradeCount = nbt.getInt("totalTradeCount");
@@ -88,7 +88,7 @@ public class TileEntityTradeOMat
 		if (this.owner != null)
 		{
 			CompoundTag ownerNbt = new CompoundTag();
-			NbtUtils.writeGameProfile(ownerNbt, this.owner);
+			GameProfileNbt.write(ownerNbt, this.owner);
 			nbt.put("ownerGameProfile", ownerNbt);
 		}
 
@@ -206,7 +206,7 @@ public class TileEntityTradeOMat
 								this.worldPosition.getX(),
 								this.worldPosition.getY(),
 								this.worldPosition.getZ(),
-								Ic2rSoundEvents.MACHINE_OMAT_OPERATE.value(),
+								Ic2rSoundEvents.MACHINE_OMAT_OPERATE.get(),
 								SoundSource.BLOCKS,
 								1.0F,
 								1.0F,

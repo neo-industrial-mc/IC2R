@@ -1,15 +1,13 @@
 package me.halfcooler.ic2r.core.item.tool;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.ImmutableMultimap.Builder;
 import me.halfcooler.ic2r.api.item.ElectricItem;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 public class ItemNanoSaber extends AbstractItemNanoSaber
 {
@@ -18,13 +16,9 @@ public class ItemNanoSaber extends AbstractItemNanoSaber
 		super(settings);
 	}
 
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot)
+	@Override
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack)
 	{
-		if (slot != EquipmentSlot.MAINHAND)
-		{
-			return this.getDefaultAttributeModifiers(slot);
-		}
-
 		int dmg = 4;
 		float speed = -3.0f;
 
@@ -34,14 +28,13 @@ public class ItemNanoSaber extends AbstractItemNanoSaber
 			speed = 0f;
 		}
 
-		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", dmg, Operation.ADDITION));
-		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", speed, Operation.ADDITION));
-		return builder.build();
-	}
-
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack)
-	{
-		return this.getAttributeModifiers(stack, slot);
+		return ItemAttributeModifiers.builder()
+			.add(Attributes.ATTACK_DAMAGE,
+				new AttributeModifier(BASE_ATTACK_DAMAGE_ID, dmg, Operation.ADD_VALUE),
+				EquipmentSlotGroup.MAINHAND)
+			.add(Attributes.ATTACK_SPEED,
+				new AttributeModifier(BASE_ATTACK_SPEED_ID, speed, Operation.ADD_VALUE),
+				EquipmentSlotGroup.MAINHAND)
+			.build();
 	}
 }

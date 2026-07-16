@@ -3,6 +3,7 @@ package me.halfcooler.ic2r.forge;
 import me.halfcooler.ic2r.core.energy.EnergyBridgeMath;
 import me.halfcooler.ic2r.platform.services.PlatformEnergyBridge;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -66,6 +67,10 @@ public final class PlatformEnergyBridgeForge implements PlatformEnergyBridge {
         if (be == null) {
             return null;
         }
-        return be.getCapability(Capabilities.ENERGY, side).orElse(null);
+        Level level = be.getLevel();
+        if (level == null) {
+            return null;
+        }
+        return level.getCapability(Capabilities.EnergyStorage.BLOCK, be.getBlockPos(), side);
     }
 }

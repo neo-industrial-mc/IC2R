@@ -787,7 +787,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 				{
 					if (this.soundMain == null)
 					{
-						this.soundMain = IC2R.soundManager.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_LOOP.value(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
+						this.soundMain = IC2R.soundManager.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_LOOP.get(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
 					}
 
 					if (this.soundMain != null)
@@ -806,7 +806,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 						}
 
 						this.soundGeiger = IC2R.soundManager
-							.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_LOW_POWER.value(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
+							.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_LOW_POWER.get(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
 						if (this.soundGeiger != null)
 						{
 							this.soundGeiger.play();
@@ -822,7 +822,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 						}
 
 						this.soundGeiger = IC2R.soundManager
-							.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_MEDIUM_POWER.value(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
+							.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_MEDIUM_POWER.get(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
 						if (this.soundGeiger != null)
 						{
 							this.soundGeiger.play();
@@ -836,7 +836,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 					}
 
 					this.soundGeiger = IC2R.soundManager
-						.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_HIGH_POWER.value(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
+						.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_HIGH_POWER.get(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
 					if (this.soundGeiger != null)
 					{
 						this.soundGeiger.play();

@@ -26,7 +26,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -59,7 +61,7 @@ public class ItemScanner extends BaseElectricItem implements IBoxable, IHandHeld
 				}
 			} else
 			{
-				player.playSound(Ic2rSoundEvents.ITEM_SCANNER_USE.value(), 1.0F, 1.0F);
+				player.playSound(Ic2rSoundEvents.ITEM_SCANNER_USE.get(), 1.0F, 1.0F);
 			}
 
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

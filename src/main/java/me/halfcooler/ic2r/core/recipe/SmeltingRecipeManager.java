@@ -12,24 +12,26 @@ import java.util.Collection;
 import java.util.Collections;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 
 public class SmeltingRecipeManager implements IMachineRecipeManager<ItemStack, ItemStack, ItemStack>
 {
 	public MachineRecipeResult<ItemStack, ItemStack, ItemStack> apply(ItemStack input, boolean acceptTest)
 	{
-		SmeltingRecipe recipe = IC2R.sideProxy
+		RecipeHolder<SmeltingRecipe> recipeHolder = IC2R.sideProxy
 			.getRecipeManager()
-			.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(input), null)
+			.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(input), null)
 			.orElse(null);
-		if (recipe == null)
+		if (recipeHolder == null)
 		{
 			return null;
 		}
 
+		SmeltingRecipe recipe = recipeHolder.value();
 		ItemStack output = recipe.getResultItem(null);
 		if (StackUtil.isEmpty(output))
 		{

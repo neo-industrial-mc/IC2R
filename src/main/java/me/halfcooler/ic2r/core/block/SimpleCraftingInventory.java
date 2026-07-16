@@ -108,8 +108,7 @@ public abstract class SimpleCraftingInventory implements CraftingContainer
 	}
 
 	@Override
-	public int getContainerSize()
-	{
+	public int getContainerSize() {
 		return this.size;
 	}
 

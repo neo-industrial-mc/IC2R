@@ -31,7 +31,7 @@ import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import me.halfcooler.ic2r.core.util.GameProfileNbt;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -67,7 +67,7 @@ public class TileEntityEnergyOMat
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("ownerGameProfile"))
 		{
-			this.owner = NbtUtils.readGameProfile(nbt.getCompound("ownerGameProfile"));
+			this.owner = GameProfileNbt.read(nbt.getCompound("ownerGameProfile"));
 		}
 
 		this.euOffer = nbt.getInt("euOffer");
@@ -89,7 +89,7 @@ public class TileEntityEnergyOMat
 		if (this.owner != null)
 		{
 			CompoundTag ownerNbt = new CompoundTag();
-			NbtUtils.writeGameProfile(ownerNbt, this.owner);
+			GameProfileNbt.write(ownerNbt, this.owner);
 			nbt.put("ownerGameProfile", ownerNbt);
 		}
 

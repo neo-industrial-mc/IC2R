@@ -47,7 +47,7 @@ public class RecipeInputIngredient extends RecipeInputBase
 	@Override
 	public JsonElement toJson()
 	{
-		JsonElement element = this.ingredient.toJson();
+		JsonElement element = me.halfcooler.ic2r.core.recipe.v2.RecipeIo.ingredientToJson(this.ingredient);
 		if (this.amount == 1)
 		{
 			return element;

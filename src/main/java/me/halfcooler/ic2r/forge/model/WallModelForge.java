@@ -45,8 +45,7 @@ public final class WallModelForge implements Ic2rModel
 		ModelBaker bakery,
 		Function<Material, TextureAtlasSprite> spriteGetter,
 		ModelState modelTransform,
-		ItemOverrides overrides,
-		ResourceLocation modelLocation
+		ItemOverrides overrides
 	)
 	{
 		return new BakedWallModel();

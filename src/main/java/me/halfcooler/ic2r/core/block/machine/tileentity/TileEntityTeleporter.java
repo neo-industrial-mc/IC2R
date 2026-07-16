@@ -189,10 +189,10 @@ public class TileEntityTeleporter extends TileEntityBase implements INetworkTile
 				this.consumeEnergy(energyCost);
 				if (user instanceof ServerPlayer)
 				{
-					user.teleportTo(this.target.getX() + 0.5, this.target.getY() + 1.5 + user.getMyRidingOffset(), this.target.getZ() + 0.5);
+					user.teleportTo(this.target.getX() + 0.5, this.target.getY() + 1.5, this.target.getZ() + 0.5);
 				} else
 				{
-					user.absMoveTo(this.target.getX() + 0.5, this.target.getY() + 1.5 + user.getMyRidingOffset(), this.target.getZ() + 0.5, user.getYRot(), user.getXRot());
+					user.absMoveTo(this.target.getX() + 0.5, this.target.getY() + 1.5, this.target.getZ() + 0.5, user.getYRot(), user.getXRot());
 				}
 
 				BlockEntity te = this.getLevel().getBlockEntity(this.target);
@@ -374,7 +374,7 @@ public class TileEntityTeleporter extends TileEntityBase implements INetworkTile
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_TELEPORTER_CHARGE.value();
+		return Ic2rSoundEvents.MACHINE_TELEPORTER_CHARGE.get();
 	}
 
 	@Override
@@ -395,7 +395,7 @@ public class TileEntityTeleporter extends TileEntityBase implements INetworkTile
 				return;
 			}
 
-			this.level.playLocalSound(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), Ic2rSoundEvents.MACHINE_TELEPORTER_USE.value(), SoundSource.BLOCKS, 1.0F, 1.0F, true);
+			this.level.playLocalSound(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), Ic2rSoundEvents.MACHINE_TELEPORTER_USE.get(), SoundSource.BLOCKS, 1.0F, 1.0F, true);
 			this.spawnBlueParticles(20, this.worldPosition);
 			this.spawnBlueParticles(20, this.target);
 		} else

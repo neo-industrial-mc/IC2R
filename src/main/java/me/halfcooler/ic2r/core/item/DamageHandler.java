@@ -1,7 +1,9 @@
 package me.halfcooler.ic2r.core.item;
 
 import me.halfcooler.ic2r.core.IC2R;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -50,17 +52,26 @@ public class DamageHandler
 			return false;
 		} else if (src != null)
 		{
-			stack.hurtAndBreak(damage, src, player ->
-			{
-				if (hand != null)
-				{
-					player.onEquippedItemBroken(hand);
-				}
-			});
+			EquipmentSlot slot = hand != null
+				? LivingEntity.getSlotForHand(hand)
+				: src.getEquipmentSlotForItem(stack);
+			stack.hurtAndBreak(damage, src, slot);
 			return true;
 		} else
 		{
-			return stack.hurt(damage, IC2R.random, src instanceof ServerPlayer ? (ServerPlayer) src : null);
+			// 1.21: ItemStack.hurt(int, RandomSource, ServerPlayer) removed; simulate damage without entity.
+			if (!stack.isDamageableItem())
+			{
+				return false;
+			}
+			int newDamage = stack.getDamageValue() + damage;
+			if (newDamage >= stack.getMaxDamage())
+			{
+				stack.shrink(1);
+				return true;
+			}
+			stack.setDamageValue(newDamage);
+			return true;
 		}
 	}
 }

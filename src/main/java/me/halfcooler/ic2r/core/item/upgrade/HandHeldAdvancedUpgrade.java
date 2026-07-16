@@ -113,7 +113,7 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 		super.save();
 		if (IC2R.sideProxy.isSimulating())
 		{
-			CompoundTag nbt = this.containerStack.getTag();
+			CompoundTag nbt = StackUtil.getTag(this.containerStack);
 			assert nbt != null;
 			// Drop legacy meta settings if present
 			nbt.remove("metaSettings");
