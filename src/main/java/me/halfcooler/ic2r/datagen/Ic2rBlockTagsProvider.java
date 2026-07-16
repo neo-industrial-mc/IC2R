@@ -106,6 +106,7 @@ public final class Ic2rBlockTagsProvider extends BlockTagsProvider
 			Ic2rBlocks.MV_TRANSFORMER.get(),
 			Ic2rBlocks.HV_TRANSFORMER.get(),
 			Ic2rBlocks.EV_TRANSFORMER.get(),
+			Ic2rBlocks.EU_TO_FE_CONVERTER.get(),
 			// Misc machines
 			Ic2rBlocks.TANK.get(),
 			Ic2rBlocks.CHUNK_LOADER.get(),

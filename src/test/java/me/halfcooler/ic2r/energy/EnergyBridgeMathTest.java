@@ -137,4 +137,27 @@ class EnergyBridgeMathTest
 		// accept more FE than offered EU maps to → residual 0
 		assertEquals(0.0, EnergyBridgeMath.residualEuAfterFeTransfer(1.0, 100L), EPS);
 	}
+
+	/**
+	 * EU→FE converter contracts: push uses floor for offer, residual for spend;
+	 * FE→EU mapping exists for extract accounting but receive path must not reverse-create EU.
+	 */
+	@Test
+	void euToFeConverter_pushAccounting_floorAndResidual()
+	{
+		// Converter caps 2048 EU/t → 4096 FE/t at default ratio
+		double maxEu = 2048.0;
+		long maxFe = EnergyBridgeMath.euToFeFloor(maxEu);
+		assertEquals(4096L, maxFe);
+
+		// Neighbour accepts half of offered FE → half EU spent
+		long accepted = maxFe / 2;
+		double leftover = EnergyBridgeMath.residualEuAfterFeTransfer(maxEu, accepted);
+		assertEquals(1024.0, leftover, EPS);
+
+		// Extract-side: FE taken maps back to exact EU at even amounts
+		assertEquals(10.0, EnergyBridgeMath.feToEu(20L), EPS);
+		// Odd FE cannot invent EU beyond floor mapping
+		assertEquals(9.5, EnergyBridgeMath.feToEu(19L), EPS);
+	}
 }

@@ -1,0 +1,50 @@
+{
+  "variants": {
+    "facing=east,active=false": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter",
+      "y": 90
+    },
+    "facing=east,active=true": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter_active",
+      "y": 90
+    },
+    "facing=north,active=false": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter"
+    },
+    "facing=north,active=true": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter_active"
+    },
+    "facing=south,active=false": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter",
+      "y": 180
+    },
+    "facing=south,active=true": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter_active",
+      "y": 180
+    },
+    "facing=west,active=false": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter",
+      "y": 270
+    },
+    "facing=west,active=true": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter_active",
+      "y": 270
+    },
+    "facing=up,active=false": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter",
+      "x": -90
+    },
+    "facing=up,active=true": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter_active",
+      "x": -90
+    },
+    "facing=down,active=false": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter",
+      "x": 90
+    },
+    "facing=down,active=true": {
+      "model": "ic2r:block/wiring/eu_to_fe_converter_active",
+      "x": 90
+    }
+  }
+}

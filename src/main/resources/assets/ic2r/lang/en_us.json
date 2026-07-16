@@ -318,6 +318,8 @@
   "block.ic2r.terra_wart_crop": "Terra Wart",
   "block.ic2r.terraformer": "Terraformer",
   "block.ic2r.tesla_coil": "Tesla Coil",
+  "block.ic2r.eu_to_fe_converter": "FE Converter",
+  "item.ic2r.remote_interface_upgrade": "Remote Interface Upgrade",
   "block.ic2r.tin_block": "Tin Block",
   "block.ic2r.tin_cable": "Tin Cable",
   "block.ic2r.tin_ore": "Tin Ore",

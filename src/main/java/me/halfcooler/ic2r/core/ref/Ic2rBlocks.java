@@ -161,6 +161,7 @@ public final class Ic2rBlocks
 	public static final DeferredHolder<Block, Block> MV_TRANSFORMER = Ic2rBlocksWiring.MV_TRANSFORMER;
 	public static final DeferredHolder<Block, Block> HV_TRANSFORMER = Ic2rBlocksWiring.HV_TRANSFORMER;
 	public static final DeferredHolder<Block, Block> EV_TRANSFORMER = Ic2rBlocksWiring.EV_TRANSFORMER;
+	public static final DeferredHolder<Block, Block> EU_TO_FE_CONVERTER = Ic2rBlocksWiring.EU_TO_FE_CONVERTER;
 	public static final DeferredHolder<Block, Block> TANK = Ic2rBlocksMachines.TANK;
 	public static final DeferredHolder<Block, Block> CHUNK_LOADER = Ic2rBlocksMachines.CHUNK_LOADER;
 	public static final DeferredHolder<Block, Block> CREATIVE_GENERATOR = Ic2rBlocksGenerators.CREATIVE_GENERATOR;

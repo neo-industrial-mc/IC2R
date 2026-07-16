@@ -2,10 +2,12 @@ package me.halfcooler.ic2r.forge;
 
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
+import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityEuToFeConverter;
 import me.halfcooler.ic2r.core.fluid.FluidBeBridge;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidBlock;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidItem;
 import me.halfcooler.ic2r.core.item.tool.AbstractItemNanoSaber;
+import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.Util;
 import me.halfcooler.ic2r.forge.block.tileentity.TileEntityInventoryCap;
 import net.minecraft.core.Direction;
@@ -37,6 +39,17 @@ public final class Ic2rCapabilities {
             }
             registerBlockEntity(event, type);
         }
+
+        // --- EU → FE converter only: extract-only EnergyStorage (no FE receive / no grid-wide FE) ---
+        event.registerBlockEntity(
+            Capabilities.EnergyStorage.BLOCK,
+            Ic2rBlockEntities.EU_TO_FE_CONVERTER,
+            (BlockEntity be, Direction side) -> {
+                if (be instanceof TileEntityEuToFeConverter converter) {
+                    return converter.getFeStorage(side);
+                }
+                return null;
+            });
 
         // --- Items: fluid handlers + nano saber ---
         for (Item item : BuiltInRegistries.ITEM) {

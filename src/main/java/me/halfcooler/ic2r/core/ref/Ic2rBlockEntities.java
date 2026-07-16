@@ -101,6 +101,7 @@ import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityElectricBatBox;
 import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityElectricCESU;
 import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityElectricMFE;
 import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityElectricMFSU;
+import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityEuToFeConverter;
 import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityTransformerEV;
 import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityTransformerHV;
 import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityTransformerLV;
@@ -221,6 +222,7 @@ public final class Ic2rBlockEntities
 	public static final BlockEntityType<TileEntityTransformerMV> MV_TRANSFORMER = register("mv_transformer", TileEntityTransformerMV::new, Ic2rBlocks.MV_TRANSFORMER.get());
 	public static final BlockEntityType<TileEntityTransformerHV> HV_TRANSFORMER = register("hv_transformer", TileEntityTransformerHV::new, Ic2rBlocks.HV_TRANSFORMER.get());
 	public static final BlockEntityType<TileEntityTransformerEV> EV_TRANSFORMER = register("ev_transformer", TileEntityTransformerEV::new, Ic2rBlocks.EV_TRANSFORMER.get());
+	public static final BlockEntityType<TileEntityEuToFeConverter> EU_TO_FE_CONVERTER = register("eu_to_fe_converter", TileEntityEuToFeConverter::new, Ic2rBlocks.EU_TO_FE_CONVERTER.get());
 	public static final BlockEntityType<TileEntityTank> TANK = register("tank", TileEntityTank::new, Ic2rBlocks.TANK.get());
 	public static final BlockEntityType<TileEntityChunkLoader> CHUNK_LOADER = register("chunk_loader", TileEntityChunkLoader::new, Ic2rBlocks.CHUNK_LOADER.get());
 	public static final BlockEntityType<TileEntityCreativeGenerator> CREATIVE_GENERATOR = register("creative_generator", TileEntityCreativeGenerator::new, Ic2rBlocks.CREATIVE_GENERATOR.get());

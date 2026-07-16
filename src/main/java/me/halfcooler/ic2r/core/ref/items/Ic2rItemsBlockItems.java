@@ -108,6 +108,7 @@ public final class Ic2rItemsBlockItems
 	public static final Item MV_TRANSFORMER = Ic2rItems.register("mv_transformer", new ItemBlockIc2r(Ic2rBlocks.MV_TRANSFORMER.get(), new Properties()));
 	public static final Item HV_TRANSFORMER = Ic2rItems.register("hv_transformer", new ItemBlockIc2r(Ic2rBlocks.HV_TRANSFORMER.get(), new Properties().rarity(Rarity.UNCOMMON)));
 	public static final Item EV_TRANSFORMER = Ic2rItems.register("ev_transformer", new ItemBlockIc2r(Ic2rBlocks.EV_TRANSFORMER.get(), new Properties().rarity(Rarity.UNCOMMON)));
+	public static final Item EU_TO_FE_CONVERTER = Ic2rItems.register("eu_to_fe_converter", new ItemBlockIc2r(Ic2rBlocks.EU_TO_FE_CONVERTER.get(), new Properties()));
 	public static final Item TANK = Ic2rItems.register("tank", new ItemBlockIc2r(Ic2rBlocks.TANK.get(), new Properties()));
 	public static final Item STEAM_REPRESSURIZER = Ic2rItems.register("steam_repressurizer", new ItemBlockIc2r(Ic2rBlocks.STEAM_REPRESSURIZER.get(), new Properties()));
 	public static final Item WEIGHTED_FLUID_DISTRIBUTOR = Ic2rItems.register("weighted_fluid_distributor", new ItemBlockIc2r(Ic2rBlocks.WEIGHTED_FLUID_DISTRIBUTOR.get(), new Properties()));

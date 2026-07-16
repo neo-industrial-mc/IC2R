@@ -119,6 +119,7 @@ public final class Ic2rItems
 	public static final Item MV_TRANSFORMER = Ic2rItemsBlockItems.MV_TRANSFORMER;
 	public static final Item HV_TRANSFORMER = Ic2rItemsBlockItems.HV_TRANSFORMER;
 	public static final Item EV_TRANSFORMER = Ic2rItemsBlockItems.EV_TRANSFORMER;
+	public static final Item EU_TO_FE_CONVERTER = Ic2rItemsBlockItems.EU_TO_FE_CONVERTER;
 	public static final Item TANK = Ic2rItemsBlockItems.TANK;
 	public static final Item STEAM_REPRESSURIZER = Ic2rItemsBlockItems.STEAM_REPRESSURIZER;
 	public static final Item WEIGHTED_FLUID_DISTRIBUTOR = Ic2rItemsBlockItems.WEIGHTED_FLUID_DISTRIBUTOR;
@@ -678,6 +679,7 @@ public final class Ic2rItems
 		addToCreativeTab(Ic2rItemGroupType.GENERATORS_AND_WIRING, () -> ELECTRIC_HEAT_GENERATOR);
 		addToCreativeTab(Ic2rItemGroupType.GENERATORS_AND_WIRING, () -> ELECTRIC_KINETIC_GENERATOR);
 		addToCreativeTab(Ic2rItemGroupType.GENERATORS_AND_WIRING, () -> EV_TRANSFORMER);
+		addToCreativeTab(Ic2rItemGroupType.GENERATORS_AND_WIRING, () -> EU_TO_FE_CONVERTER);
 		addToCreativeTab(Ic2rItemGroupType.GENERATORS_AND_WIRING, () -> FLUID_HEAT_GENERATOR);
 		addToCreativeTab(Ic2rItemGroupType.GENERATORS_AND_WIRING, () -> GENERATOR);
 		addToCreativeTab(Ic2rItemGroupType.GENERATORS_AND_WIRING, () -> GEO_GENERATOR);

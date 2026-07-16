@@ -1,0 +1,25 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "CQC",
+    "RMR",
+    "CQC"
+  ],
+  "key": {
+    "M": {
+      "item": "ic2r:mv_transformer"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "C": {
+      "item": "ic2r:circuit"
+    }
+  },
+  "result": {
+    "item": "ic2r:eu_to_fe_converter"
+  }
+}
