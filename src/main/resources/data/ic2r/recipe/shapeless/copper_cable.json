@@ -2,7 +2,7 @@
   "type": "ic2r:shapeless",
   "ingredients": [
     {
-      "tag": "forge:plates/copper"
+      "tag": "c:plates/copper"
     },
     {
       "tag": "ic2r:wire_cutters"

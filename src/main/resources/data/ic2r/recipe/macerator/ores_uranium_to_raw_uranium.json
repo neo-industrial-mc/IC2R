@@ -1,7 +1,7 @@
 {
   "type": "ic2r:macerator",
   "ingredient": {
-    "tag": "forge:ores/uranium"
+    "tag": "c:ores/uranium"
   },
   "weighted": true,
   "result": [

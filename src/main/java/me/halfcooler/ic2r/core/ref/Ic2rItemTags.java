@@ -84,6 +84,12 @@ public final class Ic2rItemTags
 
 	private static TagKey<Item> createResource(String material, String form)
 	{
-		return create("c:%s_%s".formatted(material, form), "forge:%s/%s".formatted(form, material));
+		// Fabric convention-tags flat form: c:tin_ingots
+		// NeoForge / common hierarchical form: c:ingots/tin (and c:storage_blocks/tin for blocks)
+		String hierarchicalForm = "blocks".equals(form) ? "storage_blocks" : form;
+		return create(
+			"c:%s_%s".formatted(material, form),
+			"c:%s/%s".formatted(hierarchicalForm, material)
+		);
 	}
 }

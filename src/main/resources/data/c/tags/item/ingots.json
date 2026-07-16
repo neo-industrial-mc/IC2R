@@ -1,0 +1,11 @@
+{
+  "values": [
+    "#c:ingots/bronze",
+    "#c:ingots/lead",
+    "#c:ingots/plutonium",
+    "#c:ingots/silver",
+    "#c:ingots/steel",
+    "#c:ingots/tin",
+    "#c:ingots/uranium"
+  ]
+}

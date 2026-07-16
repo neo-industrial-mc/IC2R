@@ -1,7 +1,7 @@
 {
   "type": "ic2r:block_cutter",
   "ingredient": {
-    "tag": "forge:blocks/steel"
+    "tag": "c:storage_blocks/steel"
   },
   "result": {
     "item": "ic2r:steel_plate",

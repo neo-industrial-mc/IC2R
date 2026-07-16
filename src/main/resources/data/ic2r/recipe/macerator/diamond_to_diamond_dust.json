@@ -1,7 +1,7 @@
 {
   "type": "ic2r:macerator",
   "ingredient": {
-    "tag": "forge:gems/diamond"
+    "tag": "c:gems/diamond"
   },
   "result": {
     "item": "ic2r:diamond_dust"

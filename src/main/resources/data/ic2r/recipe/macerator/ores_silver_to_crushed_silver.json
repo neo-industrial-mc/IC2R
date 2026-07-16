@@ -1,7 +1,7 @@
 {
   "type": "ic2r:macerator",
   "ingredient": {
-    "tag": "forge:ores/silver"
+    "tag": "c:ores/silver"
   },
   "result": {
     "item": "ic2r:crushed_silver",

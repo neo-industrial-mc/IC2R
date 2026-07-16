@@ -1,7 +1,7 @@
 {
   "type": "ic2r:metal_former_rolling",
   "ingredient": {
-    "tag": "forge:plates/gold"
+    "tag": "c:plates/gold"
   },
   "result": {
     "item": "ic2r:gold_casing",

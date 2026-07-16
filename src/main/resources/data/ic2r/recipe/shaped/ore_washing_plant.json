@@ -19,7 +19,7 @@
       "item": "ic2r:circuit"
     },
     "I": {
-      "tag": "forge:plates/iron"
+      "tag": "c:plates/iron"
     }
   },
   "result": {

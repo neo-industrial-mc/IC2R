@@ -1,7 +1,7 @@
 {
   "type": "ic2r:block_cutter",
   "ingredient": {
-    "tag": "forge:blocks/bronze"
+    "tag": "c:storage_blocks/bronze"
   },
   "result": {
     "item": "ic2r:bronze_plate",

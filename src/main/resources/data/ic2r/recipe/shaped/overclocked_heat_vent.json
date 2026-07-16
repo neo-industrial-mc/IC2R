@@ -10,7 +10,7 @@
       "item": "ic2r:reactor_heat_vent"
     },
     "G": {
-      "tag": "forge:plates/gold"
+      "tag": "c:plates/gold"
     }
   },
   "result": {

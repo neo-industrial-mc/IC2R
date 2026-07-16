@@ -1,7 +1,7 @@
 {
   "type": "ic2r:macerator",
   "ingredient": {
-    "tag": "forge:ingots/silver"
+    "tag": "c:ingots/silver"
   },
   "result": {
     "item": "ic2r:silver_dust"

@@ -7,7 +7,7 @@
   ],
   "key": {
     "C": {
-      "tag": "forge:chests/wooden"
+      "tag": "c:chests/wooden"
     },
     "I": {
       "item": "ic2r:lead_casing"

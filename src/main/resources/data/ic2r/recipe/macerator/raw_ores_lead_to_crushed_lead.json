@@ -1,7 +1,7 @@
 {
   "type": "ic2r:macerator",
   "ingredient": {
-    "tag": "forge:raw_materials/lead"
+    "tag": "c:raw_materials/lead"
   },
   "result": {
     "item": "ic2r:crushed_lead",

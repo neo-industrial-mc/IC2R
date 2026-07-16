@@ -2,7 +2,7 @@
   "type": "ic2r:shapeless",
   "ingredients": [
     {
-      "tag": "forge:plates/lead"
+      "tag": "c:plates/lead"
     },
     {
       "item": "ic2r:alloy"

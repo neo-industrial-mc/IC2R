@@ -1,7 +1,7 @@
 {
   "type": "ic2r:block_cutter",
   "ingredient": {
-    "tag": "forge:blocks/tin"
+    "tag": "c:storage_blocks/tin"
   },
   "result": {
     "item": "ic2r:tin_plate",

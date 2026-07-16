@@ -14,7 +14,7 @@ public final class Ic2rBlockTags
 	/** Blocks correctly mined with the IC2R wrench (1.12 HarvestTool.Wrench). */
 	public static final TagKey<Block> MINEABLE_WITH_WRENCH = create("ic2r:mineable/wrench", "ic2r:mineable/wrench");
 	public static final TagKey<Block> ORES = create("c:ores", "c:ores");
-	public static final TagKey<Block> RUBBER_LOGS = create("c:rubber_logs", "forge:rubber_logs");
+	public static final TagKey<Block> RUBBER_LOGS = create("c:rubber_logs", "c:rubber_logs");
 	public static final TagKey<Block> LEAD_ORES = create("c:lead_ores", "c:ores/lead");
 	public static final TagKey<Block> SILVER_ORES = create("c:silver_ores", "c:ores/silver");
 	public static final TagKey<Block> TIN_ORES = create("c:tin_ores", "c:ores/tin");

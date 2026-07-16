@@ -1,7 +1,7 @@
 {
   "type": "ic2r:block_cutter",
   "ingredient": {
-    "tag": "forge:blocks/lead"
+    "tag": "c:storage_blocks/lead"
   },
   "result": {
     "item": "ic2r:lead_plate",

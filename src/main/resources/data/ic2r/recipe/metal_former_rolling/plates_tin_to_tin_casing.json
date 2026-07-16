@@ -1,7 +1,7 @@
 {
   "type": "ic2r:metal_former_rolling",
   "ingredient": {
-    "tag": "forge:plates/tin"
+    "tag": "c:plates/tin"
   },
   "result": {
     "item": "ic2r:tin_casing",

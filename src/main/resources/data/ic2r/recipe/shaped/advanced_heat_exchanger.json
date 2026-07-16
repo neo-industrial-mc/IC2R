@@ -10,10 +10,10 @@
       "item": "ic2r:heat_exchanger"
     },
     "C": {
-      "tag": "forge:plates/copper"
+      "tag": "c:plates/copper"
     },
     "G": {
-      "tag": "forge:plates/lapis"
+      "tag": "c:plates/lapis"
     },
     "c": {
       "item": "ic2r:circuit"

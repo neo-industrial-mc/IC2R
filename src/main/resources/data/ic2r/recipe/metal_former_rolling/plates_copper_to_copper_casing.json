@@ -1,7 +1,7 @@
 {
   "type": "ic2r:metal_former_rolling",
   "ingredient": {
-    "tag": "forge:plates/copper"
+    "tag": "c:plates/copper"
   },
   "result": {
     "item": "ic2r:copper_casing",

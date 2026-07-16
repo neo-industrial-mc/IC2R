@@ -1,7 +1,7 @@
 {
   "type": "ic2r:macerator",
   "ingredient": {
-    "tag": "forge:plates/lapis"
+    "tag": "c:plates/lapis"
   },
   "result": {
     "item": "ic2r:lapis_dust"

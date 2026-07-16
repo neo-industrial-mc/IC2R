@@ -7,7 +7,7 @@
   ],
   "key": {
     "A": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "B": {
       "item": "ic2r:steel_cutting_blade"

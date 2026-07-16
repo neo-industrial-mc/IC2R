@@ -2,7 +2,7 @@
   "type": "ic2r:shapeless",
   "ingredients": [
     {
-      "tag": "forge:ingots/bronze"
+      "tag": "c:ingots/bronze"
     },
     {
       "tag": "ic2r:forge_hammers"
