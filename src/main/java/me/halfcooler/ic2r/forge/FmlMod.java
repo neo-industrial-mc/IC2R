@@ -24,6 +24,8 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.fml.ModContainer;
@@ -71,6 +73,9 @@ public final class FmlMod {
         if (FMLEnvironment.dist.isClient()) {
             modEventBus.register(new ClientModEventHandlerForge());
             modContainer.registerConfig(ModConfig.Type.CLIENT, IC2RClientConfig.SPEC, "ic2r/ic2r-client.toml");
+            // Enable the Mods list "Config" button via NeoForge's built-in ConfigurationScreen.
+            // Without IConfigScreenFactory the button stays disabled even though configs are registered.
+            modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         }
         Ic2rFluids.init();
         // All IC2R configs live under config/ic2r/
