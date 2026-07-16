@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.core.util;
 
-import me.halfcooler.ic2r.core.IC2R;
-
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -69,16 +67,6 @@ class LogOutputStream extends OutputStream
 		{
 			this.log.log(this.category, this.level, this.output.toString());
 			this.output.setLength(0);
-		}
-	}
-
-	@Override
-	protected void finalize() throws Throwable
-	{
-		if (this.inputBuffer.position() > 0)
-		{
-			IC2R.log.warn(LogCategory.General, "LogOutputStream unclosed.");
-			this.close();
 		}
 	}
 

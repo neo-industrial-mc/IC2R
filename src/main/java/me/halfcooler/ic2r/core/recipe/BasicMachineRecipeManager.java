@@ -120,16 +120,12 @@ public class BasicMachineRecipeManager extends MachineRecipeHelper<IRecipeInput,
 					return false;
 				}
 
-				while (true)
+				do
 				{
 					this.recipes.remove(recipeGet.getInput());
 					this.removeCachedRecipes(input);
 					recipeGet = this.getRecipe(is);
-					if (recipeGet == null)
-					{
-						break;
-					}
-				}
+				} while (recipeGet != null);
 			}
 		}
 
@@ -199,16 +195,12 @@ public class BasicMachineRecipeManager extends MachineRecipeHelper<IRecipeInput,
 					return false;
 				}
 
-				while (true)
+				do
 				{
 					this.recipes.remove(input);
 					this.removeCachedRecipes(input);
 					recipe = this.getRecipe(is);
-					if (recipe == null)
-					{
-						break;
-					}
-				}
+				} while (recipe != null);
 			}
 		}
 

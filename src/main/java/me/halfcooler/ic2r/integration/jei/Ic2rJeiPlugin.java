@@ -813,16 +813,17 @@ public class Ic2rJeiPlugin implements IModPlugin
 			TileEntityCanner canner = this.getCanner(container);
 			List<IRecipeSlotView> slotViews = recipeSlots.getSlotViews();
 
-			// Slot 0: fluid input — validate tank has matching fluid
-			IRecipeSlotView fluidInView = slotViews.get(0);
+
+			IRecipeSlotView fluidInView = slotViews.getFirst();
 			FluidStack neededFluid = fluidInView.getDisplayedIngredient(NeoForgeTypes.FLUID_STACK).orElse(null);
 			if (neededFluid != null && !canner.inputTank.isEmpty())
 			{
 				Ic2rFluidStack tankFluid = canner.inputTank.getFluidStack();
 				if (tankFluid != null && tankFluid.getFluid() != neededFluid.getFluid())
 				{
+					// TODO
 					return this.transferHelper.createUserErrorWithTooltip(
-						Component.translatable("ic2r.jei.transfer.error.fluid_mismatch", neededFluid.getDisplayName())
+						Component.translatable("ic2r.jei.transfer.error.fluid_mismatch", neededFluid.getDescriptionId())
 					);
 				}
 			}
@@ -887,10 +888,10 @@ public class Ic2rJeiPlugin implements IModPlugin
 			List<IRecipeSlotView> slotViews = recipeSlots.getSlotViews();
 
 			// Slot 0: filled container → canInputSlot (43)
-			if (this.transferItemToSlotIfNot(container, slotViews.get(0), 43, doTransfer))
+			if (this.transferItemToSlotIfNot(container, slotViews.getFirst(), 43, doTransfer))
 			{
 				return this.transferHelper.createUserErrorForMissingSlots(
-					Component.translatable("ic2r.jei.transfer.error.missing_filled_container"), List.of(slotViews.get(0))
+					Component.translatable("ic2r.jei.transfer.error.missing_filled_container"), List.of(slotViews.getFirst())
 				);
 			}
 
