@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Does not construct FluidStacks / handlers (no Minecraft bootstrap).
  * <p>
  * Mirrors {@code Ic2rFluidTankHandler} fill/drain gating and residual math so domain tank
- * access stays consistent with the Forge adapter. Cap attachment and the handler class body
+ * access stays consistent with the NeoForge adapter. Cap attachment and the handler class body
  * remain runtime-only — see {@code docs/spec/fluid_handler_contract.md}.
  */
 class FluidHandlerMathTest

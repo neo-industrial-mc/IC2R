@@ -90,7 +90,7 @@ class MachineRecipeMatchMathTest
 	void macerator_datapack_json_declares_pilot_type() throws Exception
 	{
 		assertDatapackDeclaresType(
-			"data/ic2r/recipes/macerator/cobblestone_to_sand.json",
+			"data/ic2r/recipe/macerator/cobblestone_to_sand.json",
 			MachineRecipeMatchMath.MACERATOR_RECIPE_TYPE_ID,
 			"minecraft:cobblestone",
 			"minecraft:sand"
@@ -104,7 +104,7 @@ class MachineRecipeMatchMathTest
 	void extractor_datapack_json_declares_type() throws Exception
 	{
 		assertDatapackDeclaresType(
-			"data/ic2r/recipes/extractor/resin_to_rubber.json",
+			"data/ic2r/recipe/extractor/resin_to_rubber.json",
 			MachineRecipeMatchMath.EXTRACTOR_RECIPE_TYPE_ID,
 			"ic2r:resin",
 			"ic2r:rubber"
@@ -118,7 +118,7 @@ class MachineRecipeMatchMathTest
 	void compressor_datapack_json_declares_type() throws Exception
 	{
 		assertDatapackDeclaresType(
-			"data/ic2r/recipes/compressor/sand_to_sandstone.json",
+			"data/ic2r/recipe/compressor/sand_to_sandstone.json",
 			MachineRecipeMatchMath.COMPRESSOR_RECIPE_TYPE_ID,
 			"minecraft:sand",
 			"minecraft:sandstone"
@@ -330,7 +330,7 @@ class MachineRecipeMatchMathTest
 		String outputToken
 	) throws Exception
 	{
-		try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource))
+		try (InputStream in = openClasspathResource(resource))
 		{
 			assertNotNull(in, "expected classpath resource " + resource);
 			String json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
@@ -341,5 +341,19 @@ class MachineRecipeMatchMathTest
 			assertTrue(json.contains(inputToken), "expected input token " + inputToken);
 			assertTrue(json.contains(outputToken), "expected output token " + outputToken);
 		}
+	}
+
+	/**
+	 * NeoForge unitTest runs under a TRANSFORMER/mod classloader; prefer the test
+	 * class loader, then fall back to the thread context loader.
+	 */
+	private static InputStream openClasspathResource(String resource)
+	{
+		InputStream in = MachineRecipeMatchMathTest.class.getClassLoader().getResourceAsStream(resource);
+		if (in == null)
+		{
+			in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+		}
+		return in;
 	}
 }

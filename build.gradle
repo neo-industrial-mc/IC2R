@@ -80,6 +80,13 @@ neoForge {
             sourceSet(sourceSets.main)
         }
     }
+
+    // Put Minecraft / NeoForge on the test classpath so pure unit tests can
+    // reference CompoundTag and other game types (Forge FG did this by default).
+    unitTest {
+        enable()
+        testedMod = mods."${mod_id}"
+    }
 }
 
 configurations {
@@ -94,6 +101,11 @@ dependencies {
     implementation "maven.modrinth:jade:${jade_version}+neoforge"
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

@@ -66,7 +66,7 @@ class RecipeSerializerMathTest
 	void macerator_datapack_has_basic_machine_keys() throws Exception
 	{
 		String resource = "data/ic2r/recipe/macerator/cobblestone_to_sand.json";
-		try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource))
+		try (InputStream in = openClasspathResource(resource))
 		{
 			assertNotNull(in, "expected classpath resource " + resource);
 			String json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
@@ -74,5 +74,19 @@ class RecipeSerializerMathTest
 			boolean hasResult = json.contains("\"result\"");
 			assertTrue(RecipeSerializerMath.hasBasicMachineJsonKeys(hasIngredient, hasResult));
 		}
+	}
+
+	/**
+	 * NeoForge unitTest runs under a TRANSFORMER/mod classloader; prefer the test
+	 * class loader, then fall back to the thread context loader.
+	 */
+	private static InputStream openClasspathResource(String resource)
+	{
+		InputStream in = RecipeSerializerMathTest.class.getClassLoader().getResourceAsStream(resource);
+		if (in == null)
+		{
+			in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+		}
+		return in;
 	}
 }

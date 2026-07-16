@@ -5,6 +5,8 @@ import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.network.sync.BlockEntitySync;
 import me.halfcooler.ic2r.core.network.sync.SyncKey;
 
+import net.minecraft.nbt.CompoundTag;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -81,7 +83,7 @@ class BatchCrafterSyncRoundTripTest
 	@Test
 	void progressNbt_writeUsesProgressKeyOnly()
 	{
-		net.minecraft.nbt.CompoundTag out = new net.minecraft.nbt.CompoundTag();
+		CompoundTag out = new CompoundTag();
 		TileEntityBatchCrafter.writeProgressNbt(out, (short) 17);
 		assertEquals((short) 17, out.getShort(TileEntityBatchCrafter.NBT_PROGRESS));
 		assertFalse(out.contains("guiProgress"));

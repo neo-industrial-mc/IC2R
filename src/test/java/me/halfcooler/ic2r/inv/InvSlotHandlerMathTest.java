@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Does not construct ItemStacks / handlers (no Minecraft bootstrap).
  * <p>
  * Mirrors {@code InvSlotItemHandler} insert/extract gating and residual math so
- * domain InvSlot access stays consistent with the Forge adapter. Cap attachment
+ * domain InvSlot access stays consistent with the NeoForge adapter. Cap attachment
  * and the handler class body remain runtime-only — see
  * {@code docs/spec/item_handler_contract.md}.
  */

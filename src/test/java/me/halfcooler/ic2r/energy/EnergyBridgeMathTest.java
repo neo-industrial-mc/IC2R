@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * G2.8 pure EU↔FE conversion tests (no Forge capability / Level).
+ * G2.8 pure EU↔FE conversion tests (no NeoForge capability / Level).
  */
 class EnergyBridgeMathTest
 {
