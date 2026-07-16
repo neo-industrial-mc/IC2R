@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 
 /**

@@ -20,7 +20,7 @@ public class HotCoolantBlock extends LiquidBlock
 	{
 		if (!world.isClientSide)
 		{
-			entity.setSecondsOnFire(30);
+			entity.igniteForSeconds(30);
 		}
 	}
 }

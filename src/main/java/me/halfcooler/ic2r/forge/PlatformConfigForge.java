@@ -5,7 +5,7 @@ import me.halfcooler.ic2r.platform.services.PlatformConfig;
 
 import java.nio.file.Path;
 
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
 import org.jetbrains.annotations.Nullable;
 
 /**

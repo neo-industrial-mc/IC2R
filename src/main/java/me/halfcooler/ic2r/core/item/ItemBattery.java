@@ -6,6 +6,7 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -72,6 +73,6 @@ public class ItemBattery extends BaseElectricItem implements INetworkItemEventLi
 	@Override
 	public void onNetworkEvent(ItemStack stack, Player player, int event)
 	{
-		player.playSound(Ic2rSoundEvents.ITEM_BATTERY_USE.get(), 1.0F, 1.0F);
+		player.playSound(Ic2rSoundEvents.ITEM_BATTERY_USE.value(), 1.0F, 1.0F);
 	}
 }

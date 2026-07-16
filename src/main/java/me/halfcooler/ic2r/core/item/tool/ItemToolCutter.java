@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -59,7 +60,7 @@ public class ItemToolCutter extends ItemToolCrafting implements IEnhancedOverlay
 			cable.tryRemoveInsulation(state, world, pos, false);
 			if (world.isClientSide)
 			{
-				player.playSound(Ic2rSoundEvents.ITEM_CUTTER_USE.get(), 1.0F, 1.0F);
+				player.playSound(Ic2rSoundEvents.ITEM_CUTTER_USE.value(), 1.0F, 1.0F);
 			} else
 			{
 				StackUtil.dropAsEntity(world, pos, new ItemStack(Ic2rItems.RUBBER));

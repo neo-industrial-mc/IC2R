@@ -9,6 +9,7 @@ import me.halfcooler.ic2r.platform.services.PlatformPlayerUi;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import org.jetbrains.annotations.Nullable;
 
 /**

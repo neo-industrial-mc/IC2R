@@ -1,10 +1,10 @@
 package me.halfcooler.ic2r.core.init;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class IC2RConfig
 {
-	public static final ForgeConfigSpec SPEC;
+	public static final ModConfigSpec SPEC;
 
 	public static final Worldgen worldgen;
 	public static final Protection protection;
@@ -15,7 +15,7 @@ public class IC2RConfig
 
 	static
 	{
-		ForgeConfigSpec.Builder b = new ForgeConfigSpec.Builder();
+		ModConfigSpec.Builder b = new ModConfigSpec.Builder();
 
 		worldgen = new Worldgen(b);
 		protection = new Protection(b);
@@ -31,15 +31,15 @@ public class IC2RConfig
 
 	public static class Worldgen
 	{
-		public final ForgeConfigSpec.BooleanValue rubberTree;
-		public final ForgeConfigSpec.ConfigValue<String> rubberTreeBlacklist;
-		public final ForgeConfigSpec.DoubleValue oreDensityFactor;
-		public final ForgeConfigSpec.DoubleValue treeDensityFactor;
-		public final ForgeConfigSpec.BooleanValue normalizeHeight;
-		public final ForgeConfigSpec.IntValue retrogenCheckLimit;
-		public final ForgeConfigSpec.IntValue retrogenUpdateLimit;
+		public final ModConfigSpec.BooleanValue rubberTree;
+		public final ModConfigSpec.ConfigValue<String> rubberTreeBlacklist;
+		public final ModConfigSpec.DoubleValue oreDensityFactor;
+		public final ModConfigSpec.DoubleValue treeDensityFactor;
+		public final ModConfigSpec.BooleanValue normalizeHeight;
+		public final ModConfigSpec.IntValue retrogenCheckLimit;
+		public final ModConfigSpec.IntValue retrogenUpdateLimit;
 
-		Worldgen(ForgeConfigSpec.Builder b)
+		Worldgen(ModConfigSpec.Builder b)
 		{
 			b.push("worldgen");
 			b.comment(
@@ -77,12 +77,12 @@ public class IC2RConfig
 
 	public static class Protection
 	{
-		public final ForgeConfigSpec.BooleanValue wrenchLogging;
-		public final ForgeConfigSpec.DoubleValue nukeExplosionPowerLimit;
-		public final ForgeConfigSpec.DoubleValue reactorExplosionPowerLimit;
-		public final ForgeConfigSpec.BooleanValue enableNuke;
+		public final ModConfigSpec.BooleanValue wrenchLogging;
+		public final ModConfigSpec.DoubleValue nukeExplosionPowerLimit;
+		public final ModConfigSpec.DoubleValue reactorExplosionPowerLimit;
+		public final ModConfigSpec.BooleanValue enableNuke;
 
-		Protection(ForgeConfigSpec.Builder b)
+		Protection(ModConfigSpec.Builder b)
 		{
 			b.push("protection");
 			b.comment("Enable logging of players when they remove a machine using a wrench.");
@@ -101,18 +101,18 @@ public class IC2RConfig
 
 	public static class Balance
 	{
-		public final ForgeConfigSpec.IntValue minerDischargeTier;
-		public final ForgeConfigSpec.BooleanValue teleporterUseInventoryWeight;
-		public final ForgeConfigSpec.DoubleValue energyRetainedInStorageBlockDrops;
-		public final ForgeConfigSpec.IntValue massFabricatorTier;
-		public final ForgeConfigSpec.IntValue matterFabricatorTier;
-		public final ForgeConfigSpec.DoubleValue uuEnergyFactor;
-		public final ForgeConfigSpec.BooleanValue disableEnderChest;
-		public final ForgeConfigSpec.ConfigValue<String> recyclerBlacklist;
-		public final ForgeConfigSpec.ConfigValue<String> recyclerWhitelist;
-		public final ForgeConfigSpec.BooleanValue ignoreWrenchRequirement;
-		public final ForgeConfigSpec.BooleanValue watermillAutomation;
-		public final ForgeConfigSpec.DoubleValue euPerChunk;
+		public final ModConfigSpec.IntValue minerDischargeTier;
+		public final ModConfigSpec.BooleanValue teleporterUseInventoryWeight;
+		public final ModConfigSpec.DoubleValue energyRetainedInStorageBlockDrops;
+		public final ModConfigSpec.IntValue massFabricatorTier;
+		public final ModConfigSpec.IntValue matterFabricatorTier;
+		public final ModConfigSpec.DoubleValue uuEnergyFactor;
+		public final ModConfigSpec.BooleanValue disableEnderChest;
+		public final ModConfigSpec.ConfigValue<String> recyclerBlacklist;
+		public final ModConfigSpec.ConfigValue<String> recyclerWhitelist;
+		public final ModConfigSpec.BooleanValue ignoreWrenchRequirement;
+		public final ModConfigSpec.BooleanValue watermillAutomation;
+		public final ModConfigSpec.DoubleValue euPerChunk;
 
 		public final Energy energy;
 		public final SteamKineticGenerator steamKineticGenerator;
@@ -120,7 +120,7 @@ public class IC2RConfig
 		public final SteamRepressurizer steamRepressurizer;
 		public final Fermenter fermenter;
 
-		Balance(ForgeConfigSpec.Builder b)
+		Balance(ModConfigSpec.Builder b)
 		{
 			b.push("balance");
 			b.comment("Maximum battery tier usable by the miner. 1 = batteries, 2 = lead batteries, 3 = energy crystals, 4 = lapotron crystals.");
@@ -172,7 +172,7 @@ public class IC2RConfig
 			public final FluidConversion fluidConversion;
 			public final FluidReactor fluidReactor;
 
-			Energy(ForgeConfigSpec.Builder b)
+			Energy(ModConfigSpec.Builder b)
 			{
 				b.push("energy");
 				generator = new Generator(b);
@@ -185,22 +185,22 @@ public class IC2RConfig
 
 			public static class Generator
 			{
-				public final ForgeConfigSpec.DoubleValue generator;
-				public final ForgeConfigSpec.DoubleValue geothermal;
-				public final ForgeConfigSpec.DoubleValue water;
-				public final ForgeConfigSpec.DoubleValue solar;
-				public final ForgeConfigSpec.DoubleValue wind;
-				public final ForgeConfigSpec.DoubleValue nuclear;
-				public final ForgeConfigSpec.DoubleValue semiFluidOil;
-				public final ForgeConfigSpec.DoubleValue semiFluidFuel;
-				public final ForgeConfigSpec.DoubleValue semiFluidBiomass;
-				public final ForgeConfigSpec.DoubleValue semiFluidBioethanol;
-				public final ForgeConfigSpec.DoubleValue semiFluidBiogas;
-				public final ForgeConfigSpec.DoubleValue stirling;
-				public final ForgeConfigSpec.DoubleValue kinetic;
-				public final ForgeConfigSpec.DoubleValue radioisotope;
+				public final ModConfigSpec.DoubleValue generator;
+				public final ModConfigSpec.DoubleValue geothermal;
+				public final ModConfigSpec.DoubleValue water;
+				public final ModConfigSpec.DoubleValue solar;
+				public final ModConfigSpec.DoubleValue wind;
+				public final ModConfigSpec.DoubleValue nuclear;
+				public final ModConfigSpec.DoubleValue semiFluidOil;
+				public final ModConfigSpec.DoubleValue semiFluidFuel;
+				public final ModConfigSpec.DoubleValue semiFluidBiomass;
+				public final ModConfigSpec.DoubleValue semiFluidBioethanol;
+				public final ModConfigSpec.DoubleValue semiFluidBiogas;
+				public final ModConfigSpec.DoubleValue stirling;
+				public final ModConfigSpec.DoubleValue kinetic;
+				public final ModConfigSpec.DoubleValue radioisotope;
 
-				Generator(ForgeConfigSpec.Builder b)
+				Generator(ModConfigSpec.Builder b)
 				{
 					b.push("generator");
 					b.comment("Base energy generation factors - increase for higher energy yield.");
@@ -224,16 +224,16 @@ public class IC2RConfig
 
 			public static class HeatGenerator
 			{
-				public final ForgeConfigSpec.DoubleValue semiFluidOil;
-				public final ForgeConfigSpec.DoubleValue semiFluidFuel;
-				public final ForgeConfigSpec.DoubleValue semiFluidBiomass;
-				public final ForgeConfigSpec.DoubleValue semiFluidBioethanol;
-				public final ForgeConfigSpec.DoubleValue semiFluidBiogas;
-				public final ForgeConfigSpec.DoubleValue solid;
-				public final ForgeConfigSpec.DoubleValue radioisotope;
-				public final ForgeConfigSpec.DoubleValue electric;
+				public final ModConfigSpec.DoubleValue semiFluidOil;
+				public final ModConfigSpec.DoubleValue semiFluidFuel;
+				public final ModConfigSpec.DoubleValue semiFluidBiomass;
+				public final ModConfigSpec.DoubleValue semiFluidBioethanol;
+				public final ModConfigSpec.DoubleValue semiFluidBiogas;
+				public final ModConfigSpec.DoubleValue solid;
+				public final ModConfigSpec.DoubleValue radioisotope;
+				public final ModConfigSpec.DoubleValue electric;
 
-				HeatGenerator(ForgeConfigSpec.Builder b)
+				HeatGenerator(ModConfigSpec.Builder b)
 				{
 					b.push("heatgenerator");
 					b.comment("Base heat generation factors - increase for higher heat yield.");
@@ -251,13 +251,13 @@ public class IC2RConfig
 
 			public static class KineticGenerator
 			{
-				public final ForgeConfigSpec.DoubleValue water;
-				public final ForgeConfigSpec.DoubleValue wind;
-				public final ForgeConfigSpec.DoubleValue manual;
-				public final ForgeConfigSpec.DoubleValue steam;
-				public final ForgeConfigSpec.DoubleValue electric;
+				public final ModConfigSpec.DoubleValue water;
+				public final ModConfigSpec.DoubleValue wind;
+				public final ModConfigSpec.DoubleValue manual;
+				public final ModConfigSpec.DoubleValue steam;
+				public final ModConfigSpec.DoubleValue electric;
 
-				KineticGenerator(ForgeConfigSpec.Builder b)
+				KineticGenerator(ModConfigSpec.Builder b)
 				{
 					b.push("kineticgenerator");
 					b.comment("Base kinetic generation factors - increase for higher kinetic energy yield.");
@@ -272,11 +272,11 @@ public class IC2RConfig
 
 			public static class FluidConversion
 			{
-				public final ForgeConfigSpec.DoubleValue heatExchangerLava;
-				public final ForgeConfigSpec.DoubleValue heatExchangerHotCoolant;
-				public final ForgeConfigSpec.DoubleValue heatExchangerWater;
+				public final ModConfigSpec.DoubleValue heatExchangerLava;
+				public final ModConfigSpec.DoubleValue heatExchangerHotCoolant;
+				public final ModConfigSpec.DoubleValue heatExchangerWater;
 
-				FluidConversion(ForgeConfigSpec.Builder b)
+				FluidConversion(ModConfigSpec.Builder b)
 				{
 					b.push("fluidconversion");
 					b.comment("Basically the amount of hU the conversion of one mB of Liquid takes/gives");
@@ -292,9 +292,9 @@ public class IC2RConfig
 
 			public static class FluidReactor
 			{
-				public final ForgeConfigSpec.DoubleValue outputModifier;
+				public final ModConfigSpec.DoubleValue outputModifier;
 
-				FluidReactor(ForgeConfigSpec.Builder b)
+				FluidReactor(ModConfigSpec.Builder b)
 				{
 					b.push("FluidReactor");
 					b.comment("Base Coolant conversion rate for FluidReactors.");
@@ -306,9 +306,9 @@ public class IC2RConfig
 
 		public static class SteamKineticGenerator
 		{
-			public final ForgeConfigSpec.IntValue rotorlivetime;
+			public final ModConfigSpec.IntValue rotorlivetime;
 
-			SteamKineticGenerator(ForgeConfigSpec.Builder b)
+			SteamKineticGenerator(ModConfigSpec.Builder b)
 			{
 				b.push("SteamKineticGenerator");
 				b.comment("Balance value for turbine lifetime in sec. Default 86400 sec = 24h.");
@@ -321,7 +321,7 @@ public class IC2RConfig
 		{
 			public final Calcification calcification;
 
-			SteamGenerator(ForgeConfigSpec.Builder b)
+			SteamGenerator(ModConfigSpec.Builder b)
 			{
 				b.push("steamgenerator");
 				calcification = new Calcification(b);
@@ -330,9 +330,9 @@ public class IC2RConfig
 
 			public static class Calcification
 			{
-				public final ForgeConfigSpec.IntValue maxcalcification;
+				public final ModConfigSpec.IntValue maxcalcification;
 
-				Calcification(ForgeConfigSpec.Builder b)
+				Calcification(ModConfigSpec.Builder b)
 				{
 					b.push("calcification");
 					b.comment("Balance values for calcification. Default 100,000 mB water to failure.");
@@ -344,10 +344,10 @@ public class IC2RConfig
 
 		public static class SteamRepressurizer
 		{
-			public final ForgeConfigSpec.IntValue steamPerSteam;
-			public final ForgeConfigSpec.IntValue steamPerSuperSteam;
+			public final ModConfigSpec.IntValue steamPerSteam;
+			public final ModConfigSpec.IntValue steamPerSuperSteam;
 
-			SteamRepressurizer(ForgeConfigSpec.Builder b)
+			SteamRepressurizer(ModConfigSpec.Builder b)
 			{
 				b.push("steamRepressurizer");
 				b.comment("Amount (in mb) of standard steam per 10mb of IC2R steam.");
@@ -360,12 +360,12 @@ public class IC2RConfig
 
 		public static class Fermenter
 		{
-			public final ForgeConfigSpec.IntValue needAmountBiomassPerRun;
-			public final ForgeConfigSpec.IntValue outputAmountBiogasPerRun;
-			public final ForgeConfigSpec.IntValue hUPerRun;
-			public final ForgeConfigSpec.IntValue biomassPerFertilizier;
+			public final ModConfigSpec.IntValue needAmountBiomassPerRun;
+			public final ModConfigSpec.IntValue outputAmountBiogasPerRun;
+			public final ModConfigSpec.IntValue hUPerRun;
+			public final ModConfigSpec.IntValue biomassPerFertilizier;
 
-			Fermenter(ForgeConfigSpec.Builder b)
+			Fermenter(ModConfigSpec.Builder b)
 			{
 				b.push("fermenter");
 				b.comment("Balance values for Fermenter.");
@@ -383,15 +383,15 @@ public class IC2RConfig
 
 	public static class Recipes
 	{
-		public final ForgeConfigSpec.ConfigValue<String> disable;
-		public final ForgeConfigSpec.ConfigValue<String> purge;
-		public final ForgeConfigSpec.ConfigValue<String> jetpackAttachmentBlacklist;
-		public final ForgeConfigSpec.BooleanValue allowCoinCrafting;
-		public final ForgeConfigSpec.BooleanValue requireIc2rCircuits;
-		public final ForgeConfigSpec.BooleanValue smeltToIc2rItems;
-		public final ForgeConfigSpec.BooleanValue ignoreInvalidRecipes;
+		public final ModConfigSpec.ConfigValue<String> disable;
+		public final ModConfigSpec.ConfigValue<String> purge;
+		public final ModConfigSpec.ConfigValue<String> jetpackAttachmentBlacklist;
+		public final ModConfigSpec.BooleanValue allowCoinCrafting;
+		public final ModConfigSpec.BooleanValue requireIc2rCircuits;
+		public final ModConfigSpec.BooleanValue smeltToIc2rItems;
+		public final ModConfigSpec.BooleanValue ignoreInvalidRecipes;
 
-		Recipes(ForgeConfigSpec.Builder b)
+		Recipes(ModConfigSpec.Builder b)
 		{
 			b.push("recipes");
 			b.comment(
@@ -427,15 +427,15 @@ public class IC2RConfig
 
 	public static class Misc
 	{
-		public final ForgeConfigSpec.BooleanValue allowBurningScrap;
-		public final ForgeConfigSpec.ConfigValue<String> additionalValuableOres;
-		public final ForgeConfigSpec.BooleanValue useLinearTransferModel;
-		public final ForgeConfigSpec.BooleanValue roundEnetLoss;
-		public final ForgeConfigSpec.BooleanValue enableEnetExplosions;
-		public final ForgeConfigSpec.BooleanValue enableEnetCableMeltdown;
-		public final ForgeConfigSpec.BooleanValue useGregTechEnergyNet;
+		public final ModConfigSpec.BooleanValue allowBurningScrap;
+		public final ModConfigSpec.ConfigValue<String> additionalValuableOres;
+		public final ModConfigSpec.BooleanValue useLinearTransferModel;
+		public final ModConfigSpec.BooleanValue roundEnetLoss;
+		public final ModConfigSpec.BooleanValue enableEnetExplosions;
+		public final ModConfigSpec.BooleanValue enableEnetCableMeltdown;
+		public final ModConfigSpec.BooleanValue useGregTechEnergyNet;
 
-		Misc(ForgeConfigSpec.Builder b)
+		Misc(ModConfigSpec.Builder b)
 		{
 			b.push("misc");
 			b.comment("Enable burning of scrap in a generator.");
@@ -468,15 +468,15 @@ public class IC2RConfig
 
 	public static class Debug
 	{
-		public final ForgeConfigSpec.BooleanValue logEmptyWrenchDrops;
-		public final ForgeConfigSpec.BooleanValue logIncorrectItemDamaging;
-		public final ForgeConfigSpec.BooleanValue logGridUpdateIssues;
-		public final ForgeConfigSpec.BooleanValue logEnetApiAccesses;
-		public final ForgeConfigSpec.BooleanValue logEnetApiAccessTraces;
-		public final ForgeConfigSpec.BooleanValue logGridUpdatesVerbose;
-		public final ForgeConfigSpec.BooleanValue logGridCalculationIssues;
+		public final ModConfigSpec.BooleanValue logEmptyWrenchDrops;
+		public final ModConfigSpec.BooleanValue logIncorrectItemDamaging;
+		public final ModConfigSpec.BooleanValue logGridUpdateIssues;
+		public final ModConfigSpec.BooleanValue logEnetApiAccesses;
+		public final ModConfigSpec.BooleanValue logEnetApiAccessTraces;
+		public final ModConfigSpec.BooleanValue logGridUpdatesVerbose;
+		public final ModConfigSpec.BooleanValue logGridCalculationIssues;
 
-		Debug(ForgeConfigSpec.Builder b)
+		Debug(ModConfigSpec.Builder b)
 		{
 			b.push("debug");
 			b.comment("Log whenever wrenching didn't produce any drops.");

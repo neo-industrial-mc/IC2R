@@ -16,6 +16,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -542,7 +543,7 @@ public class LiquidUtil
 
 		for (Direction dir : Util.ALL_DIRS)
 		{
-			BlockEntity te = source.getLevel().getBlockEntity(source.getBlockPos().relative(dir));
+			BlockEntity te = source.level().getBlockEntity(source.getBlockPos().relative(dir));
 			if (isFluidTile(te, dir.getOpposite()))
 			{
 				ret.add(new LiquidUtil.AdjacentFluidHandler(te, dir));
@@ -554,7 +555,7 @@ public class LiquidUtil
 
 	public static LiquidUtil.AdjacentFluidHandler getAdjacentHandler(BlockEntity source, Direction dir)
 	{
-		BlockEntity te = source.getLevel().getBlockEntity(source.getBlockPos().relative(dir));
+		BlockEntity te = source.level().getBlockEntity(source.getBlockPos().relative(dir));
 		return !isFluidTile(te, dir.getOpposite()) ? null : new LiquidUtil.AdjacentFluidHandler(te, dir);
 	}
 
@@ -579,7 +580,7 @@ public class LiquidUtil
 
 	public static Ic2rFluidStack transfer(BlockEntity source, Direction dir, BlockEntity target, int amount)
 	{
-		BlockState state = source.getBlockState();
+		BlockState state = source.state();
 
 		while (true)
 		{
@@ -649,7 +650,7 @@ public class LiquidUtil
 
 		for (Direction dir : Util.ALL_DIRS)
 		{
-			BlockEntity te = source.getLevel().getBlockEntity(source.getBlockPos().relative(dir));
+			BlockEntity te = source.level().getBlockEntity(source.getBlockPos().relative(dir));
 			if (isFluidTile(te, dir.getOpposite()))
 			{
 				Ic2rFluidStack stack = transfer(source, dir, te, amount);

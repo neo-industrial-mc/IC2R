@@ -2,7 +2,7 @@ package me.halfcooler.ic2r.forge;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 public class ClientEnvFluidHandlerForge extends EnvFluidHandlerForge
 {

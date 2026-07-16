@@ -2,7 +2,7 @@ package me.halfcooler.ic2r.api.energy.event;
 
 import me.halfcooler.ic2r.api.energy.EnergyNet;
 import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
-import net.minecraftforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 public class EnergyTileEvent extends LevelEvent
 {

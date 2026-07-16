@@ -42,7 +42,7 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
  * <p>
  * Draft SPI for W3.1. Existing call sites still use {@code EnvProxy}; migrate in W3.2+.
  * Implementations live under {@code me.halfcooler.ic2r.forge} (or future neoforge/fabric).
- * Must not expose {@code net.minecraftforge.*} types on this interface.
+ * Must not expose {@code net.neoforged.neoforge.*} types on this interface.
  */
 public interface PlatformRegistry
 {
@@ -58,7 +58,7 @@ public interface PlatformRegistry
 	);
 
 	/**
-	 * Menu type with extra open-buffer payload (replaces Forge {@code IForgeMenuType} usage in common).
+	 * Menu type with extra open-buffer payload (replaces Forge {@code IMenuTypeExtension} usage in common).
 	 */
 	<T extends AbstractContainerMenu> MenuType<T> registerExtendedMenuType(
 		ResourceLocation id, ExtendedMenuFactory<T> factory

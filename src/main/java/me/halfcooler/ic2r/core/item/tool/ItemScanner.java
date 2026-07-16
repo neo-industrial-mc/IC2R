@@ -22,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -38,7 +39,7 @@ public class ItemScanner extends BaseElectricItem implements IBoxable, IHandHeld
 		super(settings, maxCharge, transferLimit, tier);
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, world, tooltip, advanced);
 		Ic2rTooltip.add(tooltip, Component.translatable("ic2r.scanner.range", this.getScanRange()));
@@ -58,7 +59,7 @@ public class ItemScanner extends BaseElectricItem implements IBoxable, IHandHeld
 				}
 			} else
 			{
-				player.playSound(Ic2rSoundEvents.ITEM_SCANNER_USE.get(), 1.0F, 1.0F);
+				player.playSound(Ic2rSoundEvents.ITEM_SCANNER_USE.value(), 1.0F, 1.0F);
 			}
 
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

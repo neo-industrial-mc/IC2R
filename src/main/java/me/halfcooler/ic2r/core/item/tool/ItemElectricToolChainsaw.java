@@ -23,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -70,7 +71,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Level world, List<Component> list, TooltipFlag par4)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext world, List<Component> list, TooltipFlag par4)
 	{
 		super.appendHoverText(stack, world, list, par4);
 		Ic2rTooltip.add(list, Component.translatable("item.ic2r.tooltip.mode.switch", KeyboardClient.modeSwitchKey.getKey().getDisplayName(), Minecraft.getInstance().options.keyUse.getKey().getDisplayName()));
@@ -102,7 +103,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	}
 
 	@Override
-	public boolean isCorrectToolForDrops(BlockState state)
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
 		return super.isCorrectToolForDrops(state) || state.is(Blocks.COBWEB) || Util.canShear(state);
 	}
@@ -140,7 +141,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	public InteractionResult onBlockStartBreak(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction)
 	{
 		BlockState state = world.getBlockState(pos);
-		ItemStack stack = player.getItemInHand(hand);
+		ItemStack stack = player.getMainHandItem();
 		if (!this.isShearMode(stack) || !Util.canShear(state))
 		{
 			return InteractionResult.PASS;
@@ -198,7 +199,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 
 	public SoundEvent getToolUsingSound()
 	{
-		return IC2R.random.nextBoolean() ? Ic2rSoundEvents.ITEM_CHAINSAW_USE1.get() : Ic2rSoundEvents.ITEM_CHAINSAW_USE2.get();
+		return IC2R.random.nextBoolean() ? Ic2rSoundEvents.ITEM_CHAINSAW_USE1.value() : Ic2rSoundEvents.ITEM_CHAINSAW_USE2.value();
 	}
 
 	@Override
@@ -216,13 +217,13 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	@Override
 	protected SoundEvent getIdleSound(LivingEntity player, ItemStack stack)
 	{
-		return Ic2rSoundEvents.ITEM_CHAINSAW_IDLE.get();
+		return Ic2rSoundEvents.ITEM_CHAINSAW_IDLE.value();
 	}
 
 	@Override
 	protected SoundEvent getStopSound(LivingEntity player, ItemStack stack)
 	{
-		return Ic2rSoundEvents.ITEM_CHAINSAW_STOP.get();
+		return Ic2rSoundEvents.ITEM_CHAINSAW_STOP.value();
 	}
 
 	@Override

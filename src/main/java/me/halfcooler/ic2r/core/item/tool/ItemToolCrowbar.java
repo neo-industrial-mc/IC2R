@@ -19,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -80,11 +81,11 @@ public class ItemToolCrowbar extends TieredItem implements IEnhancedOverlayProvi
 					target.removeCover(world, pos, selectedFacing);
 					if (player != null)
 					{
-						stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
+						stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
 					}
 				} else
 				{
-					IC2R.soundManager.playOnce(Ic2rSoundEvents.ITEM_CROWBAR_USE.get(), SoundSource.BLOCKS, 1.0F, 1.0F, player);
+					IC2R.soundManager.playOnce(Ic2rSoundEvents.ITEM_CROWBAR_USE.value(), SoundSource.BLOCKS, 1.0F, 1.0F, player);
 				}
 			}
 
@@ -105,7 +106,7 @@ public class ItemToolCrowbar extends TieredItem implements IEnhancedOverlayProvi
 		return false;
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Level worldIn, @NotNull List<Component> info, @NotNull TooltipFlag flagIn)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext worldIn, @NotNull List<Component> info, @NotNull TooltipFlag flagIn)
 	{
 		Ic2rTooltip.add(info, Component.translatable("item.ic2r.crowbar.tooltip.remove", Minecraft.getInstance().options.keyRight.getKey().getDisplayName()));
 	}

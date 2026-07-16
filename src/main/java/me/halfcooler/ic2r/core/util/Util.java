@@ -19,6 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -309,7 +310,7 @@ public final class Util
 	{
 		return state.is(BlockTags.LEAVES) || state.getBlock() instanceof LeavesBlock ||
 			state.is(Blocks.COBWEB) ||
-			state.is(Blocks.GRASS) ||
+			state.is(Blocks.SHORT_GRASS) ||
 			state.is(Blocks.FERN) ||
 			state.is(Blocks.DEAD_BUSH) ||
 			state.is(Blocks.HANGING_ROOTS) ||

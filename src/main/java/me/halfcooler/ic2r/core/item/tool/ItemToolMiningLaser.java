@@ -23,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -75,7 +76,7 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Level world, List<Component> list, TooltipFlag par4)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext world, List<Component> list, TooltipFlag par4)
 	{
 		super.appendHoverText(stack, world, list, par4);
 		CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);
@@ -356,20 +357,20 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 			case 0:
 			case 3:
 			case 4:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SHOOT.get());
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SHOOT.value());
 				break;
 			case 1:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LOW_FOCUS.get());
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LOW_FOCUS.value());
 				break;
 			case 2:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LONG_RANGE.get());
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_LONG_RANGE.value());
 				break;
 			case 5:
 			case 7:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SCATTER.get());
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_SCATTER.value());
 				break;
 			case 6:
-				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_EXPLOSIVE.get());
+				this.playShotSound(player, Ic2rSoundEvents.ITEM_LASER_EXPLOSIVE.value());
 		}
 	}
 }

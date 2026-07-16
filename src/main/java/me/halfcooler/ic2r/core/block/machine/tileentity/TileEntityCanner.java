@@ -31,8 +31,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.HolderLookup;
 
 public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, Object> implements INetworkClientTileEntityEventListener
 {
@@ -58,16 +60,15 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 	}
 
 	@Override
-	public void load(CompoundTag nbt)
-	{
-		super.load(nbt);
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
 		this.setMode(TileEntityCanner.Mode.values[nbt.getInt("mode")]);
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt)
+	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, registries);
 		nbt.putInt("mode", this.mode.ordinal());
 	}
 
@@ -213,8 +214,8 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 	{
 		return switch (this.mode)
 		{
-			case BottleSolid, BottleLiquid -> Ic2rSoundEvents.MACHINE_CANNER_OPERATE.get();
-			case EmptyLiquid -> Ic2rSoundEvents.MACHINE_CANNER_REVERSE.get();
+			case BottleSolid, BottleLiquid -> Ic2rSoundEvents.MACHINE_CANNER_OPERATE.value();
+			case EmptyLiquid -> Ic2rSoundEvents.MACHINE_CANNER_REVERSE.value();
 			default -> null;
 		};
 	}
@@ -224,7 +225,7 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 	{
 		return switch (this.mode)
 		{
-			case BottleSolid, BottleLiquid, EmptyLiquid -> Ic2rSoundEvents.MACHINE_INTERRUPT1.get();
+			case BottleSolid, BottleLiquid, EmptyLiquid -> Ic2rSoundEvents.MACHINE_INTERRUPT1.value();
 			default -> null;
 		};
 	}

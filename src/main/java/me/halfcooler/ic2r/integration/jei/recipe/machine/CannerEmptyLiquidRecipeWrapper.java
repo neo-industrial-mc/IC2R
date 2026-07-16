@@ -5,7 +5,7 @@ import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import java.util.List;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class CannerEmptyLiquidRecipeWrapper
 {

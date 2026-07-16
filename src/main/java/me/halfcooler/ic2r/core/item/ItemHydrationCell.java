@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import net.minecraft.core.component.DataComponents;
 
 /**
  * Crop hydration cell. Intentionally not a fluid container / {@code ItemClassicCell}:
@@ -93,10 +94,10 @@ public class ItemHydrationCell extends Item
 	{
 		if (uses <= 0)
 		{
-			stack.setTag(null);
+			stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
 		} else
 		{
-			stack.getOrCreateTag().putInt("uses", uses);
+			stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag().putInt("uses", uses);
 		}
 	}
 
@@ -124,7 +125,7 @@ public class ItemHydrationCell extends Item
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		if (stack.getCount() == 1 && advanced.isAdvanced())
 		{

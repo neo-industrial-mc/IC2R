@@ -4,9 +4,9 @@ import me.halfcooler.ic2r.core.block.comp.Fluids;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -15,33 +15,30 @@ import org.jetbrains.annotations.NotNull;
  * AttachCapabilitiesEvent fires BEFORE the BE constructor completes,
  * so hasComponent(Fluids.class) always returns false during the event.
  */
-final class LazyBlockFluidCapImpl implements ICapabilityProvider
-{
-	private final BlockEntity be;
-	private BlockFluidCapImpl delegate;
+final class LazyBlockFluidCapImpl implements ICapabilityProvider {
 
-	LazyBlockFluidCapImpl(BlockEntity be)
-	{
-		this.be = be;
-	}
+    private final BlockEntity be;
 
-	private BlockFluidCapImpl resolve()
-	{
-		if (this.delegate == null && this.be instanceof Ic2rTileEntity ic2te)
-		{
-			Fluids fluids = ic2te.getComponent(Fluids.class);
-			if (fluids != null)
-			{
-				this.delegate = new BlockFluidCapImpl(fluids, this.be);
-			}
-		}
-		return this.delegate;
-	}
+    private BlockFluidCapImpl delegate;
 
-	@Override
-	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing)
-	{
-		BlockFluidCapImpl d = this.resolve();
-		return d != null ? d.getCapability(capability, facing) : LazyOptional.empty();
-	}
+    LazyBlockFluidCapImpl(BlockEntity be) {
+        this.be = be;
+    }
+
+    private BlockFluidCapImpl resolve() {
+        if (this.delegate == null && this.be instanceof Ic2rTileEntity ic2te) {
+            Fluids fluids = ic2te.getComponent(Fluids.class);
+            if (fluids != null) {
+                this.delegate = new BlockFluidCapImpl(fluids, this.be);
+            }
+        }
+        return this.delegate;
+    }
+
+    @Override
+    @NotNull
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing) {
+        BlockFluidCapImpl d = this.resolve();
+        return d != null ? d.getCapability(capability, facing) : LazyOptional.empty();
+    }
 }

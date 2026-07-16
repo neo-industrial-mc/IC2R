@@ -12,8 +12,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -234,7 +234,7 @@ public final class EnhancedOverlayRenderer
 		dy /= len;
 		dz /= len;
 
-		consumer.vertex(matrix, x1, y1, z1).color(R, G, B, A).normal(normalMatrix, dx, dy, dz).endVertex();
-		consumer.vertex(matrix, x2, y2, z2).color(R, G, B, A).normal(normalMatrix, dx, dy, dz).endVertex();
+		consumer.addVertex(matrix, x1, y1, z1).color(R, G, B, A).normal(normalMatrix, dx, dy, dz);
+		consumer.addVertex(matrix, x2, y2, z2).color(R, G, B, A).normal(normalMatrix, dx, dy, dz);
 	}
 }

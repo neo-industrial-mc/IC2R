@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * UU matter replication costs loaded from {@code config/ic2r/ic2r-uu-matter.toml}.
  * <p>
- * Flat map format (no ForgeConfigSpec section nesting):
+ * Flat map format (no ModConfigSpec section nesting):
  * <pre>
  * "minecraft:iron_ingot" = 100
  * "minecraft:cobblestone" = 1

@@ -41,7 +41,7 @@ public class ItemWindRotor extends Item implements IKineticRotor
 		this.water = water;
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		Ic2rTooltip.add(tooltip, Component.translatable("ic2r.itemrotor.wind.info", this.minWindStrength, this.maxWindStrength));
 		IKineticRotor.GearboxType type = null;

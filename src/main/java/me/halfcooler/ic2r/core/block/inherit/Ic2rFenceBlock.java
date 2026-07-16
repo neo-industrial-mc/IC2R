@@ -35,6 +35,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class Ic2rFenceBlock extends FenceBlock
 {
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec() {
+        return simpleCodec(properties -> new Ic2rFenceBlock(properties, this.canBoost));
+    }
+
 	public static final Map<Direction, BooleanProperty> connectProperties = getConnectProperties();
 	private static final Map<Player, Long> lastBoostTick = new WeakHashMap<>();
 	public final boolean canBoost;

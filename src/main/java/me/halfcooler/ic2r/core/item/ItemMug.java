@@ -3,6 +3,7 @@ package me.halfcooler.ic2r.core.item;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -115,8 +116,7 @@ public class ItemMug extends Item implements ItemLike
 		}
 	}
 
-	public int getUseDuration(@NotNull ItemStack stack)
-	{
+	public int getUseDuration(ItemStack stack, net.minecraft.world.entity.LivingEntity entity) {
 		ItemMug.MugType type = this.getType(stack);
 		return type != null && type != ItemMug.MugType.empty ? 32 : 0;
 	}

@@ -5,7 +5,7 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlotTransferMath;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -64,7 +64,7 @@ public final class InvSlotItemHandler implements IItemHandlerModifiable
 
 		ItemStack existing = this.slot.get(index);
 		int existingCount = StackUtil.isEmpty(existing) ? 0 : StackUtil.getSize(existing);
-		boolean compatible = existingCount == 0 || (ItemStack.isSameItemSameTags(existing, stack) && existing.getCount() < existing.getMaxStackSize());
+		boolean compatible = existingCount == 0 || (ItemStack.isSameItemSameComponents(existing, stack) && existing.getCount() < existing.getMaxStackSize());
 		int insertable = InvSlotTransferMath.insertableCount(
 			existingCount,
 			stack.getCount(),

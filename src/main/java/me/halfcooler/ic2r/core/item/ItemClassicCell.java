@@ -250,7 +250,7 @@ public class ItemClassicCell extends Ic2rBucketItem implements Ic2rFluidItem
 		return false;
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		if (this.fluid == Fluids.EMPTY)
 		{

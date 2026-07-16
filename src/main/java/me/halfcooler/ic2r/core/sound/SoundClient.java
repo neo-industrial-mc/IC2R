@@ -265,8 +265,7 @@ public class SoundClient extends Sound
 		this.onFinishSound(this.entityTrackingInstance, then);
 	}
 
-	@Override
-	public void tick()
+		public void tick()
 	{
 		super.tick();
 		if (this.playGraceTicks > 0)

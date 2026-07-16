@@ -32,8 +32,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.HolderLookup;
 
 @NotClassic
 public class TileEntityStirlingKineticGenerator extends TileEntityAbstractKineticGenerator implements IUpgradableBlock, IHasGui, ServerTicker
@@ -75,9 +77,8 @@ public class TileEntityStirlingKineticGenerator extends TileEntityAbstractKineti
 	}
 
 	@Override
-	public void load(CompoundTag nbt)
-	{
-		super.load(nbt);
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
 		this.inputTank.fromNbt(nbt.getCompound("inputTank"));
 		this.outputTank.fromNbt(nbt.getCompound("outputTank"));
 		this.heatBuffer = nbt.getInt("heatbuffer");
@@ -86,9 +87,9 @@ public class TileEntityStirlingKineticGenerator extends TileEntityAbstractKineti
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt)
+	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, registries);
 		CompoundTag inputTankTag = new CompoundTag();
 		this.inputTank.toNbt(inputTankTag);
 		nbt.put("inputTank", inputTankTag);

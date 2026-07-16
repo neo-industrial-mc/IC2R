@@ -2,7 +2,7 @@ package me.halfcooler.ic2r.core.block;
 
 import me.halfcooler.ic2r.core.entity.DynamiteEntity;
 import me.halfcooler.ic2r.core.entity.StickyDynamiteEntity;
-import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
@@ -36,9 +36,9 @@ public final class BehaviorDynamiteDispense
 		@NotNull
 		protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack)
 		{
-			Level level = source.getLevel();
+			Level level = source.level();
 			Position position = DispenserBlock.getDispensePosition(source);
-			Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
+			Direction direction = source.state().getValue(DispenserBlock.FACING);
 
 			DynamiteEntity entity = this.sticky
 				? new StickyDynamiteEntity(level, position.x(), position.y(), position.z())

@@ -7,8 +7,8 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.util.Util;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public enum Ic2rCropType implements StringRepresentable, ICropType
 {
@@ -69,10 +69,10 @@ public enum Ic2rCropType implements StringRepresentable, ICropType
 	private static final Ic2rCropType[] values = values();
 	private final String owner;
 	private final String name;
-	private final RegistryObject<Block> cropBlock;
+	private final DeferredHolder<Block, Block> cropBlock;
 	private final int maxAge;
 
-	Ic2rCropType(String cropName, RegistryObject<Block> cropBlock, int maxAge)
+	Ic2rCropType(String cropName, DeferredHolder<Block, Block> cropBlock, int maxAge)
 	{
 		this.name = cropName;
 		this.owner = "ic2r";
@@ -80,7 +80,7 @@ public enum Ic2rCropType implements StringRepresentable, ICropType
 		this.maxAge = maxAge;
 	}
 
-	Ic2rCropType(String cropName, String owner, RegistryObject<Block> cropBlock, int maxAge)
+	Ic2rCropType(String cropName, String owner, DeferredHolder<Block, Block> cropBlock, int maxAge)
 	{
 		this.name = cropName;
 		this.owner = owner;

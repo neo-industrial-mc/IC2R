@@ -27,7 +27,7 @@ public class ItemToolCrafting extends Item implements IBoxable, IItemHudInfo
 		return stack.getMaxDamage() - stack.getDamageValue();
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.tool.uses_left", getRemainingUses(stack)));
 	}

@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.component.DataComponents;
 
 public class JetpackHandler implements IBackupElectricItemManager
 {
@@ -69,7 +70,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 
 		if (!value)
 		{
-			if (!stack.hasTag())
+			if (!stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA))
 			{
 				return;
 			}
@@ -77,7 +78,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 			stack.getTag().remove("hasIC2RJetpack");
 			if (stack.getTag().isEmpty())
 			{
-				stack.setTag(null);
+				stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
 			}
 		} else if (Mob.getEquipmentSlotForItem(stack) == EquipmentSlot.CHEST)
 		{
@@ -87,7 +88,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 
 	public static boolean hasJetpackAttached(ItemStack stack)
 	{
-		return !StackUtil.isEmpty(stack) && Mob.getEquipmentSlotForItem(stack) == EquipmentSlot.CHEST && stack.hasTag() && stack.getTag().getBoolean("hasIC2RJetpack");
+		return !StackUtil.isEmpty(stack) && Mob.getEquipmentSlotForItem(stack) == EquipmentSlot.CHEST && stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) && stack.getTag().getBoolean("hasIC2RJetpack");
 	}
 
 	public static boolean hasJetpack(ItemStack stack)
@@ -119,7 +120,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 			amount = Math.min(amount, getTransferLimit());
 		}
 
-		double charge = stack.hasTag() ? stack.getTag().getDouble("charge") : 0.0;
+		double charge = stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA) ? stack.getTag().getDouble("charge") : 0.0;
 		amount = Math.min(amount, this.getMaxCharge(stack) - charge);
 		if (!simulate)
 		{
@@ -132,7 +133,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 	@Override
 	public double discharge(ItemStack stack, double amount, int tier, boolean ignoreTransferLimit, boolean externally, boolean simulate)
 	{
-		if (!externally && this.getTier(stack) <= tier && stack.hasTag())
+		if (!externally && this.getTier(stack) <= tier && stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA))
 		{
 			if (!ignoreTransferLimit)
 			{
@@ -149,7 +150,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 					stack.getTag().remove("charge");
 					if (stack.getTag().isEmpty())
 					{
-						stack.setTag(null);
+						stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
 					}
 				} else
 				{

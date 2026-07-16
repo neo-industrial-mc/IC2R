@@ -138,7 +138,7 @@ public class TileEntityWaterGenerator extends TileEntityBaseRotorGenerator imple
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.GENERATOR_WATER_LOOP.get();
+		return Ic2rSoundEvents.GENERATOR_WATER_LOOP.value();
 	}
 
 	@Override

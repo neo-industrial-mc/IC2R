@@ -84,6 +84,6 @@ public class TileEntitySemifluidGenerator extends TileEntityBaseGenerator
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.GENERATOR_GEOTHERMAL_LOOP.get();
+		return Ic2rSoundEvents.GENERATOR_GEOTHERMAL_LOOP.value();
 	}
 }

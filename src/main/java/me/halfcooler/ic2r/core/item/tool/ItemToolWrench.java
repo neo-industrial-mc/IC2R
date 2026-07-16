@@ -28,6 +28,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -111,7 +112,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 
 		if (world.isClientSide)
 		{
-			player.playSound(Ic2rSoundEvents.ITEM_WRENCH_USE.get(), 1.0F, 1.0F);
+			player.playSound(Ic2rSoundEvents.ITEM_WRENCH_USE.value(), 1.0F, 1.0F);
 			return InteractionResult.PASS;
 		}
 
@@ -206,7 +207,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	{
 		if (tryRemoveWithWrench(world, player, pos, state))
 		{
-			player.getMainHandItem().hurtAndBreak(MINE_DAMAGE, player, p -> p.broadcastBreakEvent(p.getUsedItemHand()));
+			player.getMainHandItem().hurtAndBreak(MINE_DAMAGE, player, p -> p.onEquippedItemBroken(p.getUsedItemHand()));
 			return false;
 		}
 
@@ -224,7 +225,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	 * {@code requiresCorrectToolForDrops} is set.
 	 */
 	@Override
-	public boolean isCorrectToolForDrops(@NotNull BlockState state)
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
 		return isWrenchTarget(state);
 	}
@@ -274,7 +275,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 
 	public void damage(ItemStack is, int damage, Player player, InteractionHand hand)
 	{
-		is.hurtAndBreak(damage, player, p -> p.broadcastBreakEvent(hand));
+		is.hurtAndBreak(damage, player, p -> p.onEquippedItemBroken(hand));
 	}
 
 	@Override
@@ -293,7 +294,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return false;
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> info, @NotNull TooltipFlag flag)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> info, @NotNull TooltipFlag flag)
 	{
 		Component attackKey = Minecraft.getInstance().options.keyAttack.getTranslatedKeyMessage();
 		Component useKey = Minecraft.getInstance().options.keyUse.getTranslatedKeyMessage();
@@ -323,7 +324,7 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		}
 
 		return world.getBlockState(pos).getBlock() instanceof IWrenchAble
-			? Ic2rSoundEvents.ITEM_WRENCH_USE.get()
+			? Ic2rSoundEvents.ITEM_WRENCH_USE.value()
 			: null;
 	}
 }

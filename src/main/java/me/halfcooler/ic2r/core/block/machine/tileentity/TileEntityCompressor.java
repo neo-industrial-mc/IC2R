@@ -132,13 +132,13 @@ public class TileEntityCompressor extends TileEntityStandardMachine<IRecipeInput
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_COMPRESSOR_OPERATE.get();
+		return Ic2rSoundEvents.MACHINE_COMPRESSOR_OPERATE.value();
 	}
 
 	@Override
 	public SoundEvent getInterruptSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_INTERRUPT1.get();
+		return Ic2rSoundEvents.MACHINE_INTERRUPT1.value();
 	}
 
 	@Override

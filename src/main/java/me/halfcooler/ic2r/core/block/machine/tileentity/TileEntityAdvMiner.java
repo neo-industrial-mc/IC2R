@@ -38,12 +38,14 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.HolderLookup;
 
 @NotClassic
 public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHasGui, INetworkClientTileEntityEventListener, IUpgradableBlock
@@ -86,9 +88,8 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 	}
 
 	@Override
-	public void load(CompoundTag nbt)
-	{
-		super.load(nbt);
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
 		if (nbt.contains("mineTargetX"))
 		{
 			this.mineTarget = new BlockPos(nbt.getInt("mineTargetX"), nbt.getInt("mineTargetY"), nbt.getInt("mineTargetZ"));
@@ -99,9 +100,9 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt)
+	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, registries);
 		if (this.mineTarget != null)
 		{
 			nbt.putInt("mineTargetX", this.mineTarget.getX());
@@ -281,7 +282,7 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 					ListTag items = nbt.getList("Items", 10);
 					for (int i = 0; i < items.size(); i++)
 					{
-						cardFilter.add(ItemStack.of(items.getCompound(i)));
+						cardFilter.add(ItemStack.parseOptional(player.registryAccess(), items.getCompound(i)));
 					}
 					return evaluateFilter(drops, cardFilter, cardBlacklist);
 				}

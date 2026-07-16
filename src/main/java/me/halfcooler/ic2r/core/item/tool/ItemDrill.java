@@ -18,6 +18,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
@@ -154,7 +155,7 @@ public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSou
 	@Override
 	protected SoundEvent getIdleSound(LivingEntity player, ItemStack stack)
 	{
-		return stack.getItem() == Ic2rItems.DRILL ? Ic2rSoundEvents.ITEM_DRILL_IDLE.get() : null;
+		return stack.getItem() == Ic2rItems.DRILL ? Ic2rSoundEvents.ITEM_DRILL_IDLE.value() : null;
 	}
 
 	@Override
@@ -167,6 +168,6 @@ public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSou
 	public SoundEvent getBreakSoundForBlock(LocalPlayer player, Level world, BlockPos pos, ItemStack stack)
 	{
 		Block block = world.getBlockState(pos).getBlock();
-		return block.defaultDestroyTime() >= 3.0F ? Ic2rSoundEvents.ITEM_DRILL_HARD.get() : Ic2rSoundEvents.ITEM_DRILL_SOFT.get();
+		return block.defaultDestroyTime() >= 3.0F ? Ic2rSoundEvents.ITEM_DRILL_HARD.value() : Ic2rSoundEvents.ITEM_DRILL_SOFT.value();
 	}
 }

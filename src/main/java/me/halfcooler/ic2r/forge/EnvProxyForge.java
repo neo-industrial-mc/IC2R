@@ -50,6 +50,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
@@ -87,28 +88,26 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class EnvProxyForge implements EnvProxy
 {
-	static final DeferredRegister<BlockEntityType<?>> blockEntityRegistry = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, "ic2r");
-	static final DeferredRegister<MenuType<?>> screenHandlerRegistry = DeferredRegister.create(ForgeRegistries.MENU_TYPES, "ic2r");
-	static final DeferredRegister<EntityType<?>> entityRegistry = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, "ic2r");
-	static final DeferredRegister<MobEffect> statusEffectRegistry = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, "ic2r");
+	static final DeferredRegister<BlockEntityType<?>> blockEntityRegistry = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "ic2r");
+	static final DeferredRegister<MenuType<?>> screenHandlerRegistry = DeferredRegister.create(Registries.MENU, "ic2r");
+	static final DeferredRegister<EntityType<?>> entityRegistry = DeferredRegister.create(Registries.ENTITY_TYPE, "ic2r");
+	static final DeferredRegister<MobEffect> statusEffectRegistry = DeferredRegister.create(Registries.MOB_EFFECT, "ic2r");
 	static final DeferredRegister<CreativeModeTab> creativeTabRegistry = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, "ic2r");
 	static final List<TabRegistration> pendingTabRegistrations = new ArrayList<>();
-	static final DeferredRegister<FoliagePlacerType<?>> foliagePlacerRegistry = DeferredRegister.create(ForgeRegistries.FOLIAGE_PLACER_TYPES, "ic2r");
-	static final DeferredRegister<RecipeType<?>> recipeTypeRegistry = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, "ic2r");
-	static final DeferredRegister<RecipeSerializer<?>> recipeSerializerRegistry = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, "ic2r");
-	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, "ic2r");
+	static final DeferredRegister<FoliagePlacerType<?>> foliagePlacerRegistry = DeferredRegister.create(Registries.FOLIAGE_PLACER_TYPE, "ic2r");
+	static final DeferredRegister<RecipeType<?>> recipeTypeRegistry = DeferredRegister.create(Registries.RECIPE_TYPE, "ic2r");
+	static final DeferredRegister<RecipeSerializer<?>> recipeSerializerRegistry = DeferredRegister.create(Registries.RECIPE_SERIALIZER, "ic2r");
+	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, "ic2r");
 	private static final boolean isClient = FMLEnvironment.dist.isClient();
 	static List<Runnable> pendingItemRegistrations = new ArrayList<>();
 	static List<ConfiguredFeatureRegistration<?, ?>> configuredFeatureRegistrations = new ArrayList<>();
@@ -150,7 +149,7 @@ public final class EnvProxyForge implements EnvProxy
 		ResourceLocation id, EnvProxy.ExtendedClientScreenHandlerFactory<T> factory
 	)
 	{
-		MenuType<T> type = IForgeMenuType.create(factory::create);
+		MenuType<T> type = IMenuTypeExtension.create(factory::create);
 		screenHandlerRegistry.register(id.getPath(), () -> type);
 		return type;
 	}
@@ -158,7 +157,7 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public void registerItem(ResourceLocation id, Item item)
 	{
-		ForgeRegistries.ITEMS.register(id, item);
+		BuiltInRegistries.ITEM.register(id, item);
 	}
 
 	@Override
@@ -383,7 +382,7 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public int getBurnTime(ItemStack stack)
 	{
-		return ForgeHooks.getBurnTime(stack, null);
+		return stack.getBurnTime(null);
 	}
 
 	@Override
@@ -401,7 +400,7 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public boolean openHandledScreen(Player player, MenuProvider factory, GrowingBuffer data)
 	{
-		NetworkHooks.openScreen((ServerPlayer) player, factory, data::writeTo);
+		((ServerPlayer) player).openMenu(factory, data::writeTo);
 		return true;
 	}
 
@@ -420,13 +419,13 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public void announceProfileLoad(Set<String> loaded, String active)
 	{
-		MinecraftForge.EVENT_BUS.post(new ProfileEvent.Load(loaded, active));
+		NeoForge.EVENT_BUS.post(new ProfileEvent.Load(loaded, active));
 	}
 
 	@Override
 	public void announceProfileSwitch(String from, String to)
 	{
-		MinecraftForge.EVENT_BUS.post(new ProfileEvent.Switch(from, to));
+		NeoForge.EVENT_BUS.post(new ProfileEvent.Switch(from, to));
 	}
 
 	@Override
@@ -443,7 +442,7 @@ public final class EnvProxyForge implements EnvProxy
 	)
 	{
 		RetextureEvent event = new RetextureEvent(world, pos, state, side, player, refState, refVariant, refSide, refColorMultipliers);
-		MinecraftForge.EVENT_BUS.post(event);
+		NeoForge.EVENT_BUS.post(event);
 		return event.applied;
 	}
 
@@ -451,7 +450,7 @@ public final class EnvProxyForge implements EnvProxy
 	public boolean announceExplosion(Level world, Entity entity, Vec3 pos, double power, LivingEntity igniter, int radiationRange, double rangeLimit)
 	{
 		ExplosionEvent event = new ExplosionEvent(world, entity, pos, power, igniter, radiationRange, rangeLimit);
-		return !MinecraftForge.EVENT_BUS.post(event);
+		return !NeoForge.EVENT_BUS.post(event);
 	}
 
 	record TabRegistration(ResourceLocation id, Supplier<ItemStack> icon, Ic2rItemGroupType groupType)

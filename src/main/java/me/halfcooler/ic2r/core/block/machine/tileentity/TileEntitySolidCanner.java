@@ -31,13 +31,13 @@ public class TileEntitySolidCanner extends TileEntityStandardMachine<ICannerBott
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_CANNER_OPERATE.get();
+		return Ic2rSoundEvents.MACHINE_CANNER_OPERATE.value();
 	}
 
 	@Override
 	public SoundEvent getInterruptSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_INTERRUPT1.get();
+		return Ic2rSoundEvents.MACHINE_INTERRUPT1.value();
 	}
 
 	protected Collection<ItemStack> getOutput(ItemStack output)

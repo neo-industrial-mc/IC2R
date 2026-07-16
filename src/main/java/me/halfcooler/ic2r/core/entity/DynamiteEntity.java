@@ -8,9 +8,6 @@ import me.halfcooler.ic2r.core.util.Vector3;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,6 +19,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import net.minecraft.network.syncher.SynchedEntityData;
 
 public class DynamiteEntity extends Entity implements ItemSupplier
 {
@@ -62,7 +60,7 @@ public class DynamiteEntity extends Entity implements ItemSupplier
 		this.shoot(motionX, motionY, motionZ, 1.0F, 1.0F);
 	}
 
-	protected void defineSynchedData()
+	protected void defineSynchedData(SynchedEntityData.Builder builder)
 	{
 	}
 
@@ -272,9 +270,4 @@ public class DynamiteEntity extends Entity implements ItemSupplier
 		return new ItemStack(this.sticky ? Ic2rItems.DYNAMITE_STICKY : Ic2rItems.DYNAMITE);
 	}
 
-	@NotNull
-	public Packet<ClientGamePacketListener> getAddEntityPacket()
-	{
-		return new ClientboundAddEntityPacket(this);
-	}
 }

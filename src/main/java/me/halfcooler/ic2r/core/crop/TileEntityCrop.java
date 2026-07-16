@@ -37,6 +37,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -52,6 +53,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.apache.commons.lang3.mutable.MutableObject;
 import net.minecraft.util.RandomSource;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.HolderLookup;
 
 public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerTicker
 {
@@ -89,9 +92,8 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	}
 
 	@Override
-	public void load(CompoundTag nbt)
-	{
-		super.load(nbt);
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
 		if (nbt.contains("statGrowth") && nbt.contains("statGain"))
 		{
 			this.statGrowth = nbt.getByte("statGrowth");
@@ -111,9 +113,9 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt)
+	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, registries);
 		if (this.crop != null)
 		{
 			nbt.putByte("statGrowth", this.statGrowth);
@@ -374,9 +376,9 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 
 				BlockPos soilPos = dstPos.below();
 				Block block = world.getBlockState(soilPos).getBlock();
-				if (block == Blocks.DIRT || block == Blocks.GRASS || block == Blocks.FARMLAND)
+				if (block == Blocks.DIRT || block == Blocks.SHORT_GRASS || block == Blocks.FARMLAND)
 				{
-					world.setBlock(soilPos, Blocks.GRASS.defaultBlockState(), 7);
+					world.setBlock(soilPos, Blocks.SHORT_GRASS.defaultBlockState(), 7);
 					world.setBlock(dstPos, Blocks.TALL_GRASS.defaultBlockState(), 7);
 				}
 			}
@@ -948,7 +950,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 			{
 				if (drop.getItem() != Ic2rItems.CROP_SEED_BACK)
 				{
-					drop.setTag(null);
+					drop.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(null));
 				}
 
 				StackUtil.dropAsEntity(world, this.worldPosition, drop);

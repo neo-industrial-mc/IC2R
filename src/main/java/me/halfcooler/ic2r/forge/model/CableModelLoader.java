@@ -4,7 +4,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import me.halfcooler.ic2r.core.block.wiring.CableFoam;
 import me.halfcooler.ic2r.core.block.wiring.CableType;
-import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 
 public final class CableModelLoader implements IGeometryLoader<Ic2rModel>
 {

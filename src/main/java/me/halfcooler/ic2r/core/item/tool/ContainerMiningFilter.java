@@ -6,6 +6,7 @@ import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.slot.SlotHologramSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public class ContainerMiningFilter extends ContainerHandHeldInventory<HandHeldMiningFilter>
 {

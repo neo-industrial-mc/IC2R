@@ -14,6 +14,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
@@ -62,7 +63,7 @@ public abstract class Ic2rBucketItem extends BucketItem
 
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player user, @NotNull InteractionHand hand)
 	{
-		ItemStack itemStack = user.getItemInHand(hand);
+		ItemStack itemStack = user.getMainHandItem();
 		Fluid contained = this.getContainedFluid(itemStack);
 		BlockHitResult blockHitResult = getPlayerPOVHitResult(
 			world,
@@ -266,7 +267,7 @@ public abstract class Ic2rBucketItem extends BucketItem
 		world.gameEvent(player, GameEvent.FLUID_PLACE, pos);
 	}
 
-	/** Forge-event hook set by forge/ init; no-op unless forge layer wires {@code ForgeEventFactory#onBucketUse}. */
+	/** Forge-event hook set by forge/ init; no-op unless forge layer wires {@code EventHooks#onBucketUse}. */
 	@Nullable
 	private static BucketUseHook bucketUseHook;
 

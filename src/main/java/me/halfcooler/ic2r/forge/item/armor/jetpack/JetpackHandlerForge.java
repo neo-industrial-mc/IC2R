@@ -1,15 +1,18 @@
 package me.halfcooler.ic2r.forge.item.armor.jetpack;
 
 import me.halfcooler.ic2r.core.item.armor.jetpack.JetpackHandler;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
 
 
 /**
@@ -22,7 +25,7 @@ public final class JetpackHandlerForge
 
 	public static void register()
 	{
-		MinecraftForge.EVENT_BUS.register(new JetpackHandlerForge());
+		NeoForge.EVENT_BUS.register(new JetpackHandlerForge());
 	}
 
 	// Render layer injection moved from core; simplified to avoid generics issues.
@@ -30,9 +33,9 @@ public final class JetpackHandlerForge
 
 
 	@SubscribeEvent
-	public void onPlayerTick(TickEvent.PlayerTickEvent event)
+	public void onPlayerTick(PlayerTickEvent.Post event)
 	{
-		JetpackHandler.onPlayerTick(event.player);
+		JetpackHandler.onPlayerTick(event.getEntity());
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
@@ -49,7 +52,7 @@ public final class JetpackHandlerForge
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
-	public void onLivingAttack(LivingAttackEvent event)
+	public void onLivingAttack(LivingIncomingDamageEvent event)
 	{
 		if (event.getEntity() instanceof net.minecraft.world.entity.player.Player player)
 		{

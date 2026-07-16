@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -32,6 +33,18 @@ import org.jetbrains.annotations.Nullable;
 
 public class BlockDynamite extends Block
 {
+    public static final com.mojang.serialization.MapCodec<BlockDynamite> CODEC = simpleCodec(BlockDynamite::new);
+
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec() {
+        return CODEC;
+    }
+
+
+    public BlockDynamite(net.minecraft.world.level.block.state.BlockBehaviour.Properties properties) {
+        super(properties);
+    }
+
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	public static final BooleanProperty LINKED = BooleanProperty.create("linked");
 

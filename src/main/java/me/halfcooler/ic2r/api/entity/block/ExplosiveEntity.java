@@ -3,9 +3,6 @@ package me.halfcooler.ic2r.api.entity.block;
 import me.halfcooler.ic2r.core.Ic2rExplosion;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -68,9 +65,9 @@ public abstract class ExplosiveEntity extends Entity
 		this.blocksBuilding = true;
 	}
 
-	protected void defineSynchedData()
+	protected void defineSynchedData(SynchedEntityData.Builder builder)
 	{
-		this.entityData.define(FUSE, 80);
+		builder.define(FUSE, 80);
 	}
 
 	public boolean canBeCollidedWith()
@@ -175,8 +172,4 @@ public abstract class ExplosiveEntity extends Entity
 		this.entityData.set(FUSE, fuse);
 	}
 
-	public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket()
-	{
-		return new ClientboundAddEntityPacket(this);
-	}
 }

@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.HolderLookup;
 
 public class TileEntityGenerator extends TileEntityBaseGenerator implements IGuiValueProvider
 {
@@ -64,7 +65,7 @@ public class TileEntityGenerator extends TileEntityBaseGenerator implements IGui
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.GENERATOR_GENERATOR_LOOP.get();
+		return Ic2rSoundEvents.GENERATOR_GENERATOR_LOOP.value();
 	}
 
 	@Override
@@ -80,16 +81,15 @@ public class TileEntityGenerator extends TileEntityBaseGenerator implements IGui
 	}
 
 	@Override
-	public void load(CompoundTag nbt)
-	{
-		super.load(nbt);
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
 		this.totalFuel = nbt.getInt("totalFuel");
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt)
+	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, registries);
 		nbt.putInt("totalFuel", this.totalFuel);
 	}
 }

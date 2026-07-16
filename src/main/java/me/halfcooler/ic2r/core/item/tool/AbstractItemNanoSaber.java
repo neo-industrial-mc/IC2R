@@ -16,10 +16,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -71,7 +71,7 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
 		for (int i = 0; i < player.getInventory().getContainerSize(); i++)
 		{
 			ItemStack invStack = player.getInventory().getItem(i);
-			if (invStack == stack || ItemStack.isSameItemSameTags(invStack, stack))
+			if (invStack == stack || ItemStack.isSameItemSameComponents(invStack, stack))
 			{
 				return i;
 			}
@@ -188,9 +188,9 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
 	{
 		return switch (IC2R.random.nextInt(3))
 		{
-			case 1 -> Ic2rSoundEvents.ITEM_NANOSABER_SWING2.get();
-			case 2 -> Ic2rSoundEvents.ITEM_NANOSABER_SWING3.get();
-			default -> Ic2rSoundEvents.ITEM_NANOSABER_SWING1.get();
+			case 1 -> Ic2rSoundEvents.ITEM_NANOSABER_SWING2.value();
+			case 2 -> Ic2rSoundEvents.ITEM_NANOSABER_SWING3.value();
+			default -> Ic2rSoundEvents.ITEM_NANOSABER_SWING1.value();
 		};
 	}
 
@@ -281,19 +281,19 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
 	@Override
 	protected SoundEvent getIdleSound(LivingEntity player, ItemStack stack)
 	{
-		return Ic2rSoundEvents.ITEM_NANOSABER_IDLE.get();
+		return Ic2rSoundEvents.ITEM_NANOSABER_IDLE.value();
 	}
 
 	@Override
 	protected SoundEvent getStartSound(LivingEntity player, ItemStack stack)
 	{
-		return Ic2rSoundEvents.ITEM_NANOSABER_POWER_UP.get();
+		return Ic2rSoundEvents.ITEM_NANOSABER_POWER_UP.value();
 	}
 
 	@Override
 	public SoundEvent getSwingSound(LivingEntity entity, InteractionHand hand)
 	{
-		return isActive(entity.getItemInHand(hand)) ? this.getRandomSwingSound() : null;
+		return isActive(entity.getMainHandItem()) ? this.getRandomSwingSound() : null;
 	}
 
 	@Override

@@ -173,7 +173,7 @@ public final class Ic2rItemsMaterials
 	public static final Item JETPACK_ATTACHMENT_PLATE = Ic2rItems.register("jetpack_attachment_plate", new Item(new Properties())
 	{
 		@Override
-		public void appendHoverText(@NotNull ItemStack item, @Nullable Level level, @NotNull List<Component> components, @NotNull TooltipFlag flag)
+		public void appendHoverText(@NotNull ItemStack item, Item.TooltipContext level, @NotNull List<Component> components, @NotNull TooltipFlag flag)
 		{
 			Ic2rTooltip.add(components, Component.translatable("ic2r.tooltip.jetpack_attachment.craft"));
 			Ic2rTooltip.add(components, Component.translatable("ic2r.tooltip.jetpack_attachment.attach"));

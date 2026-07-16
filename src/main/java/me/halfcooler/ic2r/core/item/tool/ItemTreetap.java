@@ -17,6 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -117,7 +118,7 @@ public class ItemTreetap extends Item implements IBoxable
 
 	public static SoundEvent getToolUseSound(boolean isElectric)
 	{
-		return isElectric ? Ic2rSoundEvents.ITEM_TREETAP_ELECTRIC_USE.get() : Ic2rSoundEvents.ITEM_TREETAP_USE.get();
+		return isElectric ? Ic2rSoundEvents.ITEM_TREETAP_ELECTRIC_USE.value() : Ic2rSoundEvents.ITEM_TREETAP_USE.value();
 	}
 
 	public @NotNull InteractionResult useOn(UseOnContext context)

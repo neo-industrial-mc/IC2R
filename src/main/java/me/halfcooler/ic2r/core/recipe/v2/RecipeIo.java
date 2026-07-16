@@ -31,6 +31,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.component.DataComponents;
 
 public class RecipeIo
 {
@@ -162,7 +163,7 @@ public class RecipeIo
 		int count = GsonHelper.getAsInt(json, "count", 1);
 		CompoundTag nbt = getNbt(json);
 		ItemStack stack = new ItemStack(item, count);
-		stack.setTag(nbt);
+		stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
 		return stack;
 	}
 
@@ -173,7 +174,7 @@ public class RecipeIo
 		int weight = GsonHelper.getAsInt(json, "weight", 1);
 		CompoundTag nbt = getNbt(json);
 		ItemStack stack = new ItemStack(item, count);
-		stack.setTag(nbt);
+		stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(nbt));
 		randomOutput.addOutput(stack, weight);
 	}
 

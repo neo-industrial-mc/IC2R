@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -74,7 +75,7 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, Level world, List<Component> tooltip, @NotNull TooltipFlag advanced)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, List<Component> tooltip, @NotNull TooltipFlag advanced)
 	{
 		if (this.color != null)
 		{
@@ -106,7 +107,7 @@ public class ItemToolPainter extends ItemToolCrafting implements IBoxable
 			boolean isDamaged = this.damagePainter(stack, player, hand, this.color);
 			if (world.isClientSide)
 			{
-				player.playSound(Ic2rSoundEvents.ITEM_PAINTER_USE.get(), 1.0F, 1.0F);
+				player.playSound(Ic2rSoundEvents.ITEM_PAINTER_USE.value(), 1.0F, 1.0F);
 				if (isDamaged) player.playSound(SoundEvents.ITEM_BREAK, 1.0F, 1.0F);
 			}
 

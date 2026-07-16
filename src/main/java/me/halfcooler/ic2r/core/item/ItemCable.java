@@ -23,7 +23,7 @@ public class ItemCable extends BlockItem
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack item, @Nullable Level level, @NotNull List<Component> component, @NotNull TooltipFlag flag)
+	public void appendHoverText(@NotNull ItemStack item, Item.TooltipContext level, @NotNull List<Component> component, @NotNull TooltipFlag flag)
 	{
 		ElectricalDisplay.appendCableTooltip(cableBlock, component);
 	}

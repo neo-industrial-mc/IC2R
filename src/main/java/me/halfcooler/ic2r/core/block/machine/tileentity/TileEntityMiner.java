@@ -43,6 +43,7 @@ import me.halfcooler.ic2r.core.IC2R;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -52,6 +53,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.HolderLookup;
 
 public class TileEntityMiner extends TileEntityElectricMachine implements IHasGui, IUpgradableBlock, INetworkClientTileEntityEventListener
 {
@@ -114,18 +116,17 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 	}
 
 	@Override
-	public void load(CompoundTag nbt)
-	{
-		super.load(nbt);
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
 		this.lastMode = TileEntityMiner.Mode.values()[nbt.getInt("lastMode")];
 		this.progress = nbt.getInt("progress");
 		this.pumpMode = nbt.getBoolean("pumpMode");
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt)
+	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, registries);
 		nbt.putInt("lastMode", this.lastMode.ordinal());
 		nbt.putInt("progress", this.progress);
 		nbt.putBoolean("pumpMode", this.pumpMode);
@@ -673,7 +674,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_MINER_OPERATE.get();
+		return Ic2rSoundEvents.MACHINE_MINER_OPERATE.value();
 	}
 
 	@Override

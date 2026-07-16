@@ -20,6 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -38,6 +39,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import net.minecraft.util.RandomSource;
+import net.minecraft.network.syncher.SynchedEntityData;
 
 public class LaserBulletEntity extends ThrowableProjectile
 {
@@ -80,7 +82,7 @@ public class LaserBulletEntity extends ThrowableProjectile
 		return 0.0F;
 	}
 
-	protected void defineSynchedData()
+	protected void defineSynchedData(SynchedEntityData.Builder builder)
 	{
 	}
 
@@ -173,7 +175,7 @@ public class LaserBulletEntity extends ThrowableProjectile
 
 		if (damage > 0)
 		{
-			entity.setSecondsOnFire(damage * (this.isSmeltMode ? 2 : 1));
+			entity.igniteForSeconds(damage * (this.isSmeltMode ? 2 : 1));
 			return entity.hurt(this.level().damageSources().mobProjectile(this, this.owner), damage);
 		} else
 		{

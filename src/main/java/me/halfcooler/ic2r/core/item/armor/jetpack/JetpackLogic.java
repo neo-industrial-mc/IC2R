@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -189,7 +190,7 @@ public class JetpackLogic
 
 		if (jetpackUsed)
 		{
-			SoundEvent soundEvent = jetpack instanceof ItemArmorJetpack ? Ic2rSoundEvents.ITEM_JETPACK_FIRE.get() : Ic2rSoundEvents.ITEM_JETPACK_LOOP.get();
+			SoundEvent soundEvent = jetpack instanceof ItemArmorJetpack ? Ic2rSoundEvents.ITEM_JETPACK_FIRE.value() : Ic2rSoundEvents.ITEM_JETPACK_LOOP.value();
 			if (jetpackSound == null || jetpackSoundEvent != soundEvent)
 			{
 				stopJetpackSound(player);

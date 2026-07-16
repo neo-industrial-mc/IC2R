@@ -13,6 +13,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -94,12 +95,12 @@ public class ItemRemote extends Item
 			return InteractionResultHolder.success(stack);
 		}
 
-		level.playSound(null, player.getX(), player.getY(), player.getZ(), Ic2rSoundEvents.ITEM_REMOTE_USE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+		level.playSound(null, player.getX(), player.getY(), player.getZ(), Ic2rSoundEvents.ITEM_REMOTE_USE.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		launchRemotes(level, stack, player);
 		return InteractionResultHolder.success(stack);
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag)
 	{
 		int linked = getLinkedCount(stack);
 		if (linked > 0)

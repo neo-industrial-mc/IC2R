@@ -7,6 +7,7 @@ import me.halfcooler.ic2r.api.item.ISpecialElectricItem;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 

@@ -62,6 +62,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
@@ -80,6 +81,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import net.minecraft.core.HolderLookup;
 
 public class TileEntityNuclearReactorElectric extends TileEntityInventory implements IHasGui, IReactor, IEnergySource, IMetaDelegate, IGuiValueProvider, IElectricalNode, ServerTicker, ClientTicker
 {
@@ -224,18 +226,17 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	}
 
 	@Override
-	public void load(CompoundTag nbt)
-	{
-		super.load(nbt);
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
 		this.heat = nbt.getInt("heat");
 		this.output = nbt.getShort("output");
 		this.energyBuffer = readEnergyBufferNbt(nbt);
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt)
+	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, registries);
 		nbt.putInt("heat", this.heat);
 		nbt.putShort("output", (short) this.getReactorEnergyOutput());
 		writeEnergyBufferNbt(nbt, this.energyBuffer);
@@ -786,7 +787,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 				{
 					if (this.soundMain == null)
 					{
-						this.soundMain = IC2R.soundManager.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_LOOP.get(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
+						this.soundMain = IC2R.soundManager.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_LOOP.value(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
 					}
 
 					if (this.soundMain != null)
@@ -805,7 +806,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 						}
 
 						this.soundGeiger = IC2R.soundManager
-							.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_LOW_POWER.get(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
+							.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_LOW_POWER.value(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
 						if (this.soundGeiger != null)
 						{
 							this.soundGeiger.play();
@@ -821,7 +822,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 						}
 
 						this.soundGeiger = IC2R.soundManager
-							.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_MEDIUM_POWER.get(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
+							.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_MEDIUM_POWER.value(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
 						if (this.soundGeiger != null)
 						{
 							this.soundGeiger.play();
@@ -835,7 +836,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 					}
 
 					this.soundGeiger = IC2R.soundManager
-						.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_HIGH_POWER.get(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
+						.createSound(this, Ic2rSoundEvents.GENERATOR_NUCLEAR_HIGH_POWER.value(), SoundSource.BLOCKS, this.getBlockPos(), 1.0F, 1.0F);
 					if (this.soundGeiger != null)
 					{
 						this.soundGeiger.play();

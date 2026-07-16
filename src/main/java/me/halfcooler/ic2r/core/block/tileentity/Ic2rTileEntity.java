@@ -30,6 +30,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -48,6 +49,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderLookup;
 
 public abstract class Ic2rTileEntity extends BlockEntity implements INetworkDataProvider, INetworkUpdateListener, IGuiConditionProvider
 {
@@ -196,8 +198,7 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		}
 	}
 
-	public void load(CompoundTag nbt)
-	{
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
 		this.active = nbt.getBoolean("active");
 		if (this.components != null && nbt.contains("components", 10))
 		{
@@ -219,7 +220,7 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		}
 	}
 
-	public void saveAdditional(CompoundTag nbt)
+	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
 	{
 		nbt.putBoolean("active", this.active);
 		if (this.components != null)

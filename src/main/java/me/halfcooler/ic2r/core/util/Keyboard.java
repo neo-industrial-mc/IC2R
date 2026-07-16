@@ -11,6 +11,7 @@ import java.util.WeakHashMap;
 
 
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 
 public class Keyboard implements IKeyboard
 {

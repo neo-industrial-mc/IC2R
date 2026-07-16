@@ -36,6 +36,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -300,7 +301,7 @@ final Object teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
 										world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 0.0, 0.0, 0.0);
 										break;
 									case Electrical:
-										world.playLocalSound(pos.x, pos.y, pos.z, Ic2rSoundEvents.MACHINE_OVERLOAD.get(), SoundSource.BLOCKS, 1.0F, 1.0F, true);
+										world.playLocalSound(pos.x, pos.y, pos.z, Ic2rSoundEvents.MACHINE_OVERLOAD.value(), SoundSource.BLOCKS, 1.0F, 1.0F, true);
 										world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 0.0, 0.0, 0.0);
 										break;
 									case Heat:
@@ -308,7 +309,7 @@ final Object teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
 										world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 0.0, 0.0, 0.0);
 										break;
 									case Nuclear:
-										world.playLocalSound(pos.x, pos.y, pos.z, Ic2rSoundEvents.BLOCK_NUKE_EXPLODE.get(), SoundSource.BLOCKS, 1.0F, 1.0F, true);
+										world.playLocalSound(pos.x, pos.y, pos.z, Ic2rSoundEvents.BLOCK_NUKE_EXPLODE.value(), SoundSource.BLOCKS, 1.0F, 1.0F, true);
 										world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 0.0, 0.0, 0.0);
 								}
 							}

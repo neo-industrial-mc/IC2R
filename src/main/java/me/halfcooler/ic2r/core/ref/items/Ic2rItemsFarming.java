@@ -38,5 +38,5 @@ public final class Ic2rItemsFarming
 	public static final Item MILK_WART = Ic2rItems.register("milk_wart", new Item(new Properties()));
 	public static final Item SMALL_DIAMOND_DUST = Ic2rItems.register("small_diamond_dust", new Item(new Properties()));
 	public static final Item ENDER_PEARL_DUST = Ic2rItems.register("ender_pearl_dust", new Item(new Properties()));
-	public static final Item TERRA_WART = Ic2rItems.register("terra_wart", new ItemTerraWart(new Properties().food(new Builder().nutrition(0).saturationMod(1.0F).alwaysEat().build()).rarity(Rarity.RARE)));
+	public static final Item TERRA_WART = Ic2rItems.register("terra_wart", new ItemTerraWart(new Properties().food(new Builder().nutrition(0).saturationModifier(1.0F).alwaysEdible().build()).rarity(Rarity.RARE)));
 }

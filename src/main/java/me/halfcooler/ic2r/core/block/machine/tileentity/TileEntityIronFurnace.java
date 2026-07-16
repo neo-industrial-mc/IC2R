@@ -25,9 +25,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.HolderLookup;
 
 public class TileEntityIronFurnace extends TileEntityBase implements IHasGui, IGuiValueProvider, INetworkClientTileEntityEventListener
 {
@@ -75,9 +77,8 @@ public class TileEntityIronFurnace extends TileEntityBase implements IHasGui, IG
 	}
 
 	@Override
-	public void load(CompoundTag nbt)
-	{
-		super.load(nbt);
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
 		this.fuel = nbt.getInt("fuel");
 		this.totalFuel = nbt.getInt("totalFuel");
 		this.progress = nbt.getShort("progress");
@@ -85,9 +86,9 @@ public class TileEntityIronFurnace extends TileEntityBase implements IHasGui, IG
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt)
+	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, registries);
 		nbt.putInt("fuel", this.fuel);
 		nbt.putInt("totalFuel", this.totalFuel);
 		nbt.putShort("progress", this.progress);
@@ -226,6 +227,6 @@ public class TileEntityIronFurnace extends TileEntityBase implements IHasGui, IG
 	@Override
 	public SoundEvent getLoopingSoundEvent()
 	{
-		return Ic2rSoundEvents.MACHINE_FURNACE_IRON_OPERATE.get();
+		return Ic2rSoundEvents.MACHINE_FURNACE_IRON_OPERATE.value();
 	}
 }

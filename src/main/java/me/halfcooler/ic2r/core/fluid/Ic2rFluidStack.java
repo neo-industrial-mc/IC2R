@@ -40,7 +40,7 @@ public interface Ic2rFluidStack
 	}
 
 	/**
-	 * Translation key for this fluid's {@link net.minecraftforge.fluids.FluidType} description.
+	 * Translation key for this fluid's {@link net.neoforged.neoforge.fluids.FluidType} description.
 	 * Prefer {@link #getFluidDisplayName()} when building UI text so nested translation works.
 	 */
 	default String getFluidTypeKey()
@@ -54,7 +54,7 @@ public interface Ic2rFluidStack
 	}
 
 	/**
-	 * Localized fluid name from Forge {@link net.minecraftforge.fluids.FluidType}.
+	 * Localized fluid name from Forge {@link net.neoforged.neoforge.fluids.FluidType}.
 	 */
 	default Component getFluidDisplayName()
 	{

@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import net.minecraft.core.component.DataComponents;
 
 public class ItemCropSeed extends Item implements ICropSeed
 {
@@ -41,7 +43,7 @@ public class ItemCropSeed extends Item implements ICropSeed
 		tag.putByte("gain", (byte) statGain);
 		tag.putByte("resistance", (byte) statResistance);
 		tag.putByte("scan", (byte) scan);
-		stack.setTag(tag);
+		stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(tag));
 		return stack;
 	}
 
@@ -70,7 +72,7 @@ public class ItemCropSeed extends Item implements ICropSeed
 		return Component.translatable(crop == null ? "ic2r.crop.seeds" : crop.getSeedType(), super.getName(stack));
 	}
 
-	public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> info, @NotNull TooltipFlag debugTooltips)
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext world, @NotNull List<Component> info, @NotNull TooltipFlag debugTooltips)
 	{
 		if (this.getScannedFromStack(stack) >= 4)
 		{

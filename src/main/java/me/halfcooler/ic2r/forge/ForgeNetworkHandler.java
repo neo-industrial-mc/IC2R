@@ -1,9 +1,7 @@
 package me.halfcooler.ic2r.forge;
 
 import me.halfcooler.ic2r.core.IC2R;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.network.NetworkEvent;
-
+import net.neoforged.bus.api.SubscribeEvent;
 final class ForgeNetworkHandler
 {
 	@SubscribeEvent
