@@ -53,9 +53,9 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 		return pos.addScaled(dir, 0.2);
 	}
 
-	private static String getModeString(int mode)
+	private static Component getModeString(int mode)
 	{
-		return switch (mode)
+		String translatable = switch (mode)
 		{
 			case 0 -> "item.ic2r.mining_laser.tooltip.mode.mining";
 			case 1 -> "item.ic2r.mining_laser.tooltip.mode.lowFocus";
@@ -67,6 +67,8 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 			case 7 -> "item.ic2r.mining_laser.tooltip.mode.3x3";
 			default -> throw new NoSuchElementException("No such mode: " + mode);
 		};
+		
+		return Component.translatable(translatable);
 	}
 
 	@Override
@@ -119,9 +121,8 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 	public List<String> getHudInfo(ItemStack stack, boolean advanced)
 	{
 		CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);
-		Component mode = Component.translatable(getModeString(nbtData.getInt("laser_setting")));
 		List<String> info = new LinkedList<>(super.getHudInfo(stack, advanced));
-		info.add(Component.translatable("item.ic2r.mining_laser.tooltip.mode", mode).getString());
+		info.add(Component.translatable("item.ic2r.mining_laser.tooltip.mode", getModeString(nbtData.getInt("laser_setting"))).getString());
 		return info;
 	}
 
@@ -141,7 +142,7 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 			laserSetting = (laserSetting + 1) % 8;
 			final int newSetting = laserSetting;
 			StackUtil.editTag(stack, nbt -> nbt.putInt("laser_setting", newSetting));
-			IC2R.sideProxy.messagePlayer(player, "item.ic2r.mining_laser.tooltip.mode", getModeString(laserSetting));
+			IC2R.sideProxy.messagePlayer(player, Component.translatable("item.ic2r.mining_laser.tooltip.mode", getModeString(laserSetting)));
 		} else
 		{
 			int consume = new int[] { 1250, 100, 5000, 0, 2500, 10000, 5000, 7500 }[laserSetting];

@@ -8,6 +8,7 @@ import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -109,11 +110,11 @@ public class ItemDrillIridium extends ItemDrill
 			if (EnchantmentHelper.getItemEnchantmentLevel(silk, stack) == 0)
 			{
 				setExclusiveEnchant(stack, lookup, silk, 1);
-				IC2R.sideProxy.messagePlayer(player, "item.ic2r.mining_laser.tooltip.mode", "item.ic2r.mining_laser.tooltip.mode.silkTouch");
+				IC2R.sideProxy.messagePlayer(player, Component.translatable("item.ic2r.mining_laser.tooltip.mode", Component.translatable("item.ic2r.mining_laser.tooltip.mode.silkTouch")));
 			} else
 			{
 				setExclusiveEnchant(stack, lookup, fortune, 3);
-				IC2R.sideProxy.messagePlayer(player, "item.ic2r.mining_laser.tooltip.mode", "item.ic2r.mining_laser.tooltip.mode.normal");
+				IC2R.sideProxy.messagePlayer(player, Component.translatable("item.ic2r.mining_laser.tooltip.mode", Component.translatable("item.ic2r.mining_laser.tooltip.mode.normal")));
 			}
 		}
 
