@@ -3,7 +3,7 @@
 
 <img src="https://img.shields.io/badge/Minecraft-1.20.1-green" alt="Minecraft 1.20.1">
 <img src="https://img.shields.io/badge/Forge-47.4.20-orange" alt="Forge 47.4.20">
-<img src="https://img.shields.io/badge/Version-20.1.40-blue" alt="Version 20.1.40">
+<img src="https://img.shields.io/badge/Version-20.1.41-blue" alt="Version 20.1.41">
 <img src="https://img.shields.io/badge/License-AGPLv3-yellow" alt="License AGPLv3">
 
 [English](./README_EN.md) | [简体中文](./README.md)
