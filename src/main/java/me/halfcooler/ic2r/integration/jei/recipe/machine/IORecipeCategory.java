@@ -50,7 +50,7 @@ public abstract class IORecipeCategory<T extends IJeiRecipeWrapper> implements I
 		}
 
 		List<SlotPosition> outputSlots = this.getOutputSlotPos();
-		List<List<ItemStack>> outputStacks = List.of(recipe.getOutputs());
+		List<ItemStack> outputStacks = recipe.getOutputs();
 
 		for (idx = 0; idx < outputSlots.size(); idx++)
 		{
@@ -58,7 +58,7 @@ public abstract class IORecipeCategory<T extends IJeiRecipeWrapper> implements I
 			IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.OUTPUT, pos.x() + xOffset, pos.y() + yOffset);
 			if (idx < outputStacks.size())
 			{
-				slot.addItemStacks(outputStacks.get(idx));
+				slot.addItemStack(outputStacks.get(idx));
 			}
 		}
 	}
