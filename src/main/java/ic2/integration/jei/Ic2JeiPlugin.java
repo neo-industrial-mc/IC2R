@@ -9,7 +9,9 @@ import ic2.core.block.machine.container.ContainerIndustrialWorkbench;
 import ic2.core.block.machine.container.ContainerMetalFormer;
 import ic2.core.block.machine.tileentity.TileEntityCanner;
 import ic2.core.fluid.Ic2FluidStack;
+import ic2.core.gui.RecipeButton;
 import ic2.core.gui.dynamic.DynamicContainer;
+import ic2.core.recipe.AdvRecipe;
 import ic2.core.recipe.v2.RecipeHolder;
 import ic2.core.ref.Ic2Blocks;
 import ic2.core.ref.Ic2ItemTags;
@@ -31,9 +33,11 @@ import ic2.integration.jei.recipe.machine.MetalFormerCategory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -51,6 +55,9 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
+import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -188,6 +195,14 @@ public class Ic2JeiPlugin implements IModPlugin {
     registration.addRecipeCategories(new CannerEmptyLiquidCategory(this.CANNER_EMPTY_LIQUID));
   }
 
+  @Override
+  public void registerVanillaCategoryExtensions(
+      IVanillaCategoryExtensionRegistration registration) {
+    registration
+        .getCraftingCategory()
+        .addExtension(AdvRecipe.class, new AdvRecipeCategoryExtension());
+  }
+
   public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
     registration.addRecipeCatalyst(new ItemStack(Ic2Blocks.BLAST_FURNACE), this.BLAST_FURNACE);
     registration.addRecipeCatalyst(new ItemStack(Ic2Blocks.BLOCK_CUTTER), this.BLOCK_CUTTER);
@@ -211,6 +226,135 @@ public class Ic2JeiPlugin implements IModPlugin {
     registration.addRecipeCatalyst(
         new ItemStack(Ic2Blocks.INDUSTRIAL_WORKBENCH), RecipeTypes.CRAFTING);
     registration.addRecipeCatalyst(new ItemStack(Ic2Blocks.BATCH_CRAFTER), RecipeTypes.CRAFTING);
+
+    registration.addRecipeCatalyst(
+        new ItemStack(Ic2Blocks.IRON_FURNACE), RecipeTypes.SMELTING, RecipeTypes.FUELING);
+    registration.addRecipeCatalyst(new ItemStack(Ic2Blocks.ELECTRIC_FURNACE), RecipeTypes.SMELTING);
+    registration.addRecipeCatalyst(
+        new ItemStack(Ic2Blocks.INDUCTION_FURNACE), RecipeTypes.SMELTING);
+  }
+
+  @Override
+  public void onRuntimeAvailable(@NotNull IJeiRuntime jeiRuntime) {
+    IRecipesGui recipesGui = jeiRuntime.getRecipesGui();
+    Map<String, RecipeType<?>> aliases = this.createRecipeButtonAliases();
+
+    RecipeButton.jeiRecipeListOpener =
+        categories ->
+            button -> {
+              if (categories == null || categories.length == 0) {
+                return;
+              }
+
+              Set<RecipeType<?>> types = new LinkedHashSet<>();
+              for (String key : categories) {
+                RecipeType<?> type = resolveRecipeButtonKey(key, aliases);
+                if (type != null) {
+                  types.add(type);
+                }
+              }
+
+              if (!types.isEmpty()) {
+                recipesGui.showTypes(List.copyOf(types));
+              }
+            };
+  }
+
+  @Override
+  public void onRuntimeUnavailable() {
+    RecipeButton.jeiRecipeListOpener = null;
+  }
+
+  private Map<String, RecipeType<?>> createRecipeButtonAliases() {
+    Map<String, RecipeType<?>> aliases = new HashMap<>();
+
+    aliases.put("macerator", this.MACERATOR);
+    aliases.put("compressor", this.COMPRESSOR);
+    aliases.put("extractor", this.EXTRACTOR);
+    aliases.put("centrifuge", this.CENTRIFUGE);
+    aliases.put("blast_furnace", this.BLAST_FURNACE);
+    aliases.put("block_cutter", this.BLOCK_CUTTER);
+    aliases.put("ore_washing_plant", this.ORE_WASHER);
+    aliases.put("ore_washer", this.ORE_WASHER);
+    aliases.put("solid_canner", this.CANNER_BOTTLE);
+
+    aliases.put("metal_former0", this.METAL_FORMER_EXTRUDING);
+    aliases.put("metal_former1", this.METAL_FORMER_ROLLING);
+    aliases.put("metal_former2", this.METAL_FORMER_CUTTING);
+    aliases.put("metal_former_extruding", this.METAL_FORMER_EXTRUDING);
+    aliases.put("metal_former_rolling", this.METAL_FORMER_ROLLING);
+    aliases.put("metal_former_cutting", this.METAL_FORMER_CUTTING);
+
+    aliases.put("canner_BottleSolid", this.CANNER_BOTTLE);
+    aliases.put("canner_EmptyLiquid", this.CANNER_EMPTY_LIQUID);
+    aliases.put("canner_BottleLiquid", this.CANNER_BOTTLE_LIQUID);
+    aliases.put("canner_EnrichLiquid", this.CANNER_ENRICH);
+    aliases.put("canner_bottle", this.CANNER_BOTTLE);
+    aliases.put("canner_empty_liquid", this.CANNER_EMPTY_LIQUID);
+    aliases.put("canner_bottle_liquid", this.CANNER_BOTTLE_LIQUID);
+    aliases.put("canner_enrich", this.CANNER_ENRICH);
+
+    aliases.put("minecraft.smelting", RecipeTypes.SMELTING);
+    aliases.put("minecraft.fuel", RecipeTypes.FUELING);
+    aliases.put("minecraft:smelting", RecipeTypes.SMELTING);
+    aliases.put("minecraft:furnace", RecipeTypes.SMELTING);
+    aliases.put("minecraft:fuel", RecipeTypes.FUELING);
+    aliases.put("smelting", RecipeTypes.SMELTING);
+    aliases.put("fuel", RecipeTypes.FUELING);
+
+    putUidAliases(aliases, this.MACERATOR);
+    putUidAliases(aliases, this.COMPRESSOR);
+    putUidAliases(aliases, this.EXTRACTOR);
+    putUidAliases(aliases, this.CENTRIFUGE);
+    putUidAliases(aliases, this.BLAST_FURNACE);
+    putUidAliases(aliases, this.BLOCK_CUTTER);
+    putUidAliases(aliases, this.ORE_WASHER);
+    putUidAliases(aliases, this.METAL_FORMER_EXTRUDING);
+    putUidAliases(aliases, this.METAL_FORMER_ROLLING);
+    putUidAliases(aliases, this.METAL_FORMER_CUTTING);
+    putUidAliases(aliases, this.CANNER_BOTTLE);
+    putUidAliases(aliases, this.CANNER_ENRICH);
+    putUidAliases(aliases, this.CANNER_BOTTLE_LIQUID);
+    putUidAliases(aliases, this.CANNER_EMPTY_LIQUID);
+
+    return aliases;
+  }
+
+  private static void putUidAliases(Map<String, RecipeType<?>> aliases, RecipeType<?> type) {
+    ResourceLocation uid = type.getUid();
+    aliases.put(uid.toString(), type);
+    aliases.put(uid.getPath(), type);
+  }
+
+  @Nullable private static RecipeType<?> resolveRecipeButtonKey(
+      String key, Map<String, RecipeType<?>> aliases) {
+    if (key == null || key.isEmpty()) {
+      return null;
+    }
+
+    RecipeType<?> direct = aliases.get(key);
+    if (direct != null) {
+      return direct;
+    }
+
+    String normalized = key.indexOf('.') >= 0 && key.indexOf(':') < 0 ? key.replace('.', ':') : key;
+    direct = aliases.get(normalized);
+    if (direct != null) {
+      return direct;
+    }
+
+    if (normalized.indexOf(':') >= 0) {
+      ResourceLocation id = ResourceLocation.tryParse(normalized);
+      if (id != null) {
+        direct = aliases.get(id.toString());
+        if (direct != null) {
+          return direct;
+        }
+        return aliases.get(id.getPath());
+      }
+    }
+
+    return aliases.get("ic2:" + key);
   }
 
   public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
