@@ -41,8 +41,9 @@ public final class Ic2rArmorMaterials
 		register("solar_helmet", new int[] { 0, 0, 0, 3 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> STATIC_BOOTS =
 		register("static_boots", new int[] { 3, 0, 0, 0 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_LEATHER);
+	// Legacy special armor absorbed 5% normal damage per piece; one point is the closest vanilla fit.
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> HAZMAT =
-		register("hazmat", new int[] { 3, 6, 8, 3 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_LEATHER);
+		register("hazmat", new int[] { 1, 1, 1, 1 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_LEATHER);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> CF_PACK =
 		register("cf_pack", new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> JET_PACK =

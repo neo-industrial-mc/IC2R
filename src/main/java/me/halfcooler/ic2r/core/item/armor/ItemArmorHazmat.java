@@ -14,7 +14,7 @@ public class ItemArmorHazmat extends ItemArmorUtility implements IHazmatLike
 {
 	public ItemArmorHazmat(EquipmentSlot type, Properties settings)
 	{
-		super(Ic2rArmorMaterials.HAZMAT, settings, type);
+		super(Ic2rArmorMaterials.HAZMAT, settings.durability(64), type);
 	}
 
 	public static boolean hasCompleteHazmat(LivingEntity living)
