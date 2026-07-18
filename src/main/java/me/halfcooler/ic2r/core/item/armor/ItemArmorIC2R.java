@@ -16,6 +16,16 @@ public class ItemArmorIC2R extends ArmorItem implements IMetalArmor
 		super(material, fromSlot(slot), settings);
 	}
 
+	public ItemArmorIC2R(Holder<ArmorMaterial> material, EquipmentSlot slot, int durabilityMultiplier, Properties settings)
+	{
+		super(material, fromSlot(slot), settings.durability(durabilityForSlot(slot, durabilityMultiplier)));
+	}
+
+	static int durabilityForSlot(EquipmentSlot slot, int durabilityMultiplier)
+	{
+		return fromSlot(slot).getDurability(durabilityMultiplier);
+	}
+
 	private static ArmorItem.Type fromSlot(EquipmentSlot slot)
 	{
 		return switch (slot)
