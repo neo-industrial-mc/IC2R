@@ -49,6 +49,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -61,11 +62,12 @@ public class EventHandlerClient
 {
 	public static void onClientSetup()
 	{
+		// IC2R liquid blocks share the still-fluid path (e.g. ic2r:coolant); detect by LiquidBlock + namespace.
 		List<Block> fluidBlocks = new ArrayList<>();
 		for (Block block : BuiltInRegistries.BLOCK)
 		{
 			ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
-			if (id != null && "ic2r".equals(id.getNamespace()) && id.getPath().startsWith("fluid_block_"))
+			if (id != null && "ic2r".equals(id.getNamespace()) && block instanceof LiquidBlock)
 			{
 				fluidBlocks.add(block);
 			}

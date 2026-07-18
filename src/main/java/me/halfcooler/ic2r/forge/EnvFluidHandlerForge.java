@@ -200,7 +200,8 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
             Registry.register(BuiltInRegistries.FLUID, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "flowing_" + id.getPath()), flowing);
             Block.Properties fluidBlockProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).noLootTable().noCollission().randomTicks().pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY);
             LiquidBlock fluidBlock = createFluidBlock(id.getPath(), (FlowingFluid) ret.still(), fluidBlockProperties);
-            Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "fluid_block_" + id.getPath()), fluidBlock);
+            // Same path as still fluid (vanilla water/lava style); Block and Fluid are separate registries.
+            Registry.register(BuiltInRegistries.BLOCK, id, fluidBlock);
             fluidBlockRef.set(fluidBlock);
         });
         ResourceLocation bucketId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + "_bucket");
