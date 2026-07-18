@@ -14,6 +14,7 @@ import me.halfcooler.ic2r.core.fluid.EnvFluidHandler;
 import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import me.halfcooler.ic2r.forge.fluid.Ic2rFlowingFluid;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
@@ -187,10 +188,12 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
         });
         AtomicReference<LiquidBlock> fluidBlockRef = new AtomicReference<>();
         pendingFluidRegistrations.add(() -> {
+            // Ic2rFlowingFluid refuses foreign displacement (BaseFlowingFluid would let water
+            // above overwrite these sources in oceans).
             BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(fluidTypeRef::get, ret::still, ret::flowing).bucket(ret::bucket);
             properties.block(fluidBlockRef::get);
-            Fluid still = new BaseFlowingFluid.Source(properties);
-            Fluid flowing = new BaseFlowingFluid.Flowing(properties);
+            Fluid still = new Ic2rFlowingFluid.Source(properties);
+            Fluid flowing = new Ic2rFlowingFluid.Flowing(properties);
             Registry.register(BuiltInRegistries.FLUID, id, still);
             ret.still(still);
             ret.flowing(flowing);
