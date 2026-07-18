@@ -15,10 +15,13 @@ import java.util.Map;
 import java.util.Objects;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -30,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
@@ -107,6 +111,23 @@ public class ItemClassicCell extends Ic2rBucketItem implements Ic2rFluidItem
 	public Item getEmptiedBucketItem()
 	{
 		return Ic2rItems.FACADE_CELL;
+	}
+
+	@Override
+	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player user, @NotNull InteractionHand hand)
+	{
+		if (this == Ic2rItems.AIR_CELL)
+		{
+			return InteractionResultHolder.pass(user.getItemInHand(hand));
+		}
+
+		return super.use(world, user, hand);
+	}
+
+	@Override
+	public boolean emptyContents(@Nullable Player player, Level world, BlockPos pos, @Nullable BlockHitResult hitResult, Fluid fluid)
+	{
+		return this != Ic2rItems.AIR_CELL && super.emptyContents(player, world, pos, hitResult, fluid);
 	}
 
 	/**
