@@ -1267,28 +1267,23 @@ public final class Ic2Items {
   public static final Item ALLOY_CHESTPLATE =
       register(
           "alloy_chestplate",
-          new ItemArmorIC2(
-              Ic2ArmorMaterials.ALLOY.holder(), EquipmentSlot.CHEST, new Properties()));
+          new ItemArmorIC2(Ic2ArmorMaterials.ALLOY, EquipmentSlot.CHEST, new Properties()));
   public static final Item BRONZE_BOOTS =
       register(
           "bronze_boots",
-          new ItemArmorIC2(
-              Ic2ArmorMaterials.BRONZE.holder(), EquipmentSlot.FEET, new Properties()));
+          new ItemArmorIC2(Ic2ArmorMaterials.BRONZE, EquipmentSlot.FEET, new Properties()));
   public static final Item BRONZE_CHESTPLATE =
       register(
           "bronze_chestplate",
-          new ItemArmorIC2(
-              Ic2ArmorMaterials.BRONZE.holder(), EquipmentSlot.CHEST, new Properties()));
+          new ItemArmorIC2(Ic2ArmorMaterials.BRONZE, EquipmentSlot.CHEST, new Properties()));
   public static final Item BRONZE_HELMET =
       register(
           "bronze_helmet",
-          new ItemArmorIC2(
-              Ic2ArmorMaterials.BRONZE.holder(), EquipmentSlot.HEAD, new Properties()));
+          new ItemArmorIC2(Ic2ArmorMaterials.BRONZE, EquipmentSlot.HEAD, new Properties()));
   public static final Item BRONZE_LEGGINGS =
       register(
           "bronze_leggings",
-          new ItemArmorIC2(
-              Ic2ArmorMaterials.BRONZE.holder(), EquipmentSlot.LEGS, new Properties()));
+          new ItemArmorIC2(Ic2ArmorMaterials.BRONZE, EquipmentSlot.LEGS, new Properties()));
   public static final Item CF_PACK = register("cf_pack", new ItemArmorCFPack(new Properties()));
   public static final Item FOAM_SPRAYER =
       register("foam_sprayer", new ItemSprayer(new Properties().stacksTo(1)));
