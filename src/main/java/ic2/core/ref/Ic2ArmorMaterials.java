@@ -25,7 +25,8 @@ public enum Ic2ArmorMaterials {
   NANO_SUIT("ic2:ic2_nano", 0, new int[] {0, 0, 0, 0}, 0, 2.0F, Ingredient::of),
   QUANTUM_SUIT("ic2:ic2_quantum", 0, new int[] {0, 0, 0, 0}, 0, 2.0F, Ingredient::of),
   NIGHT_VISION_GOGGLES("ic2:ic2_night_vision", 0, new int[] {0, 0, 0, 3}, 0, 2.0F, Ingredient::of),
-  HAZMAT("ic2:ic2_hazmat", SoundEvents.ARMOR_EQUIP_LEATHER, new int[] {3, 6, 8, 3}, 2.0F),
+  // Legacy special armor absorbed 5% normal damage per piece; one point is the closest vanilla fit.
+  HAZMAT("ic2:ic2_hazmat", SoundEvents.ARMOR_EQUIP_LEATHER, new int[] {1, 1, 1, 1}, 0.0F),
   CF_PACK("ic2:ic2_cf_pack", SoundEvents.ARMOR_EQUIP_IRON),
   JET_PACK("ic2:ic2_jet_pack", SoundEvents.ARMOR_EQUIP_IRON, new int[] {0, 0, 8, 0}, 2.0F),
   JET_PACK_ELECTRIC(
