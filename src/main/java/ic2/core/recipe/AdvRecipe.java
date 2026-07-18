@@ -290,18 +290,21 @@ public class AdvRecipe implements Ic2CraftingRecipe {
 
   @Override
   public @NotNull NonNullList<Ingredient> getIngredients() {
-    NonNullList<Ingredient> list = NonNullList.create();
-    if (!this.hidden) {
-      int mask = this.masks[0];
-      int actualIngredient = 0;
+    return this.hidden ? NonNullList.create() : this.getDisplayIngredients();
+  }
 
-      for (int y = 0; y < this.inputHeight; y++) {
-        for (int x = 0; x < this.inputWidth; x++) {
-          if ((mask >>> 8 - (x + y * 3) & 1) != 0) {
-            list.add(this.input[actualIngredient++].getIngredient());
-          } else {
-            list.add(Ingredient.EMPTY);
-          }
+  /** Returns the complete shaped input layout for external recipe viewers such as JEI. */
+  public @NotNull NonNullList<Ingredient> getDisplayIngredients() {
+    NonNullList<Ingredient> list = NonNullList.create();
+    int mask = this.masks[0];
+    int actualIngredient = 0;
+
+    for (int y = 0; y < this.inputHeight; y++) {
+      for (int x = 0; x < this.inputWidth; x++) {
+        if ((mask >>> 8 - (x + y * 3) & 1) != 0) {
+          list.add(this.input[actualIngredient++].getIngredient());
+        } else {
+          list.add(Ingredient.EMPTY);
         }
       }
     }

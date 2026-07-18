@@ -19,7 +19,15 @@ final class AdvRecipeCategoryExtension implements ICraftingCategoryExtension<Adv
     AdvRecipe recipe = holder.value();
     craftingGridHelper.createAndSetOutputs(builder, List.of(recipe.output));
     craftingGridHelper.createAndSetIngredients(
-        builder, recipe.getIngredients(), recipe.getIc2RecipeWidth(), recipe.getIc2RecipeHeight());
+        builder,
+        recipe.getDisplayIngredients(),
+        recipe.getIc2RecipeWidth(),
+        recipe.getIc2RecipeHeight());
+  }
+
+  @Override
+  public boolean isHandled(RecipeHolder<AdvRecipe> holder) {
+    return holder.value().canShow();
   }
 
   @Override
