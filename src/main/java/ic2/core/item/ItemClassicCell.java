@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -63,6 +65,16 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem {
   }
 
   @Override
+  public @NotNull InteractionResultHolder<ItemStack> use(
+      @NotNull Level world, Player user, @NotNull InteractionHand hand) {
+    if (this == Ic2Items.AIR_CELL) {
+      return InteractionResultHolder.pass(user.getItemInHand(hand));
+    }
+
+    return super.use(world, user, hand);
+  }
+
+  @Override
   public List<Fluid> getDrainableFluidList() {
     return this.fluid == Fluids.EMPTY
         ? LiquidUtil.getAllFluidsSorted()
@@ -90,7 +102,7 @@ public class ItemClassicCell extends Ic2BucketItem implements Ic2FluidItem {
   @Override
   public boolean emptyContents(
       @Nullable Player player, Level world, BlockPos pos, @Nullable BlockHitResult hitResult) {
-    return super.emptyContents(player, world, pos, hitResult);
+    return this != Ic2Items.AIR_CELL && super.emptyContents(player, world, pos, hitResult);
   }
 
   @Override
