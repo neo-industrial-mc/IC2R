@@ -21,39 +21,42 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  */
 public final class Ic2rArmorMaterials
 {
+	public static final int BRONZE_DURABILITY_MULTIPLIER = 15;
+	public static final int ALLOY_DURABILITY_MULTIPLIER = 50;
+
 	public static final DeferredRegister<ArmorMaterial> REGISTRY =
 		DeferredRegister.create(Registries.ARMOR_MATERIAL, "ic2r");
 
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> BRONZE =
-		register("bronze", 15, new int[] { 2, 5, 6, 2 }, 9, 0.0F, () -> Ingredient.of(Ic2rItems.BRONZE_INGOT), SoundEvents.ARMOR_EQUIP_IRON);
+		register("bronze", new int[] { 2, 5, 6, 2 }, 9, 0.0F, () -> Ingredient.of(Ic2rItems.BRONZE_INGOT), SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ALLOY =
-		register("alloy", 50, new int[] { 4, 7, 9, 4 }, 12, 2.0F, () -> Ingredient.of(Ic2rItems.ALLOY), SoundEvents.ARMOR_EQUIP_IRON);
+		register("alloy", new int[] { 4, 7, 9, 4 }, 12, 2.0F, () -> Ingredient.of(Ic2rItems.ALLOY), SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> NANO_SUIT =
-		register("nano", 0, new int[] { 0, 0, 0, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+		register("nano", new int[] { 0, 0, 0, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> QUANTUM_SUIT =
-		register("quantum", 0, new int[] { 0, 0, 0, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+		register("quantum", new int[] { 0, 0, 0, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> NIGHT_VISION_GOGGLES =
-		register("night_vision", 0, new int[] { 0, 0, 0, 3 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+		register("night_vision", new int[] { 0, 0, 0, 3 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> SOLAR_HELMET =
-		register("solar_helmet", 0, new int[] { 0, 0, 0, 3 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+		register("solar_helmet", new int[] { 0, 0, 0, 3 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> STATIC_BOOTS =
-		register("static_boots", 0, new int[] { 3, 0, 0, 0 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_LEATHER);
+		register("static_boots", new int[] { 3, 0, 0, 0 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_LEATHER);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> HAZMAT =
-		register("hazmat", 0, new int[] { 3, 6, 8, 3 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_LEATHER);
+		register("hazmat", new int[] { 3, 6, 8, 3 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_LEATHER);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> CF_PACK =
-		register("cf_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+		register("cf_pack", new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> JET_PACK =
-		register("jet_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+		register("jet_pack", new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> JET_PACK_ELECTRIC =
-		register("jet_pack_electric", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+		register("jet_pack_electric", new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> BAT_PACK =
-		register("bat_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+		register("bat_pack", new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ADVANCED_BAT_PACK =
-		register("advanced_bat_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+		register("advanced_bat_pack", new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ENERGY_PACK =
-		register("energy_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+		register("energy_pack", new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> LAP_PACK =
-		register("lap_pack", 0, new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
+		register("lap_pack", new int[] { 0, 0, 8, 0 }, 0, 2.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 
 	private Ic2rArmorMaterials()
 	{
@@ -65,7 +68,6 @@ public final class Ic2rArmorMaterials
 	 */
 	private static DeferredHolder<ArmorMaterial, ArmorMaterial> register(
 		String name,
-		int durabilityMultiplierUnused,
 		int[] protectionAmounts,
 		int enchantAbility,
 		float toughness,

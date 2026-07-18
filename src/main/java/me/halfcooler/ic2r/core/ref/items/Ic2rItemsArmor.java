@@ -31,11 +31,11 @@ public final class Ic2rItemsArmor
 	}
 
 	public static final Item NANO_SABER = Ic2rItems.register("nano_saber", new ItemNanoSaber(new Properties().stacksTo(1)));
-	public static final Item ALLOY_CHESTPLATE = Ic2rItems.register("alloy_chestplate", new ItemArmorIC2R(Ic2rArmorMaterials.ALLOY, EquipmentSlot.CHEST, new Properties()));
-	public static final Item BRONZE_BOOTS = Ic2rItems.register("bronze_boots", new ItemArmorIC2R(Ic2rArmorMaterials.BRONZE, EquipmentSlot.FEET, new Properties()));
-	public static final Item BRONZE_CHESTPLATE = Ic2rItems.register("bronze_chestplate", new ItemArmorIC2R(Ic2rArmorMaterials.BRONZE, EquipmentSlot.CHEST, new Properties()));
-	public static final Item BRONZE_HELMET = Ic2rItems.register("bronze_helmet", new ItemArmorIC2R(Ic2rArmorMaterials.BRONZE, EquipmentSlot.HEAD, new Properties()));
-	public static final Item BRONZE_LEGGINGS = Ic2rItems.register("bronze_leggings", new ItemArmorIC2R(Ic2rArmorMaterials.BRONZE, EquipmentSlot.LEGS, new Properties()));
+	public static final Item ALLOY_CHESTPLATE = Ic2rItems.register("alloy_chestplate", new ItemArmorIC2R(Ic2rArmorMaterials.ALLOY, EquipmentSlot.CHEST, Ic2rArmorMaterials.ALLOY_DURABILITY_MULTIPLIER, new Properties()));
+	public static final Item BRONZE_BOOTS = Ic2rItems.register("bronze_boots", new ItemArmorIC2R(Ic2rArmorMaterials.BRONZE, EquipmentSlot.FEET, Ic2rArmorMaterials.BRONZE_DURABILITY_MULTIPLIER, new Properties()));
+	public static final Item BRONZE_CHESTPLATE = Ic2rItems.register("bronze_chestplate", new ItemArmorIC2R(Ic2rArmorMaterials.BRONZE, EquipmentSlot.CHEST, Ic2rArmorMaterials.BRONZE_DURABILITY_MULTIPLIER, new Properties()));
+	public static final Item BRONZE_HELMET = Ic2rItems.register("bronze_helmet", new ItemArmorIC2R(Ic2rArmorMaterials.BRONZE, EquipmentSlot.HEAD, Ic2rArmorMaterials.BRONZE_DURABILITY_MULTIPLIER, new Properties()));
+	public static final Item BRONZE_LEGGINGS = Ic2rItems.register("bronze_leggings", new ItemArmorIC2R(Ic2rArmorMaterials.BRONZE, EquipmentSlot.LEGS, Ic2rArmorMaterials.BRONZE_DURABILITY_MULTIPLIER, new Properties()));
 	public static final Item CF_PACK = Ic2rItems.register("cf_pack", new ItemArmorCFPack(new Properties()));
 	public static final Item FOAM_SPRAYER = Ic2rItems.register("foam_sprayer", new ItemSprayer(new Properties().stacksTo(1)));
 	public static final Item HAZMAT_CHESTPLATE = Ic2rItems.register("hazmat_chestplate", new ItemArmorHazmat(EquipmentSlot.CHEST, new Properties()));
