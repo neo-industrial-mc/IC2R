@@ -82,6 +82,40 @@ public final class FluidHandler
 		return ENV_HANDLER.getColor(fluid);
 	}
 
+	/**
+	 * Fog far-plane distance (blocks) for a fluid density value.
+	 * Vanilla water uses ~96; denser IC2R fluids shrink visibility.
+	 * density 1000 → 48, 3000 → 16, 10000 → 4.8, 50000 → 2 (floor).
+	 */
+	public static float fogEndForDensity(int density)
+	{
+		int absDensity = Math.abs(density);
+		if (absDensity == 0)
+		{
+			return 96.0F;
+		}
+		float end = 48000.0F / absDensity;
+		if (end < 2.0F)
+		{
+			return 2.0F;
+		}
+		if (end > 96.0F)
+		{
+			return 96.0F;
+		}
+		return end;
+	}
+
+	/** RGB channels in {@code [0,1]} from an ARGB tint (alpha ignored). */
+	public static float[] fogRgb(int argb)
+	{
+		return new float[] {
+			((argb >> 16) & 0xFF) / 255.0F,
+			((argb >> 8) & 0xFF) / 255.0F,
+			(argb & 0xFF) / 255.0F
+		};
+	}
+
 	public static Ic2rFluidStack drainMb(ItemStack stack, int amount, boolean simulate, @Nullable Mutable<ItemStack> newStack)
 	{
 		Item item = stack.getItem();

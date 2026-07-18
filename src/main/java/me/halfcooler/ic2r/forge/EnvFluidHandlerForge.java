@@ -1,5 +1,7 @@
 package me.halfcooler.ic2r.forge;
 
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.halfcooler.ic2r.core.block.misc.AirBlock;
 import me.halfcooler.ic2r.core.block.misc.ConstructionFoamBlock;
 import me.halfcooler.ic2r.core.block.misc.HotCoolantBlock;
@@ -9,12 +11,16 @@ import me.halfcooler.ic2r.core.block.misc.PahoehoeLavaBlock;
 import me.halfcooler.ic2r.core.block.misc.SteamBlock;
 import me.halfcooler.ic2r.core.block.misc.UUMatterBlock;
 import me.halfcooler.ic2r.core.fluid.EnvFluidHandler;
+import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -46,6 +52,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
+import org.joml.Vector3f;
 
 class EnvFluidHandlerForge implements EnvFluidHandler {
 
@@ -139,6 +146,8 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
 
                 @Override
                 public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+                    // Custom fluids are FogType.NONE for vanilla, so without these hooks the clear
+                    // color stays sky-colored and interior faces cull → "透视天空".
                     consumer.accept(new IClientFluidTypeExtensions() {
 
                         @Override
@@ -154,6 +163,21 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
                         @Override
                         public ResourceLocation getFlowingTexture() {
                             return flowingSpriteId != null ? flowingSpriteId : stillSpriteId;
+                        }
+
+                        @Override
+                        public Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
+                            float[] rgb = FluidHandler.fogRgb(color);
+                            return new Vector3f(rgb[0], rgb[1], rgb[2]);
+                        }
+
+                        @Override
+                        public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
+                            // Default is no-op; set planes like water (start -8) with density-scaled end.
+                            float fogEnd = FluidHandler.fogEndForDensity(density);
+                            RenderSystem.setShaderFogStart(-8.0F);
+                            RenderSystem.setShaderFogEnd(fogEnd);
+                            RenderSystem.setShaderFogShape(FogShape.SPHERE);
                         }
                     });
                 }

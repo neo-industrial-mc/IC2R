@@ -90,11 +90,8 @@ public class ItemDrillIridium extends ItemDrill
 
 	@Override
 	protected ItemStack getItemStack(double charge)
-	{
-		ItemStack ret = super.getItemStack(charge);
-		// Enchantments require registry holders; applied when first used in a level context.
-		// Keep unenchanted here to avoid needing a world during item registration.
-		return ret;
+	{ 
+		return super.getItemStack(charge);
 	}
 
 	@Override

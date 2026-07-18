@@ -122,23 +122,49 @@ public class EventHandlerClient
 	{
 	}
 
+	/**
+	 * Fog far-plane distance when the camera is inside an IC2R fluid, or {@code -1} if not.
+	 * <p>
+	 * Pre-1.21 this returned a GL fog density factor; modern fog uses near/far planes (water ≈ 96).
+	 * Higher fluid density → shorter visibility (see {@link FluidHandler#fogEndForDensity(int)}).
+	 */
 	public static float onSetupFogDensity(BlockState state)
 	{
-		Fluid fluid = FluidHandler.getWorldFluid(state);
-		if (fluid != null && "ic2r".equals(Objects.requireNonNull(BuiltInRegistries.FLUID.getKey(fluid)).getNamespace()))
-		{
-			int density = FluidHandler.getDensity(fluid);
-			return (float) Util.map(Math.abs(density), 20000.0, 2.0);
-		} else
-		{
-			return -1.0F;
-		}
+		Fluid fluid = getIc2rWorldFluid(state);
+		return fluid != null ? FluidHandler.fogEndForDensity(FluidHandler.getDensity(fluid)) : -1.0F;
 	}
 
+	/**
+	 * Fog RGB for an IC2R fluid at the camera block, or {@code null} if not in one.
+	 * <p>
+	 * Must not use {@code color >= 0}: fluid tints are ARGB and commonly negative as signed ints
+	 * (high alpha), which previously skipped fog color and left sky clear-color ("透视天空").
+	 */
+	@Nullable
+	public static float[] onRenderFogColorRgb(BlockState state)
+	{
+		Fluid fluid = getIc2rWorldFluid(state);
+		return fluid != null ? FluidHandler.fogRgb(FluidHandler.getColor(fluid)) : null;
+	}
+
+	/** @deprecated use {@link #onRenderFogColorRgb}; kept only for binary compat within the module */
+	@Deprecated
 	public static int onRenderFogColor(BlockState state)
 	{
+		Fluid fluid = getIc2rWorldFluid(state);
+		return fluid != null ? FluidHandler.getColor(fluid) : -1;
+	}
+
+	@Nullable
+	private static Fluid getIc2rWorldFluid(BlockState state)
+	{
 		Fluid fluid = FluidHandler.getWorldFluid(state);
-		return fluid != null && "ic2r".equals(BuiltInRegistries.FLUID.getKey(fluid).getNamespace()) ? FluidHandler.getColor(fluid) : -1;
+		if (fluid == null)
+		{
+			return null;
+		}
+		ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
+		return id != null && "ic2r".equals(id.getNamespace()) ? fluid : null;
 	}
 
 	/**

@@ -60,12 +60,13 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent
 	public void onSetupFogDensity(ViewportEvent.RenderFog event)
 	{
-		float newDensity = EventHandlerClient.onSetupFogDensity(event.getCamera().getBlockAtCamera());
-		if (newDensity >= 0.0F)
+		// Far-plane distance (blocks), not legacy GL density — see EventHandlerClient.
+		float fogEnd = EventHandlerClient.onSetupFogDensity(event.getCamera().getBlockAtCamera());
+		if (fogEnd >= 0.0F)
 		{
 			event.setCanceled(true);
 			event.setNearPlaneDistance(-8.0F);
-			event.setFarPlaneDistance(newDensity * 0.5F);
+			event.setFarPlaneDistance(fogEnd);
 			event.setFogShape(FogShape.SPHERE);
 		}
 	}
@@ -73,12 +74,13 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent
 	public void onRenderFogColor(ViewportEvent.ComputeFogColor event)
 	{
-		int color = EventHandlerClient.onRenderFogColor(event.getCamera().getBlockAtCamera());
-		if (color >= 0)
+		// ARGB tints are often negative as signed ints; never use color >= 0 as a presence check.
+		float[] rgb = EventHandlerClient.onRenderFogColorRgb(event.getCamera().getBlockAtCamera());
+		if (rgb != null)
 		{
-			event.setRed((color >>> 16 & 0xFF) / 255.0F);
-			event.setGreen((color >>> 8 & 0xFF) / 255.0F);
-			event.setBlue((color & 0xFF) / 255.0F);
+			event.setRed(rgb[0]);
+			event.setGreen(rgb[1]);
+			event.setBlue(rgb[2]);
 		}
 	}
 
