@@ -84,6 +84,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodProperties.Builder;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
@@ -749,7 +750,7 @@ public final class Ic2Items {
   public static final Item PLANT_BALL = register("plant_ball", new Item(new Properties()));
   public static final Item BIO_CHAFF = register("bio_chaff", new Item(new Properties()));
   public static final Item SCRAP = register("scrap", new Item(new Properties()));
-  public static final Item SCRAP_BOX = register("scrap_box", new Item(new Properties()));
+  public static final Item SCRAP_BOX = register("scrap_box", new ItemScrapBox(new Properties()));
   public static final Item CF_POWDER = register("cf_powder", new Item(new Properties()));
   public static final Item PELLET = register("pellet", new Item(new Properties()));
   public static final Item RAW_CRYSTAL_MEMORY =
@@ -1878,6 +1879,7 @@ public final class Ic2Items {
   }
 
   public static void init() {
+    DispenserBlock.registerBehavior(SCRAP_BOX, new BehaviorScrapboxDispense());
     IC2.envProxy.registerBurnTime(Items.SUGAR_CANE, 50);
     IC2.envProxy.registerBurnTime(Items.CACTUS, 50);
     IC2.envProxy.registerBurnTime(RUBBER_SAPLING, 80);
