@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -27,10 +28,10 @@ public final class ArmorGameTests
 	@GameTest(template = EMPTY)
 	public static void bronzeArmorHasExpectedDurability(GameTestHelper helper)
 	{
-		assertMaxDamage(helper, Ic2rItems.BRONZE_HELMET.getDefaultInstance(), 165, "helmet");
-		assertMaxDamage(helper, Ic2rItems.BRONZE_CHESTPLATE.getDefaultInstance(), 240, "chestplate");
-		assertMaxDamage(helper, Ic2rItems.BRONZE_LEGGINGS.getDefaultInstance(), 225, "leggings");
-		assertMaxDamage(helper, Ic2rItems.BRONZE_BOOTS.getDefaultInstance(), 195, "boots");
+		assertMaxDamage(helper, Ic2rItems.BRONZE_HELMET.getDefaultInstance(), 165, "bronze helmet");
+		assertMaxDamage(helper, Ic2rItems.BRONZE_CHESTPLATE.getDefaultInstance(), 240, "bronze chestplate");
+		assertMaxDamage(helper, Ic2rItems.BRONZE_LEGGINGS.getDefaultInstance(), 225, "bronze leggings");
+		assertMaxDamage(helper, Ic2rItems.BRONZE_BOOTS.getDefaultInstance(), 195, "bronze boots");
 		helper.succeed();
 	}
 
@@ -59,9 +60,30 @@ public final class ArmorGameTests
 		helper.succeed();
 	}
 
+	@GameTest(template = EMPTY)
+	public static void hazmatArmorHasExpectedProtectionAndDurability(GameTestHelper helper)
+	{
+		assertMaxDamage(helper, Ic2rItems.HAZMAT_HELMET.getDefaultInstance(), 64, "hazmat helmet");
+		assertMaxDamage(helper, Ic2rItems.HAZMAT_CHESTPLATE.getDefaultInstance(), 64, "hazmat chestplate");
+		assertMaxDamage(helper, Ic2rItems.HAZMAT_LEGGINGS.getDefaultInstance(), 64, "hazmat leggings");
+		assertMaxDamage(helper, Ic2rItems.RUBBER_BOOTS.getDefaultInstance(), 64, "rubber boots");
+
+		assertArmorProtection(helper, (ArmorItem) Ic2rItems.RUBBER_BOOTS, 1, "rubber boots");
+		assertArmorProtection(helper, (ArmorItem) Ic2rItems.BRONZE_BOOTS, 2, "bronze boots");
+		helper.succeed();
+	}
+
 	private static void assertMaxDamage(GameTestHelper helper, ItemStack stack, int expected, String piece)
 	{
-		helper.assertValueEqual(stack.getMaxDamage(), expected, "bronze " + piece + " max durability");
+		helper.assertValueEqual(stack.getMaxDamage(), expected, piece + " max durability");
+	}
+
+	private static void assertArmorProtection(GameTestHelper helper, ArmorItem armor, int expected, String piece)
+	{
+		helper.assertValueEqual(
+			armor.getMaterial().value().getDefense(armor.getType()),
+			expected,
+			piece + " armor protection");
 	}
 
 	private static void assertDamageConsumed(GameTestHelper helper, ItemStack stack, String piece)
