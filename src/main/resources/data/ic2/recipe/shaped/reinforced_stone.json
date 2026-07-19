@@ -14,6 +14,7 @@
     }
   },
   "result": {
-    "item": "ic2:reinforced_stone"
+    "item": "ic2:reinforced_stone",
+    "count": 8
   }
 }

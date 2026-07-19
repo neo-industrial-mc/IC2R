@@ -156,7 +156,7 @@ public final class ScrapboxRecipeManager implements IScrapboxManager {
 
     this.addDrop(Blocks.DIRT, 5.0F);
     this.addDrop(Items.STICK, 4.0F);
-    this.addDrop(Blocks.SHORT_GRASS, 3.0F);
+    this.addDrop(Blocks.GRASS_BLOCK, 3.0F);
     this.addDrop(Blocks.GRAVEL, 3.0F);
     this.addDrop(Blocks.NETHERRACK, 2.0F);
     this.addDrop(Items.ROTTEN_FLESH, 2.0F);
