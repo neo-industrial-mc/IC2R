@@ -3,6 +3,7 @@ package me.halfcooler.ic2r.core.ref;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rItemGroupType;
 import me.halfcooler.ic2r.core.block.BehaviorDynamiteDispense;
+import me.halfcooler.ic2r.core.item.BehaviorScrapboxDispense;
 import me.halfcooler.ic2r.core.ref.items.Ic2rItemsArmor;
 import me.halfcooler.ic2r.core.ref.items.Ic2rItemsBlockItems;
 import me.halfcooler.ic2r.core.ref.items.Ic2rItemsCells;
@@ -19,6 +20,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.DispenserBlock;
 
 /**
  * Item registration facade. Domain implementations live under {@code ref.items}.
@@ -1047,6 +1049,7 @@ public final class Ic2rItems
 
 	public static void init()
 	{
+		DispenserBlock.registerBehavior(SCRAP_BOX, new BehaviorScrapboxDispense());
 		IC2R.envProxy.registerBurnTime(Items.SUGAR_CANE, 50);
 		IC2R.envProxy.registerBurnTime(Items.CACTUS, 50);
 		IC2R.envProxy.registerBurnTime(RUBBER_SAPLING, 80);
