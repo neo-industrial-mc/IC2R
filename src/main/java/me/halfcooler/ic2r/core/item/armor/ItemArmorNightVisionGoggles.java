@@ -70,7 +70,7 @@ public class ItemArmorNightVisionGoggles extends ItemArmorUtility implements IEl
 		super.inventoryTick(stack, world, entity, slot, selected);
 		if (entity instanceof Player player)
 		{
-			if (slot == this.getEquipmentSlot().getIndex())
+			if (player.getItemBySlot(this.getEquipmentSlot()) == stack)
 			{
 				CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);
 				boolean active = nbtData.getBoolean("active");

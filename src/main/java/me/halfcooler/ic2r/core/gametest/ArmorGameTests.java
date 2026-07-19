@@ -1,6 +1,9 @@
 package me.halfcooler.ic2r.core.gametest;
 
+import me.halfcooler.ic2r.api.item.ElectricItem;
+import me.halfcooler.ic2r.core.item.ElectricItemManager;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
+import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -19,6 +22,8 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public final class ArmorGameTests
 {
 	private static final String EMPTY = "gametest/empty3x3x3";
+	private static final double NIGHT_VISION_GOGGLES_MAX_CHARGE = 200000.0;
+	private static final double NANO_HELMET_MAX_CHARGE = 1000000.0;
 
 	private ArmorGameTests()
 	{
@@ -59,6 +64,34 @@ public final class ArmorGameTests
 		helper.succeed();
 	}
 
+	@GameTest(template = EMPTY)
+	public static void nightVisionGogglesRunFromEquippedHelmetSlot(GameTestHelper helper)
+	{
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+		ItemStack goggles = ElectricItemManager.getCharged(Ic2rItems.NIGHT_VISION_GOGGLES, Double.POSITIVE_INFINITY);
+		StackUtil.editTag(goggles, nbt -> nbt.putBoolean("active", true));
+		player.setItemSlot(EquipmentSlot.HEAD, goggles);
+
+		player.getInventory().tick();
+
+		assertCharge(helper, goggles, NIGHT_VISION_GOGGLES_MAX_CHARGE - 1.0, "goggles");
+		helper.succeed();
+	}
+
+	@GameTest(template = EMPTY)
+	public static void nanoHelmetNightVisionRunsFromEquippedHelmetSlot(GameTestHelper helper)
+	{
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+		ItemStack helmet = ElectricItemManager.getCharged(Ic2rItems.NANO_HELMET, Double.POSITIVE_INFINITY);
+		StackUtil.editTag(helmet, nbt -> nbt.putBoolean("night_vision", true));
+		player.setItemSlot(EquipmentSlot.HEAD, helmet);
+
+		player.getInventory().tick();
+
+		assertCharge(helper, helmet, NANO_HELMET_MAX_CHARGE - 1.0, "nano helmet");
+		helper.succeed();
+	}
+
 	private static void assertMaxDamage(GameTestHelper helper, ItemStack stack, int expected, String piece)
 	{
 		helper.assertValueEqual(stack.getMaxDamage(), expected, "bronze " + piece + " max durability");
@@ -67,5 +100,11 @@ public final class ArmorGameTests
 	private static void assertDamageConsumed(GameTestHelper helper, ItemStack stack, String piece)
 	{
 		helper.assertTrue(stack.getDamageValue() > 0, "bronze " + piece + " should lose durability");
+	}
+
+	private static void assertCharge(GameTestHelper helper, ItemStack stack, double expected, String item)
+	{
+		double actual = ElectricItem.manager.getCharge(stack);
+		helper.assertTrue(Math.abs(actual - expected) < 1.0E-6, item + " charge after equipped inventory tick");
 	}
 }
