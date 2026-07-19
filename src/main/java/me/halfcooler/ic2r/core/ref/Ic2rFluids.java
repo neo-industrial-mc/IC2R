@@ -26,6 +26,8 @@ public final class Ic2rFluids
 	public static final EnvFluidHandler.FluidRefs DISTILLED_WATER = create(
 		"distilled_water", 1000, 1000, 0, 300, false, "fluid_water", "fluid_water", -632331785
 	);
+	// Density <= 0 ⇒ lighter-than-air: rises only (no liquid-style spread). Rise speed is
+	// set by fluid tick rate in EnvFluidHandlerForge (H2 >> steam >> compressed air).
 	public static final EnvFluidHandler.FluidRefs SUPERHEATED_STEAM = create(
 		"superheated_steam", -3000, 100, 0, 600, true, "fluid_3", null, -185797131
 	);
@@ -35,7 +37,7 @@ public final class Ic2rFluids
 	);
 	public static final EnvFluidHandler.FluidRefs WEED_EX = create("weed_ex", 1000, 1000, 0, 300, false, "weed_ex", null, -16298220);
 	public static final EnvFluidHandler.FluidRefs AIR = create("air", -100, 500, 0, 300, true, "fluid_2", null, 1610481149);
-	public static final EnvFluidHandler.FluidRefs HYDROGEN = create("hydrogen", -100, 500, 0, 300, true, "fluid_2", null, -2034379563);
+	public static final EnvFluidHandler.FluidRefs HYDROGEN = create("hydrogen", -5000, 50, 0, 300, true, "fluid_2", null, -2034379563);
 	public static final EnvFluidHandler.FluidRefs OXYGEN = create("oxygen", 0, 500, 0, 300, true, "fluid_2", null, -2034581547);
 	public static final EnvFluidHandler.FluidRefs HEAVY_WATER = create("heavy_water", 1000, 1000, 0, 300, false, "fluid", "fluid", -45191196);
 

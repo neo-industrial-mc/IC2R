@@ -137,6 +137,20 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
         };
     }
 
+    /**
+     * Fluid tick delay for lighter-than-air IC2R gases. Lower delay = faster rise.
+     * Hierarchy: hydrogen &gt;&gt; steam / superheated steam &gt;&gt; compressed air
+     * (other gases get a medium default).
+     */
+    private static int gaseousTickRate(String fluidName) {
+        return switch (fluidName) {
+            case "hydrogen" -> 1;
+            case "steam", "superheated_steam" -> 5;
+            case "air" -> 20;
+            default -> 10;
+        };
+    }
+
     @Override
     public EnvFluidHandler.FluidRefs createFluid(ResourceLocation id, int density, int viscosity, int luminosity, int temperature, ResourceLocation stillSpriteId, ResourceLocation flowingSpriteId, int color) {
         EnvFluidHandler.FluidRefs ret = new EnvFluidHandler.FluidRefs(null, null, null, null);
@@ -147,8 +161,6 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
 
                 @Override
                 public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                    // Custom fluids are FogType.NONE for vanilla, so without these hooks the clear
-                    // color stays sky-colored and interior faces cull → "透视天空".
                     consumer.accept(new IClientFluidTypeExtensions() {
 
                         @Override
@@ -189,8 +201,12 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
         AtomicReference<LiquidBlock> fluidBlockRef = new AtomicReference<>();
         pendingFluidRegistrations.add(() -> {
             // Ic2rFlowingFluid refuses foreign displacement (BaseFlowingFluid would let water
-            // above overwrite these sources in oceans).
+            // above overwrite these sources in oceans). Gases (density <= 0) only rise upward.
             BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(fluidTypeRef::get, ret::still, ret::flowing).bucket(ret::bucket);
+            if (density <= 0)
+            {
+                properties.tickRate(gaseousTickRate(id.getPath()));
+            }
             properties.block(fluidBlockRef::get);
             Fluid still = new Ic2rFlowingFluid.Source(properties);
             Fluid flowing = new Ic2rFlowingFluid.Flowing(properties);
