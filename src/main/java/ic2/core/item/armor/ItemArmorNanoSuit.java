@@ -100,7 +100,7 @@ public class ItemArmorNanoSuit extends ItemArmorElectric implements IItemHudProv
       CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);
       byte toggleTimer = nbtData.getByte("toggle_timer");
       boolean ret = false;
-      if (slot == EquipmentSlot.HEAD.getIndex()) {
+      if (player.getItemBySlot(EquipmentSlot.HEAD) == stack) {
         boolean isNightVisionEnabled = nbtData.getBoolean("night_vision");
         short hubmode = nbtData.getShort("hud_mode");
         if (IC2.keyboard.isAltKeyDown(player)

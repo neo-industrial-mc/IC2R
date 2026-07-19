@@ -1,6 +1,9 @@
 package ic2.core.gametest;
 
+import ic2.api.item.ElectricItem;
+import ic2.core.item.ElectricItemManager;
 import ic2.core.ref.Ic2Items;
+import ic2.core.util.StackUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -19,6 +22,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class ArmorGameTests {
   private static final String EMPTY = "gametest/empty3x3x3";
+  private static final double NIGHT_VISION_GOGGLES_MAX_CHARGE = 200000.0;
 
   private ArmorGameTests() {}
 
@@ -60,6 +64,24 @@ public final class ArmorGameTests {
 
     assertArmorProtection(helper, (ArmorItem) Ic2Items.RUBBER_BOOTS, 1, "rubber boots");
     assertArmorProtection(helper, (ArmorItem) Ic2Items.BRONZE_BOOTS, 2, "bronze boots");
+    helper.succeed();
+  }
+
+  @GameTest(template = EMPTY)
+  public static void nightVisionGogglesRunFromEquippedHelmetSlot(GameTestHelper helper) {
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+    ItemStack goggles =
+        ElectricItemManager.getCharged(Ic2Items.NIGHT_VISION_GOGGLES, Double.POSITIVE_INFINITY);
+    StackUtil.getOrCreateNbtData(goggles).putBoolean("active", true);
+    player.setItemSlot(EquipmentSlot.HEAD, goggles);
+
+    player.getInventory().tick();
+
+    Ic2GameTestAssertions.assertNear(
+        helper,
+        ElectricItem.manager.getCharge(goggles),
+        NIGHT_VISION_GOGGLES_MAX_CHARGE - 1.0,
+        "goggles charge after equipped inventory tick");
     helper.succeed();
   }
 

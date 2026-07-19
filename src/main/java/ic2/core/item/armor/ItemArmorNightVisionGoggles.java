@@ -63,7 +63,7 @@ public class ItemArmorNightVisionGoggles extends ItemArmorUtility
       boolean selected) {
     super.inventoryTick(stack, world, entity, slot, selected);
     if (entity instanceof Player player) {
-      if (slot == this.getEquipmentSlot().getIndex()) {
+      if (player.getItemBySlot(this.getEquipmentSlot()) == stack) {
         CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);
         boolean active = nbtData.getBoolean("active");
         byte toggleTimer = nbtData.getByte("toggle_timer");

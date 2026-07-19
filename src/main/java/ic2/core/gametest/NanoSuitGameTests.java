@@ -5,6 +5,7 @@ import ic2.core.item.ElectricItemManager;
 import ic2.core.item.armor.ItemArmorElectric;
 import ic2.core.item.armor.ItemArmorNanoSuit;
 import ic2.core.ref.Ic2Items;
+import ic2.core.util.StackUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -136,6 +137,24 @@ public class NanoSuitGameTests {
         ItemArmorNanoSuit.CHARGED_PROTECTION[EquipmentSlot.CHEST.getIndex()],
         "charged chest armor");
 
+    helper.succeed();
+  }
+
+  @GameTest(template = EMPTY)
+  public static void nanoHelmetNightVisionRunsFromEquippedHelmetSlot(GameTestHelper helper) {
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+    ItemStack helmet =
+        ElectricItemManager.getCharged(Ic2Items.NANO_HELMET, Double.POSITIVE_INFINITY);
+    StackUtil.getOrCreateNbtData(helmet).putBoolean("night_vision", true);
+    player.setItemSlot(EquipmentSlot.HEAD, helmet);
+
+    player.getInventory().tick();
+
+    Ic2GameTestAssertions.assertNear(
+        helper,
+        ElectricItem.manager.getCharge(helmet),
+        MAX_CHARGE - 1.0,
+        "nano helmet charge after equipped inventory tick");
     helper.succeed();
   }
 
