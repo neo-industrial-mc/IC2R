@@ -11,6 +11,7 @@ import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityCanner;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.gui.RecipeButton;
 import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
+import me.halfcooler.ic2r.core.recipe.AdvRecipe;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeHolder;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rItemTags;
@@ -56,6 +57,7 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.Minecraft;
@@ -166,6 +168,12 @@ public class Ic2rJeiPlugin implements IModPlugin
 		registration.addRecipeCategories(new CannerEnrichCategory(this.CANNER_ENRICH, guiHelper));
 		registration.addRecipeCategories(new CannerBottleLiquidCategory(this.CANNER_BOTTLE_LIQUID, guiHelper));
 		registration.addRecipeCategories(new CannerEmptyLiquidCategory(this.CANNER_EMPTY_LIQUID));
+	}
+
+	@Override
+	public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration)
+	{
+		registration.getCraftingCategory().addExtension(AdvRecipe.class, new AdvRecipeCategoryExtension());
 	}
 
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration)
