@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import me.halfcooler.ic2r.core.item.ItemCoke;
 import me.halfcooler.ic2r.core.item.ItemCrystalMemory;
 import me.halfcooler.ic2r.core.item.ItemNuclearResource;
+import me.halfcooler.ic2r.core.item.ItemScrapBox;
 import me.halfcooler.ic2r.core.item.crafting.BlockCuttingBlade;
 import me.halfcooler.ic2r.core.item.type.BlockCuttingBladeType;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
@@ -157,7 +158,7 @@ public final class Ic2rItemsMaterials
 	public static final Item PLANT_BALL = Ic2rItems.register("plant_ball", new Item(new Properties()));
 	public static final Item BIO_CHAFF = Ic2rItems.register("bio_chaff", new Item(new Properties()));
 	public static final Item SCRAP = Ic2rItems.register("scrap", new Item(new Properties()));
-	public static final Item SCRAP_BOX = Ic2rItems.register("scrap_box", new Item(new Properties()));
+	public static final Item SCRAP_BOX = Ic2rItems.register("scrap_box", new ItemScrapBox(new Properties()));
 	public static final Item CF_POWDER = Ic2rItems.register("cf_powder", new Item(new Properties()));
 	public static final Item PELLET = Ic2rItems.register("pellet", new Item(new Properties()));
 	public static final Item RAW_CRYSTAL_MEMORY = Ic2rItems.register("raw_crystal_memory", new Item(new Properties()));

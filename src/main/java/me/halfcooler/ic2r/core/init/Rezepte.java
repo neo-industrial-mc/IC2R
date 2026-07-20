@@ -11,6 +11,7 @@ import me.halfcooler.ic2r.core.block.machine.EmptyFluidContainerRecipeManager;
 import me.halfcooler.ic2r.core.block.machine.FillFluidContainerRecipeManager;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.recipe.MatterAmplifierRecipeManager;
+import me.halfcooler.ic2r.core.recipe.ScrapboxRecipeManager;
 import me.halfcooler.ic2r.core.recipe.SmeltingRecipeManager;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeHolder;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeManagerGetter;
@@ -27,6 +28,8 @@ public class Rezepte
 	static void loadRecipes()
 	{
 		Recipes.furnace = new SmeltingRecipeManager();
+		ScrapboxRecipeManager.setup();
+		ScrapboxRecipeManager.load();
 		Recipes.emptyFluidContainer = new EmptyFluidContainerRecipeManager();
 		Recipes.fillFluidContainer = new FillFluidContainerRecipeManager();
 		Recipes.macerator = basicRecipe(Ic2rRecipeTypes.MACERATOR);
