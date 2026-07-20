@@ -85,6 +85,10 @@ public class TileEntityTesla extends Ic2rTileEntity implements ServerTicker
 
 		boolean isShocked = false;
 		int damage = totalDamage / entities.size();
+		if (Ic2rDamageSource.electricity == null)
+		{
+			Ic2rDamageSource.init(world.registryAccess());
+		}
 
 		for (LivingEntity entity : entities)
 		{
