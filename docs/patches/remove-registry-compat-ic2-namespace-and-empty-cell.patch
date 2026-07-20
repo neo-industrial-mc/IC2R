@@ -1,16 +1,18 @@
-# Reverse patch: remove MissingMappings world-migration compatibility.
+# Reverse patch: remove registry world-migration compatibility (historical Forge shape).
+#
+# NeoForge 1.21+ implementation lives in:
+#   - me.halfcooler.ic2r.forge.LegacyRegistryRemap  (addAlias: ic2:* -> ic2r:*, empty_cell)
+#   - FmlMod#registerLegacyRegistryAliases          (RegisterEvent LOWEST)
 #
 # Introduced for:
 #   1) ic2:* -> ic2r:* namespace remap (20.1.40+)
 #   2) ic2r:empty_cell -> ic2r:facade_cell (earlier rename)
 #
-# Apply in the next MAJOR version after drop-support for those worlds:
-#   git apply docs/patches/remove-registry-compat-ic2-namespace-and-empty-cell.patch
+# When dropping support for those worlds (next MAJOR after deprecation notice):
+#   - delete LegacyRegistryRemap + FmlMod hook + tests
+#   - this file documents the old Forge MissingMappingsEvent shape only
 #
-# Or manually delete onMissingMappings / remapLegacyNamespace and related imports
-# in EventHandlerForge.java (see minus hunks below).
-#
-# Do NOT apply while supporting saves from <20.1.40 (ic2 namespace) or empty_cell.
+# Do NOT remove while supporting saves from <20.1.40 (ic2 namespace) or empty_cell.
 #
 diff --git a/src/main/java/me/halfcooler/ic2r/forge/EventHandlerForge.java b/src/main/java/me/halfcooler/ic2r/forge/EventHandlerForge.java
 index d7362b5e..38ea6689 100644

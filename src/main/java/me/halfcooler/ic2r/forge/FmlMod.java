@@ -26,6 +26,7 @@ import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.fml.ModContainer;
@@ -148,6 +149,18 @@ public final class FmlMod {
             }
             EventHandler.onInitEarly();
         }
+    }
+
+    /**
+     * After every registry finishes mod registration, alias pre-20.1.40 {@code ic2:*} ids
+     * to current {@code ic2r:*} entries (same path). Replaces removed {@code MissingMappingsEvent}.
+     * <p>
+     * Priority {@link EventPriority#LOWEST} so DeferredRegister / pending item & fluid hooks
+     * have already populated the registry for this event.
+     */
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void registerLegacyRegistryAliases(RegisterEvent event) {
+        LegacyRegistryRemap.apply(event.getRegistry());
     }
 
     @SubscribeEvent

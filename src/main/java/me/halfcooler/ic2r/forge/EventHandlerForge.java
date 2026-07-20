@@ -43,13 +43,6 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class EventHandlerForge {
 
-    /**
-     * Pre-20.1.40 registry namespace. Worlds still store {@code ic2:*} ids until remapped.
-     */
-    private static final String LEGACY_NAMESPACE = "ic2";
-
-    private static final String CURRENT_NAMESPACE = "ic2r";
-
     private static final ResourceLocation fluidCapId = IC2R.getIdentifier("fluid");
 
     private static final ResourceLocation itemCapId = IC2R.getIdentifier("item");
@@ -61,7 +54,9 @@ public final class EventHandlerForge {
         EventHandler.onServerStart(event.getServer());
     }
 
-    // MissingMappingsEvent was removed in NeoForge 1.21; registry remaps need DataFixers / custom world upgrade later.
+    // Registry id migration (ic2 → ic2r, empty_cell → facade_cell) is handled via
+    // LegacyRegistryRemap aliases on RegisterEvent (see FmlMod#registerLegacyRegistryAliases).
+    // MissingMappingsEvent was removed in NeoForge 1.21.
 
     @SubscribeEvent
     public void registerCommands(RegisterCommandsEvent event) {
