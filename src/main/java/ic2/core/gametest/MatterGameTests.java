@@ -59,6 +59,22 @@ public class MatterGameTests {
         });
   }
 
+  // A partially charged buffer is stored progress, not active fabrication. The active state drives
+  // the client-side looping sounds and must switch off once the machine stops accepting EU.
+  @GameTest(template = EMPTY, timeoutTicks = 100)
+  public static void matterFabricatorIsInactiveWhenHoldingCharge(GameTestHelper helper) {
+    helper.setBlock(MACHINE_POS, Ic2Blocks.MATTER_GENERATOR);
+    TileEntityMatter te = getTe(helper, MACHINE_POS, TileEntityMatter.class);
+    te.getComponent(Energy.class).forceAddEnergy(1000.0);
+
+    helper.runAtTickTime(
+        20,
+        () -> {
+          helper.assertFalse(te.getActive(), "fabricator holding charge should be inactive");
+          helper.succeed();
+        });
+  }
+
   // scrap amplification: one scrap is worth 5000 amplifier points, each point turning 1 EU of input
   // into 5 bonus EU - so the amplified fabricator ends up exactly 25,000 EU ahead of an identical
   // plain one

@@ -148,6 +148,7 @@ public class TileEntityMatter extends TileEntityElectricMachine
     boolean needsInvUpdate = false;
     needsInvUpdate |= this.upgradeSlot.tickNoMark();
     if (!this.redstone.hasRedstoneInput() && !(this.energy.getEnergy() <= 0.0)) {
+      boolean isWorking = this.energy.getEnergy() > this.lastEnergy;
       boolean playSubSound = false;
       if (this.scrap > 0) {
         double bonus = Math.min(this.scrap, this.energy.getEnergy() - this.lastEnergy);
@@ -159,7 +160,7 @@ public class TileEntityMatter extends TileEntityElectricMachine
         playSubSound = true;
       }
 
-      this.activate(playSubSound);
+      this.setActiveState(isWorking, false);
       if (this.getActive()) {
         if (playSubSound && this.subLoopingSound != null && !this.subLoopingSound.isPlaying()) {
           this.subLoopingSound.play();
@@ -183,7 +184,6 @@ public class TileEntityMatter extends TileEntityElectricMachine
       }
 
       needsInvUpdate |= this.containerSlot.processFromTank(this.fluidTank, this.outputSlot);
-      this.lastEnergy = this.energy.getEnergy();
       if (needsInvUpdate) {
         this.setChanged();
       }
@@ -191,6 +191,8 @@ public class TileEntityMatter extends TileEntityElectricMachine
       this.setState();
       this.setActive(false);
     }
+
+    this.lastEnergy = this.energy.getEnergy();
   }
 
   public boolean attemptGeneration() {
