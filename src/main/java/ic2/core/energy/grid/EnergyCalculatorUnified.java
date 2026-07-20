@@ -304,9 +304,15 @@ public class EnergyCalculatorUnified implements IEnergyCalculator {
     for (Node node : nodes) {
       for (NodeLink link : node.getLinks()) {
         if (link.nodeA == node) {
+          List<OptLink> linksA = nodeToLinks.get(link.nodeA);
+          List<OptLink> linksB = nodeToLinks.get(link.nodeB);
+          if (linksA == null || linksB == null) {
+            continue;
+          }
+
           OptLink optLink = new OptLink(link.nodeA, link.nodeB, link.getLoss(), new ArrayList<>());
-          nodeToLinks.get(link.nodeA).add(optLink);
-          nodeToLinks.get(link.nodeB).add(optLink);
+          linksA.add(optLink);
+          linksB.add(optLink);
         }
       }
     }
