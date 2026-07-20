@@ -70,6 +70,9 @@ public class TileEntityTesla extends Ic2TileEntity {
 
     boolean isShocked = false;
     int damage = totalDamage / entities.size();
+    if (Ic2DamageSource.electricity == null) {
+      Ic2DamageSource.init(world.registryAccess());
+    }
 
     for (LivingEntity entity : entities) {
       if (!ItemArmorHazmat.hasCompleteHazmat(entity)
