@@ -71,6 +71,7 @@ public class TileEntityMatter extends TileEntityElectricMachine
   public int scrap = 0;
   public boolean redstonePowered = false;
   private double lastEnergy;
+  private int state = 0;
   private int prevState = 0;
 
   public TileEntityMatter(BlockPos pos, BlockState state) {
@@ -148,8 +149,6 @@ public class TileEntityMatter extends TileEntityElectricMachine
     boolean needsInvUpdate = false;
     needsInvUpdate |= this.upgradeSlot.tickNoMark();
     if (!this.redstone.hasRedstoneInput() && !(this.energy.getEnergy() <= 0.0)) {
-      boolean isWorking = this.energy.getEnergy() > this.lastEnergy;
-      boolean playSubSound = false;
       if (this.scrap > 0) {
         double bonus = Math.min(this.scrap, this.energy.getEnergy() - this.lastEnergy);
         if (bonus > 0.0) {
@@ -157,19 +156,12 @@ public class TileEntityMatter extends TileEntityElectricMachine
           this.scrap -= (int) bonus;
         }
 
-        playSubSound = true;
+        this.setState(2);
+      } else {
+        this.setState(1);
       }
 
-      this.setActiveState(isWorking, false);
-      if (this.getActive()) {
-        if (playSubSound && this.subLoopingSound != null && !this.subLoopingSound.isPlaying()) {
-          this.subLoopingSound.play();
-        } else if (!playSubSound
-            && this.subLoopingSound != null
-            && this.subLoopingSound.isPlaying()) {
-          this.subLoopingSound.stop();
-        }
-      }
+      this.setActive(true);
 
       if (this.scrap < 10000) {
         MachineRecipeResult<IRecipeInput, Integer, ItemStack> recipe = this.amplifierSlot.process();
@@ -188,7 +180,7 @@ public class TileEntityMatter extends TileEntityElectricMachine
         this.setChanged();
       }
     } else {
-      this.setState();
+      this.setState(0);
       this.setActive(false);
     }
 
@@ -221,12 +213,13 @@ public class TileEntityMatter extends TileEntityElectricMachine
     return new ContainerMatter(syncId, inventory, this);
   }
 
-  private void setState() {
-    if (this.prevState != 0) {
+  private void setState(int state) {
+    this.state = state;
+    if (this.prevState != this.state) {
       IC2.network.get(true).updateTileEntityField(this, "state");
     }
 
-    this.prevState = 0;
+    this.prevState = this.state;
   }
 
   @Override
@@ -283,6 +276,16 @@ public class TileEntityMatter extends TileEntityElectricMachine
   @Override
   public SoundEvent getLoopingSoundEvent() {
     return Ic2SoundEvents.MACHINE_MATTER_GENERATOR_LOOP;
+  }
+
+  @Override
+  protected boolean shouldSoundActive() {
+    return this.state != 0;
+  }
+
+  @Override
+  protected boolean shouldSubSoundActive() {
+    return this.state == 2;
   }
 
   @Override

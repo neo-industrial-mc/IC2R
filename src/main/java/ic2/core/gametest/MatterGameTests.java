@@ -59,10 +59,9 @@ public class MatterGameTests {
         });
   }
 
-  // A partially charged buffer is stored progress, not active fabrication. The active state drives
-  // the client-side looping sounds and must switch off once the machine stops accepting EU.
+  // Parity treats any stored EU as active fabrication, even between incoming energy packets.
   @GameTest(template = EMPTY, timeoutTicks = 100)
-  public static void matterFabricatorIsInactiveWhenHoldingCharge(GameTestHelper helper) {
+  public static void matterFabricatorIsActiveWhenHoldingCharge(GameTestHelper helper) {
     helper.setBlock(MACHINE_POS, Ic2Blocks.MATTER_GENERATOR);
     TileEntityMatter te = getTe(helper, MACHINE_POS, TileEntityMatter.class);
     te.getComponent(Energy.class).forceAddEnergy(1000.0);
@@ -70,7 +69,7 @@ public class MatterGameTests {
     helper.runAtTickTime(
         20,
         () -> {
-          helper.assertFalse(te.getActive(), "fabricator holding charge should be inactive");
+          helper.assertTrue(te.getActive(), "fabricator holding charge should be active");
           helper.succeed();
         });
   }

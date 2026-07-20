@@ -44,6 +44,7 @@ public class TileEntityBase extends TileEntityInventory {
   private void syncLoopingSounds() {
     this.initSound();
     boolean shouldPlay = this.shouldSoundActive();
+    boolean shouldPlaySub = this.shouldSubSoundActive();
 
     if (this.loopingSound != null) {
       if (shouldPlay && this.isLoopingSoundIdling() && !this.isStartSoundPlaying()) {
@@ -54,9 +55,9 @@ public class TileEntityBase extends TileEntityInventory {
     }
 
     if (this.subLoopingSound != null) {
-      if (shouldPlay && !this.subLoopingSound.isPlaying()) {
+      if (shouldPlaySub && !this.subLoopingSound.isPlaying()) {
         this.subLoopingSound.play();
-      } else if (!shouldPlay && this.subLoopingSound.isPlaying()) {
+      } else if (!shouldPlaySub && this.subLoopingSound.isPlaying()) {
         this.subLoopingSound.stop();
       }
     }
@@ -133,6 +134,10 @@ public class TileEntityBase extends TileEntityInventory {
     }
 
     return this.getBlockState().getValue(Ic2TileEntityBlock.ACTIVE);
+  }
+
+  protected boolean shouldSubSoundActive() {
+    return this.shouldSoundActive();
   }
 
   private boolean isStartSoundPlaying() {
