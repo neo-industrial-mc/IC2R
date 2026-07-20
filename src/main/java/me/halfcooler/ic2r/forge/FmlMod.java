@@ -155,7 +155,7 @@ public final class FmlMod {
      * After every registry finishes mod registration, alias pre-20.1.40 {@code ic2:*} ids
      * to current {@code ic2r:*} entries (same path). Replaces removed {@code MissingMappingsEvent}.
      * <p>
-     * Priority {@link EventPriority#LOWEST} so DeferredRegister / pending item & fluid hooks
+     * Priority {@link EventPriority#LOWEST} so DeferredRegister / pending item and fluid hooks
      * have already populated the registry for this event.
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)

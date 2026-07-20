@@ -23,8 +23,8 @@ import net.minecraft.resources.ResourceLocation;
  * <p>
  * Aliases registered during {@code RegisterEvent} are captured into NeoForge's frozen registry
  * snapshot and restored for clients / local loads.
- *
- * @see docs/patches/remove-registry-compat-ic2-namespace-and-empty-cell.patch
+ * <p>
+ * See {@code docs/patches/remove-registry-compat-ic2-namespace-and-empty-cell.patch}.
  */
 public final class LegacyRegistryRemap
 {

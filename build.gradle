@@ -186,11 +186,111 @@ tasks.withType(Javadoc).configureEach {
     options.encoding = 'UTF-8'
     options.charSet = 'UTF-8'
     options.docEncoding = 'UTF-8'
+    // Large legacy codebase: public APIs often lack full JavaDoc; do not fail the build on doclint.
+    options.addStringOption('Xdoclint:none', '-quiet')
+    failOnError = false
 }
 
 idea {
     module {
         downloadSources = true
         downloadJavadoc = true
+    }
+}
+
+// Sync gradle.properties mod_version into release.md + README version badge.
+// Restored after NeoForge migration; branch version scheme is 21.1.xxx.
+// Capture layout objects at configuration time for configuration-cache safety.
+tasks.register('syncVersion') {
+    description = 'Sync mod_version to release.md and README.md, and require version to increase'
+    group = 'versioning'
+
+    def propsPath = layout.projectDirectory.file('gradle.properties')
+    def versionPath = layout.buildDirectory.file('syncVersion/lastVersion.txt')
+    def releasePath = layout.projectDirectory.file('release.md')
+    def readmePath = layout.projectDirectory.file('README.md')
+
+    doLast {
+        // Always use UTF-8. On Chinese Windows the JVM default is often GBK;
+        // File.text / readLines() would re-encode README/release.md incorrectly.
+        def utf8 = java.nio.charset.StandardCharsets.UTF_8
+        def versionPattern = /^21\.1\.(\d+)$/
+        def propsFile = propsPath.asFile
+        def versionFile = versionPath.get().asFile
+        def releaseFile = releasePath.asFile
+        def readmeFile = readmePath.asFile
+
+        def props = new Properties()
+        propsFile.withInputStream { stream ->
+            // Properties.load(InputStream) is ISO-8859-1; load as UTF-8 characters.
+            props.load(new InputStreamReader(stream, utf8))
+        }
+        def currentVersion = props['mod_version']
+
+        def matcher = currentVersion =~ versionPattern
+        if (!matcher) {
+            throw new GradleException("Incorrect mod version: $currentVersion, expected: 21.1.xxx")
+        }
+        def currentXxx = matcher[0][1] as int
+
+        def lastXxx = -1
+        def lastVersion = 'None'
+        if (versionFile.exists()) {
+            lastVersion = versionFile.getText(utf8.name()).trim()
+            def lastMatcher = lastVersion =~ versionPattern
+            if (lastMatcher) {
+                lastXxx = lastMatcher[0][1] as int
+            }
+        }
+
+        if (currentXxx <= lastXxx) {
+            def lineNum = 1
+            propsFile.eachLine(utf8.name()) { line ->
+                if (line.startsWith('mod_version=')) {
+                    throw new GradleException(
+                            "gradle.properties:${lineNum}: Current version is ${currentVersion}, " +
+                                    "but last synced version is ${lastVersion}"
+                    )
+                }
+                lineNum++
+            }
+            return
+        }
+
+        versionFile.parentFile.mkdirs()
+        versionFile.setText(currentVersion, utf8.name())
+        logger.lifecycle("syncVersion: Version has been recorded as $currentVersion")
+
+        if (releaseFile.exists()) {
+            def releaseLines = releaseFile.readLines(utf8.name())
+            if (releaseLines.isEmpty()) {
+                releaseFile.setText("# $currentVersion\n", utf8.name())
+            } else {
+                releaseLines[0] = "# $currentVersion"
+                releaseFile.setText(releaseLines.join('\n') + '\n', utf8.name())
+            }
+            logger.lifecycle("syncVersion: release.md title has been updated to # $currentVersion")
+        } else {
+            logger.lifecycle('syncVersion: release.md not found, skipping')
+        }
+
+        if (readmeFile.exists()) {
+            def readmeText = readmeFile.getText(utf8.name())
+            // shields.io requires '-' escaped as '--'
+            def shieldsVersion = currentVersion.replace('-', '--')
+            def badgePattern = ~/<img src="https:\/\/img\.shields\.io\/badge\/Version-[^"]+" alt="Version [^"]*">/
+            def newBadge = "<img src=\"https://img.shields.io/badge/Version-${shieldsVersion}-blue\" alt=\"Version ${currentVersion}\">"
+            if (readmeText.find(badgePattern)) {
+                readmeText = readmeText.replaceAll(badgePattern, newBadge)
+                readmeFile.setText(readmeText, utf8.name())
+                logger.lifecycle('syncVersion: README.md Version badge has been updated')
+            } else {
+                logger.lifecycle('syncVersion: Version badge not found in README.md, skipping')
+            }
+        } else {
+            logger.lifecycle('syncVersion: README.md not found, skipping')
+        }
+
+        logger.lifecycle("syncVersion: Sync completed ($currentVersion)")
     }
 }
