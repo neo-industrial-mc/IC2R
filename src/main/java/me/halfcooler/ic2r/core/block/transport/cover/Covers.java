@@ -1,10 +1,9 @@
 package me.halfcooler.ic2r.core.block.transport.cover;
 
-import net.minecraft.core.RegistryAccess;
-
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.comp.TileEntityComponent;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
@@ -65,18 +64,17 @@ public class Covers extends TileEntityComponent
 				IC2R.log.error(LogCategory.Block, "Can't load cover for %s, index %d is out of bounds.", Util.toString(this.parent), index);
 			} else
 			{
-				ItemStack cover = ItemStack.parseOptional(RegistryAccess.EMPTY, coverTag);
+				ItemStack cover = LegacyItemStackNbt.parseOptional(null, coverTag);
 				if (StackUtil.isEmpty(cover))
 				{
 					IC2R.log
 						.warn(
 							LogCategory.Block,
-							"Can't load cover %s for %s, index %d, no matching item for %d:%d.",
+							"Can't load cover %s for %s, index %d, no matching item for %s.",
 							StackUtil.toStringSafe(cover),
 							Util.toString(this.parent),
 							index,
-							coverTag.getShort("id"),
-							coverTag.getShort("Damage")
+							coverTag.getString("id")
 						);
 				} else
 				{
@@ -112,7 +110,7 @@ public class Covers extends TileEntityComponent
 			{
 				CompoundTag coverTag = new CompoundTag();
 				coverTag.putByte("facing", (byte) facing.ordinal());
-				cover.save(net.minecraft.core.RegistryAccess.EMPTY, coverTag);
+				LegacyItemStackNbt.saveInto(null, cover, coverTag);
 				coversTag.add(coverTag);
 			}
 		}

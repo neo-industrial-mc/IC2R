@@ -339,13 +339,25 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
     @Override
     public Ic2rFluidStack readFluidStack(CompoundTag nbt) {
         // Legacy Forge fluid NBT: FluidName + Amount (+ optional Tag). Components path not used by domain yet.
+        // Registry aliases (ic2:* → ic2r:*) are resolved by MappedRegistry#get via resolve().
         String id = nbt.contains("FluidName") ? nbt.getString("FluidName") : nbt.getString("id");
         int amount = nbt.contains("Amount") ? nbt.getInt("Amount") : nbt.getInt("amount");
-        if (id == null || id.isEmpty() || amount < 0) {
+        if (id == null || id.isEmpty() || amount <= 0) {
             return null;
         }
-        Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(id));
-        return fluid != null ? Ic2rFluidStack.create(fluid, amount) : null;
+        ResourceLocation loc;
+        try {
+            loc = ResourceLocation.parse(id);
+        } catch (Exception ex) {
+            return null;
+        }
+        Fluid fluid = BuiltInRegistries.FLUID.get(loc);
+        // Defaulted registry returns EMPTY for unknown keys; treat as missing fluid.
+        if (fluid == null || fluid.isSame(net.minecraft.world.level.material.Fluids.EMPTY))
+        {
+            return null;
+        }
+        return Ic2rFluidStack.create(fluid, amount);
     }
 
     @Override

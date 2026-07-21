@@ -198,23 +198,35 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		}
 	}
 
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
-		this.active = nbt.getBoolean("active");
-		if (this.components != null && nbt.contains("components", 10))
-		{
-			CompoundTag componentsNbt = nbt.getCompound("components");
+	/**
+	 * NBT key for TE component bag (Energy, Fluids, …).
+	 * Must not collide with vanilla {@code BlockEntity} data-component map key {@code "components"}.
+	 */
+	public static final String NBT_TE_COMPONENTS = "ic2r_components";
 
-			for (String name : componentsNbt.getAllKeys())
+	/** Pre-1.21.1 / pre-collision-fix key; still readable when it looks like IC2R component data. */
+	public static final String LEGACY_NBT_TE_COMPONENTS = "components";
+
+	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
+		this.active = nbt.getBoolean("active");
+		if (this.components != null)
+		{
+			CompoundTag componentsNbt = readTeComponentsNbt(nbt);
+			if (componentsNbt != null)
 			{
-				Class<? extends TileEntityComponent> cls = Components.getClass(name);
-				TileEntityComponent component;
-				if (cls != null && (component = this.getComponent(cls)) != null)
+				for (String name : componentsNbt.getAllKeys())
 				{
-					CompoundTag componentNbt = componentsNbt.getCompound(name);
-					component.readFromNbt(componentNbt);
-				} else
-				{
-					IC2R.log.warn(LogCategory.Block, "Can't find component %s while loading %s.", name, this);
+					Class<? extends TileEntityComponent> cls = Components.getClass(name);
+					TileEntityComponent component;
+					if (cls != null && (component = this.getComponent(cls)) != null)
+					{
+						CompoundTag componentNbt = componentsNbt.getCompound(name);
+						component.readFromNbt(componentNbt);
+					} else
+					{
+						IC2R.log.warn(LogCategory.Block, "Can't find component %s while loading %s.", name, this);
+					}
 				}
 			}
 		}
@@ -222,6 +234,7 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 
 	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
 	{
+		super.saveAdditional(nbt, registries);
 		nbt.putBoolean("active", this.active);
 		if (this.components != null)
 		{
@@ -235,7 +248,8 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 					if (componentsNbt == null)
 					{
 						componentsNbt = new CompoundTag();
-						nbt.put("components", componentsNbt);
+						// Write only the non-colliding modern key (legacy "components" is still readable).
+						nbt.put(NBT_TE_COMPONENTS, componentsNbt);
 					}
 
 					String id = Components.getId(component.getClass());
@@ -248,6 +262,44 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 				}
 			}
 		}
+	}
+
+	/**
+	 * Prefer {@link #NBT_TE_COMPONENTS}; fall back to legacy {@code "components"} only when the
+	 * compound looks like IC2R TE components (known short ids), not a vanilla DataComponentMap.
+	 */
+	public static CompoundTag readTeComponentsNbt(CompoundTag nbt)
+	{
+		if (nbt.contains(NBT_TE_COMPONENTS, 10))
+		{
+			return nbt.getCompound(NBT_TE_COMPONENTS);
+		}
+		if (nbt.contains(LEGACY_NBT_TE_COMPONENTS, 10))
+		{
+			CompoundTag legacy = nbt.getCompound(LEGACY_NBT_TE_COMPONENTS);
+			if (looksLikeIc2rTeComponents(legacy))
+			{
+				return legacy;
+			}
+		}
+		return null;
+	}
+
+	/** True if any key is a registered {@link Components} id (energy, fluid, process, …). */
+	public static boolean looksLikeIc2rTeComponents(CompoundTag tag)
+	{
+		if (tag == null || tag.isEmpty())
+		{
+			return false;
+		}
+		for (String key : tag.getAllKeys())
+		{
+			if (Components.getClass(key) != null)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public final void tick()

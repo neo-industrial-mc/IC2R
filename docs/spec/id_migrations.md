@@ -67,3 +67,29 @@
 | ElectricBlock NBT+Sync | `TileEntityElectricBlock.NBT_REDSTONE_MODE` / `KEY_REDSTONE_MODE` / `bindElectricBlockSync` |
 | `LegacyNbt.getByte` | `LegacyNbt.java`（G1.5 新增） |
 | 测试 | `EnergyNbtMigrationTest`（反应堆追加）、`ElectricBlockNbtMigrationTest`、`BatchCrafterSyncRoundTripTest`、`ElectricBlockSyncRoundTripTest` |
+
+---
+
+## 4. G-NF — NeoForge 1.21.1 世界迁移（ItemStack + TE components 键）
+
+> **背景**: 1.20.1 Forge → 1.21.1 NeoForge。注册表 `ic2:*`→`ic2r:*` 由 `LegacyRegistryRemap` 别名覆盖；但机器 **内部状态** 仍会丢，因为：
+> 1. 原版 DFU 只改写 typed `ITEM_STACK`，**不会**走进 IC2R 自定义 `InvSlots` / covers / patterns。
+> 2. 1.21 `ItemStack` codec 只认 `count` + `components`；旧 `Count`/`tag`/`Damage` 被忽略 → 槽内带电物品、流体单元、过滤器 NBT 丢失。
+> 3. TE 组件袋长期使用键名 `components`，与原版 `BlockEntity` DataComponentMap 的 `components` **同名**，存读存在冲突风险。
+
+| 种类 | 旧键 / 形状 | 新键 / 形状 | 作用域 | 读策略 | 写策略 | 备注 |
+|:---|:---|:---|:---|:---|:---|:---|
+| ItemStack NBT | `Count` (byte/int) | `count` (int) | InvSlot / Covers / 手持 GUI / 图案等 | `LegacyItemStackNbt.normalize` | 仅现代 codec | DFU 未覆盖的自定义容器 |
+| ItemStack NBT | `tag` compound | `components.minecraft:custom_data` | 同上 | 整包迁入 custom_data；`Damage` 提为 `minecraft:damage` | 仅现代 | 保留 charge / 流体单元等 |
+| TE NBT | `components`（energy/fluid/…） | `ic2r_components` | `Ic2rTileEntity` | 优先 `ic2r_components`；否则若旧 `components` **像** IC2R 组件袋则读 | **仅** `ic2r_components` | 避开原版 DataComponentMap |
+| Fluid NBT | `FluidName` + `Amount`（可含 `ic2:`） | 同形；写时 `ic2r:` | `EnvFluidHandlerForge.readFluidStack` | 经 registry alias 解析 | `FluidName`/`Amount` | amount≤0 或 EMPTY → 空罐 |
+
+### 实现入口
+
+| 工具 / 类 | 路径 |
+|:---|:---|
+| `LegacyItemStackNbt` | `src/main/java/me/halfcooler/ic2r/core/util/LegacyItemStackNbt.java` |
+| TE 组件键 | `Ic2rTileEntity.NBT_TE_COMPONENTS` / `LEGACY_NBT_TE_COMPONENTS` / `readTeComponentsNbt` |
+| InvSlot | `InvSlot.readFromNbt(…, HolderLookup)` → `LegacyItemStackNbt.parseOptional` |
+| 注册表别名 | `LegacyRegistryRemap`（已有） |
+| 测试 | `LegacyItemStackNbtTest`、`TeComponentsNbtMigrationTest` |

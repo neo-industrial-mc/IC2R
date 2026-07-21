@@ -84,7 +84,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 
 		for (InvSlot invSlot : this.invSlots)
 		{
-			invSlot.readFromNbt(invSlotsTag.getCompound(invSlot.name));
+			invSlot.readFromNbt(invSlotsTag.getCompound(invSlot.name), registries);
 		}
 	}
 
@@ -97,7 +97,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		for (InvSlot invSlot : this.invSlots)
 		{
 			CompoundTag invSlotTag = new CompoundTag();
-			invSlot.writeToNbt(invSlotTag);
+			invSlot.writeToNbt(invSlotTag, registries);
 			invSlotsTag.put(invSlot.name, invSlotTag);
 		}
 

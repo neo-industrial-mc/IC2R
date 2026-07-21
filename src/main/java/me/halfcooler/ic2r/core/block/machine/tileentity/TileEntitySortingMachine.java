@@ -29,7 +29,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 
 @NotClassic
 public class TileEntitySortingMachine extends TileEntityElectricMachine implements IHasGui, INetworkClientTileEntityEventListener, IUpgradableBlock
@@ -58,7 +58,7 @@ public class TileEntitySortingMachine extends TileEntityElectricMachine implemen
 		{
 			CompoundTag filterTag = filtersTag.getCompound(i);
 			int index = filterTag.getByte("index") & 255;
-			ItemStack stack = ItemStack.parseOptional(RegistryAccess.EMPTY, filterTag);
+			ItemStack stack = LegacyItemStackNbt.parseOptional(registries, filterTag);
 			this.filters[index / 7][index % 7] = stack;
 		}
 
@@ -82,7 +82,7 @@ public class TileEntitySortingMachine extends TileEntityElectricMachine implemen
 			{
 				CompoundTag contentTag = new CompoundTag();
 				contentTag.putByte("index", (byte) i);
-				stack.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
+				LegacyItemStackNbt.saveInto(registries, stack, contentTag);
 				filtersTag.add(contentTag);
 			}
 		}

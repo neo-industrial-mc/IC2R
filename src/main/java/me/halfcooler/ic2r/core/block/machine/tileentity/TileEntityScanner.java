@@ -1,6 +1,6 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
-import net.minecraft.core.RegistryAccess;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 
 import me.halfcooler.ic2r.api.network.INetworkClientTileEntityEventListener;
 import me.halfcooler.ic2r.api.recipe.IPatternStorage;
@@ -187,9 +187,9 @@ public class TileEntityScanner extends TileEntityElectricMachine implements IHas
 		super.loadAdditional(nbt, registries);
 		this.progress = nbt.getInt("progress");
 		CompoundTag contentTag = nbt.getCompound("currentStack");
-		this.currentStack = ItemStack.parseOptional(RegistryAccess.EMPTY, contentTag);
+		this.currentStack = LegacyItemStackNbt.parseOptional(registries, contentTag);
 		contentTag = nbt.getCompound("pattern");
-		this.pattern = ItemStack.parseOptional(RegistryAccess.EMPTY, contentTag);
+		this.pattern = LegacyItemStackNbt.parseOptional(registries, contentTag);
 		int stateIdx = nbt.getInt("state");
 		this.state = stateIdx < TileEntityScanner.State.values().length ? TileEntityScanner.State.values()[stateIdx] : TileEntityScanner.State.IDLE;
 		this.refreshInfo();
@@ -203,14 +203,14 @@ public class TileEntityScanner extends TileEntityElectricMachine implements IHas
 		if (!StackUtil.isEmpty(this.currentStack))
 		{
 			CompoundTag contentTag = new CompoundTag();
-			this.currentStack.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
+			LegacyItemStackNbt.saveInto(registries, this.currentStack, contentTag);
 			nbt.put("currentStack", contentTag);
 		}
 
 		if (!StackUtil.isEmpty(this.pattern))
 		{
 			CompoundTag contentTag = new CompoundTag();
-			this.pattern.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
+			LegacyItemStackNbt.saveInto(registries, this.pattern, contentTag);
 			nbt.put("pattern", contentTag);
 		}
 

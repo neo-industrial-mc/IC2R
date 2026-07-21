@@ -2,6 +2,7 @@ package me.halfcooler.ic2r.core.block.invslot;
 
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.IInventorySlotHolder;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
@@ -14,12 +15,13 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InvSlot implements Iterable<ItemStack>
 {
@@ -67,6 +69,11 @@ public class InvSlot implements Iterable<ItemStack>
 
 	public void readFromNbt(CompoundTag nbt)
 	{
+		this.readFromNbt(nbt, RegistryAccess.EMPTY);
+	}
+
+	public void readFromNbt(CompoundTag nbt, @Nullable HolderLookup.Provider registries)
+	{
 		this.clear();
 		ListTag contentsTag = nbt.getList("Contents", 10);
 
@@ -86,19 +93,19 @@ public class InvSlot implements Iterable<ItemStack>
 					);
 			} else
 			{
-				ItemStack stack = ItemStack.parseOptional(RegistryAccess.EMPTY, contentTag);
+				// Normalize 1.20.1 Count/tag/Damage → 1.21 count/components (DFU never walks InvSlots).
+				ItemStack stack = LegacyItemStackNbt.parseOptional(registries, contentTag);
 				if (StackUtil.isEmpty(stack))
 				{
 					IC2R.log
 						.warn(
 							LogCategory.Block,
-							"Can't load item stack %s for %s, slot %s, index %d, no matching item for %d:%d.",
+							"Can't load item stack %s for %s, slot %s, index %d, no matching item for %s.",
 							StackUtil.toStringSafe(stack),
 							Util.toString(this.base.getParent()),
 							this.name,
 							index,
-							contentTag.getShort("id"),
-							contentTag.getShort("Damage")
+							contentTag.getString("id")
 						);
 				} else
 				{
@@ -126,6 +133,11 @@ public class InvSlot implements Iterable<ItemStack>
 
 	public void writeToNbt(CompoundTag nbt)
 	{
+		this.writeToNbt(nbt, RegistryAccess.EMPTY);
+	}
+
+	public void writeToNbt(CompoundTag nbt, @Nullable HolderLookup.Provider registries)
+	{
 		ListTag contentsTag = new ListTag();
 
 		for (int i = 0; i < this.contents.length; i++)
@@ -135,12 +147,7 @@ public class InvSlot implements Iterable<ItemStack>
 			{
 				CompoundTag contentTag = new CompoundTag();
 				contentTag.putByte("Index", (byte) i);
-				Tag saved = content.save(RegistryAccess.EMPTY);
-				if (saved instanceof CompoundTag savedCompound) {
-					for (String key : savedCompound.getAllKeys()) {
-						contentTag.put(key, savedCompound.get(key));
-					}
-				}
+				LegacyItemStackNbt.saveInto(registries, content, contentTag);
 				contentsTag.add(contentTag);
 			}
 		}

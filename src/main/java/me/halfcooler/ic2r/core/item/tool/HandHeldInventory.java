@@ -1,10 +1,9 @@
 package me.halfcooler.ic2r.core.item.tool;
 
-import net.minecraft.core.RegistryAccess;
-
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.slot.SlotHologramSlot;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
@@ -56,7 +55,7 @@ public abstract class HandHeldInventory implements IHasGui
 				int slot = slotNbt.getByte("Slot");
 				if (slot >= 0 && slot < this.inventory.length)
 				{
-					this.inventory[slot] = ItemStack.parseOptional(RegistryAccess.EMPTY, slotNbt);
+					this.inventory[slot] = LegacyItemStackNbt.parseOptional(null, slotNbt);
 				}
 			}
 		}

@@ -23,6 +23,7 @@ import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
 import java.util.ArrayList;
@@ -282,7 +283,7 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 					ListTag items = nbt.getList("Items", 10);
 					for (int i = 0; i < items.size(); i++)
 					{
-						cardFilter.add(ItemStack.parseOptional(this.getLevel().registryAccess(), items.getCompound(i)));
+						cardFilter.add(LegacyItemStackNbt.parseOptional(this.getLevel().registryAccess(), items.getCompound(i)));
 					}
 					return evaluateFilter(drops, cardFilter, cardBlacklist);
 				}

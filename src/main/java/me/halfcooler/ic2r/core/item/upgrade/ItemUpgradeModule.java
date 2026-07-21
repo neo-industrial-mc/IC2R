@@ -1,6 +1,6 @@
 package me.halfcooler.ic2r.core.item.upgrade;
 
-import net.minecraft.core.RegistryAccess;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 
 import com.google.common.base.Predicate;
 import me.halfcooler.ic2r.api.item.ElectricItem;
@@ -116,7 +116,7 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 					int slot = slotNbt.getByte("Slot");
 					if (slot >= 0 && slot < 9)
 					{
-						ItemStack filter = ItemStack.parseOptional(RegistryAccess.EMPTY, slotNbt);
+						ItemStack filter = LegacyItemStackNbt.parseOptional(null, slotNbt);
 						if (!StackUtil.isEmpty(filter))
 						{
 							ret.add(filter);

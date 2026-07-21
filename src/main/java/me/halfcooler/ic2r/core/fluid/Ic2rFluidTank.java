@@ -79,7 +79,9 @@ public class Ic2rFluidTank
 			this.fluidStack = null;
 		} else
 		{
-			this.fluidStack = Ic2rFluidStack.read(nbt);
+			Ic2rFluidStack loaded = Ic2rFluidStack.read(nbt);
+			// Missing/unknown fluid ids (or empty amount) must clear the tank, not leave a stale stack.
+			this.fluidStack = loaded == null || loaded.isEmpty() ? null : loaded;
 		}
 	}
 

@@ -31,7 +31,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 
 @NotClassic
 public class TileEntityPatternStorage extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener, IPatternStorage
@@ -94,7 +94,7 @@ public class TileEntityPatternStorage extends TileEntityInventory implements IHa
 		for (int i = 0; i < patternList.size(); i++)
 		{
 			CompoundTag contentTag = patternList.getCompound(i);
-			ItemStack Item = ItemStack.parseOptional(RegistryAccess.EMPTY, contentTag);
+			ItemStack Item = LegacyItemStackNbt.parseOptional(null, contentTag);
 			this.addPattern(Item);
 		}
 
@@ -108,7 +108,7 @@ public class TileEntityPatternStorage extends TileEntityInventory implements IHa
 		for (ItemStack stack : this.patterns)
 		{
 			CompoundTag contentTag = new CompoundTag();
-			stack.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
+			LegacyItemStackNbt.saveInto(null, stack, contentTag);
 			list.add(contentTag);
 		}
 

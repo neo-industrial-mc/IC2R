@@ -1,6 +1,6 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
-import net.minecraft.core.RegistryAccess;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 
 import com.google.common.base.Predicate;
 import me.halfcooler.ic2r.api.network.ClientModifiable;
@@ -179,7 +179,7 @@ public class TileEntityBatchCrafter
 		for (int i = 0; i < grid.size(); i++)
 		{
 			CompoundTag contentTag = grid.getCompound(i);
-			this.craftingGrid[contentTag.getByte("index")] = ItemStack.parseOptional(RegistryAccess.EMPTY, contentTag);
+			this.craftingGrid[contentTag.getByte("index")] = LegacyItemStackNbt.parseOptional(registries, contentTag);
 		}
 	}
 
@@ -197,7 +197,7 @@ public class TileEntityBatchCrafter
 			{
 				CompoundTag contentTag = new CompoundTag();
 				contentTag.putByte("index", i);
-				content.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
+				LegacyItemStackNbt.saveInto(registries, content, contentTag);
 				grid.add(contentTag);
 			}
 		}

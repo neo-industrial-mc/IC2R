@@ -1,6 +1,6 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
-import net.minecraft.core.RegistryAccess;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 
 import me.halfcooler.ic2r.api.network.INetworkClientTileEntityEventListener;
 import me.halfcooler.ic2r.api.recipe.IPatternStorage;
@@ -281,7 +281,7 @@ public class TileEntityReplicator extends TileEntityElectricMachine implements I
 		int modeIdx = nbt.getInt("mode");
 		this.mode = modeIdx < TileEntityReplicator.Mode.values().length ? TileEntityReplicator.Mode.values()[modeIdx] : TileEntityReplicator.Mode.STOPPED;
 		CompoundTag contentTag = nbt.getCompound("pattern");
-		this.pattern = ItemStack.parseOptional(RegistryAccess.EMPTY, contentTag);
+		this.pattern = LegacyItemStackNbt.parseOptional(registries, contentTag);
 	}
 
 	@Override
@@ -295,7 +295,7 @@ public class TileEntityReplicator extends TileEntityElectricMachine implements I
 		if (this.pattern != null)
 		{
 			CompoundTag contentTag = new CompoundTag();
-			this.pattern.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
+			LegacyItemStackNbt.saveInto(registries, this.pattern, contentTag);
 			nbt.put("pattern", contentTag);
 		}
 	}
