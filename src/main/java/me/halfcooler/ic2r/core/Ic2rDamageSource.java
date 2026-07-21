@@ -24,6 +24,7 @@ public final class Ic2rDamageSource
 	public static final ResourceKey<DamageType> NUKE = key("nuke");
 	public static final ResourceKey<DamageType> RADIATION = key("radiation");
 	public static final ResourceKey<DamageType> REACTOR_EXPLOSION = key("reactor_explosion");
+	public static final ResourceKey<DamageType> HYDROGEN_EXPLOSION = key("hydrogen_explosion");
 	public static final ResourceKey<DamageType> CROP_EATING = key("crop_eating");
 
 	/**
@@ -35,6 +36,7 @@ public final class Ic2rDamageSource
 	public static DamageSource nuke;
 	public static DamageSource radiation;
 	public static DamageSource reactorExplosion;
+	public static DamageSource hydrogenExplosion;
 
 	private Ic2rDamageSource()
 	{
@@ -74,6 +76,11 @@ public final class Ic2rDamageSource
 		return of(level, REACTOR_EXPLOSION);
 	}
 
+	public static DamageSource hydrogenExplosion(Level level)
+	{
+		return of(level, HYDROGEN_EXPLOSION);
+	}
+
 	public static DamageSource cropEating(Level level)
 	{
 		return of(level, CROP_EATING);
@@ -90,6 +97,7 @@ public final class Ic2rDamageSource
 		nuke = new DamageSource(registry.getHolderOrThrow(NUKE));
 		radiation = new DamageSource(registry.getHolderOrThrow(RADIATION));
 		reactorExplosion = new DamageSource(registry.getHolderOrThrow(REACTOR_EXPLOSION));
+		hydrogenExplosion = new DamageSource(registry.getHolderOrThrow(HYDROGEN_EXPLOSION));
 	}
 
 	/**
@@ -98,7 +106,7 @@ public final class Ic2rDamageSource
 	 */
 	public static void ensureInit(Level level)
 	{
-		if (radiation == null || electricity == null || nuke == null || reactorExplosion == null)
+		if (radiation == null || electricity == null || nuke == null || reactorExplosion == null || hydrogenExplosion == null)
 		{
 			init(level.registryAccess());
 		}
