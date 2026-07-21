@@ -1,6 +1,5 @@
 {
   "exhaustion": 0.0,
   "message_id": "ic2r.radiation",
-  "scaling": "never",
-  "effects": "hurt"
+  "scaling": "never"
 }
