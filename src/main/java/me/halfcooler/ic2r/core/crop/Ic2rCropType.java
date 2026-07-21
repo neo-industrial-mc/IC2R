@@ -40,6 +40,7 @@ public enum Ic2rCropType implements StringRepresentable, ICropType
 	jungleSapling("jungle_sapling", Ic2rBlocks.JUNGLE_SAPLING_CROP, 4),
 	acaciaSapling("acacia_sapling", Ic2rBlocks.ACACIA_SAPLING_CROP, 4),
 	darkOakSapling("dark_oak_sapling", Ic2rBlocks.DARK_OAK_SAPLING_CROP, 4),
+	cherrySapling("cherry_sapling", Ic2rBlocks.CHERRY_SAPLING_CROP, 3),
 	ferru("ferru", Ic2rBlocks.FERRU_CROP, 3),
 	cyprium("cyprium", Ic2rBlocks.CYPRIUM_CROP, 3),
 	stagnium("stagnium", Ic2rBlocks.STAGNIUM_CROP, 3),

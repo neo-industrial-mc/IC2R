@@ -255,6 +255,7 @@ public final class Ic2rBlocks
 	public static final DeferredHolder<Block, Block> JUNGLE_SAPLING_CROP = Ic2rBlocksCrops.JUNGLE_SAPLING_CROP;
 	public static final DeferredHolder<Block, Block> ACACIA_SAPLING_CROP = Ic2rBlocksCrops.ACACIA_SAPLING_CROP;
 	public static final DeferredHolder<Block, Block> DARK_OAK_SAPLING_CROP = Ic2rBlocksCrops.DARK_OAK_SAPLING_CROP;
+	public static final DeferredHolder<Block, Block> CHERRY_SAPLING_CROP = Ic2rBlocksCrops.CHERRY_SAPLING_CROP;
 	public static final DeferredHolder<Block, Block> FERRU_CROP = Ic2rBlocksCrops.FERRU_CROP;
 	public static final DeferredHolder<Block, Block> CYPRIUM_CROP = Ic2rBlocksCrops.CYPRIUM_CROP;
 	public static final DeferredHolder<Block, Block> STAGNIUM_CROP = Ic2rBlocksCrops.STAGNIUM_CROP;

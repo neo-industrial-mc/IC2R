@@ -558,6 +558,30 @@
     "crop_type=dark_oak_sapling,age=7": {
       "model": "ic2r:block/crop/crop"
     },
+    "crop_type=cherry_sapling,age=0": {
+      "model": "ic2r:block/crop/cherry_sapling_0"
+    },
+    "crop_type=cherry_sapling,age=1": {
+      "model": "ic2r:block/crop/cherry_sapling_1"
+    },
+    "crop_type=cherry_sapling,age=2": {
+      "model": "ic2r:block/crop/cherry_sapling_2"
+    },
+    "crop_type=cherry_sapling,age=3": {
+      "model": "ic2r:block/crop/cherry_sapling_3"
+    },
+    "crop_type=cherry_sapling,age=4": {
+      "model": "ic2r:block/crop/crop"
+    },
+    "crop_type=cherry_sapling,age=5": {
+      "model": "ic2r:block/crop/crop"
+    },
+    "crop_type=cherry_sapling,age=6": {
+      "model": "ic2r:block/crop/crop"
+    },
+    "crop_type=cherry_sapling,age=7": {
+      "model": "ic2r:block/crop/crop"
+    },
     "crop_type=ferru,age=0": {
       "model": "ic2r:block/crop/ferru_0"
     },

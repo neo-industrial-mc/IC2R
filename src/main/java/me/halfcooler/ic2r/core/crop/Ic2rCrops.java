@@ -86,6 +86,7 @@ public class Ic2rCrops extends Crops
 	public static CropCard cropJungleSapling = new CropBaseSapling(Ic2rCropType.jungleSapling, Ic2rBlocks.JUNGLE_SAPLING_CROP.get(), "seedling", new ItemStack(Blocks.JUNGLE_LOG), new ItemStack(Blocks.JUNGLE_SAPLING));
 	public static CropCard cropAcaciaSapling = new CropBaseSapling(Ic2rCropType.acaciaSapling, Ic2rBlocks.ACACIA_SAPLING_CROP.get(), "seedling", new ItemStack(Blocks.ACACIA_LOG), new ItemStack(Blocks.ACACIA_SAPLING));
 	public static CropCard cropDarkOakSapling = new CropBaseSapling(Ic2rCropType.darkOakSapling, Ic2rBlocks.DARK_OAK_SAPLING_CROP.get(), "seedling", new ItemStack(Blocks.DARK_OAK_LOG), new ItemStack(Blocks.DARK_OAK_SAPLING));
+	public static CropCard cropCherrySapling = new CropBaseSapling(Ic2rCropType.cherrySapling, Ic2rBlocks.CHERRY_SAPLING_CROP.get(), "seedling", new ItemStack(Blocks.CHERRY_LOG), new ItemStack(Blocks.CHERRY_SAPLING));
 	public static CropCard cropFerru = new CropBaseMetalCommon(Ic2rCropType.ferru, Ic2rBlocks.FERRU_CROP.get(), new String[] { "Gray", "Leaves", "Metal" }, Arrays.asList(BlockTags.IRON_ORES, Ic2rBlockTags.IRON_BLOCKS), new ItemStack(Ic2rItems.SMALL_IRON_DUST));
 	public static CropCard cropCyprium = new CropBaseMetalCommon(Ic2rCropType.cyprium, Ic2rBlocks.CYPRIUM_CROP.get(), new String[] { "Orange", "Leaves", "Metal" }, Arrays.asList(BlockTags.COPPER_ORES, Ic2rBlockTags.COPPER_BLOCKS), new ItemStack(Ic2rItems.SMALL_COPPER_DUST));
 	public static CropCard cropStagnium = new CropBaseMetalCommon(Ic2rCropType.stagnium, Ic2rBlocks.STAGNIUM_CROP.get(), new String[] { "Shiny", "Leaves", "Metal" }, Arrays.asList(Ic2rBlockTags.TIN_ORES, Ic2rBlockTags.TIN_BLOCKS), new ItemStack(Ic2rItems.SMALL_TIN_DUST));
@@ -182,6 +183,7 @@ public class Ic2rCrops extends Crops
 		Crops.instance.registerCrop(cropJungleSapling);
 		Crops.instance.registerCrop(cropAcaciaSapling);
 		Crops.instance.registerCrop(cropDarkOakSapling);
+		Crops.instance.registerCrop(cropCherrySapling);
 		Crops.instance.registerCrop(cropBlazereed);
 		Crops.instance.registerCrop(cropBobsYerUncleRanksBerries);
 		Crops.instance.registerCrop(cropCorium);
@@ -223,6 +225,7 @@ public class Ic2rCrops extends Crops
 		Crops.instance.registerBaseSeed(new ItemStack(Blocks.JUNGLE_SAPLING), cropJungleSapling, 0, 1, 1, 1);
 		Crops.instance.registerBaseSeed(new ItemStack(Blocks.ACACIA_SAPLING), cropAcaciaSapling, 0, 1, 1, 1);
 		Crops.instance.registerBaseSeed(new ItemStack(Blocks.DARK_OAK_SAPLING), cropDarkOakSapling, 0, 1, 1, 1);
+		Crops.instance.registerBaseSeed(new ItemStack(Blocks.CHERRY_SAPLING), cropCherrySapling, 0, 1, 1, 1);
 		Crops.instance.registerBaseSeed(new ItemStack(Ic2rItems.MILK_WART), cropMilkWart, 0, 1, 1, 1);
 	}
 
