@@ -79,10 +79,23 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
     }
 
     private static IFluidHandler getFluidHandler(BlockState state, Level world, BlockPos pos, BlockEntity be, Direction side) {
-        if (be == null) {
-            if (state.hasBlockEntity()) {
-                be = world.getBlockEntity(pos);
+        // Callers such as FluidHandler.isFluidBlock(BlockEntity, ...) only pass the BE and leave
+        // world/pos null. Recover them so Level#getCapability can run (NeoForge 1.21 requires Level).
+        if (be != null) {
+            if (world == null) {
+                world = be.getLevel();
             }
+            if (pos == null) {
+                pos = be.getBlockPos();
+            }
+            if (state == null) {
+                state = be.getBlockState();
+            }
+        } else if (world != null && pos != null && state != null && state.hasBlockEntity()) {
+            be = world.getBlockEntity(pos);
+        }
+        if (world == null || pos == null || state == null) {
+            return null;
         }
         // NeoForge 1.21: query via Level#getCapability, not BlockEntity#getCapability.
         return world.getCapability(Capabilities.FluidHandler.BLOCK, pos, state, be, side);
