@@ -45,9 +45,14 @@ import net.minecraft.core.HolderLookup;
 public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgradableBlock, IHasGui, IGuiValueProvider, ServerTicker
 {
 	public static int maxHeat = 50000;
+	/** Oxygen doubles progress per tick (100% acceleration → half wall-clock time). */
+	public static final int OXYGEN_PROGRESS_MULTIPLIER = 2;
+
 	public final InvSlotProcessableGeneric inputSlot = new InvSlotProcessableGeneric(this, "input", 1, Recipes.blast_furnace);
 	public final InvSlotOutput outputSlot = new InvSlotOutput(this, "output", 2);
-	public final InvSlotConsumableLiquidByList tankInputSlot = new InvSlotConsumableLiquidByList(this, "cellInput", 1, Ic2rFluids.AIR.still());
+	public final InvSlotConsumableLiquidByList tankInputSlot = new InvSlotConsumableLiquidByList(
+		this, "cellInput", 1, Ic2rFluids.AIR.still(), Ic2rFluids.OXYGEN.still()
+	);
 	public final InvSlotOutput tankOutputSlot = new InvSlotOutput(this, "cellOutput", 1);
 	public final InvSlotUpgrade upgradeSlot = new InvSlotUpgrade(this, "upgrade", 2);
 	@GuiSynced
@@ -67,7 +72,9 @@ public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgr
 		super(Ic2rBlockEntities.BLAST_FURNACE, pos, state);
 		this.redstone = this.addComponent(new Redstone(this));
 		this.fluids = this.addComponent(new Fluids(this));
-		this.fluidTank = this.fluids.addTankInsert("fluid", 8000, Fluids.fluidPredicate(Ic2rFluids.AIR.still()));
+		this.fluidTank = this.fluids.addTankInsert(
+			"fluid", 8000, Fluids.fluidPredicate(Ic2rFluids.AIR.still(), Ic2rFluids.OXYGEN.still())
+		);
 	}
 
 	@Override
@@ -80,10 +87,19 @@ public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgr
 		if (result != null && this.isHot())
 		{
 			this.setActive(true);
-			if (result.recipe().getMetaData().getInt("fluid") <= this.fluidTank.getFluidAmount())
+			int fluidPerProgress = result.recipe().getMetaData().getInt("fluid");
+			int progressStep = this.isUsingOxygen() ? OXYGEN_PROGRESS_MULTIPLIER : 1;
+			int fluidNeeded = fluidPerProgress * progressStep;
+			if (fluidNeeded > 0 && fluidNeeded <= this.fluidTank.getFluidAmount())
 			{
+				this.progress += progressStep;
+				this.fluidTank.drainMbUnchecked(fluidNeeded, false);
+			}
+			else if (fluidPerProgress <= this.fluidTank.getFluidAmount())
+			{
+				// Not enough for a full oxygen step; still advance by 1 if any fluid remains.
 				this.progress++;
-				this.fluidTank.drainMbUnchecked(result.recipe().getMetaData().getInt("fluid"), false);
+				this.fluidTank.drainMbUnchecked(fluidPerProgress, false);
 			}
 
 			this.progressNeeded = result.recipe().getMetaData().getInt("duration");
@@ -197,6 +213,13 @@ public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgr
 	public boolean isHot()
 	{
 		return this.heat >= maxHeat;
+	}
+
+	/** True when the process gas tank currently holds oxygen (enables 2× progress). */
+	public boolean isUsingOxygen()
+	{
+		return !this.fluidTank.isEmpty()
+			&& this.fluidTank.getFluidStack().getFluid() == Ic2rFluids.OXYGEN.still();
 	}
 
 	/** Elapsed recipe progress in ticks (for Jade / overlays). */
