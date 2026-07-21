@@ -45,6 +45,7 @@ public class TileEntityBase extends TileEntityInventory implements ServerTicker,
 	{
 		this.initSound();
 		boolean shouldPlay = this.shouldSoundActive();
+		boolean shouldPlaySub = this.shouldSubSoundActive();
 
 		if (this.loopingSound != null)
 		{
@@ -59,10 +60,10 @@ public class TileEntityBase extends TileEntityInventory implements ServerTicker,
 
 		if (this.subLoopingSound != null)
 		{
-			if (shouldPlay && !this.subLoopingSound.isPlaying())
+			if (shouldPlaySub && !this.subLoopingSound.isPlaying())
 			{
 				this.subLoopingSound.play();
-			} else if (!shouldPlay && this.subLoopingSound.isPlaying())
+			} else if (!shouldPlaySub && this.subLoopingSound.isPlaying())
 			{
 				this.subLoopingSound.stop();
 			}
@@ -231,6 +232,16 @@ public class TileEntityBase extends TileEntityInventory implements ServerTicker,
 		}
 
 		return this.getBlockState().getValue(Ic2rTileEntityBlock.ACTIVE);
+	}
+
+	/**
+	 * Whether the secondary (sub) looping sound should play.
+	 * Defaults to the same condition as the main loop; override for machines with a distinct sub-loop state
+	 * (e.g. matter generator scrap bonus).
+	 */
+	protected boolean shouldSubSoundActive()
+	{
+		return this.shouldSoundActive();
 	}
 
 	private boolean isStartSoundPlaying()

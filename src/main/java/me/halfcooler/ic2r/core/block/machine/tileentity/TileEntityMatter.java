@@ -74,6 +74,12 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 	public int scrap = 0;
 	public boolean redstonePowered = false;
 	private double lastEnergy;
+	/**
+	 * Sound / activity parity state (IC2 Experimental mass fabricator):
+	 * 0 = idle (no EU or redstone-stopped), 1 = running, 2 = running with scrap bonus.
+	 * Networked to the client so looping sounds do not depend on a possibly stale blockstate.
+	 */
+	private int state = 0;
 	private int prevState = 0;
 
 	public TileEntityMatter(BlockPos pos, BlockState state)
@@ -160,7 +166,6 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 		needsInvUpdate |= this.upgradeSlot.tickNoMark();
 		if (!this.redstone.hasRedstoneInput() && !(this.energy.getEnergy() <= 0.0))
 		{
-			boolean playSubSound = false;
 			if (this.scrap > 0)
 			{
 				double bonus = Math.min(this.scrap, this.energy.getEnergy() - this.lastEnergy);
@@ -170,20 +175,15 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 					this.scrap -= (int) bonus;
 				}
 
-				playSubSound = true;
+				this.setState(2);
+			} else
+			{
+				this.setState(1);
 			}
 
-			this.activate(playSubSound);
-			if (this.getActive())
-			{
-				if (playSubSound && this.subLoopingSound != null && !this.subLoopingSound.isPlaying())
-				{
-					this.subLoopingSound.play();
-				} else if (!playSubSound && this.subLoopingSound != null && this.subLoopingSound.isPlaying())
-				{
-					this.subLoopingSound.stop();
-				}
-			}
+			// Keep active while the fabricator holds EU so packet-allocation flicker near other
+			// consumers cannot stop/start the main loop every few ticks.
+			this.setActive(true);
 
 			if (this.scrap < 10000)
 			{
@@ -201,16 +201,18 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 			}
 
 			needsInvUpdate |= this.containerSlot.processFromTank(this.fluidTank, this.outputSlot);
-			this.lastEnergy = this.energy.getEnergy();
 			if (needsInvUpdate)
 			{
 				this.setChanged();
 			}
 		} else
 		{
-			this.setState();
+			// Idle: no energy or redstone-stopped — silence main and scrap loops.
+			this.setState(0);
 			this.setActive(false);
 		}
+
+		this.lastEnergy = this.energy.getEnergy();
 	}
 
 	/**
@@ -276,14 +278,15 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 		return new ContainerMatter(syncId, inventory, this);
 	}
 
-	private void setState()
+	private void setState(int state)
 	{
-		if (this.prevState != 0)
+		this.state = state;
+		if (this.prevState != this.state)
 		{
 			IC2R.network.get(true).updateTileEntityField(this, "state");
 		}
 
-		this.prevState = 0;
+		this.prevState = this.state;
 	}
 
 	@Override
@@ -354,6 +357,20 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 	public SoundEvent getLoopingSoundEvent()
 	{
 		return Ic2rSoundEvents.MACHINE_MATTER_GENERATOR_LOOP.get();
+	}
+
+	@Override
+	protected boolean shouldSoundActive()
+	{
+		// Drive sound from the synchronized parity state, not blockstate ACTIVE
+		// (opening the GUI can rebroadcast stale blockstate and would revive loops).
+		return this.state != 0;
+	}
+
+	@Override
+	protected boolean shouldSubSoundActive()
+	{
+		return this.state == 2;
 	}
 
 	@Override
