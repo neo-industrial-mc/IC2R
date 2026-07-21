@@ -191,11 +191,11 @@ public class IC2RConfig
 				public final ModConfigSpec.DoubleValue solar;
 				public final ModConfigSpec.DoubleValue wind;
 				public final ModConfigSpec.DoubleValue nuclear;
-				public final ModConfigSpec.DoubleValue semiFluidOil;
-				public final ModConfigSpec.DoubleValue semiFluidFuel;
-				public final ModConfigSpec.DoubleValue semiFluidBiomass;
-				public final ModConfigSpec.DoubleValue semiFluidBioethanol;
+				/** Multiplier on base 32 EU/t for each semi-fluid fuel (0 disables registration). */
 				public final ModConfigSpec.DoubleValue semiFluidBiogas;
+				public final ModConfigSpec.DoubleValue semiFluidBiomass;
+				public final ModConfigSpec.DoubleValue semiFluidHydrogen;
+				public final ModConfigSpec.DoubleValue semiFluidCreosote;
 				public final ModConfigSpec.DoubleValue stirling;
 				public final ModConfigSpec.DoubleValue kinetic;
 				public final ModConfigSpec.DoubleValue radioisotope;
@@ -210,11 +210,11 @@ public class IC2RConfig
 					solar = b.defineInRange("solar", 1.0, 0.0, Double.MAX_VALUE);
 					wind = b.defineInRange("wind", 1.0, 0.0, Double.MAX_VALUE);
 					nuclear = b.defineInRange("nuclear", 1.0, 0.0, Double.MAX_VALUE);
-					semiFluidOil = b.defineInRange("semiFluidOil", 1.0, 0.0, Double.MAX_VALUE);
-					semiFluidFuel = b.defineInRange("semiFluidFuel", 1.0, 0.0, Double.MAX_VALUE);
-					semiFluidBiomass = b.defineInRange("semiFluidBiomass", 1.0, 0.0, Double.MAX_VALUE);
-					semiFluidBioethanol = b.defineInRange("semiFluidBioethanol", 1.0, 0.0, Double.MAX_VALUE);
+					b.comment("Semi-fluid generator fuel EU/t multipliers (base 32 EU/t; 0 disables that fuel).");
 					semiFluidBiogas = b.defineInRange("semiFluidBiogas", 1.0, 0.0, Double.MAX_VALUE);
+					semiFluidBiomass = b.defineInRange("semiFluidBiomass", 1.0, 0.0, Double.MAX_VALUE);
+					semiFluidHydrogen = b.defineInRange("semiFluidHydrogen", 1.0, 0.0, Double.MAX_VALUE);
+					semiFluidCreosote = b.defineInRange("semiFluidCreosote", 1.0, 0.0, Double.MAX_VALUE);
 					stirling = b.defineInRange("Stirling", 1.0, 0.0, Double.MAX_VALUE);
 					kinetic = b.defineInRange("Kinetic", 1.0, 0.0, Double.MAX_VALUE);
 					radioisotope = b.defineInRange("radioisotope", 1.0, 0.0, Double.MAX_VALUE);
@@ -224,10 +224,7 @@ public class IC2RConfig
 
 			public static class HeatGenerator
 			{
-				public final ModConfigSpec.DoubleValue semiFluidOil;
-				public final ModConfigSpec.DoubleValue semiFluidFuel;
-				public final ModConfigSpec.DoubleValue semiFluidBiomass;
-				public final ModConfigSpec.DoubleValue semiFluidBioethanol;
+				/** Multiplier on fluid heat generator fuels (0 disables that fuel). */
 				public final ModConfigSpec.DoubleValue semiFluidBiogas;
 				public final ModConfigSpec.DoubleValue solid;
 				public final ModConfigSpec.DoubleValue radioisotope;
@@ -237,10 +234,6 @@ public class IC2RConfig
 				{
 					b.push("heatgenerator");
 					b.comment("Base heat generation factors - increase for higher heat yield.");
-					semiFluidOil = b.defineInRange("semiFluidOil", 1.0, 0.0, Double.MAX_VALUE);
-					semiFluidFuel = b.defineInRange("semiFluidFuel", 1.0, 0.0, Double.MAX_VALUE);
-					semiFluidBiomass = b.defineInRange("semiFluidBiomass", 1.0, 0.0, Double.MAX_VALUE);
-					semiFluidBioethanol = b.defineInRange("semiFluidBioethanol", 1.0, 0.0, Double.MAX_VALUE);
 					semiFluidBiogas = b.defineInRange("semiFluidBiogas", 1.0, 0.0, Double.MAX_VALUE);
 					solid = b.defineInRange("solid", 1.0, 0.0, Double.MAX_VALUE);
 					radioisotope = b.defineInRange("radioisotope", 1.0, 0.0, Double.MAX_VALUE);
