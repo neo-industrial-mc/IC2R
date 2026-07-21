@@ -25,7 +25,10 @@ public class ItemArmorSolarHelmet extends ItemArmorUtility
 	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level world, @NotNull Entity entity, int slot, boolean selected)
 	{
 		super.inventoryTick(stack, world, entity, slot, selected);
-		if (!(entity instanceof Player player) || slot != this.getEquipmentSlot().getIndex() || !IC2R.sideProxy.isSimulating())
+		// NeoForge inventoryTick uses global inventory indices (HEAD armor = 39),
+		// not EquipmentSlot.getIndex() (HEAD = 3). Identify worn armor by stack identity.
+		if (!(entity instanceof Player player) || player.getItemBySlot(this.getEquipmentSlot()) != stack
+			|| !IC2R.sideProxy.isSimulating())
 		{
 			return;
 		}
