@@ -2,10 +2,13 @@ package me.halfcooler.ic2r.core.block.wiring.tileentity;
 
 import net.minecraft.network.chat.Component;
 import org.joml.Vector3f;
+import me.halfcooler.ic2r.api.energy.profile.VoltageTier;
 import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.wiring.ContainerChargepadBlock;
+import me.halfcooler.ic2r.core.energy.EnergyNetMode;
+import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.Util;
@@ -23,7 +26,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -133,51 +135,43 @@ public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock i
 		}
 	}
 
-	// Logic: Main hand, Offhand, Armor, Stack, Inventory
+	/**
+	 * Charge every eligible electric item on the player at once.
+	 * Eligible = chargeable and item tier ≤ chargepad source tier.
+	 * Each item is charged at the pad's full output power (shared energy pool).
+	 * Scope: offhand, armor, full main inventory (hotbar + backpack; includes main hand).
+	 */
 	protected boolean getItems(Player player)
 	{
 		int chargeFactor = (int) this.output;
+		boolean charged = false;
 
-		ItemStack stack = player.getMainHandItem();
-		if (!stack.isEmpty())
+		ItemStack stack = player.getOffhandItem();
+		if (!stack.isEmpty() && this.chargeItem(stack, chargeFactor))
 		{
-			if (this.chargeItem(stack, chargeFactor)) return true;
-		}
-
-		stack = player.getOffhandItem();
-		if (!stack.isEmpty())
-		{
-			if (this.chargeItem(stack, chargeFactor)) return true;
+			charged = true;
 		}
 
 		for (int i = player.getInventory().armor.size() - 1; i >= 0; i--)
 		{
 			stack = player.getInventory().armor.get(i);
-			if (!stack.isEmpty())
+			if (!stack.isEmpty() && this.chargeItem(stack, chargeFactor))
 			{
-				if (this.chargeItem(stack, chargeFactor)) return true;
+				charged = true;
 			}
 		}
 
-		for (int i = 0; i < 9; i++)
+		// items covers hotbar + main inventory (main hand is selected hotbar slot)
+		for (int i = 0; i < player.getInventory().items.size(); i++)
 		{
 			stack = player.getInventory().items.get(i);
-			if (!stack.isEmpty())
+			if (!stack.isEmpty() && this.chargeItem(stack, chargeFactor))
 			{
-				if (this.chargeItem(stack, chargeFactor)) return true;
+				charged = true;
 			}
 		}
 
-		for (int i = 9; i < 36; i++)
-		{
-			stack = player.getInventory().items.get(i);
-			if (!stack.isEmpty())
-			{
-				if (this.chargeItem(stack, chargeFactor)) return true;
-			}
-		}
-
-		return false;
+		return charged;
 	}
 
 	@Override
@@ -223,31 +217,50 @@ public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock i
 		return this.redstoneMode <= 1 && this.redstoneMode >= 0 ? Component.translatable("ic2r.blockChargepad.gui.mod.redstone" + this.redstoneMode).getString() : "";
 	}
 
+	/**
+	 * Charge a single stack at the pad power rate, limited by pad tier.
+	 * In GT energy-net mode, transferred EU is quantized to integer amps
+	 * (multiples of the pad working voltage).
+	 */
 	protected boolean chargeItem(ItemStack stack, int chargeFactor)
 	{
-		if (stack.getItem() != Ic2rItems.DEBUG_ITEM)
+		if (stack.getItem() == Ic2rItems.DEBUG_ITEM)
 		{
-			double freeAmount = ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, Integer.MAX_VALUE, true, true);
-			double charge;
-			if (freeAmount > 0.0)
+			return false;
+		}
+
+		int tier = this.energy.getSourceTier();
+		// tier gate: only items with voltage tier ≤ pad tier accept charge
+		double freeAmount = ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, tier, true, true);
+		if (freeAmount <= 0.0)
+		{
+			return false;
+		}
+
+		double charge = Math.min(freeAmount, (double) chargeFactor * this.getTickRate());
+		charge = Math.min(charge, this.energy.getEnergy());
+
+		if (EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get()) == EnergyNetMode.GT)
+		{
+			int voltage = VoltageTier.fromIcTier(tier).getVoltage();
+			if (voltage > 0)
 			{
-				if (freeAmount >= chargeFactor * this.getTickRate())
-				{
-					charge = chargeFactor * this.getTickRate();
-				} else
-				{
-					charge = freeAmount;
-				}
+				charge = Math.floor(charge / voltage) * voltage;
+			}
 
-				if (this.energy.getEnergy() < charge)
-				{
-					charge = this.energy.getEnergy();
-				}
-
-				this.energy.useEnergy(ElectricItem.manager.charge(stack, charge, Integer.MAX_VALUE, true, false));
-				return true;
+			if (charge <= 0.0)
+			{
+				return false;
 			}
 		}
+
+		double transferred = ElectricItem.manager.charge(stack, charge, tier, true, false);
+		if (transferred > 0.0)
+		{
+			this.energy.useEnergy(transferred);
+			return true;
+		}
+
 		return false;
 	}
 }
