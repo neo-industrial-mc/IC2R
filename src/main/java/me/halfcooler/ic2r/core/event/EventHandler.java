@@ -9,6 +9,7 @@ import me.halfcooler.ic2r.api.recipe.Recipes;
 import me.halfcooler.ic2r.api.sound.item.ISwingSoundItem;
 import me.halfcooler.ic2r.core.ChunkLoaderLogic;
 import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.Ic2rDamageSource;
 import me.halfcooler.ic2r.core.apihelper.CoreAccessImpl;
 import me.halfcooler.ic2r.platform.services.PlatformServices;
 import me.halfcooler.ic2r.core.block.ChunkLoadAwareBlockHandler;
@@ -190,6 +191,9 @@ public final class EventHandler
 
 	public static void onWorldLoad(Level world)
 	{
+		// Bind cached DamageSources to this world's datapack registry (radiation, electricity, …).
+		Ic2rDamageSource.init(world.registryAccess());
+
 		if (!world.isClientSide)
 		{
 			ServerLevel serverWorld = (ServerLevel) world;

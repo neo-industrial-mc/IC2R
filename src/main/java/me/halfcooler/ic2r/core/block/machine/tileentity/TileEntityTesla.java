@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -85,14 +86,11 @@ public class TileEntityTesla extends Ic2rTileEntity implements ServerTicker
 
 		boolean isShocked = false;
 		int damage = totalDamage / entities.size();
-		if (Ic2rDamageSource.electricity == null)
-		{
-			Ic2rDamageSource.init(world.registryAccess());
-		}
+		DamageSource electricity = Ic2rDamageSource.electricity(world);
 
 		for (LivingEntity entity : entities)
 		{
-			if (!ItemArmorHazmat.hasCompleteHazmat(entity) && entity.hurt(Ic2rDamageSource.electricity, damage))
+			if (!ItemArmorHazmat.hasCompleteHazmat(entity) && entity.hurt(electricity, damage))
 			{
 				if (world instanceof ServerLevel worldServer)
 				{

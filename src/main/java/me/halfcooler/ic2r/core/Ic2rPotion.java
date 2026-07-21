@@ -35,11 +35,8 @@ public class Ic2rPotion extends MobEffect
 	{
 		if (this == radiation)
 		{
-			if (Ic2rDamageSource.radiation == null)
-			{
-				Ic2rDamageSource.init(entity.level().registryAccess());
-			}
-			entity.hurt(Ic2rDamageSource.radiation, (float) amplifier / 100 + 0.5F);
+			// Use level-bound damage source so the datapack DamageType holder is always current.
+			entity.hurt(Ic2rDamageSource.radiation(entity.level()), (float) amplifier / 100 + 0.5F);
 		}
 		return true;
 	}

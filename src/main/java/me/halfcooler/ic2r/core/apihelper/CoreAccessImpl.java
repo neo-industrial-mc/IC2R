@@ -61,18 +61,30 @@ public final class CoreAccessImpl implements CoreAccess
 	@Override
 	public DamageSource getElectricDamageSource()
 	{
+		if (Ic2rDamageSource.electricity == null)
+		{
+			throw new IllegalStateException("IC2R electricity damage source is not initialized (no world loaded yet)");
+		}
 		return Ic2rDamageSource.electricity;
 	}
 
 	@Override
 	public DamageSource getNukeExplosionDamageSource()
 	{
+		if (Ic2rDamageSource.nuke == null)
+		{
+			throw new IllegalStateException("IC2R nuke damage source is not initialized (no world loaded yet)");
+		}
 		return Ic2rDamageSource.nuke;
 	}
 
 	@Override
 	public DamageSource getRadiationDamageSource()
 	{
+		if (Ic2rDamageSource.radiation == null)
+		{
+			throw new IllegalStateException("IC2R radiation damage source is not initialized (no world loaded yet)");
+		}
 		return Ic2rDamageSource.radiation;
 	}
 

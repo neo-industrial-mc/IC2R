@@ -8,6 +8,7 @@ run/
 out/
 terminals/
 agent-tools/
+.eclipse/
 
 gradle-wrapper.jar
 
@@ -15,3 +16,4 @@ gradle-wrapper.jar
 run-data/
 
 addons/
+AGENTS.md

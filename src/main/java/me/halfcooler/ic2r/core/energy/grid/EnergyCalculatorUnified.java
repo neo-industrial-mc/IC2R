@@ -768,11 +768,7 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 				int damage = (int) Math.ceil(entry.getValue().doubleValue() / 64.0);
 				if (target.isAlive() && damage > 0)
 				{
-					if (Ic2rDamageSource.electricity == null)
-					{
-						Ic2rDamageSource.init(target.level().registryAccess());
-					}
-					target.hurt(Ic2rDamageSource.electricity, damage);
+					target.hurt(Ic2rDamageSource.electricity(target.level()), damage);
 				}
 			}
 		}

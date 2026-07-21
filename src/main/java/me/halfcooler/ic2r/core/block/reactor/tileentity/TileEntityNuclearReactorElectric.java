@@ -642,7 +642,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 					EntitySelector.NO_CREATIVE_OR_SPECTATOR
 				))
 				{
-        entity.hurt(Ic2rDamageSource.radiation, (int) (rng.nextInt(4) * this.hem));
+					entity.hurt(Ic2rDamageSource.radiation(world), (int) (rng.nextInt(4) * this.hem));
 				}
 			}
 

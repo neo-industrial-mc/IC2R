@@ -136,7 +136,7 @@ public class CropEating extends Ic2rCropCard
 					if (!(entity instanceof Player) || !((Player) entity).getAbilities().instabuild)
 					{
 						entity.setDeltaMovement((xcentered - entity.getX()) * 0.5, Math.min(entity.getDeltaMovement().y(), -0.05), (zcentered - entity.getZ()) * 0.5);
-						entity.hurt(Ic2rDamageSource.create(crop.getWorldObj(), "crop_eating"), (crop.getCurrentAge() + 1) * 2.0F);
+						entity.hurt(Ic2rDamageSource.cropEating(crop.getWorldObj()), (crop.getCurrentAge() + 1) * 2.0F);
 						if (!hasMetalArmor(entity))
 						{
 							entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 64, 50));

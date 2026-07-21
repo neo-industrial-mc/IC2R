@@ -46,9 +46,10 @@ public class ItemArmorHazmat extends ItemArmorUtility implements IHazmatLike
 
 	public static boolean hazmatAbsorbs(DamageSource source)
 	{
+		// Match by damage-type key, not instance identity — sources are created per-level.
 		return source.is(DamageTypeTags.IS_FIRE)
-			|| source == Ic2rDamageSource.electricity
-			|| source == Ic2rDamageSource.radiation;
+			|| source.is(Ic2rDamageSource.ELECTRICITY)
+			|| source.is(Ic2rDamageSource.RADIATION);
 	}
 
 	@Override
