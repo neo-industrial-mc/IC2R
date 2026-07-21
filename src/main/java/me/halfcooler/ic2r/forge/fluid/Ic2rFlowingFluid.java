@@ -26,11 +26,20 @@ import net.neoforged.neoforge.fluids.BaseFlowingFluid;
  * dedicated {@link net.neoforged.neoforge.fluids.FluidInteractionRegistry} interaction
  * converts them.
  *
- * <p>Gases ({@code FluidType#isLighterThanAir()}) do not spread like liquids. They only
- * rise one block per fluid tick until they hit a ceiling or the build-height limit.
+ * <p>Gases ({@code FluidType#isLighterThanAir()}) do not spread like liquids. The source
+ * block stays put; each tick they place a fixed-height flowing cell upward (legacy level 1 /
+ * amount {@link #GAS_FLOW_AMOUNT}) until a ceiling or the build-height limit. Flowing gas
+ * without the same fluid below dissipates.
  */
 public abstract class Ic2rFlowingFluid extends BaseFlowingFluid
 {
+	/**
+	 * Flowing amount for rising gas (one step from a source amount of 8).
+	 * Maps to {@link net.minecraft.world.level.block.LiquidBlock#LEVEL} = 1 — the same
+	 * “flowed one block” appearance for every cell in the upward column.
+	 */
+	private static final int GAS_FLOW_AMOUNT = 7;
+
 	protected Ic2rFlowingFluid(Properties properties)
 	{
 		super(properties);
@@ -47,13 +56,29 @@ public abstract class Ic2rFlowingFluid extends BaseFlowingFluid
 	}
 
 	/**
-	 * Gases skip vanilla {@code getNewLiquid} collapse/horizontal logic and only attempt to rise.
+	 * Gases skip vanilla {@code getNewLiquid} collapse/horizontal logic. Source stays;
+	 * unsupported flowing gas is cleared; then attempt to rise.
 	 */
 	@Override
 	public void tick(Level level, BlockPos pos, FluidState state)
 	{
 		if (isGaseous())
 		{
+			if (!state.isSource())
+			{
+				FluidState below = level.getFluidState(pos.below());
+				if (!below.getType().isSame(this))
+				{
+					level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+					return;
+				}
+				// Keep a uniform “flowed one block” look in the whole rising column.
+				if (state.getAmount() != GAS_FLOW_AMOUNT || state.getValue(FALLING))
+				{
+					state = getFlowing(GAS_FLOW_AMOUNT, false);
+					level.setBlock(pos, state.createLegacyBlock(), 2);
+				}
+			}
 			spread(level, pos, state);
 			return;
 		}
@@ -61,7 +86,7 @@ public abstract class Ic2rFlowingFluid extends BaseFlowingFluid
 	}
 
 	/**
-	 * Gases move straight up (source stays a source) instead of flowing down/sideways.
+	 * Gases only extend upward as flowing fluid. The source is never moved or cleared.
 	 */
 	@Override
 	protected void spread(Level level, BlockPos pos, FluidState state)
@@ -86,12 +111,12 @@ public abstract class Ic2rFlowingFluid extends BaseFlowingFluid
 		BlockState selfState = level.getBlockState(pos);
 		BlockState aboveState = level.getBlockState(above);
 		FluidState aboveFluid = level.getFluidState(above);
+		FluidState rising = getFlowing(GAS_FLOW_AMOUNT, false);
 
-		if (canSpreadTo(level, pos, selfState, Direction.UP, above, aboveState, aboveFluid, state.getType()))
+		if (canSpreadTo(level, pos, selfState, Direction.UP, above, aboveState, aboveFluid, rising.getType()))
 		{
-			// Place first so the source is not lost if the second setBlock fails mid-update.
-			spreadTo(level, above, aboveState, Direction.UP, state);
-			level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+			// Source stays; only place a uniform flowing cell above.
+			spreadTo(level, above, aboveState, Direction.UP, rising);
 		}
 	}
 

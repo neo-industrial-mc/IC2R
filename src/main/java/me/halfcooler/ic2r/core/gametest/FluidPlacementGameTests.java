@@ -50,18 +50,32 @@ public final class FluidPlacementGameTests
 		});
 	}
 
-	/** Steam rises (tick delay 5); after ~25 ticks it should have left y=1 for higher y. */
+	/** Steam rises (tick delay 5); source stays, flowing appears above. */
 	@GameTest(template = TEMPLATE, timeoutTicks = 80)
 	public static void steamRisesWithoutSideSpread(GameTestHelper helper)
 	{
 		assertGasRisesWithoutSideSpread(helper, Ic2rFluids.STEAM.still(), 30);
 	}
 
-	/** Hydrogen rises every tick; after a few ticks it should be well above the start. */
+	/** Superheated steam same rise rules as steam. */
+	@GameTest(template = TEMPLATE, timeoutTicks = 80)
+	public static void superheatedSteamRisesWithoutSideSpread(GameTestHelper helper)
+	{
+		assertGasRisesWithoutSideSpread(helper, Ic2rFluids.SUPERHEATED_STEAM.still(), 30);
+	}
+
+	/** Hydrogen rises every tick; source stays, flowing appears above. */
 	@GameTest(template = TEMPLATE, timeoutTicks = 40)
 	public static void hydrogenRisesWithoutSideSpread(GameTestHelper helper)
 	{
 		assertGasRisesWithoutSideSpread(helper, Ic2rFluids.HYDROGEN.still(), 8);
+	}
+
+	/** Biogas is lighter-than-air; source stays, flowing rises. */
+	@GameTest(template = TEMPLATE, timeoutTicks = 80)
+	public static void biogasRisesWithoutSideSpread(GameTestHelper helper)
+	{
+		assertGasRisesWithoutSideSpread(helper, Ic2rFluids.BIOGAS.still(), 35);
 	}
 
 	/** Compressed air is slow (tick delay 20); still rises, and never spreads sideways. */
@@ -71,6 +85,10 @@ public final class FluidPlacementGameTests
 		assertGasRisesWithoutSideSpread(helper, Ic2rFluids.AIR.still(), 45);
 	}
 
+	/**
+	 * Source remains at the placement cell; flowing gas extends only upward with a uniform
+	 * non-source amount (legacy level 1 / amount 7); no horizontal liquid-style spread.
+	 */
 	private static void assertGasRisesWithoutSideSpread(GameTestHelper helper, Fluid gas, int delayTicks)
 	{
 		BlockPos start = new BlockPos(1, 1, 1);
@@ -80,21 +98,28 @@ public final class FluidPlacementGameTests
 		helper.runAfterDelay(delayTicks, () -> {
 			FluidState atStart = helper.getLevel().getFluidState(helper.absolutePos(start));
 			helper.assertTrue(
-				atStart.isEmpty() || !atStart.getType().isSame(gas),
-				"gas must leave the start block by rising (still " + atStart + ")"
+				atStart.getType().isSame(gas) && atStart.isSource(),
+				"gas source must stay at the start block (got " + atStart + ")"
 			);
 
-			boolean foundAbove = false;
+			boolean foundFlowingAbove = false;
 			for (int y = 2; y < 9; y++)
 			{
 				FluidState above = helper.getLevel().getFluidState(helper.absolutePos(new BlockPos(1, y, 1)));
-				if (above.getType().isSame(gas) && above.isSource())
+				if (above.getType().isSame(gas) && !above.isSource())
 				{
-					foundAbove = true;
-					break;
+					helper.assertTrue(
+						above.getAmount() == 7,
+						"rising gas must use uniform amount 7 (flowed-one-block look), got " + above.getAmount() + " at y=" + y
+					);
+					foundFlowingAbove = true;
+				}
+				else if (above.getType().isSame(gas) && above.isSource())
+				{
+					helper.fail("rising gas must be flowing, not a second source at y=" + y);
 				}
 			}
-			helper.assertTrue(foundAbove, "gas source must be somewhere above the start column");
+			helper.assertTrue(foundFlowingAbove, "flowing gas must appear somewhere above the source");
 
 			FluidState sideState = helper.getLevel().getFluidState(helper.absolutePos(side));
 			helper.assertTrue(

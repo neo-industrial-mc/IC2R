@@ -22,12 +22,12 @@ public final class Ic2rFluids
 		"pahoehoe_lava", 50000, 250000, 10, 1200, false, "pahoehoe_lava", null, -8686484
 	);
 	public static final EnvFluidHandler.FluidRefs BIOMASS = create("biomass", 1000, 3000, 0, 300, false, "fluid", "fluid", -1237485016);
-	public static final EnvFluidHandler.FluidRefs BIOGAS = create("biogas", 1000, 3000, 0, 300, true, "fluid_3", null, -188435879);
+	// Density <= 0 ⇒ lighter-than-air: source stays put, flowing rises only (no side spread).
+	// Rise speed is set by fluid tick rate in EnvFluidHandlerForge (H2 >> steam >> biogas >> air).
+	public static final EnvFluidHandler.FluidRefs BIOGAS = create("biogas", -400, 3000, 0, 300, true, "fluid_3", null, -188435879);
 	public static final EnvFluidHandler.FluidRefs DISTILLED_WATER = create(
 		"distilled_water", 1000, 1000, 0, 300, false, "fluid_water", "fluid_water", -632331785
 	);
-	// Density <= 0 ⇒ lighter-than-air: rises only (no liquid-style spread). Rise speed is
-	// set by fluid tick rate in EnvFluidHandlerForge (H2 >> steam >> compressed air).
 	public static final EnvFluidHandler.FluidRefs SUPERHEATED_STEAM = create(
 		"superheated_steam", -3000, 100, 0, 600, true, "fluid_3", null, -185797131
 	);

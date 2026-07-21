@@ -139,13 +139,14 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
 
     /**
      * Fluid tick delay for lighter-than-air IC2R gases. Lower delay = faster rise.
-     * Hierarchy: hydrogen &gt;&gt; steam / superheated steam &gt;&gt; compressed air
+     * Hierarchy: hydrogen &gt;&gt; steam / superheated steam &gt;&gt; biogas &gt;&gt; compressed air
      * (other gases get a medium default).
      */
     private static int gaseousTickRate(String fluidName) {
         return switch (fluidName) {
             case "hydrogen" -> 1;
             case "steam", "superheated_steam" -> 5;
+            case "biogas" -> 10;
             case "air" -> 20;
             default -> 10;
         };
