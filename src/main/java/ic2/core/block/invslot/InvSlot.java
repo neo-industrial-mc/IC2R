@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
@@ -58,7 +59,7 @@ public class InvSlot implements Iterable<ItemStack> {
     this.preferredSide = InvSlot.InvSide.ANY;
   }
 
-  public void readFromNbt(CompoundTag nbt) {
+  public void readFromNbt(CompoundTag nbt, HolderLookup.Provider registries) {
     this.clear();
     ListTag contentsTag = nbt.getList("Contents", 10);
 
@@ -73,8 +74,7 @@ public class InvSlot implements Iterable<ItemStack> {
             this.name,
             index);
       } else {
-        ItemStack stack =
-            ItemStack.parseOptional(net.minecraft.core.RegistryAccess.EMPTY, contentTag);
+        ItemStack stack = ItemStack.parseOptional(registries, contentTag);
         if (StackUtil.isEmpty(stack)) {
           IC2.log.warn(
               LogCategory.Block,
@@ -105,7 +105,7 @@ public class InvSlot implements Iterable<ItemStack> {
     this.onChanged();
   }
 
-  public void writeToNbt(CompoundTag nbt) {
+  public void writeToNbt(CompoundTag nbt, HolderLookup.Provider registries) {
     ListTag contentsTag = new ListTag();
 
     for (int i = 0; i < this.contents.length; i++) {
@@ -114,7 +114,7 @@ public class InvSlot implements Iterable<ItemStack> {
         CompoundTag contentTag = new CompoundTag();
         contentTag.putByte("Index", (byte) i);
         // save() returns the merged tag instead of mutating the prefix
-        contentsTag.add(content.save(net.minecraft.core.RegistryAccess.EMPTY, contentTag));
+        contentsTag.add(content.save(registries, contentTag));
       }
     }
 
