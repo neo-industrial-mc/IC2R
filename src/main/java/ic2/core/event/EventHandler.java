@@ -148,6 +148,7 @@ public final class EventHandler {
 
   public static void onServerStart(MinecraftServer server) {
     IC2.sideProxy.onServerAvailable(server);
+    // Recipe-backed UU values require the server's loaded recipe manager.
     UuIndex.instance.refresh(true);
   }
 
