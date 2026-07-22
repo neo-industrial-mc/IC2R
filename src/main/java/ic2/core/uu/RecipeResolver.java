@@ -18,6 +18,10 @@ public class RecipeResolver implements IRecipeResolver {
 
     for (Ingredient ingredient : list) {
       ItemStack[] arr = ingredient.getItems();
+      if (arr.length == 0) {
+        continue;
+      }
+
       List<LeanItemStack> toAdd = new ArrayList<>(arr.length);
 
       for (ItemStack stack : arr) {

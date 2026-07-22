@@ -11,6 +11,7 @@ import ic2.core.item.ItemCrystalMemory;
 import ic2.core.ref.Ic2Blocks;
 import ic2.core.ref.Ic2Fluids;
 import ic2.core.ref.Ic2Items;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -180,6 +181,26 @@ public class MatterGameTests {
               "stored pattern should be cobblestone, is " + storage.getPatterns().get(0));
           helper.succeed();
         });
+  }
+
+  // scanner: every craftable heat vent has a recipe-derived UU value and can enter the input slot
+  @GameTest(template = EMPTY)
+  public static void scannerAcceptsHeatVents(GameTestHelper helper) {
+    helper.setBlock(MACHINE_POS, Ic2Blocks.UU_SCANNER);
+    TileEntityScanner scanner = getTe(helper, MACHINE_POS, TileEntityScanner.class);
+
+    for (ItemStack vent :
+        List.of(
+            new ItemStack(Ic2Items.HEAT_VENT),
+            new ItemStack(Ic2Items.REACTOR_HEAT_VENT),
+            new ItemStack(Ic2Items.OVERCLOCKED_HEAT_VENT),
+            new ItemStack(Ic2Items.COMPONENT_HEAT_VENT),
+            new ItemStack(Ic2Items.ADVANCED_HEAT_VENT))) {
+      helper.assertTrue(
+          scanner.inputSlot.accepts(vent), "scanner should accept heat vent " + vent.getItem());
+    }
+
+    helper.succeed();
   }
 
   // scanner: with neither a pattern storage nor a crystal memory it refuses to scan
