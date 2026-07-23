@@ -27,27 +27,39 @@ public class Ic2LootModifier extends LootModifier {
   public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>>
       lootModifiersRegistry =
           DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, "ic2");
-  private static final Map<
-          net.minecraft.resources.ResourceKey<LootTable>,
-          net.minecraft.resources.ResourceKey<LootTable>>
+  private static final Map<ResourceLocation, net.minecraft.resources.ResourceKey<LootTable>>
       AllLootTables =
           Map.ofEntries(
               Map.entry(
-                  BuiltInLootTables.ABANDONED_MINESHAFT, ic2Table("chests/abandoned_mineshaft")),
-              Map.entry(BuiltInLootTables.DESERT_PYRAMID, ic2Table("chests/desert_pyramid")),
-              Map.entry(BuiltInLootTables.END_CITY_TREASURE, ic2Table("chests/end_city_treasure")),
-              Map.entry(BuiltInLootTables.IGLOO_CHEST, ic2Table("chests/igloo_chest")),
-              Map.entry(BuiltInLootTables.JUNGLE_TEMPLE, ic2Table("chests/jungle_temple")),
-              Map.entry(BuiltInLootTables.NETHER_BRIDGE, ic2Table("chests/nether_bridge")),
-              Map.entry(BuiltInLootTables.SIMPLE_DUNGEON, ic2Table("chests/simple_dungeon")),
-              Map.entry(BuiltInLootTables.SPAWN_BONUS_CHEST, ic2Table("chests/spawn_bonus_chest")),
+                  BuiltInLootTables.ABANDONED_MINESHAFT.location(),
+                  ic2Table("chests/abandoned_mineshaft")),
               Map.entry(
-                  BuiltInLootTables.STRONGHOLD_CORRIDOR, ic2Table("chests/stronghold_corridor")),
+                  BuiltInLootTables.DESERT_PYRAMID.location(), ic2Table("chests/desert_pyramid")),
               Map.entry(
-                  BuiltInLootTables.STRONGHOLD_CROSSING, ic2Table("chests/stronghold_crossing")),
+                  BuiltInLootTables.END_CITY_TREASURE.location(),
+                  ic2Table("chests/end_city_treasure")),
+              Map.entry(BuiltInLootTables.IGLOO_CHEST.location(), ic2Table("chests/igloo_chest")),
               Map.entry(
-                  BuiltInLootTables.STRONGHOLD_LIBRARY, ic2Table("chests/stronghold_library")),
-              Map.entry(BuiltInLootTables.VILLAGE_TOOLSMITH, ic2Table("chests/village_toolsmith")));
+                  BuiltInLootTables.JUNGLE_TEMPLE.location(), ic2Table("chests/jungle_temple")),
+              Map.entry(
+                  BuiltInLootTables.NETHER_BRIDGE.location(), ic2Table("chests/nether_bridge")),
+              Map.entry(
+                  BuiltInLootTables.SIMPLE_DUNGEON.location(), ic2Table("chests/simple_dungeon")),
+              Map.entry(
+                  BuiltInLootTables.SPAWN_BONUS_CHEST.location(),
+                  ic2Table("chests/spawn_bonus_chest")),
+              Map.entry(
+                  BuiltInLootTables.STRONGHOLD_CORRIDOR.location(),
+                  ic2Table("chests/stronghold_corridor")),
+              Map.entry(
+                  BuiltInLootTables.STRONGHOLD_CROSSING.location(),
+                  ic2Table("chests/stronghold_crossing")),
+              Map.entry(
+                  BuiltInLootTables.STRONGHOLD_LIBRARY.location(),
+                  ic2Table("chests/stronghold_library")),
+              Map.entry(
+                  BuiltInLootTables.VILLAGE_TOOLSMITH.location(),
+                  ic2Table("chests/village_toolsmith")));
 
   private static net.minecraft.resources.ResourceKey<LootTable> ic2Table(String path) {
     return net.minecraft.resources.ResourceKey.create(
