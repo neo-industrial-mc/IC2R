@@ -70,6 +70,9 @@ public class HydrogenBlock extends LiquidBlock
 	@Override
 	public void onPlace(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState oldState, boolean movedByPiston)
 	{
+		// Must schedule fluid ticks (LiquidBlock#onPlace); without this, flowing hydrogen never
+		// ticks and the gas column stops after a single cell above the source.
+		super.onPlace(state, world, pos, oldState, movedByPiston);
 		if (state.getValue(LiquidBlock.LEVEL) == 0)
 		{
 			checkFireAndExplode(world, pos);
@@ -79,6 +82,8 @@ public class HydrogenBlock extends LiquidBlock
 	@Override
 	public void neighborChanged(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos, boolean movedByPiston)
 	{
+		// Same as onPlace: re-schedule fluid flow ticks for source and flowing cells.
+		super.neighborChanged(state, world, pos, neighborBlock, neighborPos, movedByPiston);
 		if (state.getValue(LiquidBlock.LEVEL) == 0)
 		{
 			checkFireAndExplode(world, pos);

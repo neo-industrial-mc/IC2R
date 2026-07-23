@@ -68,7 +68,8 @@ public final class FluidPlacementGameTests
 	@GameTest(template = TEMPLATE, timeoutTicks = 40)
 	public static void hydrogenRisesWithoutSideSpread(GameTestHelper helper)
 	{
-		assertGasRisesWithoutSideSpread(helper, Ic2rFluids.HYDROGEN.still(), 8);
+		// tickRate=1: after 8 ticks the column should be multi-block (source + several flowing cells).
+		assertGasRisesWithoutSideSpread(helper, Ic2rFluids.HYDROGEN.still(), 8, 3);
 	}
 
 	/** Biogas is lighter-than-air; source stays, flowing rises. */
@@ -91,6 +92,15 @@ public final class FluidPlacementGameTests
 	 */
 	private static void assertGasRisesWithoutSideSpread(GameTestHelper helper, Fluid gas, int delayTicks)
 	{
+		assertGasRisesWithoutSideSpread(helper, gas, delayTicks, 1);
+	}
+
+	/**
+	 * @param minFlowingCells minimum number of flowing cells expected in the upward column
+	 *                        (catches “only one block above source” regressions from missing fluid ticks)
+	 */
+	private static void assertGasRisesWithoutSideSpread(GameTestHelper helper, Fluid gas, int delayTicks, int minFlowingCells)
+	{
 		BlockPos start = new BlockPos(1, 1, 1);
 		BlockPos side = new BlockPos(2, 1, 1);
 		helper.setBlock(start, gas.defaultFluidState().createLegacyBlock());
@@ -102,7 +112,7 @@ public final class FluidPlacementGameTests
 				"gas source must stay at the start block (got " + atStart + ")"
 			);
 
-			boolean foundFlowingAbove = false;
+			int flowingCells = 0;
 			for (int y = 2; y < 9; y++)
 			{
 				FluidState above = helper.getLevel().getFluidState(helper.absolutePos(new BlockPos(1, y, 1)));
@@ -112,14 +122,17 @@ public final class FluidPlacementGameTests
 						above.getAmount() == 7,
 						"rising gas must use uniform amount 7 (flowed-one-block look), got " + above.getAmount() + " at y=" + y
 					);
-					foundFlowingAbove = true;
+					flowingCells++;
 				}
 				else if (above.getType().isSame(gas) && above.isSource())
 				{
 					helper.fail("rising gas must be flowing, not a second source at y=" + y);
 				}
 			}
-			helper.assertTrue(foundFlowingAbove, "flowing gas must appear somewhere above the source");
+			helper.assertTrue(
+				flowingCells >= minFlowingCells,
+				"expected at least " + minFlowingCells + " flowing gas cell(s) above source, got " + flowingCells
+			);
 
 			FluidState sideState = helper.getLevel().getFluidState(helper.absolutePos(side));
 			helper.assertTrue(
