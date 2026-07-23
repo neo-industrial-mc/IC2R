@@ -27,15 +27,16 @@ public final class MatterGameTests
 	}
 
 	@GameTest(template = EMPTY, timeoutTicks = 100)
-	public static void matterFabricatorIsActiveWhenHoldingCharge(GameTestHelper helper)
+	public static void matterFabricatorIsInactiveWhenHoldingCharge(GameTestHelper helper)
 	{
 		helper.setBlock(MACHINE_POS, Ic2rBlocks.MATTER_GENERATOR.get());
 		TileEntityMatter matter = (TileEntityMatter) helper.getBlockEntity(MACHINE_POS);
 		matter.getComponent(Energy.class).addEnergy(1000.0);
 
+		// After the charge is applied once, with no further EU intake the fabricator is idle.
 		helper.runAtTickTime(20, () ->
 		{
-			helper.assertTrue(matter.getActive(), "fabricator holding charge should be active");
+			helper.assertTrue(!matter.getActive(), "fabricator holding charge without intake should be inactive");
 			helper.succeed();
 		});
 	}

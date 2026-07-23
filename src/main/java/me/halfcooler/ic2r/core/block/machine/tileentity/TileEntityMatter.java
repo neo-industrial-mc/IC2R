@@ -75,9 +75,11 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 	public boolean redstonePowered = false;
 	private double lastEnergy;
 	/**
-	 * Sound / activity parity state (IC2 Experimental mass fabricator):
-	 * 0 = idle (no EU or redstone-stopped), 1 = running, 2 = running with scrap bonus.
+	 * Sound / activity state:
+	 * 0 = idle (not accepting EU / not generating, or redstone-stopped / empty),
+	 * 1 = working, 2 = working with scrap bonus.
 	 * Networked to the client so looping sounds do not depend on a possibly stale blockstate.
+	 * Stored charge alone does not keep loops alive — only actual work does.
 	 */
 	private int state = 0;
 	private int prevState = 0;
@@ -166,6 +168,9 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 		needsInvUpdate |= this.upgradeSlot.tickNoMark();
 		if (!this.redstone.hasRedstoneInput() && !(this.energy.getEnergy() <= 0.0))
 		{
+			// Working = accepted EU this tick (buffer rose vs last tick). Stored charge alone is idle.
+			boolean isWorking = this.energy.getEnergy() > this.lastEnergy;
+
 			if (this.scrap > 0)
 			{
 				double bonus = Math.min(this.scrap, this.energy.getEnergy() - this.lastEnergy);
@@ -174,16 +179,7 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 					this.energy.forceAddEnergy(5.0 * bonus);
 					this.scrap -= (int) bonus;
 				}
-
-				this.setState(2);
-			} else
-			{
-				this.setState(1);
 			}
-
-			// Keep active while the fabricator holds EU so packet-allocation flicker near other
-			// consumers cannot stop/start the main loop every few ticks.
-			this.setActive(true);
 
 			if (this.scrap < 10000)
 			{
@@ -197,7 +193,24 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 
 			if (this.isReadyToGenerate())
 			{
-				needsInvUpdate = this.attemptGeneration();
+				boolean generated = this.attemptGeneration();
+				needsInvUpdate = generated;
+				// Full buffer may not accept more EU, but producing UU is still work.
+				if (generated)
+				{
+					isWorking = true;
+				}
+			}
+
+			if (isWorking)
+			{
+				this.setState(this.scrap > 0 ? 2 : 1);
+				this.setActive(true);
+			} else
+			{
+				// Idle with residual EU (no intake, not generating) — silence loops.
+				this.setState(0);
+				this.setActive(false);
 			}
 
 			needsInvUpdate |= this.containerSlot.processFromTank(this.fluidTank, this.outputSlot);
@@ -362,7 +375,7 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 	@Override
 	protected boolean shouldSoundActive()
 	{
-		// Drive sound from the synchronized parity state, not blockstate ACTIVE
+		// Drive sound from the synchronized work state, not blockstate ACTIVE
 		// (opening the GUI can rebroadcast stale blockstate and would revive loops).
 		return this.state != 0;
 	}
@@ -370,6 +383,7 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 	@Override
 	protected boolean shouldSubSoundActive()
 	{
+		// Scrap loop only while working with scrap amplifier available.
 		return this.state == 2;
 	}
 
