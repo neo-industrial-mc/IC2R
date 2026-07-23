@@ -44,6 +44,11 @@ class RecipeUtil
 		for (Ingredient ingredient : x)
 		{
 			ItemStack[] stacks = ingredient.getItems();
+			if (stacks.length == 0)
+			{
+				continue;
+			}
+
 			List<LeanItemStack> res = new ArrayList<>(stacks.length);
 
 			for (ItemStack stack : stacks)

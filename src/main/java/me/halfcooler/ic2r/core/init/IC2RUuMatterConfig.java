@@ -144,6 +144,8 @@ public final class IC2RUuMatterConfig
 		defaults.put("minecraft:diorite", 17.776792295554227);
 		defaults.put("minecraft:coal", 60.62629764082485);
 		defaults.put("minecraft:redstone", 79.72506644392134);
+		defaults.put("minecraft:copper_ore", 24.902622637582024);
+		defaults.put("minecraft:deepslate_copper_ore", 24.902622637582024);
 		defaults.put("minecraft:iron_ore", 107.27283597727642);
 		defaults.put("ic2r:tin_ore", 136.03834175163496);
 		defaults.put("minecraft:lapis_lazuli", 416.5736474186792);
