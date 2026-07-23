@@ -1,6 +1,8 @@
 package ic2.core.block.misc;
 
+import ic2.core.Ic2DamageSource;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -21,14 +23,21 @@ public class HydrogenBlock extends LiquidBlock {
           if (dx == 0 && dy == 0 && dz == 0) continue;
           BlockPos neighborPos = pos.offset(dx, dy, dz);
           if (world.getBlockState(neighborPos).is(Blocks.FIRE)) {
+            // Remove fluid first so the source block is gone before the blast.
             world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-            world.explode(
-                null,
-                pos.getX() + 0.5,
-                pos.getY() + 0.5,
-                pos.getZ() + 0.5,
-                2.0F,
-                Level.ExplosionInteraction.BLOCK);
+            if (!world.isClientSide && world instanceof ServerLevel serverLevel) {
+              // Custom damage type so advancements can detect hydrogen blasts specifically.
+              serverLevel.explode(
+                  null,
+                  Ic2DamageSource.hydrogenExplosion(serverLevel),
+                  null,
+                  pos.getX() + 0.5,
+                  pos.getY() + 0.5,
+                  pos.getZ() + 0.5,
+                  2.0F,
+                  false,
+                  Level.ExplosionInteraction.BLOCK);
+            }
             return;
           }
         }

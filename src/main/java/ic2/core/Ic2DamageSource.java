@@ -24,11 +24,16 @@ public class Ic2DamageSource {
       ResourceKey.create(
           Registries.DAMAGE_TYPE,
           ResourceLocation.fromNamespaceAndPath("ic2", "reactor_explosion"));
+  public static final ResourceKey<DamageType> HYDROGEN_EXPLOSION =
+      ResourceKey.create(
+          Registries.DAMAGE_TYPE,
+          ResourceLocation.fromNamespaceAndPath("ic2", "hydrogen_explosion"));
 
   public static DamageSource electricity;
   public static DamageSource nuke;
   public static DamageSource radiation;
   public static DamageSource reactorExplosion;
+  public static DamageSource hydrogenExplosion;
 
   public static void init(RegistryAccess registryAccess) {
     Registry<DamageType> registry = registryAccess.registryOrThrow(Registries.DAMAGE_TYPE);
@@ -36,6 +41,15 @@ public class Ic2DamageSource {
     nuke = new DamageSource(registry.getHolderOrThrow(NUKE));
     radiation = new DamageSource(registry.getHolderOrThrow(RADIATION));
     reactorExplosion = new DamageSource(registry.getHolderOrThrow(REACTOR_EXPLOSION));
+    hydrogenExplosion = new DamageSource(registry.getHolderOrThrow(HYDROGEN_EXPLOSION));
+  }
+
+  public static DamageSource hydrogenExplosion(Level level) {
+    return new DamageSource(
+        level
+            .registryAccess()
+            .registryOrThrow(Registries.DAMAGE_TYPE)
+            .getHolderOrThrow(HYDROGEN_EXPLOSION));
   }
 
   public static DamageSource getNukeSource(LivingEntity igniter, Level level) {

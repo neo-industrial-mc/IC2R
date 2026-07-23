@@ -1,0 +1,40 @@
+{
+  "parent": "ic2:ic2/build_generator/root",
+  "display": {
+    "icon": {
+      "id": "ic2:hydrogen_cell"
+    },
+    "title": {
+      "translate": "advancements.ic2.hydrogen_verified"
+    },
+    "description": {
+      "translate": "advancements.ic2.hydrogen_verified.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ic2:hydrogen_explosion_hurt": {
+      "trigger": "minecraft:entity_hurt_player",
+      "conditions": {
+        "damage": {
+          "type": {
+            "tags": [
+              {
+                "id": "ic2:hydrogen_explosion",
+                "expected": true
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ic2:hydrogen_explosion_hurt"
+    ]
+  ]
+}
