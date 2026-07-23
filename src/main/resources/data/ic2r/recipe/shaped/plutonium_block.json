@@ -1,0 +1,17 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PPP",
+    "PPP",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "ic2r:plutonium"
+    }
+  },
+  "group": "plutonium_block",
+  "result": {
+    "item": "ic2r:plutonium_block"
+  }
+}

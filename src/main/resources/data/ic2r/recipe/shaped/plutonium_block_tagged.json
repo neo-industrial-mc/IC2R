@@ -1,0 +1,17 @@
+{
+  "type": "ic2r:shaped",
+  "pattern": [
+    "PPP",
+    "PPP",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:ingots/plutonium"
+    }
+  },
+  "group": "plutonium_block",
+  "result": {
+    "item": "ic2r:plutonium_block"
+  }
+}

@@ -4,6 +4,7 @@
     "ic2r:steel_block",
     "ic2r:bronze_block",
     "ic2r:lead_block",
-    "ic2r:uranium_block"
+    "ic2r:uranium_block",
+    "ic2r:plutonium_block"
   ]
 }

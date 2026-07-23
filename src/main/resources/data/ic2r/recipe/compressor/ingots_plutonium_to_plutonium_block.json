@@ -1,0 +1,10 @@
+{
+  "type": "ic2r:compressor",
+  "ingredient": {
+    "tag": "c:ingots/plutonium",
+    "count": 9
+  },
+  "result": {
+    "item": "ic2r:plutonium_block"
+  }
+}
