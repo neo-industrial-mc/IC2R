@@ -1,10 +1,10 @@
 
 # 工业时代 2：重构
 
-<img src="https://img.shields.io/badge/Minecraft-1.20.1-brightgreen" alt="Minecraft 1.20.1">
-<img src="https://img.shields.io/badge/Forge-47.4.20-orange" alt="Forge 47.4.20">
-<img src="https://img.shields.io/badge/Version-2.10.32--ex120-blue" alt="Version 2.10.32-ex120">
-<img src="https://img.shields.io/badge/License-ARR-red" alt="License ARR">
+<img src="https://img.shields.io/badge/Minecraft-1.21.1-brightgreen" alt="Minecraft 1.21.1">
+<img src="https://img.shields.io/badge/NeoForge-21.1.234-orange" alt="NeoForge 21.1.234">
+<img src="https://img.shields.io/badge/Version-21.1.0-blue" alt="Version 21.1.0">
+<img src="https://img.shields.io/badge/License-AGPL--3.0-blue" alt="License AGPL-3.0">
 
 本项目代码基于官方构建版本 `2.9.40-ex119` 反编译得到，并从 `2.8.222-ex112` 迁移了缺失与错误的功能。
 
