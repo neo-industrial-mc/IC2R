@@ -32,6 +32,7 @@ public final class Ic2rBlocksResources
 	public static final DeferredHolder<Block, Block> STEEL_BLOCK = EnvProxyForge.BLOCKS.register("steel_block", () -> new Block(Properties.of().strength(8.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 	public static final DeferredHolder<Block, Block> TIN_BLOCK = EnvProxyForge.BLOCKS.register("tin_block", () -> new Block(Properties.of().strength(4.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 	public static final DeferredHolder<Block, Block> URANIUM_BLOCK = EnvProxyForge.BLOCKS.register("uranium_block", () -> new Block(Properties.of().strength(6.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+	public static final DeferredHolder<Block, Block> PLUTONIUM_BLOCK = EnvProxyForge.BLOCKS.register("plutonium_block", () -> new Block(Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(6.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 	public static final DeferredHolder<Block, Block> REINFORCED_STONE = EnvProxyForge.BLOCKS.register("reinforced_stone", () -> new Block(Properties.of().strength(80.0F, 180.0F).requiresCorrectToolForDrops()));
 	public static final DeferredHolder<Block, Block> REFRACTORY_BRICKS = EnvProxyForge.BLOCKS.register("refractory_bricks", () -> new BlockRefractoryBricks());
 	public static final DeferredHolder<Block, Block> MACHINE = EnvProxyForge.BLOCKS.register("machine", () -> new Block(Properties.of().strength(5.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));

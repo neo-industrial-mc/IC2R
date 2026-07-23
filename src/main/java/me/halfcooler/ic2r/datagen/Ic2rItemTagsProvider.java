@@ -13,9 +13,9 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Item-tag DataGen (W2.5): tool tags previously handwritten under
- * {@code data/ic2r/tags/items/}. Content is intentionally identical to the old JSON.
- * Block-tag lookup comes from {@link Ic2rBlockTagsProvider} (G2.6) for future {@code copy()}.
+ * Item-tag DataGen for IC2R-private tool tags under {@code data/ic2r/tags/item/}.
+ * Common {@code c:} material tags remain handwritten under {@code data/c/tags/item/}.
+ * Block-tag lookup comes from {@link Ic2rBlockTagsProvider} for future {@code copy()}.
  */
 public final class Ic2rItemTagsProvider extends ItemTagsProvider
 {

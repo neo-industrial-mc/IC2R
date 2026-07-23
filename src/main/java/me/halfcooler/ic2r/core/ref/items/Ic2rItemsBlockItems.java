@@ -33,6 +33,7 @@ public final class Ic2rItemsBlockItems
 	public static final Item STEEL_BLOCK = Ic2rItems.register("steel_block", new ItemBlockIc2r(Ic2rBlocks.STEEL_BLOCK.get(), new Properties()));
 	public static final Item TIN_BLOCK = Ic2rItems.register("tin_block", new ItemBlockIc2r(Ic2rBlocks.TIN_BLOCK.get(), new Properties()));
 	public static final Item URANIUM_BLOCK = Ic2rItems.register("uranium_block", new ItemBlockIc2r(Ic2rBlocks.URANIUM_BLOCK.get(), new Properties()));
+	public static final Item PLUTONIUM_BLOCK = Ic2rItems.register("plutonium_block", new ItemBlockIc2r(Ic2rBlocks.PLUTONIUM_BLOCK.get(), new Properties()));
 	public static final Item REINFORCED_STONE = Ic2rItems.register("reinforced_stone", new ItemBlockIc2r(Ic2rBlocks.REINFORCED_STONE.get(), new Properties()));
 	public static final Item REFRACTORY_BRICKS = Ic2rItems.register("refractory_bricks", new ItemBlockIc2r(Ic2rBlocks.REFRACTORY_BRICKS.get(), new Properties()));
 	public static final Item MACHINE = Ic2rItems.register("machine", new ItemBlockIc2r(Ic2rBlocks.MACHINE.get(), new Properties()));

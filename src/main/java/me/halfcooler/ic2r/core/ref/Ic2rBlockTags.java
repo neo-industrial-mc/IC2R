@@ -1,43 +1,57 @@
 package me.halfcooler.ic2r.core.ref;
 
 import me.halfcooler.ic2r.core.IC2R;
-import me.halfcooler.ic2r.platform.services.PlatformLifecycle;
-import me.halfcooler.ic2r.platform.services.PlatformServices;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
+/**
+ * Block tags used by IC2R.
+ * <p>
+ * Common material tags use the shared {@code c:} namespace in hierarchical form
+ * ({@code c:<form>/<material>}, e.g. {@code c:ores/tin}, {@code c:storage_blocks/lead}).
+ * Flat Fabric names ({@code c:tin_ores}) and loader dual-paths are not used.
+ * <p>
+ * IC2R-private behaviour tags stay under the {@code ic2r:} namespace.
+ */
 public final class Ic2rBlockTags
 {
-	public static final TagKey<Block> EMPTY = create("ic2r:empty", "ic2r:empty");
+	public static final TagKey<Block> EMPTY = mod("empty");
 	/** Blocks correctly mined with the IC2R wrench (1.12 HarvestTool.Wrench). */
-	public static final TagKey<Block> MINEABLE_WITH_WRENCH = create("ic2r:mineable/wrench", "ic2r:mineable/wrench");
-	public static final TagKey<Block> ORES = create("c:ores", "c:ores");
-	public static final TagKey<Block> RUBBER_LOGS = create("c:rubber_logs", "c:rubber_logs");
-	public static final TagKey<Block> LEAD_ORES = create("c:lead_ores", "c:ores/lead");
-	public static final TagKey<Block> SILVER_ORES = create("c:silver_ores", "c:ores/silver");
-	public static final TagKey<Block> TIN_ORES = create("c:tin_ores", "c:ores/tin");
-	public static final TagKey<Block> COPPER_BLOCKS = create("c:copper_blocks", "c:storage_blocks/copper");
-	public static final TagKey<Block> GOLD_BLOCKS = create("c:gold_blocks", "c:storage_blocks/gold");
-	public static final TagKey<Block> IRON_BLOCKS = create("c:iron_blocks", "c:storage_blocks/iron");
-	public static final TagKey<Block> LEAD_BLOCKS = create("c:lead_blocks", "c:storage_blocks/lead");
-	public static final TagKey<Block> SILVER_BLOCKS = create("c:silver_blocks", "c:storage_blocks/silver");
-	public static final TagKey<Block> TIN_BLOCKS = create("c:tin_blocks", "c:storage_blocks/tin");
+	public static final TagKey<Block> MINEABLE_WITH_WRENCH = mod("mineable/wrench");
+
+	public static final TagKey<Block> ORES = common("ores");
+	public static final TagKey<Block> RUBBER_LOGS = common("rubber_logs");
+
+	public static final TagKey<Block> LEAD_ORES = common("ores/lead");
+	public static final TagKey<Block> SILVER_ORES = common("ores/silver");
+	public static final TagKey<Block> TIN_ORES = common("ores/tin");
+	public static final TagKey<Block> URANIUM_ORES = common("ores/uranium");
+
+	public static final TagKey<Block> COPPER_BLOCKS = common("storage_blocks/copper");
+	public static final TagKey<Block> GOLD_BLOCKS = common("storage_blocks/gold");
+	public static final TagKey<Block> IRON_BLOCKS = common("storage_blocks/iron");
+	public static final TagKey<Block> LEAD_BLOCKS = common("storage_blocks/lead");
+	public static final TagKey<Block> SILVER_BLOCKS = common("storage_blocks/silver");
+	public static final TagKey<Block> TIN_BLOCKS = common("storage_blocks/tin");
+	public static final TagKey<Block> BRONZE_BLOCKS = common("storage_blocks/bronze");
+	public static final TagKey<Block> STEEL_BLOCKS = common("storage_blocks/steel");
+	public static final TagKey<Block> URANIUM_BLOCKS = common("storage_blocks/uranium");
+	public static final TagKey<Block> PLUTONIUM_BLOCKS = common("storage_blocks/plutonium");
 
 	public static void init()
 	{
 	}
 
-	private static TagKey<Block> create(String fabricName, String forgeName)
+	private static TagKey<Block> common(String path)
 	{
-		// G3.5: force IC2R <clinit> (installs SPI) then pick loader-specific tag id
-		if (IC2R.envProxy == null)
-		{
-			throw new IllegalStateException("IC2R.envProxy not initialized");
-		}
-		boolean fabric = PlatformServices.lifecycle().getLoaderKind() == PlatformLifecycle.LoaderKind.FABRIC;
-		ResourceLocation id = ResourceLocation.parse(fabric ? fabricName : forgeName);
-		return TagKey.create(Registries.BLOCK, id);
+		return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", path));
+	}
+
+	private static TagKey<Block> mod(String path)
+	{
+		return TagKey.create(Registries.BLOCK, IC2R.getIdentifier(path));
 	}
 }

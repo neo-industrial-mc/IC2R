@@ -81,6 +81,7 @@ public final class Ic2rItemsMaterials
 	public static final Item STEEL_INGOT = Ic2rItems.register("steel_ingot", new Item(new Properties()));
 	public static final Item TIN_INGOT = Ic2rItems.register("tin_ingot", new Item(new Properties()));
 	public static final Item URANIUM_INGOT = Ic2rItems.register("uranium_ingot", new Item(new Properties()));
+	public static final Item PLUTONIUM_INGOT = Ic2rItems.register("plutonium_ingot", new Item(new Properties()));
 	public static final Item BRONZE_PLATE = Ic2rItems.register("bronze_plate", new Item(new Properties()));
 	public static final Item COPPER_PLATE = Ic2rItems.register("copper_plate", new Item(new Properties()));
 	public static final Item GOLD_PLATE = Ic2rItems.register("gold_plate", new Item(new Properties()));

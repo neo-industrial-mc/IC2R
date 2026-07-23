@@ -46,6 +46,7 @@ public final class Ic2rItems
 	public static final Item STEEL_BLOCK = Ic2rItemsBlockItems.STEEL_BLOCK;
 	public static final Item TIN_BLOCK = Ic2rItemsBlockItems.TIN_BLOCK;
 	public static final Item URANIUM_BLOCK = Ic2rItemsBlockItems.URANIUM_BLOCK;
+	public static final Item PLUTONIUM_BLOCK = Ic2rItemsBlockItems.PLUTONIUM_BLOCK;
 	public static final Item REINFORCED_STONE = Ic2rItemsBlockItems.REINFORCED_STONE;
 	public static final Item REFRACTORY_BRICKS = Ic2rItemsBlockItems.REFRACTORY_BRICKS;
 	public static final Item MACHINE = Ic2rItemsBlockItems.MACHINE;
@@ -265,6 +266,7 @@ public final class Ic2rItems
 	public static final Item STEEL_INGOT = Ic2rItemsMaterials.STEEL_INGOT;
 	public static final Item TIN_INGOT = Ic2rItemsMaterials.TIN_INGOT;
 	public static final Item URANIUM_INGOT = Ic2rItemsMaterials.URANIUM_INGOT;
+	public static final Item PLUTONIUM_INGOT = Ic2rItemsMaterials.PLUTONIUM_INGOT;
 	public static final Item BRONZE_PLATE = Ic2rItemsMaterials.BRONZE_PLATE;
 	public static final Item COPPER_PLATE = Ic2rItemsMaterials.COPPER_PLATE;
 	public static final Item GOLD_PLATE = Ic2rItemsMaterials.GOLD_PLATE;
@@ -631,6 +633,7 @@ public final class Ic2rItems
 		addToCreativeTab(Ic2rItemGroupType.GENERAL, () -> MAGENTA_WALL);
 		addToCreativeTab(Ic2rItemGroupType.GENERAL, () -> ORANGE_WALL);
 		addToCreativeTab(Ic2rItemGroupType.GENERAL, () -> PINK_WALL);
+		addToCreativeTab(Ic2rItemGroupType.GENERAL, () -> PLUTONIUM_BLOCK);
 		addToCreativeTab(Ic2rItemGroupType.GENERAL, () -> PURPLE_WALL);
 		addToCreativeTab(Ic2rItemGroupType.GENERAL, () -> RAW_LEAD_BLOCK);
 		addToCreativeTab(Ic2rItemGroupType.GENERAL, () -> RAW_TIN_BLOCK);
@@ -850,6 +853,7 @@ public final class Ic2rItems
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> PELLET);
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> PLANT_BALL);
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> PLUTONIUM);
+		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> PLUTONIUM_INGOT);
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> POWER_UNIT);
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> PURIFIED_COPPER);
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> PURIFIED_GOLD);

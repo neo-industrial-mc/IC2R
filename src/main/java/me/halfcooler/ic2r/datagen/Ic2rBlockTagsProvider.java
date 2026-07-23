@@ -11,8 +11,8 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Block-tag DataGen (G2.6): migrates handwritten {@code data/ic2r/tags/blocks/**}.
- * Content is intentionally identical to the old JSON.
+ * Block-tag DataGen for IC2R-private tags under {@code data/ic2r/tags/block/}.
+ * Common {@code c:} material tags remain handwritten under {@code data/c/tags/block/}.
  */
 public final class Ic2rBlockTagsProvider extends BlockTagsProvider
 {

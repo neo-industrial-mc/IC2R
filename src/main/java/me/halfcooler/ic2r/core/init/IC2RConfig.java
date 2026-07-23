@@ -139,8 +139,7 @@ public class IC2RConfig
 			disableEnderChest = b.define("disableEnderChest", false);
 			b.comment(
 				"Comma separated list of blocks and items which should not be turned into scrap by the recycler.",
-				"Format: <name>[@metadata], metadata * matches any.",
-				"Ore dictionary entries can be specified with OreDict:<ore dict name> as the name."
+				"Format: <name> or Tag:<namespace:path> (e.g. Tag:c:ingots/tin), optional *amount suffix."
 			);
 			recyclerBlacklist = b.define("recyclerBlacklist", "minecraft:glass_pane, minecraft:stick, minecraft:snowball, minecraft:snow_layer, minecraft:snow");
 			b.comment(
@@ -435,9 +434,8 @@ public class IC2RConfig
 			allowBurningScrap = b.define("allowBurningScrap", true);
 			b.comment(
 				"Comma separated list with ores the miner should harvest.",
-				"Format: <name>[@metadata], e.g. minecraft:torch, minecraft:chest",
-				"The metadata * will match any, e.g. minecraft:log@*.",
-				"Ore dictionary entries can be specified with OreDict:<ore dict name> as the name."
+				"Format: <name> or Tag:<namespace:path> (e.g. Tag:c:ores/tin).",
+				"Examples: minecraft:torch, minecraft:chest"
 			);
 			additionalValuableOres = b.define("additionalValuableOres", "");
 			b.comment("Use the new highly experimental current + voltage energy net model with energy loss. Only set this to true if you know what you are doing.");

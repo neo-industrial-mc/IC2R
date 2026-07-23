@@ -2,7 +2,7 @@
   "type": "ic2r:shapeless",
   "ingredients": [
     {
-      "tag": "ic2r:rubber_logs"
+      "tag": "c:rubber_logs"
     }
   ],
   "result": {

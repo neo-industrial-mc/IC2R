@@ -400,7 +400,7 @@ api →（仅 JDK + 必要的 MC API 抽象，尽量薄）
 | **网络字段逻辑名（新）** | `snake_case` | `gui_progress`（禁止反射字段名直出） |
 | **配置键** | `snake_case` / TOML 惯用 | `energy_net_mode` |
 | **数据包路径** | 目录与文件 `snake_case` | `data/ic2r/recipes/...` |
-| **Tag** | `snake_case` | `forge:ingots/copper`（遵循社区 tag 惯例） |
+| **Tag** | 层级 `c:<form>/<material>` | `c:ingots/copper`（NeoForge/Fabric 1.21 common tags） |
 
 > **重要澄清**：  
 > “驼峰/Pascal → 下划线”针对的是**字面量与跨边界标识符**（注册名、NBT、网络、lang、资源路径），**不是**把 Java 源码改成 `snake_case` 方法名（那既违反 Java 惯例，也无助于可读性）。  

@@ -46,6 +46,7 @@ public final class Ic2rBlocks
 	public static final DeferredHolder<Block, Block> STEEL_BLOCK = Ic2rBlocksResources.STEEL_BLOCK;
 	public static final DeferredHolder<Block, Block> TIN_BLOCK = Ic2rBlocksResources.TIN_BLOCK;
 	public static final DeferredHolder<Block, Block> URANIUM_BLOCK = Ic2rBlocksResources.URANIUM_BLOCK;
+	public static final DeferredHolder<Block, Block> PLUTONIUM_BLOCK = Ic2rBlocksResources.PLUTONIUM_BLOCK;
 	public static final DeferredHolder<Block, Block> REINFORCED_STONE = Ic2rBlocksResources.REINFORCED_STONE;
 	public static final DeferredHolder<Block, Block> REFRACTORY_BRICKS = Ic2rBlocksResources.REFRACTORY_BRICKS;
 	public static final DeferredHolder<Block, Block> MACHINE = Ic2rBlocksResources.MACHINE;
