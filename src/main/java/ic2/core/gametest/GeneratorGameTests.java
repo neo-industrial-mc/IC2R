@@ -212,8 +212,8 @@ public class GeneratorGameTests {
         });
   }
 
-  // semifluid generator: biogas burns 10 mB at a time for 16 EU/t, so 100 mB comes out to exactly
-  // 1600 EU
+  // semifluid generator: biogas burns 20 mB at a time for 32 EU/t, so 100 mB comes out to exactly
+  // 3200 EU
   @GameTest(template = EMPTY, timeoutTicks = 300)
   public static void semifluidGeneratorBurnsBiogas(GameTestHelper helper) {
     helper.setBlock(new BlockPos(1, 1, 1), Ic2Blocks.SEMIFLUID_GENERATOR);
@@ -229,7 +229,7 @@ public class GeneratorGameTests {
           Ic2GameTestAssertions.assertNear(
               helper,
               getEnergy(semifluid),
-              1600.0,
+              3200.0,
               "semifluid generator buffer after 100 mB biogas");
         });
   }

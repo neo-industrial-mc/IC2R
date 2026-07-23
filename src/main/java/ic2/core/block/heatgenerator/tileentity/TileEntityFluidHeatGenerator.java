@@ -45,12 +45,12 @@ public class TileEntityFluidHeatGenerator extends TileEntityHeatSourceInventory 
     this.fluids = this.addComponent(new Fluids(this));
     this.fluidTank =
         this.fluids.addTankInsert(
-            "fluidTank", 10000, Fluids.fluidPredicate(Recipes.semiFluidGenerator));
+            "fluidTank", 10000, Fluids.fluidPredicate(Recipes.fluidHeatGenerator));
   }
 
   public static void init() {
     Recipes.fluidHeatGenerator = new FluidHeatManager();
-    if ((float) IC2Config.balance.energy.generator.semiFluidBiogas.get().floatValue() > 0.0F) {
+    if ((float) IC2Config.balance.energy.heatGenerator.semiFluidBiogas.get().floatValue() > 0.0F) {
       addFuel(
           Ic2Fluids.BIOGAS.still(),
           10,
