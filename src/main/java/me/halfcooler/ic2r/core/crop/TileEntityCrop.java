@@ -94,20 +94,58 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	@Override
 	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
 		super.loadAdditional(nbt, registries);
-		if (nbt.contains("statGrowth") && nbt.contains("statGain"))
+		// Load each key independently so partial / older saves still restore growth progress.
+		// Previously required both statGrowth AND statGain; missing either dropped growthPoints entirely.
+		if (nbt.contains("statGrowth"))
 		{
 			this.statGrowth = nbt.getByte("statGrowth");
+		}
+		if (nbt.contains("statGain"))
+		{
 			this.statGain = nbt.getByte("statGain");
+		}
+		if (nbt.contains("statResistance"))
+		{
 			this.statResistance = nbt.getByte("statResistance");
+		}
+		if (nbt.contains("storageNutrients"))
+		{
 			this.storageNutrients = nbt.getShort("storageNutrients");
+		}
+		if (nbt.contains("storageWater"))
+		{
 			this.storageWater = nbt.getShort("storageWater");
+		}
+		if (nbt.contains("storageWeedEX"))
+		{
 			this.storageWeedEX = nbt.getShort("storageWeedEX");
+		}
+		if (nbt.contains("terrainHumidity"))
+		{
 			this.terrainHumidity = nbt.getByte("terrainHumidity");
+		}
+		if (nbt.contains("terrainNutrients"))
+		{
 			this.terrainNutrients = nbt.getByte("terrainNutrients");
+		}
+		if (nbt.contains("terrainAirQuality"))
+		{
 			this.terrainAirQuality = nbt.getByte("terrainAirQuality");
+		}
+		if (nbt.contains("currentAge"))
+		{
 			this.currentAge = nbt.getByte("currentAge");
+		}
+		if (nbt.contains("growthPoints"))
+		{
 			this.growthPoints = nbt.getShort("growthPoints");
+		}
+		if (nbt.contains("scanLevel"))
+		{
 			this.scanLevel = nbt.getByte("scanLevel");
+		}
+		if (nbt.contains("customData", 10))
+		{
 			this.customData = nbt.getCompound("customData");
 		}
 	}
@@ -116,22 +154,31 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
-		if (this.crop != null)
-		{
-			nbt.putByte("statGrowth", this.statGrowth);
-			nbt.putByte("statGain", this.statGain);
-			nbt.putByte("statResistance", this.statResistance);
-			nbt.putShort("storageNutrients", this.storageNutrients);
-			nbt.putShort("storageWater", this.storageWater);
-			nbt.putShort("storageWeedEX", this.storageWeedEX);
-			nbt.putByte("terrainHumidity", this.terrainHumidity);
-			nbt.putByte("terrainNutrients", this.terrainNutrients);
-			nbt.putByte("terrainAirQuality", this.terrainAirQuality);
-			nbt.putByte("currentAge", this.currentAge);
-			nbt.putShort("growthPoints", this.growthPoints);
-			nbt.putByte("scanLevel", this.scanLevel);
-			nbt.put("customData", this.customData.copy());
-		}
+		// Always persist crop TE fields (including empty crop sticks with nutrient/water storage).
+		// Age stage also lives in the block state; growthPoints only exist here.
+		nbt.putByte("statGrowth", this.statGrowth);
+		nbt.putByte("statGain", this.statGain);
+		nbt.putByte("statResistance", this.statResistance);
+		nbt.putShort("storageNutrients", this.storageNutrients);
+		nbt.putShort("storageWater", this.storageWater);
+		nbt.putShort("storageWeedEX", this.storageWeedEX);
+		nbt.putByte("terrainHumidity", this.terrainHumidity);
+		nbt.putByte("terrainNutrients", this.terrainNutrients);
+		nbt.putByte("terrainAirQuality", this.terrainAirQuality);
+		nbt.putByte("currentAge", this.currentAge);
+		nbt.putShort("growthPoints", this.growthPoints);
+		nbt.putByte("scanLevel", this.scanLevel);
+		nbt.put("customData", this.customData.copy());
+	}
+
+	/**
+	 * Marks this crop for chunk save ({@link #setChanged()}) and client field sync ({@link #dirty}).
+	 * Growth points / storage only live in TE NBT — without setChanged, unload can drop progress.
+	 */
+	private void markCropDataChanged()
+	{
+		this.dirty = true;
+		this.setChanged();
 	}
 
 	@Override
@@ -233,6 +280,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 				if (this.getStorageWeedEX() > 0 && IC2R.random.nextInt(10) == 0)
 				{
 					this.storageWeedEX--;
+					this.setChanged();
 				}
 
 				return;
@@ -250,6 +298,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 				System.out.println("Plant: " + this.getCrop().getUnlocalizedName());
 			}
 
+			boolean dataChanged = false;
 			if (this.crop.canGrow(this))
 			{
 				this.performGrowthTick();
@@ -262,23 +311,30 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 				{
 					this.growthPoints = 0;
 					this.setCurrentAge(this.getCurrentAge() + 1);
-					this.dirty = true;
+					dataChanged = true;
 				}
 			}
 
 			if (this.storageNutrients > 0)
 			{
 				this.storageNutrients--;
+				dataChanged = true;
 			}
 
 			if (this.storageWater > 0)
 			{
 				this.storageWater--;
+				dataChanged = true;
 			}
 
 			if (this.crop.isWeed(this) && IC2R.random.nextInt(50) - this.getStatGrowth() <= 2)
 			{
 				this.performWeedWork();
+			}
+
+			if (dataChanged)
+			{
+				this.markCropDataChanged();
 			}
 		}
 	}
@@ -325,7 +381,14 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 				}
 			}
 
+			short previousPoints = this.growthPoints;
 			this.growthPoints = CropGrowthMath.addGrowthPoints(this.growthPoints, totalGrowth);
+			// Must mark chunk dirty: growthPoints exist only in TE NBT. setBlock age updates already
+			// dirty the chunk on stage-up, but partial progress within a stage did not.
+			if (this.growthPoints != previousPoints || totalGrowth != 0)
+			{
+				this.setChanged();
+			}
 			if (debugGrowth)
 			{
 				IC2R.log.info(LogCategory.Block, "Crop at %s - base growth: %s", this.worldPosition, baseGrowth);
@@ -390,6 +453,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		if (this.storageWeedEX > 0)
 		{
 			this.storageWeedEX = (short) (this.storageWeedEX - 5);
+			this.setChanged();
 			return true;
 		} else
 		{
@@ -422,7 +486,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		} else if (this.isCrossingBase() && !this.getLevel().isClientSide)
 		{
 			this.setCrossingBase(false);
-			this.dirty = true;
+			this.markCropDataChanged();
 			StackUtil.dropAsEntity(this.getLevel(), this.worldPosition, new ItemStack(Ic2rItems.CROP_STICK));
 			return InteractionResult.SUCCESS;
 		} else
@@ -469,7 +533,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 				}
 
 				this.setCrossingBase(true);
-				this.dirty = true;
+				this.markCropDataChanged();
 				return true;
 			}
 
@@ -477,7 +541,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 			{
 				if (this.applyFertilizer(true))
 				{
-					this.dirty = true;
+					this.markCropDataChanged();
 				}
 
 				if (!creative)
@@ -492,7 +556,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 			{
 				if (hydrationCell.applyToCrop(heldItem, this, true))
 				{
-					this.dirty = true;
+					this.markCropDataChanged();
 					return true;
 				}
 
@@ -511,7 +575,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 					amount = FluidHandler.drainMb(heldItem, fs, false, newStack);
 					this.applyHydration(amount, false);
 					StackUtil.set(player, hand, newStack.getValue());
-					this.dirty = true;
+					this.markCropDataChanged();
 				}
 
 				return true;
@@ -529,7 +593,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 					amount = FluidHandler.drainMb(heldItem, fs, false, newStack);
 					this.applyWeedEx(amount, false, true, false);
 					StackUtil.set(player, hand, newStack.getValue());
-					this.dirty = true;
+					this.markCropDataChanged();
 				}
 
 				return true;
@@ -547,6 +611,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 				tileEntityCrop.setStatGain(bs.statGain);
 				tileEntityCrop.setStatGrowth(bs.statGrowth);
 				tileEntityCrop.setStatResistance(bs.statResistance);
+				tileEntityCrop.markCropDataChanged();
 				return true;
 			}
 		}
@@ -571,6 +636,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		tileEntityCrop.setStatGrowth(statGr);
 		tileEntityCrop.setStatResistance(statRe);
 		tileEntityCrop.setScanLevel(scan);
+		tileEntityCrop.markCropDataChanged();
 		NetworkHelper.sendInitialData(tileEntityCrop);
 		return true;
 	}
@@ -701,6 +767,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		if (size > maxAge) size = maxAge;
 		this.currentAge = (byte) size;
 		this.withCropAge(size);
+		this.setChanged();
 	}
 
 	@Override
@@ -713,6 +780,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void setStatGrowth(int growth)
 	{
 		this.statGrowth = (byte) growth;
+		this.setChanged();
 	}
 
 	@Override
@@ -725,6 +793,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void setStatGain(int gain)
 	{
 		this.statGain = (byte) gain;
+		this.setChanged();
 	}
 
 	@Override
@@ -737,6 +806,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void setStatResistance(int resistance)
 	{
 		this.statResistance = (byte) resistance;
+		this.setChanged();
 	}
 
 	@Override
@@ -749,6 +819,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void setStorageNutrients(int nutrients)
 	{
 		this.storageNutrients = (short) nutrients;
+		this.setChanged();
 	}
 
 	@Override
@@ -761,6 +832,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void setStorageWater(int water)
 	{
 		this.storageWater = (short) water;
+		this.setChanged();
 	}
 
 	@Override
@@ -773,6 +845,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void setStorageWeedEX(int weedEX)
 	{
 		this.storageWeedEX = (short) weedEX;
+		this.setChanged();
 	}
 
 	@Override
@@ -784,6 +857,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void setTerrainAirQuality(int value)
 	{
 		this.terrainAirQuality = (byte) value;
+		this.setChanged();
 	}
 
 	@Override
@@ -795,6 +869,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void setTerrainHumidity(int humidity)
 	{
 		this.terrainHumidity = (byte) humidity;
+		this.setChanged();
 	}
 
 	@Override
@@ -806,6 +881,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void setTerrainNutrients(int nutrients)
 	{
 		this.terrainNutrients = (byte) nutrients;
+		this.setChanged();
 	}
 
 	@Override
@@ -818,6 +894,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void setScanLevel(int scanLevel)
 	{
 		this.scanLevel = (byte) scanLevel;
+		this.setChanged();
 	}
 
 	@Override
@@ -830,6 +907,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	public void setGrowthPoints(int growthPoints)
 	{
 		this.growthPoints = (short) growthPoints;
+		this.setChanged();
 	}
 
 	@Override
@@ -1006,7 +1084,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 				return Arrays.stream(drops).map(drop -> !StackUtil.isEmpty(drop) && IC2R.random.nextInt(100) <= this.getStatGain() ? StackUtil.incSize(drop) : drop);
 			}).flatMap(Function.identity()).collect(Collectors.toList());
 			this.setCurrentAge(this.crop.getAgeAfterHarvest(this));
-			this.dirty = true;
+			this.markCropDataChanged();
 			return ret;
 		} else
 		{
@@ -1037,7 +1115,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		this.growthPoints = 0;
 		this.scanLevel = 0;
 		this.currentAge = 0;
-		this.dirty = true;
+		this.markCropDataChanged();
 	}
 
 	@Override
@@ -1312,7 +1390,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		tileEntityCrop.setStatResistance(this.statResistance);
 		tileEntityCrop.setStatGain(this.statGain);
 		tileEntityCrop.setStatGrowth(this.statGrowth);
-		this.dirty = true;
+		tileEntityCrop.markCropDataChanged();
 		return true;
 	}
 
@@ -1352,7 +1430,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 			tileEntityCrop.setStatGrowth(sideCrop.statGrowth);
 			tileEntityCrop.setStatResistance(sideCrop.statResistance);
 			tileEntityCrop.setStatGain(sideCrop.statGain);
-			this.dirty = true;
+			tileEntityCrop.markCropDataChanged();
 			return true;
 		} else
 		{
