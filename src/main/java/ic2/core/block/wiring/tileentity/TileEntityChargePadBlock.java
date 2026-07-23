@@ -122,42 +122,39 @@ public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock {
     }
   }
 
-  // Logic: Main hand, Offhand, Armor, Stack, Inventory
+  /**
+   * Charge every eligible electric item on the player at once, matching the original IC2
+   * chargepad (which iterated the full armor and main inventories without stopping at the
+   * first chargeable item). Each item is charged at the pad's full output power from the
+   * shared energy pool. Scope: offhand, armor, full main inventory (hotbar + backpack;
+   * includes main hand).
+   */
   protected boolean getItems(Player player) {
     int chargeFactor = (int) this.output;
+    boolean charged = false;
 
-    ItemStack stack = player.getMainHandItem();
-    if (!stack.isEmpty()) {
-      if (this.chargeItem(stack, chargeFactor)) return true;
+    ItemStack stack = player.getOffhandItem();
+    if (!stack.isEmpty() && this.chargeItem(stack, chargeFactor)) {
+      charged = true;
     }
 
-    stack = player.getOffhandItem();
-    if (!stack.isEmpty()) {
-      if (this.chargeItem(stack, chargeFactor)) return true;
-    }
-
-    for (int i = player.getInventory().armor.size() - 1; i >= 0; i--) {
+    // Forward order matches the original decompile; with a shared energy pool the order
+    // decides which slots win when the pad runs dry mid-pass.
+    for (int i = 0; i < player.getInventory().armor.size(); i++) {
       stack = player.getInventory().armor.get(i);
-      if (!stack.isEmpty()) {
-        if (this.chargeItem(stack, chargeFactor)) return true;
+      if (!stack.isEmpty() && this.chargeItem(stack, chargeFactor)) {
+        charged = true;
       }
     }
 
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < player.getInventory().items.size(); i++) {
       stack = player.getInventory().items.get(i);
-      if (!stack.isEmpty()) {
-        if (this.chargeItem(stack, chargeFactor)) return true;
+      if (!stack.isEmpty() && this.chargeItem(stack, chargeFactor)) {
+        charged = true;
       }
     }
 
-    for (int i = 9; i < 36; i++) {
-      stack = player.getInventory().items.get(i);
-      if (!stack.isEmpty()) {
-        if (this.chargeItem(stack, chargeFactor)) return true;
-      }
-    }
-
-    return false;
+    return charged;
   }
 
   @Override
