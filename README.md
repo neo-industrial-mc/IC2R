@@ -1,70 +1,73 @@
 
-# 工业时代 2：重构
+# IndustrialCraft 2: Refactored
 
 <img src="https://img.shields.io/badge/Minecraft-1.21.1-brightgreen" alt="Minecraft 1.21.1">
 <img src="https://img.shields.io/badge/NeoForge-21.1.234-orange" alt="NeoForge 21.1.234">
 <img src="https://img.shields.io/badge/Version-21.1.0-blue" alt="Version 21.1.0">
 <img src="https://img.shields.io/badge/License-AGPL--3.0-blue" alt="License AGPL-3.0">
 
-本项目代码基于官方构建版本 `2.9.40-ex119` 反编译得到，并从 `2.8.222-ex112` 迁移了缺失与错误的功能。
+> [!WARNING]
+> This repository is an **experimental fork** used for porting and testing changes.
+> For general use, prefer the upstream project: **[HalfCooler/IC2R](https://github.com/HalfCooler/IC2R)**.
 
-## 写在前面
+This project's code was obtained by decompiling the official build `2.9.40-ex119`, with missing and broken functionality migrated over from `2.8.222-ex112`.
 
-IC2 大概是死了。没有官方回复的开源，继任开发者仍在缺席。
+## Foreword
 
-但社区的呼声从未消停。玩家们等待了太久——等待一个能在高版本运行的、原汁原味的 IC2。
+IC2 is probably dead. No official word on open-sourcing it, and the successor developers remain absent.
 
-于是有人站了出来。[IC2CR](https://github.com/yu1745/ic2-fabric) 率先开源，目标平台是 1.20.1 Fabric，声势不小。然而翻开一看：机制改了，数值改了，UI 也改了——甚至迁移工作大量依赖 AI 代劳。完成度或许尚可，但那已经不是 IC2 了。那是一个以 IC2 为名的别的什么东西。
+But the community's call never went quiet. Players have waited too long — waited for an authentic IC2 that runs on modern versions.
 
-我们不一样，即便头悬版权之剑。我们的目标从一开始就只有一个：**在尽可能不改变原有功能与数值的前提下，将 IC2 完整地带到 1.20.1。**
+So people stepped up. [IC2CR](https://github.com/yu1745/ic2-fabric) open-sourced first, targeting 1.20.1 Fabric, with considerable fanfare. But open it up and look: the mechanics changed, the values changed, the UI changed — much of the migration was even delegated to AI. The level of completeness may be acceptable, but it is no longer IC2. It is something else wearing IC2's name.
 
-最终，我们做到了。交到玩家手上的，是一份运行在 1.20.1 Forge 上的、完整的、可玩的 IC2——它仍旧是那个你记忆中的 IC2。
+We are different, even with the sword of copyright hanging over our heads. From the very beginning we have had exactly one goal: **bring IC2 to modern Minecraft in its entirety, while changing the original functionality and values as little as possible.**
 
-然而我们从未打算喧宾夺主。国内的舆论环境极差，我曾遭受恶意攻击和威胁。再次强调，**我们不是 IC2 的官方继任者**。我们只是热爱 IC2 的玩家，想要在高版本中继续体验 IC2。
+In the end, we did it. What reached players' hands was a complete, playable IC2 — originally on 1.20.1 Forge, now tracking NeoForge 1.21.1 — and it is still the IC2 you remember.
 
-## 与原版的差异
+Yet we never intended to upstage the original. The public discourse around this has been very hostile; I have received malicious attacks and threats. To stress it once more: **we are not IC2's official successors.** We are simply players who love IC2 and want to keep playing it on modern versions.
 
-我们深知玩家选择本 mod 是为了还原体验，因此对原版的改动极为克制。以下是全部变更，无一隐瞒：
+## Differences from the original
 
-- **移除了物品形态的 UU 物质**（`uu_matter`，即粉色粘球）及其下游相关机器。IC2 Dev Team 早在 `2.8.222-ex112` 中便已删除物质生成机（`mass_fabricator`）的合成配方，
-  遗留的 UU 物质复制功能已无存在意义。
-- **移除了精炼铁锭**（`refined_iron_ingot`）。这是 IC2C 的物品，并非 IC2Exp 的组成部分——它的职能是替代钢锭。
-- **移除了脚手架**（`scaffold`）。高版本 Minecraft 已经自带了脚手架，IC2 的脚手架功能重复且不必要。另外对于强化脚手架喷淋建筑泡沫变成防爆石的生成方式，我们回退为合成设计——8 个石头和 1 个高级合金。
-- **调整了锡、铅、铀矿石的生成参数**（从 `2.9.40-ex119` 的数值改动过来）。原版锡矿偏向高山生成，而玩家对锡的需求远高于铅、且更倾向于探索深层矿脉。我们在保持锡总量略多于铅的前提下，优化了其竖直分布，使游戏节奏更为合理。
-- **调整了充电座的无线充电方式**。原版充电座只能为玩家身上不高于充电座电压等级的物品充电。我们改为：充电座可以为玩家身上任何电压等级的物品充电，但充电速度仍然受到充电座电压等级的限制。
-- **新增了矿石过滤卡**。高级采矿机现在可以使用矿石过滤卡来指定采矿的矿石种类，方便玩家自定义采矿范围。
+We know players choose this mod for the faithful experience, so changes to the original are extremely restrained. Below is the complete list of changes, with nothing hidden:
 
-## 版权声明
+- **Removed item-form UU-Matter** (`uu_matter`, the pink slimeball) and its downstream machines. The IC2 Dev Team already removed the Mass Fabricator (`mass_fabricator`) crafting recipe back in `2.8.222-ex112`, so the leftover UU-Matter replication features no longer had a reason to exist.
+- **Removed the Refined Iron Ingot** (`refined_iron_ingot`). It is an IC2 Classic item, not part of IC2 Experimental — its role is filled by the Steel Ingot.
+- **Removed the Scaffold** (`scaffold`). Modern Minecraft ships its own scaffolding, making IC2's redundant and unnecessary. In addition, obtaining Reinforced Stone by spraying Construction Foam onto Iron Scaffolds has been reverted to a crafting recipe — 8 Stone plus 1 Advanced Alloy.
+- **Adjusted ore generation parameters for tin, lead, and uranium** (carried over from the `2.9.40-ex119` value changes). Vanilla-IC2 tin skews toward mountain generation, yet players need far more tin than lead and prefer exploring deep veins. While keeping the total amount of tin slightly above lead, we optimized its vertical distribution for a more reasonable game pace.
+- **Adjusted the charge pad's wireless charging.** Originally a charge pad could only charge items on the player at or below the pad's own voltage tier. Now the pad charges items of any voltage tier, but the charging speed is still limited by the pad's tier.
+- **Added the Mining Filter Card.** The Advanced Miner can now use a filter card to specify which ores to mine, letting players customize the mining scope.
 
-[IC2 Dev Team 引文](https://forum.industrial-craft.net/thread/9843-mc-1-7-ic%C2%B2-v-2-1-x-2-2-x-experimental/?postID=131008#post131008)
+## Copyright notice
 
-**本仓库的代码归属 IC2 Dev Team，即便我和协作者们对代码进行了重构和修复，理论上我们对自己新增的原创代码拥有版权。**
+[IC2 Dev Team citation](https://forum.industrial-craft.net/thread/9843-mc-1-7-ic%C2%B2-v-2-1-x-2-2-x-experimental/?postID=131008#post131008)
 
-仓库许可证为 All Rights Reserved / No License。本项目的版权归原 IC2 Dev Team 所有。我们不拥有 IC2 的代码和资源文件版权，也不声称拥有 IC2 的代码和资源文件版权。我们只是对 IC2 进行反编译、修复、迁移和维护。
+**The code in this repository belongs to the IC2 Dev Team. Even though my collaborators and I have refactored and fixed the code, in theory we hold copyright only over the original code we ourselves added.**
 
-基于此——可能永远无法得到原作者的授权——我们将会在本分支没有明确 Bug 之后，着力重做代码架构。当然，纹理和资源文件尚不明确——我们既想保留原版的感觉，又想要避免版权问题。
+This repository is licensed under AGPL-3.0 (see [LICENSE](./LICENSE)), which applies to our own original contributions. The copyright of the underlying project belongs to the original IC2 Dev Team. We do not own — and do not claim to own — the copyright to IC2's code and asset files. We merely decompile, fix, port, and maintain IC2.
 
-### 模组文件
+Given this — and authorization from the original authors may never come — once this branch has no known bugs, we will focus on rebuilding the code architecture. Textures and asset files remain an open question: we want to keep the original feel while avoiding copyright problems.
 
-反编译得到的代码（本仓库）仍属于原作品的演绎作品。不能单独决定整个项目的授权方式。
+### Mod file
 
-是否允许商业服务器使用，我一个人无法决定，因为原作者仍然拥有底层代码的版权。
+The decompiled code (this repository) is still a derivative work of the original. It cannot unilaterally determine the licensing of the project as a whole.
 
-我不能合法地宣称 **任何商业服务器都可以自由使用这个模组**，因为这涉及我无权处分的版权。
+Whether commercial servers may use it is not something I can decide alone, because the original authors still own the copyright to the underlying code.
 
-即使我写上 *允许商业使用*，如果原作者不允许，那么这项授权对原作者享有版权的部分实际上并不生效。
+I cannot legally declare that **any commercial server may freely use this mod**, since that involves rights I have no authority to grant.
 
-从版权角度来看，**原作者** 理论上可以要求仓库下架、停止分发，甚至反对任何形式的公开传播，无论是否商业。
+Even if I wrote *commercial use permitted*, if the original authors do not allow it, that grant would simply have no effect on the parts they hold copyright to.
 
-### 整合包
+From a copyright standpoint, the **original authors** could in theory demand that the repository be taken down, that distribution stop, or oppose any form of public distribution, commercial or not.
 
-在上文的基础上，您需要添加该模组出处、附上英文说明和其他语言的说明，以及原开发组指定的链接：`https://industrial-craft.net/` 或 `https://forum.industrial-craft.net/` 。
+### Modpacks
 
-## 快速开始
+In addition to the above, you must credit the mod's origin, include the English description and descriptions in other languages, and the links designated by the original dev team: `https://industrial-craft.net/` or `https://forum.industrial-craft.net/`.
 
-请使用 Java 17 构建和编译本分支。
+## Quick start
 
-其他信息请查看 [Release](./release.md)。
+Build this branch with Java 21.
+
+For more information, see [Release](./release.md).
 
 ```shell
 gradlew build
