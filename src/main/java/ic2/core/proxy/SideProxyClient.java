@@ -211,6 +211,7 @@ public final class SideProxyClient implements SideProxy {
     envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.JUNGLE_SAPLING_CROP);
     envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.ACACIA_SAPLING_CROP);
     envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.DARK_OAK_SAPLING_CROP);
+    envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.CHERRY_SAPLING_CROP);
     envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.FERRU_CROP);
     envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.CYPRIUM_CROP);
     envProxy.registerBlockLayer(RenderType.cutoutMipped(), Ic2Blocks.STAGNIUM_CROP);

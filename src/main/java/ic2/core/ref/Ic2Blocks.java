@@ -2366,6 +2366,17 @@ public final class Ic2Blocks {
               Util.noFacings,
               false,
               Ic2CropType.darkOakSapling));
+  public static final Block CHERRY_SAPLING_CROP =
+      register(
+          "cherry_sapling_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.cherrySapling));
   public static final Block FERRU_CROP =
       register(
           "ferru_crop",

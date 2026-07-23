@@ -64,6 +64,10 @@ public class CropBaseSapling extends CropBase {
     drops.add(this.cropDrop.copy());
     if (IC2.random.nextInt(100) >= 75) {
       drops.add(this.cropSapling.copy());
+      // Cherry: if a sapling dropped, 25% chance for 4 pink petals.
+      if (this.getId().equalsIgnoreCase("cherry_sapling") && IC2.random.nextInt(100) >= 75) {
+        drops.add(new ItemStack(Items.PINK_PETALS, 4));
+      }
     }
 
     if (this.getId().equalsIgnoreCase("oak_sapling") && IC2.random.nextInt(100) >= 75) {

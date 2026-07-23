@@ -269,6 +269,8 @@ public final class Ic2BlockEntities {
       register("condenser", TileEntityCondenser::new, Ic2Blocks.CONDENSER);
   public static final BlockEntityType<TileEntityCrop> DARK_OAK_SAPLING_CROP =
       register("dark_oak_sapling_crop", TileEntityCrop::new, Ic2Blocks.DARK_OAK_SAPLING_CROP);
+  public static final BlockEntityType<TileEntityCrop> CHERRY_SAPLING_CROP =
+      register("cherry_sapling_crop", TileEntityCrop::new, Ic2Blocks.CHERRY_SAPLING_CROP);
   public static final BlockEntityType<TileEntityFluidBottler> FLUID_BOTTLER =
       register("fluid_bottler", TileEntityFluidBottler::new, Ic2Blocks.FLUID_BOTTLER);
   public static final BlockEntityType<TileEntityCrop> FERRU_CROP =
