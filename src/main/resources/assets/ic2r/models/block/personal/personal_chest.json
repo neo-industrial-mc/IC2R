@@ -1,8 +1,12 @@
 {
-  "parent": "ic2r:block/personal/personal_chest_shape",
+  "parent": "block/cube",
   "textures": {
-    "bottomtop": "ic2r:block/personal/personal_chest_case_bottomtop",
-    "leftrightback": "ic2r:block/personal/personal_chest_case_leftrightback",
-    "front": "ic2r:block/personal/personal_chest_front"
+    "particle": "ic2r:block/personal/personal_chest_leftrightback",
+    "down": "ic2r:block/personal/personal_chest_bottom",
+    "up": "ic2r:block/personal/personal_chest_top",
+    "north": "ic2r:block/personal/personal_chest_front",
+    "east": "ic2r:block/personal/personal_chest_leftrightback",
+    "south": "ic2r:block/personal/personal_chest_leftrightback",
+    "west": "ic2r:block/personal/personal_chest_leftrightback"
   }
 }
