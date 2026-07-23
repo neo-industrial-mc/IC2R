@@ -1,11 +1,14 @@
 package me.halfcooler.ic2r.core.slot;
 
+import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.invslot.InvSlot;
+import me.halfcooler.ic2r.core.block.invslot.InvSlotOutput;
+import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityCompressor;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 public class SlotInvSlot extends Slot
@@ -74,5 +77,13 @@ public class SlotInvSlot extends Slot
 	{
 		super.onTake(player, stack);
 		this.invSlot.onPickupFromSlot();
+		// Coal chunk → diamond compressor: grant when the player takes the diamond out.
+		if (stack.is(Items.DIAMOND)
+			&& this.invSlot instanceof InvSlotOutput
+			&& this.invSlot.base != null
+			&& this.invSlot.base.getParent() instanceof TileEntityCompressor)
+		{
+			IC2R.grantAdvancement(player, "ic2r/build_generator/build_compressor/build_coal_diamond");
+		}
 	}
 }

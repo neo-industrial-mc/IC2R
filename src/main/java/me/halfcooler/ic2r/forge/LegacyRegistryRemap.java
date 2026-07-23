@@ -39,6 +39,12 @@ public final class LegacyRegistryRemap
 
 	public static final String FACADE_CELL_PATH = "facade_cell";
 
+	/** Removed item; stacks remap to vanilla diamond. */
+	public static final String LEGACY_INDUSTRIAL_DIAMOND_PATH = "industrial_diamond";
+
+	public static final ResourceLocation VANILLA_DIAMOND =
+		ResourceLocation.withDefaultNamespace("diamond");
+
 	private LegacyRegistryRemap()
 	{
 	}
@@ -71,8 +77,10 @@ public final class LegacyRegistryRemap
 	public static List<Alias> planItemPathRenames(Collection<ResourceLocation> registeredItemIds)
 	{
 		Objects.requireNonNull(registeredItemIds, "registeredItemIds");
+		List<Alias> out = new ArrayList<>();
 		boolean hasFacade = false;
 		boolean hasEmpty = false;
+		boolean hasIndustrialDiamond = false;
 		for (ResourceLocation id : registeredItemIds)
 		{
 			if (!CURRENT_NAMESPACE.equals(id.getNamespace()))
@@ -87,17 +95,30 @@ public final class LegacyRegistryRemap
 			{
 				hasEmpty = true;
 			}
+			if (LEGACY_INDUSTRIAL_DIAMOND_PATH.equals(id.getPath()))
+			{
+				hasIndustrialDiamond = true;
+			}
 		}
-		if (!hasFacade || hasEmpty)
+		if (hasFacade && !hasEmpty)
 		{
-			return List.of();
+			ResourceLocation facade = ResourceLocation.fromNamespaceAndPath(CURRENT_NAMESPACE, FACADE_CELL_PATH);
+			out.add(new Alias(ResourceLocation.fromNamespaceAndPath(CURRENT_NAMESPACE, LEGACY_EMPTY_CELL_PATH), facade));
+			out.add(new Alias(ResourceLocation.fromNamespaceAndPath(LEGACY_NAMESPACE, LEGACY_EMPTY_CELL_PATH), facade));
 		}
-
-		ResourceLocation facade = ResourceLocation.fromNamespaceAndPath(CURRENT_NAMESPACE, FACADE_CELL_PATH);
-		return List.of(
-			new Alias(ResourceLocation.fromNamespaceAndPath(CURRENT_NAMESPACE, LEGACY_EMPTY_CELL_PATH), facade),
-			new Alias(ResourceLocation.fromNamespaceAndPath(LEGACY_NAMESPACE, LEGACY_EMPTY_CELL_PATH), facade)
-		);
+		// Industrial diamond was removed; old stacks become vanilla diamond.
+		if (!hasIndustrialDiamond)
+		{
+			out.add(new Alias(
+				ResourceLocation.fromNamespaceAndPath(CURRENT_NAMESPACE, LEGACY_INDUSTRIAL_DIAMOND_PATH),
+				VANILLA_DIAMOND
+			));
+			out.add(new Alias(
+				ResourceLocation.fromNamespaceAndPath(LEGACY_NAMESPACE, LEGACY_INDUSTRIAL_DIAMOND_PATH),
+				VANILLA_DIAMOND
+			));
+		}
+		return out;
 	}
 
 	/**

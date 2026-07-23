@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -18,6 +19,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class LegacyRegistryRemapTest
 {
+	private static final Alias INDUSTRIAL_DIAMOND_IC2R = new Alias(
+		ResourceLocation.fromNamespaceAndPath("ic2r", "industrial_diamond"),
+		LegacyRegistryRemap.VANILLA_DIAMOND
+	);
+	private static final Alias INDUSTRIAL_DIAMOND_IC2 = new Alias(
+		ResourceLocation.fromNamespaceAndPath("ic2", "industrial_diamond"),
+		LegacyRegistryRemap.VANILLA_DIAMOND
+	);
+
 	@Test
 	void namespaceAliases_mapIc2PathToIc2rSamePath()
 	{
@@ -54,7 +64,6 @@ class LegacyRegistryRemapTest
 		ResourceLocation facade = ResourceLocation.fromNamespaceAndPath("ic2r", "facade_cell");
 		List<Alias> aliases = LegacyRegistryRemap.planItemPathRenames(Set.of(facade));
 
-		assertEquals(2, aliases.size());
 		assertTrue(aliases.contains(new Alias(
 			ResourceLocation.fromNamespaceAndPath("ic2r", "empty_cell"),
 			facade
@@ -63,6 +72,9 @@ class LegacyRegistryRemapTest
 			ResourceLocation.fromNamespaceAndPath("ic2", "empty_cell"),
 			facade
 		)));
+		assertTrue(aliases.contains(INDUSTRIAL_DIAMOND_IC2R));
+		assertTrue(aliases.contains(INDUSTRIAL_DIAMOND_IC2));
+		assertEquals(4, aliases.size());
 	}
 
 	@Test
@@ -72,15 +84,28 @@ class LegacyRegistryRemapTest
 			ResourceLocation.fromNamespaceAndPath("ic2r", "facade_cell"),
 			ResourceLocation.fromNamespaceAndPath("ic2r", "empty_cell")
 		));
-		assertTrue(aliases.isEmpty());
+		assertFalse(aliases.stream().anyMatch(a -> a.from().getPath().equals("empty_cell")));
+		assertTrue(aliases.contains(INDUSTRIAL_DIAMOND_IC2R));
+		assertTrue(aliases.contains(INDUSTRIAL_DIAMOND_IC2));
 	}
 
 	@Test
-	void itemPathRenames_skippedWhenFacadeMissing()
+	void itemPathRenames_industrialDiamondWhenNotRegistered()
 	{
 		List<Alias> aliases = LegacyRegistryRemap.planItemPathRenames(Set.of(
 			ResourceLocation.fromNamespaceAndPath("ic2r", "iron_ingot")
 		));
-		assertTrue(aliases.isEmpty());
+		assertEquals(2, aliases.size());
+		assertTrue(aliases.contains(INDUSTRIAL_DIAMOND_IC2R));
+		assertTrue(aliases.contains(INDUSTRIAL_DIAMOND_IC2));
+	}
+
+	@Test
+	void itemPathRenames_skippedWhenIndustrialDiamondStillRegistered()
+	{
+		List<Alias> aliases = LegacyRegistryRemap.planItemPathRenames(Set.of(
+			ResourceLocation.fromNamespaceAndPath("ic2r", "industrial_diamond")
+		));
+		assertFalse(aliases.stream().anyMatch(a -> a.from().getPath().equals("industrial_diamond")));
 	}
 }

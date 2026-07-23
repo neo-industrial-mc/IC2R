@@ -340,7 +340,6 @@ public final class Ic2rItems
 	public static final Item COAL_BALL = Ic2rItemsMaterials.COAL_BALL;
 	public static final Item COAL_BLOCK = Ic2rItemsMaterials.COAL_BLOCK;
 	public static final Item COAL_CHUNK = Ic2rItemsMaterials.COAL_CHUNK;
-	public static final Item INDUTRIAL_DIAMOND = Ic2rItemsMaterials.INDUTRIAL_DIAMOND;
 	public static final Item PLANT_BALL = Ic2rItemsMaterials.PLANT_BALL;
 	public static final Item BIO_CHAFF = Ic2rItemsMaterials.BIO_CHAFF;
 	public static final Item SCRAP = Ic2rItemsMaterials.SCRAP;
@@ -825,7 +824,6 @@ public final class Ic2rItems
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> GOLD_PLATE);
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> HEAT_CONDUCTOR);
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> HYDRATED_TIN_DUST);
-		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> INDUTRIAL_DIAMOND);
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> IODINE);
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> IRIDIUM);
 		addToCreativeTab(Ic2rItemGroupType.MATERIALS, () -> IRIDIUM_ORE);

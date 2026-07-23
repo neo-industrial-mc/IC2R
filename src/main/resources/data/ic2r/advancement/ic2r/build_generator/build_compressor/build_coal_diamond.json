@@ -2,7 +2,7 @@
   "parent": "ic2r:ic2r/build_generator/build_compressor/root",
   "display": {
     "icon": {
-      "id": "ic2r:industrial_diamond"
+      "id": "minecraft:diamond"
     },
     "title": {
       "translate": "advancements.ic2r.build_coal_diamond"
@@ -16,22 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "ic2r:industrial_diamond": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "ic2r:industrial_diamond"
-            ]
-          }
-        ]
-      }
+    "impossible": {
+      "trigger": "minecraft:impossible"
     }
   },
   "requirements": [
     [
-      "ic2r:industrial_diamond"
+      "impossible"
     ]
   ]
 }

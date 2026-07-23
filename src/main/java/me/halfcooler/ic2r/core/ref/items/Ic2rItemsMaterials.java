@@ -155,7 +155,6 @@ public final class Ic2rItemsMaterials
 	public static final Item COAL_BALL = Ic2rItems.register("coal_ball", new Item(new Properties()));
 	public static final Item COAL_BLOCK = Ic2rItems.register("coal_block", new Item(new Properties()));
 	public static final Item COAL_CHUNK = Ic2rItems.register("coal_chunk", new Item(new Properties()));
-	public static final Item INDUTRIAL_DIAMOND = Ic2rItems.register("industrial_diamond", new Item(new Properties()));
 	public static final Item PLANT_BALL = Ic2rItems.register("plant_ball", new Item(new Properties()));
 	public static final Item BIO_CHAFF = Ic2rItems.register("bio_chaff", new Item(new Properties()));
 	public static final Item SCRAP = Ic2rItems.register("scrap", new Item(new Properties()));
