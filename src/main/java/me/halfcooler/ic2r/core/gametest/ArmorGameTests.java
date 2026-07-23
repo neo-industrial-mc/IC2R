@@ -1,10 +1,14 @@
 package me.halfcooler.ic2r.core.gametest;
 
 import me.halfcooler.ic2r.api.item.ElectricItem;
+import me.halfcooler.ic2r.core.Ic2rDamageSource;
 import me.halfcooler.ic2r.core.item.ElectricItemManager;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.damagesource.DamageSource;
@@ -14,6 +18,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -62,6 +69,34 @@ public final class ArmorGameTests
   assertDamageConsumed(helper, player.getItemBySlot(EquipmentSlot.CHEST), "chestplate");
   assertDamageConsumed(helper, player.getItemBySlot(EquipmentSlot.LEGS), "leggings");
   assertDamageConsumed(helper, player.getItemBySlot(EquipmentSlot.FEET), "boots");
+  helper.succeed();
+ }
+
+ @GameTest(template = EMPTY)
+ public static void blastProtectionReducesHydrogenExplosionDamage(GameTestHelper helper)
+ {
+  LivingEntity unprotected = helper.spawn(EntityType.ZOMBIE, new BlockPos(1, 1, 1));
+  LivingEntity protectedEntity = helper.spawn(EntityType.ZOMBIE, new BlockPos(1, 1, 1));
+
+  ItemStack unprotectedChestplate = new ItemStack(Items.IRON_CHESTPLATE);
+  ItemStack protectedChestplate = new ItemStack(Items.IRON_CHESTPLATE);
+  HolderLookup.RegistryLookup<Enchantment> enchantments =
+   helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+  Holder<Enchantment> blastProtection = enchantments.getOrThrow(Enchantments.BLAST_PROTECTION);
+  protectedChestplate.enchant(blastProtection, 4);
+
+  unprotected.setItemSlot(EquipmentSlot.CHEST, unprotectedChestplate);
+  protectedEntity.setItemSlot(EquipmentSlot.CHEST, protectedChestplate);
+
+  DamageSource source = Ic2rDamageSource.hydrogenExplosion(helper.getLevel());
+  helper.assertTrue(unprotected.hurt(source, 10.0F), "hydrogen explosion should cause damage");
+  helper.assertTrue(protectedEntity.hurt(source, 10.0F), "hydrogen explosion should cause damage");
+  helper.assertTrue(
+   protectedEntity.getHealth() > unprotected.getHealth(),
+   "Blast Protection IV should reduce hydrogen explosion damage: protected health "
+    + protectedEntity.getHealth()
+    + ", unprotected health "
+    + unprotected.getHealth());
   helper.succeed();
  }
 
