@@ -88,12 +88,15 @@ public abstract class AbstractDamageableReactorComponent extends Item implements
 
 	public void setUse(ItemStack stack, int use)
 	{
-		stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag().putInt("use", use);
+		// 1.21: CUSTOM_DATA is immutable via components; copyTag() alone does not persist.
+		StackUtil.editTag(stack, nbt -> nbt.putInt("use", use));
 	}
 
 	protected void incrementUse(ItemStack stack)
 	{
-		stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag().putInt("use", Math.min(this.getUse(stack) + 1, this.maxUse));
+		// 1.21: must write back via editTag; mutating copyTag() alone drops durability/heat.
+		int next = Math.min(this.getUse(stack) + 1, this.maxUse);
+		StackUtil.editTag(stack, nbt -> nbt.putInt("use", next));
 	}
 
 	public int getMaxUse()
