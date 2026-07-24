@@ -43,7 +43,13 @@ public class GuiParser
 
 		try
 		{
-			is = GuiParser.class.getResourceAsStream(fileLoc);
+			// Module resource lookups don't cross mod boundaries, so addon GUI definitions are
+			// only visible through a class from the addon's own module.
+			is = baseClass.getResourceAsStream(fileLoc);
+			if (is == null)
+			{
+				is = GuiParser.class.getResourceAsStream(fileLoc);
+			}
 			if (is == null)
 			{
 				throw new FileNotFoundException("Could not load " + fileLoc + " from the classpath.");
