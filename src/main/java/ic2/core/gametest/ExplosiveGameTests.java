@@ -4,10 +4,21 @@ import ic2.core.block.machine.tileentity.TileEntityExplosive;
 import ic2.core.entity.block.ITntEntity;
 import ic2.core.ref.Ic2Blocks;
 import ic2.core.ref.Ic2Entities;
+import ic2.core.ref.Ic2Fluids;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -27,6 +38,48 @@ public class ExplosiveGameTests {
 
   /** An ITNT adjacent to the target, used as the first explosive in a chain. */
   private static final BlockPos CHAIN_SOURCE_POS = new BlockPos(3, 4, 2);
+
+  /** A hydrogen source and adjacent ignition point near the center of the large template. */
+  private static final BlockPos HYDROGEN_POS = new BlockPos(3, 2, 3);
+
+  private static final BlockPos FIRE_POS = HYDROGEN_POS.east();
+
+  @GameTest(template = EMPTY_LARGE, batch = "ic2Explosive")
+  public static void blastProtectionReducesHydrogenExplosionDamage(GameTestHelper helper) {
+    LivingEntity unprotected = helper.spawn(EntityType.ZOMBIE, HYDROGEN_POS.above());
+    LivingEntity protectedEntity = helper.spawn(EntityType.ZOMBIE, HYDROGEN_POS.above());
+
+    ItemStack unprotectedChestplate = new ItemStack(Items.IRON_CHESTPLATE);
+    ItemStack protectedChestplate = new ItemStack(Items.IRON_CHESTPLATE);
+    HolderLookup.RegistryLookup<Enchantment> enchantments =
+        helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+    Holder<Enchantment> blastProtection = enchantments.getOrThrow(Enchantments.BLAST_PROTECTION);
+    protectedChestplate.enchant(blastProtection, 4);
+
+    unprotected.setItemSlot(EquipmentSlot.CHEST, unprotectedChestplate);
+    protectedEntity.setItemSlot(EquipmentSlot.CHEST, protectedChestplate);
+
+    Vec3 entityPos = Vec3.atCenterOf(helper.absolutePos(HYDROGEN_POS)).add(1.5, 0.0, 0.0);
+    unprotected.setPos(entityPos);
+    protectedEntity.setPos(entityPos);
+
+    helper.setBlock(FIRE_POS.below(), Blocks.STONE);
+    helper.setBlock(FIRE_POS, Blocks.FIRE);
+    helper.setBlock(
+        HYDROGEN_POS, Ic2Fluids.HYDROGEN.still().defaultFluidState().createLegacyBlock());
+
+    float unprotectedHealth = unprotected.getHealth();
+    float protectedHealth = protectedEntity.getHealth();
+    helper.assertTrue(
+        unprotectedHealth < unprotected.getMaxHealth(), "hydrogen should cause damage");
+    helper.assertTrue(
+        protectedHealth > unprotectedHealth,
+        "Blast Protection IV should reduce hydrogen explosion damage: protected health "
+            + protectedHealth
+            + ", unprotected health "
+            + unprotectedHealth);
+    helper.succeed();
+  }
 
   // an ITNT caught in an IC2 explosion must chain-detonate (spawn a primed entity) instead of
   // dropping as an item
