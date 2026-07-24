@@ -68,7 +68,7 @@ public final class EventHandlerForge {
     }
 
     // Registry id migration (ic2 → ic2r, empty_cell → facade_cell) is handled via
-    // LegacyRegistryRemap aliases on RegisterEvent (see FmlMod#registerLegacyRegistryAliases).
+    // RemapService aliases on RegisterEvent (see FmlMod#registerLegacyRegistryAliases).
     // MissingMappingsEvent was removed in NeoForge 1.21.
     // Advancement progress migration: LegacyAdvancementProgressMigrator on ServerAboutToStart.
 

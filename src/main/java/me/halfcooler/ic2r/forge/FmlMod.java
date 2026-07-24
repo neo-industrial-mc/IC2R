@@ -1,5 +1,6 @@
 package me.halfcooler.ic2r.forge;
 
+import me.halfcooler.ic2r.core.RemapService;
 import me.halfcooler.ic2r.core.event.EventHandler;
 import me.halfcooler.ic2r.core.init.IC2RClientConfig;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
@@ -160,7 +161,7 @@ public final class FmlMod {
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void registerLegacyRegistryAliases(RegisterEvent event) {
-        LegacyRegistryRemap.apply(event.getRegistry());
+        RemapService.apply(event.getRegistry());
     }
 
     @SubscribeEvent

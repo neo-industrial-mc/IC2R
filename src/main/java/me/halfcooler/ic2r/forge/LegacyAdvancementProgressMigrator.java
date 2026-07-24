@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.RemapService;
 import me.halfcooler.ic2r.core.util.LogCategory;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 /**
  * Migrates player advancement progress saved under pre-rebrand IDs.
  * <p>
- * Registry entries are remapped via {@link LegacyRegistryRemap} ({@code ic2:*} → {@code ic2r:*}).
+ * Registry entries are remapped via {@link RemapService} ({@code ic2:*} → {@code ic2r:*}).
  * Advancement progress is stored separately in {@code <world>/advancements/<uuid>.json} and is
  * <em>not</em> covered by registry aliases. When Minecraft loads progress for an unknown
  * advancement ID it logs {@code Ignored advancement '…' - it doesn't exist anymore?} and drops
@@ -71,7 +72,7 @@ public final class LegacyAdvancementProgressMigrator
 	public static ResourceLocation remapAdvancementId(ResourceLocation id)
 	{
 		Objects.requireNonNull(id, "id");
-		if (!LegacyRegistryRemap.LEGACY_NAMESPACE.equals(id.getNamespace()))
+		if (!RemapService.LEGACY_NAMESPACE.equals(id.getNamespace()))
 		{
 			return id;
 		}
@@ -81,7 +82,7 @@ public final class LegacyAdvancementProgressMigrator
 		{
 			path = TREE_PATH_PREFIX_CURRENT + path.substring(TREE_PATH_PREFIX_LEGACY.length());
 		}
-		return ResourceLocation.fromNamespaceAndPath(LegacyRegistryRemap.CURRENT_NAMESPACE, path);
+		return ResourceLocation.fromNamespaceAndPath(RemapService.CURRENT_NAMESPACE, path);
 	}
 
 	/**
@@ -102,10 +103,10 @@ public final class LegacyAdvancementProgressMigrator
 			return CRITERION_IMPOSSIBLE;
 		}
 
-		if (criterionKey.startsWith(LegacyRegistryRemap.LEGACY_NAMESPACE + ":"))
+		if (criterionKey.startsWith(RemapService.LEGACY_NAMESPACE + ":"))
 		{
-			return LegacyRegistryRemap.CURRENT_NAMESPACE + ":"
-				+ criterionKey.substring(LegacyRegistryRemap.LEGACY_NAMESPACE.length() + 1);
+			return RemapService.CURRENT_NAMESPACE + ":"
+				+ criterionKey.substring(RemapService.LEGACY_NAMESPACE.length() + 1);
 		}
 		return criterionKey;
 	}

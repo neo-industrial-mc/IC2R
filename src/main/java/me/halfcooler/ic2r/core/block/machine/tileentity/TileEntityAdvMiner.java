@@ -16,14 +16,15 @@ import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
 import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.init.OreValues;
-import me.halfcooler.ic2r.core.item.tool.ItemMiningFilterCard;
 import me.halfcooler.ic2r.core.item.tool.ItemScanner;
 import me.halfcooler.ic2r.core.item.tool.ItemScannerAdv;
+import me.halfcooler.ic2r.core.item.upgrade.ItemUpgradeModule;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
+import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 	public final InvSlotConsumableId scannerSlot = new InvSlotConsumableId(this, "scanner", InvSlot.Access.IO, 1, InvSlot.InvSide.BOTTOM, Ic2rItems.SCANNER, Ic2rItems.ADVANCED_SCANNER);
 	public final InvSlotUpgrade upgradeSlot = new InvSlotUpgrade(this, "upgrade", 4);
 	public final InvSlot filterSlot = new InvSlot(this, "list", null, 15);
-	public final InvSlot cardSlot = new InvSlot(this, "card", InvSlot.Access.I, 1);
 	protected final Redstone redstone;
 	public boolean blacklist = true;
 	public boolean silkTouch = false;
@@ -98,6 +98,46 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 
 		this.blacklist = nbt.getBoolean("blacklist");
 		this.silkTouch = nbt.getBoolean("silkTouch");
+		// Pre-upgrade-slot mining filter card lived in InvSlots.card (152,8). Migrate into upgrade slots.
+		this.migrateLegacyCardSlot(nbt, registries);
+	}
+
+	/**
+	 * Moves a legacy {@code InvSlots.card} stack into the first empty upgrade slot (if any).
+	 */
+	private void migrateLegacyCardSlot(CompoundTag nbt, HolderLookup.Provider registries)
+	{
+		if (!nbt.contains("InvSlots", 10))
+		{
+			return;
+		}
+		CompoundTag invSlotsTag = nbt.getCompound("InvSlots");
+		if (!invSlotsTag.contains("card", 10))
+		{
+			return;
+		}
+		// Detached InvSlot: parse only, do not register on this TE.
+		InvSlot legacy = new InvSlot(1);
+		legacy.readFromNbt(invSlotsTag.getCompound("card"), registries);
+		ItemStack card = legacy.get();
+		if (StackUtil.isEmpty(card))
+		{
+			return;
+		}
+		for (int i = 0; i < this.upgradeSlot.size(); i++)
+		{
+			if (StackUtil.isEmpty(this.upgradeSlot.get(i)))
+			{
+				this.upgradeSlot.put(i, card);
+				return;
+			}
+		}
+		// No free upgrade slot: stack would otherwise be lost with the removed card slot.
+		IC2R.log.warn(
+			LogCategory.General,
+			"Advanced miner at %s: legacy mining filter card could not migrate (upgrade slots full)",
+			this.getBlockPos()
+		);
 	}
 
 	@Override
@@ -272,10 +312,10 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 				return false;
 			}
 
-			ItemStack cardStack = this.cardSlot.get();
-			if (!StackUtil.isEmpty(cardStack) && cardStack.getItem() instanceof ItemMiningFilterCard)
+			ItemStack filterUpgrade = this.findMiningFilterUpgrade();
+			if (!StackUtil.isEmpty(filterUpgrade))
 			{
-				CompoundTag nbt = StackUtil.getTag(cardStack);
+				CompoundTag nbt = StackUtil.getTag(filterUpgrade);
 				if (nbt != null)
 				{
 					boolean cardBlacklist = !nbt.contains("blacklist") || nbt.getBoolean("blacklist");
@@ -294,6 +334,24 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * First mining-filter upgrade installed in the upgrade slots, or empty.
+	 */
+	private ItemStack findMiningFilterUpgrade()
+	{
+		for (int i = 0; i < this.upgradeSlot.size(); i++)
+		{
+			ItemStack stack = this.upgradeSlot.get(i);
+			if (!StackUtil.isEmpty(stack)
+				&& stack.getItem() instanceof ItemUpgradeModule module
+				&& module.type == ItemUpgradeModule.UpgradeType.mining_filter)
+			{
+				return stack;
+			}
+		}
+		return ItemStack.EMPTY;
 	}
 
 	private boolean evaluateFilter(List<ItemStack> drops, Iterable<ItemStack> filterItems, boolean isBlacklist)
@@ -420,6 +478,11 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 	@Override
 	public Set<UpgradableProperty> getUpgradableProperties()
 	{
-		return EnumSet.of(UpgradableProperty.Augmentable, UpgradableProperty.RedstoneSensitive, UpgradableProperty.Transformer);
+		return EnumSet.of(
+			UpgradableProperty.Augmentable,
+			UpgradableProperty.RedstoneSensitive,
+			UpgradableProperty.Transformer,
+			UpgradableProperty.MiningFilter
+		);
 	}
 }

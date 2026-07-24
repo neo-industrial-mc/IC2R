@@ -31,6 +31,7 @@ public final class Ic2rItemsUpgrades
 	public static final Item FLUID_EJECTOR_UPGRADE = Ic2rItems.register("fluid_ejector_upgrade", new ItemUpgradeModule(new Properties(), ItemUpgradeModule.UpgradeType.fluid_ejector));
 	public static final Item FLUID_PULLING_UPGRADE = Ic2rItems.register("fluid_pulling_upgrade", new ItemUpgradeModule(new Properties(), ItemUpgradeModule.UpgradeType.fluid_pulling));
 	public static final Item REMOTE_INTERFACE_UPGRADE = Ic2rItems.register("remote_interface_upgrade", new ItemUpgradeModule(new Properties(), ItemUpgradeModule.UpgradeType.remote_interface));
+	public static final Item MINING_FILTER_UPGRADE = Ic2rItems.register("mining_filter_upgrade", new ItemUpgradeModule(new Properties().stacksTo(1), ItemUpgradeModule.UpgradeType.mining_filter));
 	public static final Item FILLED_TIN_CAN = Ic2rItems.register("filled_tin_can", new ItemTinCan(new Properties()));
 	public static final Item BLANK_TFBP = Ic2rItems.register("blank_tfbp", new Tfbp(new Properties().stacksTo(1), 0.0, 0, null));
 	public static final Item CHILLING_TFBP = Ic2rItems.register("chilling_tfbp", new Tfbp(new Properties().stacksTo(1), 2000.0, 50, new Chilling()));

@@ -426,7 +426,7 @@ public final class Ic2rItems
 	public static final Item BRONZE_PICKAXE = Ic2rItemsTools.BRONZE_PICKAXE;
 	public static final Item FREQUENCY_TRANSMITTER = Ic2rItemsTools.FREQUENCY_TRANSMITTER;
 	public static final Item REMOTE = Ic2rItemsTools.REMOTE;
-	public static final Item MINING_FILTER_CARD = Ic2rItemsTools.MINING_FILTER_CARD;
+	public static final Item MINING_FILTER_UPGRADE = Ic2rItemsUpgrades.MINING_FILTER_UPGRADE;
 	public static final Item CROWBAR = Ic2rItemsTools.CROWBAR;
 	public static final Item ADVANCED_SCANNER = Ic2rItemsTools.ADVANCED_SCANNER;
 	public static final Item CHAINSAW = Ic2rItemsTools.CHAINSAW;
@@ -1009,7 +1009,7 @@ public final class Ic2rItems
 		addToCreativeTab(Ic2rItemGroupType.TOOLS_AND_UTILITIES, () -> LIME_PAINTER);
 		addToCreativeTab(Ic2rItemGroupType.TOOLS_AND_UTILITIES, () -> MAGENTA_PAINTER);
 		addToCreativeTab(Ic2rItemGroupType.TOOLS_AND_UTILITIES, () -> METER);
-		addToCreativeTab(Ic2rItemGroupType.TOOLS_AND_UTILITIES, () -> MINING_FILTER_CARD);
+		addToCreativeTab(Ic2rItemGroupType.TOOLS_AND_UTILITIES, () -> MINING_FILTER_UPGRADE);
 		addToCreativeTab(Ic2rItemGroupType.TOOLS_AND_UTILITIES, () -> MINING_LASER);
 		addToCreativeTab(Ic2rItemGroupType.TOOLS_AND_UTILITIES, () -> MINING_PIPE);
 		addToCreativeTab(Ic2rItemGroupType.TOOLS_AND_UTILITIES, () -> MUSHROOM_TFBP);

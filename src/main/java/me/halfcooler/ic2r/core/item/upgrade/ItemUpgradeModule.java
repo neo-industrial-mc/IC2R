@@ -16,6 +16,7 @@ import me.halfcooler.ic2r.core.gui.dynamic.DynamicHandHeldContainer;
 import me.halfcooler.ic2r.core.item.EnvItemHandler;
 import me.halfcooler.ic2r.core.item.IHandHeldSubInventory;
 import me.halfcooler.ic2r.core.item.tool.HandHeldInventory;
+import me.halfcooler.ic2r.core.item.tool.HandHeldMiningFilter;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.StackUtil;
@@ -331,6 +332,20 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 				break;
 			case remote_interface:
 				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.upgrade.remote_interface", StackUtil.getSize(stack)));
+				break;
+			case mining_filter:
+			{
+				CompoundTag nbt = StackUtil.getTag(stack);
+				if (nbt != null)
+				{
+					boolean isBlacklist = !nbt.contains("blacklist") || nbt.getBoolean("blacklist");
+					ListTag items = nbt.getList("Items", 10);
+					Ic2rTooltip.add(tooltip, Component.translatable(isBlacklist ? "ic2r.MiningFilter.gui.mode.blacklist" : "ic2r.MiningFilter.gui.mode.whitelist"));
+					Ic2rTooltip.add(tooltip, Component.translatable("ic2r.MiningFilter.tooltip.entries", items.size()));
+				}
+				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.tooltip.upgrade.advanced.config"));
+				break;
+			}
 		}
 	}
 
@@ -373,7 +388,7 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand)
 	{
-		ItemStack stack = player.getMainHandItem();
+		ItemStack stack = StackUtil.get(player, hand);
 		return switch (this.type)
 		{
 			case advanced_ejector, advanced_pulling ->
@@ -390,6 +405,14 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 					}
 				}
 
+				yield new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+			}
+			case mining_filter ->
+			{
+				if (!world.isClientSide)
+				{
+					this.getInventory(player, hand, stack).openManagedItem(player, hand, null);
+				}
 				yield new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 			}
 			default -> new InteractionResultHolder<>(InteractionResult.PASS, stack);
@@ -411,9 +434,22 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 						player.closeContainer();
 					}
 				}
+				break;
+			case mining_filter:
+				if (!player.getCommandSenderWorld().isClientSide && !StackUtil.isEmpty(stack) && player.containerMenu instanceof DynamicHandHeldContainer)
+				{
+					HandHeldInventory base = ((DynamicHandHeldContainer<?>) player.containerMenu).base;
+					if (base instanceof HandHeldMiningFilter && base.isThisContainer(stack))
+					{
+						base.saveAsThrown(stack);
+						player.closeContainer();
+					}
+				}
+				break;
 			default:
-				return true;
+				break;
 		}
+		return true;
 	}
 
 	@Override
@@ -431,6 +467,7 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 			case fluid_pulling -> types.contains(UpgradableProperty.FluidConsuming);
 			case redstone_inverter -> types.contains(UpgradableProperty.RedstoneSensitive);
 			case remote_interface -> types.contains(UpgradableProperty.RemotelyAccessible);
+			case mining_filter -> types.contains(UpgradableProperty.MiningFilter);
 		};
 	}
 
@@ -631,6 +668,7 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 		return switch (this.type)
 		{
 			case advanced_ejector, advanced_pulling -> new HandHeldAdvancedUpgrade(player, hand, stack);
+			case mining_filter -> new HandHeldMiningFilter(player, hand, stack);
 			default -> null;
 		};
 	}
@@ -647,7 +685,18 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 
 	public enum UpgradeType
 	{
-		overclocker(false), transformer(false), energy_storage(false), redstone_inverter(false), ejector(true), advanced_ejector(true), pulling(true), advanced_pulling(true), fluid_ejector(true), fluid_pulling(true), remote_interface(false);
+		overclocker(false),
+		transformer(false),
+		energy_storage(false),
+		redstone_inverter(false),
+		ejector(true),
+		advanced_ejector(true),
+		pulling(true),
+		advanced_pulling(true),
+		fluid_ejector(true),
+		fluid_pulling(true),
+		remote_interface(false),
+		mining_filter(false);
 
 		public final boolean directional;
 

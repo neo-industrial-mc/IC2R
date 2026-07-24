@@ -26,7 +26,6 @@ import me.halfcooler.ic2r.core.item.tool.ItemDrill;
 import me.halfcooler.ic2r.core.item.tool.ItemDrillIridium;
 import me.halfcooler.ic2r.core.item.tool.ItemElectricToolChainsaw;
 import me.halfcooler.ic2r.core.item.tool.ItemFrequencyTransmitter;
-import me.halfcooler.ic2r.core.item.tool.ItemMiningFilterCard;
 import me.halfcooler.ic2r.core.item.tool.ItemObscurator;
 import me.halfcooler.ic2r.core.item.tool.ItemRemote;
 import me.halfcooler.ic2r.core.item.tool.ItemScanner;
@@ -70,7 +69,6 @@ public final class Ic2rItemsTools
 	public static final Item BRONZE_PICKAXE = Ic2rItems.register("bronze_pickaxe", new Ic2rPickaxe(Ic2rToolMaterials.BRONZE, 1, -2.8F, new Properties()));
 	public static final Item FREQUENCY_TRANSMITTER = Ic2rItems.register("frequency_transmitter", new ItemFrequencyTransmitter(new Properties().stacksTo(1)));
 	public static final Item REMOTE = Ic2rItems.register("remote", new ItemRemote(new Properties()));
-	public static final Item MINING_FILTER_CARD = Ic2rItems.register("mining_filter_card", new ItemMiningFilterCard(new Properties().stacksTo(1)));
 	public static final Item CROWBAR = Ic2rItems.register("crowbar", new ItemToolCrowbar(Tiers.IRON, new Properties().durability(250)));
 	public static final Item ADVANCED_SCANNER = Ic2rItems.register("advanced_scanner", new ItemScannerAdv(new Properties().stacksTo(1)));
 	public static final Item CHAINSAW = Ic2rItems.register("chainsaw", new ItemElectricToolChainsaw(new Properties().stacksTo(1)));

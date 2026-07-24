@@ -1,6 +1,5 @@
-package me.halfcooler.ic2r.forge;
+package me.halfcooler.ic2r.core;
 
-import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.util.LogCategory;
 
 import java.util.ArrayList;
@@ -24,9 +23,10 @@ import net.minecraft.resources.ResourceLocation;
  * Aliases registered during {@code RegisterEvent} are captured into NeoForge's frozen registry
  * snapshot and restored for clients / local loads.
  * <p>
- * See {@code docs/patches/remove-registry-compat-ic2-namespace-and-empty-cell.patch}.
+ * Also covers in-mod path renames (empty cell → facade cell, removed industrial diamond,
+ * mining filter card → mining filter upgrade).
  */
-public final class LegacyRegistryRemap
+public final class RemapService
 {
 	/** Pre-20.1.40 registry namespace. */
 	public static final String LEGACY_NAMESPACE = "ic2";
@@ -42,10 +42,15 @@ public final class LegacyRegistryRemap
 	/** Removed item; stacks remap to vanilla diamond. */
 	public static final String LEGACY_INDUSTRIAL_DIAMOND_PATH = "industrial_diamond";
 
+	/** Renamed item: mining filter card → mining filter upgrade. */
+	public static final String LEGACY_MINING_FILTER_CARD_PATH = "mining_filter_card";
+
+	public static final String MINING_FILTER_UPGRADE_PATH = "mining_filter_upgrade";
+
 	public static final ResourceLocation VANILLA_DIAMOND =
 		ResourceLocation.withDefaultNamespace("diamond");
 
-	private LegacyRegistryRemap()
+	private RemapService()
 	{
 	}
 
@@ -81,6 +86,8 @@ public final class LegacyRegistryRemap
 		boolean hasFacade = false;
 		boolean hasEmpty = false;
 		boolean hasIndustrialDiamond = false;
+		boolean hasMiningFilterUpgrade = false;
+		boolean hasMiningFilterCard = false;
 		for (ResourceLocation id : registeredItemIds)
 		{
 			if (!CURRENT_NAMESPACE.equals(id.getNamespace()))
@@ -99,6 +106,14 @@ public final class LegacyRegistryRemap
 			{
 				hasIndustrialDiamond = true;
 			}
+			if (MINING_FILTER_UPGRADE_PATH.equals(id.getPath()))
+			{
+				hasMiningFilterUpgrade = true;
+			}
+			if (LEGACY_MINING_FILTER_CARD_PATH.equals(id.getPath()))
+			{
+				hasMiningFilterCard = true;
+			}
 		}
 		if (hasFacade && !hasEmpty)
 		{
@@ -116,6 +131,19 @@ public final class LegacyRegistryRemap
 			out.add(new Alias(
 				ResourceLocation.fromNamespaceAndPath(LEGACY_NAMESPACE, LEGACY_INDUSTRIAL_DIAMOND_PATH),
 				VANILLA_DIAMOND
+			));
+		}
+		// mining_filter_card renamed to mining_filter_upgrade
+		if (hasMiningFilterUpgrade && !hasMiningFilterCard)
+		{
+			ResourceLocation upgrade = ResourceLocation.fromNamespaceAndPath(CURRENT_NAMESPACE, MINING_FILTER_UPGRADE_PATH);
+			out.add(new Alias(
+				ResourceLocation.fromNamespaceAndPath(CURRENT_NAMESPACE, LEGACY_MINING_FILTER_CARD_PATH),
+				upgrade
+			));
+			out.add(new Alias(
+				ResourceLocation.fromNamespaceAndPath(LEGACY_NAMESPACE, LEGACY_MINING_FILTER_CARD_PATH),
+				upgrade
 			));
 		}
 		return out;
@@ -153,7 +181,7 @@ public final class LegacyRegistryRemap
 		{
 			IC2R.log.debug(
 				LogCategory.Resource,
-				"Legacy registry aliases: applied %d for %s (ic2 → ic2r)",
+				"Legacy registry aliases: applied %d for %s (ic2 → ic2r / path renames)",
 				applied,
 				registry.key().location()
 			);
