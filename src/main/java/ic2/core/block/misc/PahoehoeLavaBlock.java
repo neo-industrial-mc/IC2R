@@ -32,6 +32,8 @@ public class PahoehoeLavaBlock extends LiquidBlock {
   @Override
   public void onPlace(
       BlockState state, Level world, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    // LiquidBlock#onPlace schedules the fluid tick; without it a placed source never flows.
+    super.onPlace(state, world, pos, oldState, movedByPiston);
     if (state.getValue(LiquidBlock.LEVEL) == 0) {
       world.scheduleTick(pos, this, 360);
     }

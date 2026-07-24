@@ -73,6 +73,9 @@ public class UUMatterBlock extends LiquidBlock {
       Block neighborBlock,
       BlockPos neighborPos,
       boolean movedByPiston) {
+    // LiquidBlock#neighborChanged re-schedules fluid flow ticks; keep it alongside the custom
+    // fluid interactions below.
+    super.neighborChanged(state, world, pos, neighborBlock, neighborPos, movedByPiston);
     if (state.getValue(LiquidBlock.LEVEL) != 0) return;
 
     FluidState neighborFluidState = world.getFluidState(neighborPos);
