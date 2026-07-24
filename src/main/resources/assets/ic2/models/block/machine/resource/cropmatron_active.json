@@ -1,8 +1,12 @@
 {
-  "parent": "block/cube_bottom_top",
+  "parent": "block/cube",
   "textures": {
-    "side": "ic2:block/machine/resource/cropmatron_sides",
-    "bottom": "ic2:block/machine/resource/cropmatron_bottom",
-    "top": "ic2:block/machine/resource/cropmatron_top"
+    "particle": "ic2:block/machine/resource/cropmatron_leftright_active",
+    "down": "ic2:block/machine/resource/cropmatron_bottom",
+    "up": "ic2:block/machine/resource/cropmatron_top",
+    "north": "ic2:block/machine/resource/cropmatron_front_active",
+    "east": "ic2:block/machine/resource/cropmatron_leftright_active",
+    "south": "ic2:block/machine/resource/cropmatron_back_active",
+    "west": "ic2:block/machine/resource/cropmatron_leftright_active"
   }
 }

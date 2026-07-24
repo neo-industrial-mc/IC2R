@@ -38,6 +38,29 @@ public class ModelGuardGameTests {
     helper.succeed();
   }
 
+  // Active-state machine models used cube_bottom_top, which painted the front ("side") texture on
+  // all four sides. They must be full cubes with a front face distinct from the other sides
+  // (upstream 4d98c9cb).
+  @GameTest(template = TEMPLATE, timeoutTicks = 20)
+  public static void activeMachineModelsKeepDistinctFrontFace(GameTestHelper helper) {
+    String[] models = {
+      "assets/ic2/models/block/generator/reactor/nuclear_reactor_active.json",
+      "assets/ic2/models/block/machine/resource/cropmatron_active.json",
+      "assets/ic2/models/block/wiring/storage/electrolyzer_active.json",
+    };
+    for (String path : models) {
+      JsonObject model = readModel(helper, path);
+      helper.assertTrue(
+          "block/cube".equals(model.get("parent").getAsString()),
+          path + " must use the block/cube parent, got " + model.get("parent"));
+      JsonObject textures = model.getAsJsonObject("textures");
+      helper.assertTrue(
+          !textures.get("north").getAsString().equals(textures.get("east").getAsString()),
+          path + " must keep a front texture distinct from its sides");
+    }
+    helper.succeed();
+  }
+
   static JsonObject readModel(GameTestHelper helper, String path) {
     try (InputStream in = ModelGuardGameTests.class.getClassLoader().getResourceAsStream(path)) {
       if (in == null) {

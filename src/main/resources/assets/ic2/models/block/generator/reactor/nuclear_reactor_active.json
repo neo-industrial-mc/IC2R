@@ -1,8 +1,12 @@
 {
-  "parent": "block/cube_bottom_top",
+  "parent": "block/cube",
   "textures": {
-    "side": "ic2:block/generator/reactor/nuclear_reactor_front_active",
-    "bottom": "ic2:block/generator/reactor/nuclear_reactor_bottom",
-    "top": "ic2:block/generator/reactor/nuclear_reactor_top"
+    "particle": "ic2:block/generator/reactor/nuclear_reactor_leftrightback_active",
+    "down": "ic2:block/generator/reactor/nuclear_reactor_bottom",
+    "up": "ic2:block/generator/reactor/nuclear_reactor_top",
+    "north": "ic2:block/generator/reactor/nuclear_reactor_front_active",
+    "east": "ic2:block/generator/reactor/nuclear_reactor_leftrightback_active",
+    "south": "ic2:block/generator/reactor/nuclear_reactor_leftrightback_active",
+    "west": "ic2:block/generator/reactor/nuclear_reactor_leftrightback_active"
   }
 }

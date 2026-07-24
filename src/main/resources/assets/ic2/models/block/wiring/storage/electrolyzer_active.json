@@ -1,8 +1,12 @@
 {
-  "parent": "block/cube_bottom_top",
+  "parent": "block/cube",
   "textures": {
-    "side": "ic2:block/wiring/storage/electrolyzer_sides_active",
-    "bottom": "ic2:block/wiring/storage/electrolyzer_bottom",
-    "top": "ic2:block/wiring/storage/electrolyzer_top"
+    "particle": "ic2:block/wiring/storage/electrolyzer_leftrightback_active",
+    "down": "ic2:block/wiring/storage/electrolyzer_bottom",
+    "up": "ic2:block/wiring/storage/electrolyzer_top",
+    "north": "ic2:block/wiring/storage/electrolyzer_sides_active",
+    "east": "ic2:block/wiring/storage/electrolyzer_leftrightback_active",
+    "south": "ic2:block/wiring/storage/electrolyzer_leftrightback_active",
+    "west": "ic2:block/wiring/storage/electrolyzer_leftrightback_active"
   }
 }

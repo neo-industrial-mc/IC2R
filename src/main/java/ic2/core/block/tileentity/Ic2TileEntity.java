@@ -483,11 +483,23 @@ public abstract class Ic2TileEntity extends BlockEntity
   }
 
   public void setActive(boolean active) {
-    if (this.teBlock.canActive()) {
-      if (this.active != active) {
-        this.active = active;
-        IC2.network.get(true).updateTileEntityField(this, "active");
-      }
+    if (!this.teBlock.canActive() || this.active == active) {
+      return;
+    }
+
+    this.active = active;
+    if (this.level == null || this.level.isClientSide) {
+      return;
+    }
+
+    // Keep the blockstate ACTIVE property in sync on the server. Network-only updates left the
+    // server state false, so later chunk/block resyncs snapped clients back to the idle model
+    // for TEs that call setActive directly (trade-o-mat, kinetic generators, heat exchanger).
+    IC2.network.get(true).updateTileEntityField(this, "active");
+    BlockState state = this.getBlockState();
+    if (state.is(this.teBlock) && state.getValue(Ic2TileEntityBlock.ACTIVE) != active) {
+      this.level.setBlockAndUpdate(
+          this.worldPosition, state.setValue(Ic2TileEntityBlock.ACTIVE, active));
     }
   }
 
