@@ -190,8 +190,10 @@ public class IC2Config {
         public final ModConfigSpec.DoubleValue solar;
         public final ModConfigSpec.DoubleValue wind;
         public final ModConfigSpec.DoubleValue nuclear;
+
         /** Multiplier on base 32 EU/t for each semi-fluid fuel (0 disables registration). */
         public final ModConfigSpec.DoubleValue semiFluidBiogas;
+
         public final ModConfigSpec.DoubleValue semiFluidBiomass;
         public final ModConfigSpec.DoubleValue semiFluidHydrogen;
         public final ModConfigSpec.DoubleValue semiFluidCreosote;
@@ -208,7 +210,8 @@ public class IC2Config {
           solar = b.defineInRange("solar", 1.0, 0.0, Double.MAX_VALUE);
           wind = b.defineInRange("wind", 1.0, 0.0, Double.MAX_VALUE);
           nuclear = b.defineInRange("nuclear", 1.0, 0.0, Double.MAX_VALUE);
-          b.comment("Semi-fluid generator fuel EU/t multipliers (base 32 EU/t; 0 disables that fuel).");
+          b.comment(
+              "Semi-fluid generator fuel EU/t multipliers (base 32 EU/t; 0 disables that fuel).");
           semiFluidBiogas = b.defineInRange("semiFluidBiogas", 1.0, 0.0, Double.MAX_VALUE);
           semiFluidBiomass = b.defineInRange("semiFluidBiomass", 1.0, 0.0, Double.MAX_VALUE);
           semiFluidHydrogen = b.defineInRange("semiFluidHydrogen", 1.0, 0.0, Double.MAX_VALUE);
@@ -223,6 +226,7 @@ public class IC2Config {
       public static class HeatGenerator {
         /** Multiplier on fluid heat generator fuels (0 disables that fuel). */
         public final ModConfigSpec.DoubleValue semiFluidBiogas;
+
         public final ModConfigSpec.DoubleValue solid;
         public final ModConfigSpec.DoubleValue radioisotope;
         public final ModConfigSpec.DoubleValue electric;

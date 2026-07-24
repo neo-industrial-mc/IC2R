@@ -51,7 +51,8 @@ public class TileEntitySemifluidGenerator extends TileEntityBaseGenerator {
     registerFuel(Ic2Fluids.CREOSOTE.still(), 8, gen.semiFluidCreosote);
   }
 
-  private static void registerFuel(Fluid fluid, int amountMb, ModConfigSpec.DoubleValue multiplier) {
+  private static void registerFuel(
+      Fluid fluid, int amountMb, ModConfigSpec.DoubleValue multiplier) {
     float mult = multiplier.get().floatValue();
     if (mult > 0.0F) {
       addFuel(fluid, amountMb, Math.round(BASE_PRODUCTION_EU * mult));

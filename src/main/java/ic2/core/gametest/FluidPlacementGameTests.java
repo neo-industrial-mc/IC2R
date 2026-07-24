@@ -48,8 +48,7 @@ public class FluidPlacementGameTests {
     helper.succeedWhen(
         () -> {
           helper.assertBlockPresent(Blocks.OBSIDIAN, SOURCE_POS.west());
-          FluidState east =
-              helper.getLevel().getFluidState(helper.absolutePos(SOURCE_POS.east()));
+          FluidState east = helper.getLevel().getFluidState(helper.absolutePos(SOURCE_POS.east()));
           helper.assertTrue(
               east.getType().isSame(Ic2Fluids.UU_MATTER.still()),
               "the UU matter source must spread away from the converted lava");

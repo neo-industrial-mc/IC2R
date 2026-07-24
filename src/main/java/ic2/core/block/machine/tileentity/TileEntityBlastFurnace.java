@@ -39,6 +39,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TileEntityBlastFurnace extends TileEntityInventory
     implements IUpgradableBlock, IHasGui, IGuiValueProvider {
   public static int maxHeat = 50000;
+
   /** Oxygen doubles progress per tick (100% acceleration → half wall-clock time). */
   public static final int OXYGEN_PROGRESS_MULTIPLIER = 2;
 
@@ -65,9 +66,7 @@ public class TileEntityBlastFurnace extends TileEntityInventory
     this.fluids = this.addComponent(new Fluids(this));
     this.fluidTank =
         this.fluids.addTankInsert(
-            "fluid",
-            8000,
-            Fluids.fluidPredicate(Ic2Fluids.AIR.still(), Ic2Fluids.OXYGEN.still()));
+            "fluid", 8000, Fluids.fluidPredicate(Ic2Fluids.AIR.still(), Ic2Fluids.OXYGEN.still()));
   }
 
   @Override

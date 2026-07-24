@@ -79,8 +79,7 @@ public class AdvMinerGameTests {
     // the upgrade must be accepted by the miner's upgrade slots in the first place
     ItemUpgradeModule upgradeItem = (ItemUpgradeModule) Ic2Items.MINING_FILTER_UPGRADE;
     helper.assertTrue(
-        upgradeItem.isSuitableFor(
-            new ItemStack(upgradeItem), te.getUpgradableProperties()),
+        upgradeItem.isSuitableFor(new ItemStack(upgradeItem), te.getUpgradableProperties()),
         "the mining filter upgrade must be suitable for the advanced miner");
 
     helper.assertTrue(

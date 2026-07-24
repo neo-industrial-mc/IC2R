@@ -123,11 +123,10 @@ public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock {
   }
 
   /**
-   * Charge every eligible electric item on the player at once, matching the original IC2
-   * chargepad (which iterated the full armor and main inventories without stopping at the
-   * first chargeable item). Each item is charged at the pad's full output power from the
-   * shared energy pool. Scope: offhand, armor, full main inventory (hotbar + backpack;
-   * includes main hand).
+   * Charge every eligible electric item on the player at once, matching the original IC2 chargepad
+   * (which iterated the full armor and main inventories without stopping at the first chargeable
+   * item). Each item is charged at the pad's full output power from the shared energy pool. Scope:
+   * offhand, armor, full main inventory (hotbar + backpack; includes main hand).
    */
   protected boolean getItems(Player player) {
     int chargeFactor = (int) this.output;
