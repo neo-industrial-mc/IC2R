@@ -283,6 +283,506 @@ public class ReactorGameTests {
         });
   }
 
+  @GameTest(template = EMPTY_LARGE, timeoutTicks = 300)
+  public static void oneQuadRodLayout(GameTestHelper helper) {
+    verifyQuadRodLayout(helper, 1);
+  }
+
+  @GameTest(template = EMPTY_LARGE, timeoutTicks = 300)
+  public static void twoQuadRodLayout(GameTestHelper helper) {
+    verifyQuadRodLayout(helper, 2);
+  }
+
+  @GameTest(template = EMPTY_LARGE, timeoutTicks = 300)
+  public static void threeQuadRodLayout(GameTestHelper helper) {
+    verifyQuadRodLayout(helper, 3);
+  }
+
+  @GameTest(template = EMPTY_LARGE, timeoutTicks = 300)
+  public static void fourQuadRodLayout(GameTestHelper helper) {
+    verifyQuadRodLayout(helper, 4);
+  }
+
+  @GameTest(template = EMPTY_LARGE, timeoutTicks = 300)
+  public static void fiveQuadRodLayout(GameTestHelper helper) {
+    verifyQuadRodLayout(helper, 5);
+  }
+
+  @GameTest(template = EMPTY_LARGE, timeoutTicks = 300)
+  public static void sixQuadRodLayout(GameTestHelper helper) {
+    verifyQuadRodLayout(helper, 6);
+  }
+
+  @GameTest(template = EMPTY_LARGE, timeoutTicks = 300)
+  public static void maximumOutputSixQuadRodLayout(GameTestHelper helper) {
+    TileEntityNuclearReactorElectric reactor = placeReactor(helper, VESSEL_CENTER);
+    for (Direction direction : Direction.values()) {
+      helper.setBlock(VESSEL_CENTER.relative(direction), Ic2Blocks.REACTOR_CHAMBER);
+    }
+    helper.setBlock(VESSEL_CENTER.offset(-2, 0, 0), Blocks.REDSTONE_BLOCK);
+
+    String[] layout = QuadRodReactorLayouts.maximumOutputSixQuadLayout();
+    int quadRods = 0;
+    int dualRods = 0;
+    int singleRods = 0;
+    int overclockedVents = 0;
+    int componentVents = 0;
+    for (int y = 0; y < layout.length; y++) {
+      helper.assertValueEqual(layout[y].length(), 9, "mixed layout row width");
+      for (int x = 0; x < layout[y].length(); x++) {
+        switch (layout[y].charAt(x)) {
+          case QuadRodReactorLayouts.QUAD_ROD -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.QUAD_URANIUM_FUEL_ROD));
+            quadRods++;
+          }
+          case QuadRodReactorLayouts.DUAL_ROD -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.DUAL_URANIUM_FUEL_ROD));
+            dualRods++;
+          }
+          case QuadRodReactorLayouts.SINGLE_ROD -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.URANIUM_FUEL_ROD));
+            singleRods++;
+          }
+          case QuadRodReactorLayouts.OVERCLOCKED_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.OVERCLOCKED_HEAT_VENT));
+            overclockedVents++;
+          }
+          case QuadRodReactorLayouts.COMPONENT_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.COMPONENT_HEAT_VENT));
+            componentVents++;
+          }
+          case QuadRodReactorLayouts.EMPTY -> {
+            // Deliberately empty.
+          }
+          default -> throw new IllegalArgumentException("unknown mixed reactor layout symbol");
+        }
+      }
+    }
+
+    helper.assertValueEqual(layout.length, 6, "mixed layout row count");
+    helper.assertValueEqual(quadRods, 6, "quad rods in mixed layout");
+    helper.assertValueEqual(dualRods, 2, "dual rods in mixed layout");
+    helper.assertValueEqual(singleRods, 1, "single rods in mixed layout");
+    helper.assertValueEqual(overclockedVents, 30, "overclocked vents in mixed layout");
+    helper.assertValueEqual(componentVents, 12, "component vents in mixed layout");
+
+    helper.runAtTickTime(
+        220,
+        () -> {
+          Ic2GameTestAssertions.assertNear(
+              helper, reactor.getReactorEnergyOutput(), 84.0, "mixed six-quad output");
+
+          int simulatedCycles = 0;
+          while (!hasDepletedFuelRod(reactor) && simulatedCycles < 20000) {
+            reactor.output = 0.0F;
+            reactor.processChambers();
+            simulatedCycles++;
+          }
+
+          helper.assertTrue(
+              hasDepletedFuelRod(reactor),
+              "a mixed-layout fuel rod should deplete within 20000 cycles");
+          helper.assertValueEqual(reactor.getHeat(), 0, "mixed layout hull heat");
+
+          int survivingOverclockedVents = 0;
+          int survivingComponentVents = 0;
+          ItemReactorHeatStorage overclockedVent =
+              (ItemReactorHeatStorage) Ic2Items.OVERCLOCKED_HEAT_VENT;
+          for (int y = 0; y < 6; y++) {
+            for (int x = 0; x < 9; x++) {
+              ItemStack stack = reactor.getItemAt(x, y);
+              if (stack != null && stack.getItem() == Ic2Items.OVERCLOCKED_HEAT_VENT) {
+                survivingOverclockedVents++;
+                helper.assertTrue(
+                    overclockedVent.getCurrentHeat(stack, reactor, x, y)
+                        < overclockedVent.getMaxHeat(stack, reactor, x, y),
+                    "mixed-layout vent at " + x + "," + y + " should remain intact");
+              } else if (stack != null && stack.getItem() == Ic2Items.COMPONENT_HEAT_VENT) {
+                survivingComponentVents++;
+              }
+            }
+          }
+          helper.assertValueEqual(
+              survivingOverclockedVents, 30, "intact mixed-layout overclocked vents");
+          helper.assertValueEqual(
+              survivingComponentVents, 12, "intact mixed-layout component vents");
+          helper.succeed();
+        });
+  }
+
+  @GameTest(template = EMPTY_LARGE, timeoutTicks = 300)
+  public static void clockedMixedMoxLayout(GameTestHelper helper) {
+    TileEntityNuclearReactorElectric reactor = placeReactor(helper, VESSEL_CENTER);
+    for (Direction direction : Direction.values()) {
+      helper.setBlock(VESSEL_CENTER.relative(direction), Ic2Blocks.REACTOR_CHAMBER);
+    }
+
+    String[] layout = QuadRodReactorLayouts.clockedMixedMoxLayout();
+    int dualMoxRods = 0;
+    int singleMoxRods = 0;
+    int overclockedVents = 0;
+    int componentVents = 0;
+    int reactorVents = 0;
+    for (int y = 0; y < layout.length; y++) {
+      helper.assertValueEqual(layout[y].length(), 9, "clocked MOX layout row width");
+      for (int x = 0; x < layout[y].length(); x++) {
+        switch (layout[y].charAt(x)) {
+          case QuadRodReactorLayouts.DUAL_MOX_ROD -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.DUAL_MOX_FUEL_ROD));
+            dualMoxRods++;
+          }
+          case QuadRodReactorLayouts.SINGLE_MOX_ROD -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.MOX_FUEL_ROD));
+            singleMoxRods++;
+          }
+          case QuadRodReactorLayouts.OVERCLOCKED_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.OVERCLOCKED_HEAT_VENT));
+            overclockedVents++;
+          }
+          case QuadRodReactorLayouts.COMPONENT_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.COMPONENT_HEAT_VENT));
+            componentVents++;
+          }
+          case QuadRodReactorLayouts.REACTOR_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.REACTOR_HEAT_VENT));
+            reactorVents++;
+          }
+          default -> throw new IllegalArgumentException("unknown clocked MOX layout symbol");
+        }
+      }
+    }
+
+    helper.assertValueEqual(layout.length, 6, "clocked MOX layout row count");
+    helper.assertValueEqual(dualMoxRods, 4, "dual MOX rods in clocked layout");
+    helper.assertValueEqual(singleMoxRods, 2, "single MOX rods in clocked layout");
+    helper.assertValueEqual(overclockedVents, 8, "overclocked vents in clocked layout");
+    helper.assertValueEqual(componentVents, 19, "component vents in clocked layout");
+    helper.assertValueEqual(reactorVents, 21, "reactor vents in clocked layout");
+
+    boolean[] powered = {false};
+    reactor.redstone.addRedstoneModifier(input -> powered[0] ? 15 : 0);
+
+    helper.runAtTickTime(
+        20,
+        () -> {
+          int totalCycles = 0;
+          int poweredCycles = 0;
+          int peakHullHeat = reactor.getHeat();
+          double totalOutput = 0.0;
+
+          // Cold-start preheat: 48 continuously powered cycles raise this exact layout to 1488
+          // hull heat. The regular clock can then take over without external heat injection.
+          powered[0] = true;
+          reactor.redstone.update();
+          for (int cycle = 0; cycle < 48; cycle++) {
+            reactor.output = 0.0F;
+            reactor.processChambers();
+            totalOutput += reactor.getReactorEnergyOutput();
+            poweredCycles++;
+            totalCycles++;
+            peakHullHeat = Math.max(peakHullHeat, reactor.getHeat());
+          }
+          helper.assertValueEqual(reactor.getHeat(), 1488, "clocked MOX preheat hull heat");
+
+          int clockCycle = 0;
+          while (!hasDepletedMoxFuelRod(reactor) && poweredCycles < 10000) {
+            powered[0] = clockCycle % 14 < 13;
+            reactor.redstone.update();
+            reactor.output = 0.0F;
+            reactor.processChambers();
+            if (powered[0]) {
+              poweredCycles++;
+            }
+            totalOutput += reactor.getReactorEnergyOutput();
+            peakHullHeat = Math.max(peakHullHeat, reactor.getHeat());
+            helper.assertTrue(
+                reactor.getHeat() < reactor.getMaxHeat(),
+                "clocked MOX hull heat must stay below its capacity");
+            totalCycles++;
+            clockCycle++;
+          }
+
+          helper.assertTrue(hasDepletedMoxFuelRod(reactor), "a clocked MOX rod should deplete");
+          helper.assertValueEqual(poweredCycles, 10000, "powered MOX cycles to depletion");
+          helper.assertValueEqual(totalCycles, 10765, "total cycles to MOX depletion");
+          helper.assertValueEqual(peakHullHeat, 9531, "clocked MOX peak hull heat");
+          helper.assertTrue(
+              totalOutput * 5.0 / totalCycles > 600.0,
+              "clocked MOX average output should exceed 600 EU/t");
+
+          int survivingOverclockedVents = 0;
+          int survivingComponentVents = 0;
+          int survivingReactorVents = 0;
+          for (int y = 0; y < 6; y++) {
+            for (int x = 0; x < 9; x++) {
+              ItemStack stack = reactor.getItemAt(x, y);
+              if (stack != null && stack.getItem() == Ic2Items.OVERCLOCKED_HEAT_VENT) {
+                survivingOverclockedVents++;
+              } else if (stack != null && stack.getItem() == Ic2Items.COMPONENT_HEAT_VENT) {
+                survivingComponentVents++;
+              } else if (stack != null && stack.getItem() == Ic2Items.REACTOR_HEAT_VENT) {
+                survivingReactorVents++;
+              }
+            }
+          }
+          helper.assertValueEqual(survivingOverclockedVents, 8, "intact clocked overclocked vents");
+          helper.assertValueEqual(survivingComponentVents, 19, "intact clocked component vents");
+          helper.assertValueEqual(survivingReactorVents, 21, "intact clocked reactor vents");
+          helper.succeed();
+        });
+  }
+
+  @GameTest(template = EMPTY_LARGE, timeoutTicks = 300)
+  public static void clockedHighOutputMoxLayout(GameTestHelper helper) {
+    TileEntityNuclearReactorElectric reactor = placeReactor(helper, VESSEL_CENTER);
+    for (Direction direction : Direction.values()) {
+      helper.setBlock(VESSEL_CENTER.relative(direction), Ic2Blocks.REACTOR_CHAMBER);
+    }
+
+    String[] layout = QuadRodReactorLayouts.clockedHighOutputMoxLayout();
+    int dualMoxRods = 0;
+    int singleMoxRods = 0;
+    int overclockedVents = 0;
+    int componentVents = 0;
+    int reactorVents = 0;
+    for (int y = 0; y < layout.length; y++) {
+      helper.assertValueEqual(layout[y].length(), 9, "high-output MOX layout row width");
+      for (int x = 0; x < layout[y].length(); x++) {
+        switch (layout[y].charAt(x)) {
+          case QuadRodReactorLayouts.DUAL_MOX_ROD -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.DUAL_MOX_FUEL_ROD));
+            dualMoxRods++;
+          }
+          case QuadRodReactorLayouts.SINGLE_MOX_ROD -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.MOX_FUEL_ROD));
+            singleMoxRods++;
+          }
+          case QuadRodReactorLayouts.OVERCLOCKED_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.OVERCLOCKED_HEAT_VENT));
+            overclockedVents++;
+          }
+          case QuadRodReactorLayouts.COMPONENT_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.COMPONENT_HEAT_VENT));
+            componentVents++;
+          }
+          case QuadRodReactorLayouts.REACTOR_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.REACTOR_HEAT_VENT));
+            reactorVents++;
+          }
+          default -> throw new IllegalArgumentException("unknown high-output MOX layout symbol");
+        }
+      }
+    }
+
+    helper.assertValueEqual(layout.length, 6, "high-output MOX layout row count");
+    helper.assertValueEqual(dualMoxRods, 5, "dual MOX rods in high-output layout");
+    helper.assertValueEqual(singleMoxRods, 1, "single MOX rods in high-output layout");
+    helper.assertValueEqual(overclockedVents, 9, "overclocked vents in high-output layout");
+    helper.assertValueEqual(componentVents, 27, "component vents in high-output layout");
+    helper.assertValueEqual(reactorVents, 12, "reactor vents in high-output layout");
+
+    boolean[] powered = {false};
+    reactor.redstone.addRedstoneModifier(input -> powered[0] ? 15 : 0);
+
+    helper.runAtTickTime(
+        20,
+        () -> {
+          int totalCycles = 0;
+          int poweredCycles = 0;
+          int peakHullHeat = reactor.getHeat();
+          double totalOutput = 0.0;
+
+          powered[0] = true;
+          reactor.redstone.update();
+          for (int cycle = 0; cycle < 85; cycle++) {
+            reactor.output = 0.0F;
+            reactor.processChambers();
+            totalOutput += reactor.getReactorEnergyOutput();
+            poweredCycles++;
+            totalCycles++;
+            peakHullHeat = Math.max(peakHullHeat, reactor.getHeat());
+          }
+          helper.assertValueEqual(reactor.getHeat(), 8160, "high-output MOX preheat hull heat");
+
+          int clockCycle = 0;
+          while (!hasDepletedMoxFuelRod(reactor) && poweredCycles < 10000) {
+            powered[0] = clockCycle % 5 < 4;
+            reactor.redstone.update();
+            reactor.output = 0.0F;
+            reactor.processChambers();
+            if (powered[0]) {
+              poweredCycles++;
+            }
+            totalOutput += reactor.getReactorEnergyOutput();
+            peakHullHeat = Math.max(peakHullHeat, reactor.getHeat());
+            helper.assertTrue(
+                reactor.getHeat() < reactor.getMaxHeat(),
+                "high-output MOX hull heat must stay below its capacity");
+            totalCycles++;
+            clockCycle++;
+          }
+
+          double averageEuPerTick = totalOutput * 5.0 / totalCycles;
+          helper.assertTrue(hasDepletedMoxFuelRod(reactor), "a high-output MOX rod should deplete");
+          helper.assertValueEqual(poweredCycles, 10000, "high-output powered cycles to depletion");
+          helper.assertValueEqual(totalCycles, 12478, "high-output total cycles to depletion");
+          helper.assertValueEqual(peakHullHeat, 8544, "high-output MOX peak hull heat");
+          helper.assertTrue(
+              averageEuPerTick > 795.0 && averageEuPerTick < 805.0,
+              "high-output MOX average should be approximately 800 EU/t, was " + averageEuPerTick);
+
+          int survivingOverclockedVents = 0;
+          int survivingComponentVents = 0;
+          int survivingReactorVents = 0;
+          for (int y = 0; y < 6; y++) {
+            for (int x = 0; x < 9; x++) {
+              ItemStack stack = reactor.getItemAt(x, y);
+              if (stack != null && stack.getItem() == Ic2Items.OVERCLOCKED_HEAT_VENT) {
+                survivingOverclockedVents++;
+              } else if (stack != null && stack.getItem() == Ic2Items.COMPONENT_HEAT_VENT) {
+                survivingComponentVents++;
+              } else if (stack != null && stack.getItem() == Ic2Items.REACTOR_HEAT_VENT) {
+                survivingReactorVents++;
+              }
+            }
+          }
+          helper.assertValueEqual(
+              survivingOverclockedVents, 9, "intact high-output overclocked vents");
+          helper.assertValueEqual(
+              survivingComponentVents, 27, "intact high-output component vents");
+          helper.assertValueEqual(survivingReactorVents, 12, "intact high-output reactor vents");
+          helper.succeed();
+        });
+  }
+
+  @GameTest(template = EMPTY_LARGE, timeoutTicks = 300)
+  public static void clocked1020EuMoxLayout(GameTestHelper helper) {
+    TileEntityNuclearReactorElectric reactor = placeReactor(helper, VESSEL_CENTER);
+    for (Direction direction : Direction.values()) {
+      helper.setBlock(VESSEL_CENTER.relative(direction), Ic2Blocks.REACTOR_CHAMBER);
+    }
+
+    String[] layout = QuadRodReactorLayouts.clocked1020EuMoxLayout();
+    int quadMoxRods = 0;
+    int dualMoxRods = 0;
+    int singleMoxRods = 0;
+    int overclockedVents = 0;
+    int componentVents = 0;
+    int reactorVents = 0;
+    for (int y = 0; y < layout.length; y++) {
+      helper.assertValueEqual(layout[y].length(), 9, "1020 EU/t MOX layout row width");
+      for (int x = 0; x < layout[y].length(); x++) {
+        switch (layout[y].charAt(x)) {
+          case QuadRodReactorLayouts.QUAD_MOX_ROD -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.QUAD_MOX_FUEL_ROD));
+            quadMoxRods++;
+          }
+          case QuadRodReactorLayouts.DUAL_MOX_ROD -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.DUAL_MOX_FUEL_ROD));
+            dualMoxRods++;
+          }
+          case QuadRodReactorLayouts.SINGLE_MOX_ROD -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.MOX_FUEL_ROD));
+            singleMoxRods++;
+          }
+          case QuadRodReactorLayouts.OVERCLOCKED_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.OVERCLOCKED_HEAT_VENT));
+            overclockedVents++;
+          }
+          case QuadRodReactorLayouts.COMPONENT_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.COMPONENT_HEAT_VENT));
+            componentVents++;
+          }
+          case QuadRodReactorLayouts.REACTOR_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.REACTOR_HEAT_VENT));
+            reactorVents++;
+          }
+          default -> throw new IllegalArgumentException("unknown 1020 EU/t MOX layout symbol");
+        }
+      }
+    }
+
+    helper.assertValueEqual(layout.length, 6, "1020 EU/t MOX layout row count");
+    helper.assertValueEqual(quadMoxRods, 2, "quad MOX rods in 1020 EU/t layout");
+    helper.assertValueEqual(dualMoxRods, 2, "dual MOX rods in 1020 EU/t layout");
+    helper.assertValueEqual(singleMoxRods, 1, "single MOX rods in 1020 EU/t layout");
+    helper.assertValueEqual(overclockedVents, 12, "overclocked vents in 1020 EU/t layout");
+    helper.assertValueEqual(componentVents, 25, "component vents in 1020 EU/t layout");
+    helper.assertValueEqual(reactorVents, 12, "reactor vents in 1020 EU/t layout");
+
+    boolean[] powered = {false};
+    reactor.redstone.addRedstoneModifier(input -> powered[0] ? 15 : 0);
+
+    helper.runAtTickTime(
+        20,
+        () -> {
+          int totalCycles = 0;
+          int poweredCycles = 0;
+          int peakHullHeat = reactor.getHeat();
+          double totalOutput = 0.0;
+
+          powered[0] = true;
+          reactor.redstone.update();
+          for (int cycle = 0; cycle < 645; cycle++) {
+            reactor.output = 0.0F;
+            reactor.processChambers();
+            totalOutput += reactor.getReactorEnergyOutput();
+            poweredCycles++;
+            totalCycles++;
+            peakHullHeat = Math.max(peakHullHeat, reactor.getHeat());
+          }
+          helper.assertValueEqual(reactor.getHeat(), 7740, "1020 EU/t MOX preheat hull heat");
+
+          int clockCycle = 0;
+          while (!hasDepletedMoxFuelRod(reactor) && poweredCycles < 10000) {
+            powered[0] = clockCycle % 42 < 41;
+            reactor.redstone.update();
+            reactor.output = 0.0F;
+            reactor.processChambers();
+            if (powered[0]) {
+              poweredCycles++;
+            }
+            totalOutput += reactor.getReactorEnergyOutput();
+            peakHullHeat = Math.max(peakHullHeat, reactor.getHeat());
+            helper.assertTrue(
+                reactor.getHeat() < reactor.getMaxHeat(),
+                "1020 EU/t MOX hull heat must stay below its capacity");
+            totalCycles++;
+            clockCycle++;
+          }
+
+          double averageEuPerTick = totalOutput * 5.0 / totalCycles;
+          helper.assertTrue(hasDepletedMoxFuelRod(reactor), "a 1020 EU/t MOX rod should deplete");
+          helper.assertValueEqual(poweredCycles, 10000, "1020 EU/t powered cycles to depletion");
+          helper.assertValueEqual(totalCycles, 10228, "1020 EU/t total cycles to depletion");
+          helper.assertValueEqual(peakHullHeat, 8232, "1020 EU/t MOX peak hull heat");
+          helper.assertTrue(
+              averageEuPerTick > 1019.0 && averageEuPerTick < 1021.0,
+              "MOX average should be approximately 1020 EU/t, was " + averageEuPerTick);
+
+          int survivingOverclockedVents = 0;
+          int survivingComponentVents = 0;
+          int survivingReactorVents = 0;
+          for (int y = 0; y < 6; y++) {
+            for (int x = 0; x < 9; x++) {
+              ItemStack stack = reactor.getItemAt(x, y);
+              if (stack != null && stack.getItem() == Ic2Items.OVERCLOCKED_HEAT_VENT) {
+                survivingOverclockedVents++;
+              } else if (stack != null && stack.getItem() == Ic2Items.COMPONENT_HEAT_VENT) {
+                survivingComponentVents++;
+              } else if (stack != null && stack.getItem() == Ic2Items.REACTOR_HEAT_VENT) {
+                survivingReactorVents++;
+              }
+            }
+          }
+          helper.assertValueEqual(
+              survivingOverclockedVents, 12, "intact 1020 EU/t overclocked vents");
+          helper.assertValueEqual(survivingComponentVents, 25, "intact 1020 EU/t component vents");
+          helper.assertValueEqual(survivingReactorVents, 12, "intact 1020 EU/t reactor vents");
+          helper.succeed();
+        });
+  }
+
   // a lithium rod next to a pulsing rod breeds on a hot hull, turning into a tritium rod once full
   @GameTest(template = EMPTY)
   public static void lithiumRodBreedsIntoTritium(GameTestHelper helper) {
@@ -697,6 +1197,142 @@ public class ReactorGameTests {
       GameTestHelper helper, BlockPos pos) {
     helper.setBlock(pos, Ic2Blocks.NUCLEAR_REACTOR);
     return getTe(helper, pos, TileEntityNuclearReactorElectric.class);
+  }
+
+  private static void verifyQuadRodLayout(GameTestHelper helper, int rodCount) {
+    TileEntityNuclearReactorElectric reactor = placeReactor(helper, VESSEL_CENTER);
+    for (Direction direction : Direction.values()) {
+      helper.setBlock(VESSEL_CENTER.relative(direction), Ic2Blocks.REACTOR_CHAMBER);
+    }
+
+    // A chamber relays this signal to the reactor while leaving all six chamber positions filled.
+    helper.setBlock(VESSEL_CENTER.offset(-2, 0, 0), Blocks.REDSTONE_BLOCK);
+
+    String[] layout = QuadRodReactorLayouts.forRodCount(rodCount);
+    int loadedRods = 0;
+    int loadedOverclockedVents = 0;
+    int loadedComponentVents = 0;
+    for (int y = 0; y < layout.length; y++) {
+      helper.assertValueEqual(layout[y].length(), 9, "layout row width");
+      for (int x = 0; x < layout[y].length(); x++) {
+        switch (layout[y].charAt(x)) {
+          case QuadRodReactorLayouts.QUAD_ROD -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.QUAD_URANIUM_FUEL_ROD));
+            loadedRods++;
+          }
+          case QuadRodReactorLayouts.OVERCLOCKED_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.OVERCLOCKED_HEAT_VENT));
+            loadedOverclockedVents++;
+          }
+          case QuadRodReactorLayouts.COMPONENT_VENT -> {
+            reactor.reactorSlot.put(x, y, new ItemStack(Ic2Items.COMPONENT_HEAT_VENT));
+            loadedComponentVents++;
+          }
+          case QuadRodReactorLayouts.EMPTY -> {
+            // Deliberately empty.
+          }
+          default -> throw new IllegalArgumentException("unknown reactor layout symbol");
+        }
+      }
+    }
+
+    helper.assertValueEqual(layout.length, 6, "layout row count");
+    helper.assertValueEqual(loadedRods, rodCount, "quad rods loaded from layout");
+    helper.assertValueEqual(
+        loadedOverclockedVents + loadedComponentVents,
+        QuadRodReactorLayouts.ventCount(rodCount),
+        "minimal vent count");
+    ItemReactorHeatStorage overclockedVent =
+        (ItemReactorHeatStorage) Ic2Items.OVERCLOCKED_HEAT_VENT;
+    int expectedOverclockedVents = loadedOverclockedVents;
+    int expectedComponentVents = loadedComponentVents;
+
+    // Let the layout complete about ten reactor work cycles so this checks sustained venting, not
+    // just heat acceptance during the first cycle.
+    helper.runAtTickTime(
+        220,
+        () -> {
+          int simulatedCycles = 0;
+          while (!hasDepletedQuadRod(reactor) && simulatedCycles < 20000) {
+            reactor.output = 0.0F;
+            reactor.processChambers();
+            simulatedCycles++;
+          }
+
+          helper.assertTrue(
+              hasDepletedQuadRod(reactor),
+              "a quad rod should deplete within 20000 simulated work cycles");
+          helper.assertValueEqual(reactor.getReactorSize(), 9, "full reactor grid width");
+          helper.assertValueEqual(reactor.getHeat(), 0, "quad layout hull heat");
+
+          int overclockedVents = 0;
+          int componentVents = 0;
+          for (int y = 0; y < 6; y++) {
+            for (int x = 0; x < 9; x++) {
+              ItemStack stack = reactor.getItemAt(x, y);
+              if (stack != null && stack.getItem() == Ic2Items.OVERCLOCKED_HEAT_VENT) {
+                overclockedVents++;
+                helper.assertTrue(
+                    overclockedVent.getCurrentHeat(stack, reactor, x, y)
+                        < overclockedVent.getMaxHeat(stack, reactor, x, y),
+                    "overclocked heat vent at " + x + "," + y + " should remain intact");
+              } else if (stack != null && stack.getItem() == Ic2Items.COMPONENT_HEAT_VENT) {
+                componentVents++;
+              }
+            }
+          }
+
+          helper.assertValueEqual(
+              overclockedVents, expectedOverclockedVents, "intact overclocked heat vents");
+          helper.assertValueEqual(
+              componentVents, expectedComponentVents, "intact component heat vents");
+          helper.succeed();
+        });
+  }
+
+  private static boolean hasDepletedQuadRod(TileEntityNuclearReactorElectric reactor) {
+    for (int y = 0; y < 6; y++) {
+      for (int x = 0; x < 9; x++) {
+        ItemStack stack = reactor.getItemAt(x, y);
+        if (stack != null && stack.getItem() == Ic2Items.DEPLETED_QUAD_URANIUM_FUEL_ROD) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  private static boolean hasDepletedFuelRod(TileEntityNuclearReactorElectric reactor) {
+    for (int y = 0; y < 6; y++) {
+      for (int x = 0; x < 9; x++) {
+        ItemStack stack = reactor.getItemAt(x, y);
+        if (stack != null
+            && (stack.getItem() == Ic2Items.DEPLETED_URANIUM_FUEL_ROD
+                || stack.getItem() == Ic2Items.DEPLETED_DUAL_URANIUM_FUEL_ROD
+                || stack.getItem() == Ic2Items.DEPLETED_QUAD_URANIUM_FUEL_ROD)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  private static boolean hasDepletedMoxFuelRod(TileEntityNuclearReactorElectric reactor) {
+    for (int y = 0; y < 6; y++) {
+      for (int x = 0; x < 9; x++) {
+        ItemStack stack = reactor.getItemAt(x, y);
+        if (stack != null
+            && (stack.getItem() == Ic2Items.DEPLETED_MOX_FUEL_ROD
+                || stack.getItem() == Ic2Items.DEPLETED_DUAL_MOX_FUEL_ROD
+                || stack.getItem() == Ic2Items.DEPLETED_QUAD_MOX_FUEL_ROD)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   // hollow 5x5x5 reactor vessel shell around a fully chambered reactor; tests punch ports into the
