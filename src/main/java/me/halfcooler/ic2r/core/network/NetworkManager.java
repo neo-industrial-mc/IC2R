@@ -28,15 +28,12 @@ import java.util.List;
 import java.util.zip.DeflaterOutputStream;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import me.halfcooler.ic2r.forge.Ic2rRawPayload;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.Item;
@@ -49,9 +46,9 @@ import net.minecraft.world.phys.Vec3;
 public class NetworkManager implements INetworkManager
 {
 	/**
-	 * Must not touch {@link IC2R} here: {@code PlatformNetworkForge} reads this during SPI install,
-	 * and {@code IC2R} static init also calls {@code ForgePlatformServices.install()} — using
-	 * {@code IC2R.getIdentifier} would recurse and leave {@code channelId} null.
+	 * Must not touch {@link IC2R} here: static init of other types may call
+	 * {@code ForgePlatformServices.install()} while {@code IC2R} is still initializing —
+	 * using {@code IC2R.getIdentifier} would recurse and leave {@code channelId} null.
 	 */
 	public static final ResourceLocation channelId = ResourceLocation.fromNamespaceAndPath("ic2r", "m");
 

@@ -8,7 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityHeatSourceInventory extends TileEntityInventory implements IHeatSource, ServerTicker
 {
@@ -84,13 +84,13 @@ public abstract class TileEntityHeatSourceInventory extends TileEntityInventory 
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		this.HeatBuffer = nbt.getInt("HeatBuffer");
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.putInt("HeatBuffer", this.HeatBuffer);

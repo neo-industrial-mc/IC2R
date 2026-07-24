@@ -20,24 +20,17 @@ import org.jetbrains.annotations.NotNull;
  * needs ItemStack/Forge types — unit suite mirrors rules in {@code InvSlotHandlerMathTest}
  * without loading this adapter (no MC bootstrap in CI).
  */
-public final class InvSlotItemHandler implements IItemHandlerModifiable
+public record InvSlotItemHandler(InvSlot slot) implements IItemHandlerModifiable
 {
-	private final InvSlot slot;
-
-	public InvSlotItemHandler(InvSlot slot)
+	public InvSlotItemHandler
 	{
 		if (slot == null)
 		{
 			throw new NullPointerException("slot");
 		}
 
-		this.slot = slot;
 	}
 
-	public InvSlot getSlot()
-	{
-		return this.slot;
-	}
 
 	@Override
 	public int getSlots()
@@ -81,7 +74,9 @@ public final class InvSlotItemHandler implements IItemHandlerModifiable
 		{
 			if (existingCount == 0)
 			{
-				ItemStack copy1 = stack.copy(); copy1.setCount(insertable); this.slot.put(index, copy1);
+				ItemStack copy1 = stack.copy();
+				copy1.setCount(insertable);
+				this.slot.put(index, copy1);
 			} else
 			{
 				this.slot.put(index, StackUtil.incSize(existing, insertable));
@@ -89,7 +84,10 @@ public final class InvSlotItemHandler implements IItemHandlerModifiable
 		}
 
 		int remaining = InvSlotTransferMath.remainingAfterInsert(stack.getCount(), insertable);
-		if (remaining == 0) return ItemStack.EMPTY; ItemStack result1 = stack.copy(); result1.setCount(remaining); return result1;
+		if (remaining == 0) return ItemStack.EMPTY;
+		ItemStack result1 = stack.copy();
+		result1.setCount(remaining);
+		return result1;
 	}
 
 	@Override
@@ -110,7 +108,8 @@ public final class InvSlotItemHandler implements IItemHandlerModifiable
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack result = existing.copy(); result.setCount(extractable);
+		ItemStack result = existing.copy();
+		result.setCount(extractable);
 		if (!simulate)
 		{
 			int left = InvSlotTransferMath.remainingAfterExtract(existingCount, extractable);

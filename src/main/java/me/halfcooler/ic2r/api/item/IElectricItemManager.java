@@ -24,7 +24,7 @@ public interface IElectricItemManager
 	{
 		IElectricItem item = (IElectricItem) stack.getItem();
 		assert item.getMaxCharge(stack) > 0.0;
-		return Math.max(0.0, Math.min(1.0, this.getStackCharge(stack) / item.getMaxCharge(stack)));
+		return Math.clamp(this.getStackCharge(stack) / item.getMaxCharge(stack), 0.0, 1.0);
 	}
 
 	boolean canUse(ItemStack var1, double var2);

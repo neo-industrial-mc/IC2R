@@ -363,7 +363,7 @@ class ChangeHandler
 							{
 								for (List<Node> nodeList : neighborGroups)
 								{
-									Node neighbor2 = nodeList.get(0);
+									Node neighbor2 = nodeList.getFirst();
 									if (neighbor2.nodeType == NodeType.Conductor && neighbor2.getGrid() == neighbor.getGrid())
 									{
 										nodeList.add(neighbor);
@@ -391,7 +391,7 @@ class ChangeHandler
 						for (int i = 0; i < neighborGroups.size(); i++)
 						{
 							List<Node> nodeList = neighborGroups.get(i);
-							Node neighbor = nodeList.get(0);
+							Node neighbor = nodeList.getFirst();
 							if (neighbor.nodeType != NodeType.Conductor && !neighbor.links.isEmpty())
 							{
 								assert nodeList.size() == 1;

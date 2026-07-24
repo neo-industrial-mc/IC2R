@@ -2,7 +2,6 @@ package me.halfcooler.ic2r.integration.jade;
 
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
-import me.halfcooler.ic2r.core.ref.Ic2rBlockTags;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import snownee.jade.addon.harvest.HarvestToolProvider;
 import snownee.jade.addon.harvest.SimpleToolHandler;

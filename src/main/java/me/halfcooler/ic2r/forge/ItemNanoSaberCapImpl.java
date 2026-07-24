@@ -3,9 +3,6 @@ package me.halfcooler.ic2r.forge;
 import me.halfcooler.ic2r.api.item.INanoSaberState;
 import net.minecraft.world.item.ItemStack;
 
-/**
- * Item-stack nano saber state provider for NeoForge {@link ItemCapability}.
- */
 final class ItemNanoSaberCapImpl implements INanoSaberState {
 
     private final NanoSaberStateImpl state;

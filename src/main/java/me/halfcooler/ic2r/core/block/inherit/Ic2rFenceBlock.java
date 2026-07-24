@@ -36,8 +36,7 @@ import org.jetbrains.annotations.NotNull;
 public class Ic2rFenceBlock extends FenceBlock
 {
     @Override
-    public com.mojang.serialization.MapCodec<FenceBlock> codec() {
-        // FenceBlock.codec is MapCodec<FenceBlock> (invariant); use base fence codec for data-driven path.
+    public com.mojang.serialization.@NotNull MapCodec<FenceBlock> codec() {
         return FenceBlock.CODEC;
     }
 
@@ -283,7 +282,6 @@ public class Ic2rFenceBlock extends FenceBlock
 
 	private List<TileEntityMagnetizer> getMagnetizers(BlockGetter world, BlockPos start, boolean checkPower)
 	{
-		int maxRange = 20;
 		List<TileEntityMagnetizer> ret = new ArrayList<>();
 		BlockPos center = new BlockPos(start);
 		new BlockPos(0, 0, 0);
@@ -365,7 +363,7 @@ public class Ic2rFenceBlock extends FenceBlock
 
 							while (ret.size() > oldSize)
 							{
-								ret.remove(ret.size() - 1);
+								ret.removeLast();
 							}
 						}
 

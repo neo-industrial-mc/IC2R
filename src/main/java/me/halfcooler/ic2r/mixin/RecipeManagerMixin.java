@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-// We use this to check THE FUCKING CREATE MOD is incompatible
 @Mixin(RecipeManager.class)
 public class RecipeManagerMixin
 {

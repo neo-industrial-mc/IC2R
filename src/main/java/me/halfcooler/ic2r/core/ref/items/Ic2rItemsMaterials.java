@@ -1,7 +1,7 @@
 package me.halfcooler.ic2r.core.ref.items;
 
 import java.util.List;
-import javax.annotation.Nullable;
+
 import org.jetbrains.annotations.NotNull;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -9,7 +9,6 @@ import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import me.halfcooler.ic2r.core.item.ItemCoke;
 import me.halfcooler.ic2r.core.item.ItemCrystalMemory;
 import me.halfcooler.ic2r.core.item.ItemNuclearResource;

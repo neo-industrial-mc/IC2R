@@ -6,22 +6,13 @@ import java.util.function.Supplier;
 
 /**
  * Access point for platform SPI implementations.
- * <p>
- * W3.2+: Forge entry and {@code IC2R} static both call {@code ForgePlatformServices.install()} (idempotent).
- * W3.3: all client-env checks use {@link #lifecycle()}{@code .isClient()}; {@code EnvProxy#isClientEnv} removed.
- * G3.5 / E2: loader kind / server via {@link #lifecycle()}{@code .getLoaderKind()}/{@code .getServer()};
- * {@code EnvProxy#isForgeEnv}/{@code isFabricEnv}/{@code getServer} removed.
- * G3.6: all eight facets installed as real Forge thin adapters (no stubs); remaining call sites may still
- * dual-track {@code IC2R.envProxy} / {@code IC2R.sideProxy} until incremental migration finishes.
- * ServiceLoader remains a fallback when {@link #install} was not called.
+ * Prefer {@link #install} from the loader entry; {@link ServiceLoader} is a fallback.
  */
 public final class PlatformServices
 {
-	private static volatile PlatformRegistry registry;
 	private static volatile PlatformEnergyBridge energy;
 	private static volatile PlatformFluidBridge fluid;
 	private static volatile PlatformItemTransfer itemTransfer;
-	private static volatile PlatformNetwork network;
 	private static volatile PlatformPlayerUi playerUi;
 	private static volatile PlatformConfig config;
 	private static volatile PlatformLifecycle lifecycle;
@@ -31,33 +22,23 @@ public final class PlatformServices
 	}
 
 	/**
-	 * Explicit install (preferred during migration: Forge entry point wires adapters).
-	 * All arguments required; pass stub implementations if a facet is unused.
+	 * Explicit install (preferred). All arguments required.
 	 */
 	public static void install(
-		PlatformRegistry registry,
 		PlatformEnergyBridge energy,
 		PlatformFluidBridge fluid,
 		PlatformItemTransfer itemTransfer,
-		PlatformNetwork network,
 		PlatformPlayerUi playerUi,
 		PlatformConfig config,
 		PlatformLifecycle lifecycle
 	)
 	{
-		PlatformServices.registry = Objects.requireNonNull(registry, "registry");
 		PlatformServices.energy = Objects.requireNonNull(energy, "energy");
 		PlatformServices.fluid = Objects.requireNonNull(fluid, "fluid");
 		PlatformServices.itemTransfer = Objects.requireNonNull(itemTransfer, "itemTransfer");
-		PlatformServices.network = Objects.requireNonNull(network, "network");
 		PlatformServices.playerUi = Objects.requireNonNull(playerUi, "playerUi");
 		PlatformServices.config = Objects.requireNonNull(config, "config");
 		PlatformServices.lifecycle = Objects.requireNonNull(lifecycle, "lifecycle");
-	}
-
-	public static PlatformRegistry registry()
-	{
-		return require(registry, PlatformRegistry.class, () -> PlatformServices.registry = load(PlatformRegistry.class));
 	}
 
 	public static PlatformEnergyBridge energy()
@@ -75,11 +56,6 @@ public final class PlatformServices
 		return require(itemTransfer, PlatformItemTransfer.class, () -> PlatformServices.itemTransfer = load(PlatformItemTransfer.class));
 	}
 
-	public static PlatformNetwork network()
-	{
-		return require(network, PlatformNetwork.class, () -> PlatformServices.network = load(PlatformNetwork.class));
-	}
-
 	public static PlatformPlayerUi playerUi()
 	{
 		return require(playerUi, PlatformPlayerUi.class, () -> PlatformServices.playerUi = load(PlatformPlayerUi.class));
@@ -95,14 +71,12 @@ public final class PlatformServices
 		return require(lifecycle, PlatformLifecycle.class, () -> PlatformServices.lifecycle = load(PlatformLifecycle.class));
 	}
 
-	/** True if {@link #install} has been called (ServiceLoader-only setups report false until first get). */
+	/** True if {@link #install} has been called. */
 	public static boolean isInstalled()
 	{
-		return registry != null
-			&& energy != null
+		return energy != null
 			&& fluid != null
 			&& itemTransfer != null
-			&& network != null
 			&& playerUi != null
 			&& config != null
 			&& lifecycle != null;

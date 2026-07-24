@@ -62,7 +62,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
@@ -81,7 +80,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityNuclearReactorElectric extends TileEntityInventory implements IHasGui, IReactor, IEnergySource, IMetaDelegate, IGuiValueProvider, IElectricalNode, ServerTicker, ClientTicker
 {
@@ -226,7 +225,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		this.heat = nbt.getInt("heat");
 		this.output = nbt.getShort("output");
@@ -234,7 +233,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.putInt("heat", this.heat);

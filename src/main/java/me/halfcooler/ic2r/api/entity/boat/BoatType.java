@@ -7,16 +7,13 @@ import java.util.stream.Stream;
 
 import net.minecraft.world.item.Item;
 
-public class BoatType
+public record BoatType(String name, Item baseItem)
 {
 	private static final Set<BoatType> VALUES = new ObjectArraySet<>();
-	private final String name;
-	private final Item baseItem;
 
 	protected BoatType(Item baseItem, String name)
 	{
-		this.name = name;
-		this.baseItem = baseItem;
+		this(name, baseItem);
 	}
 
 	public static BoatType register(Item baseItem, String name)
@@ -31,13 +28,5 @@ public class BoatType
 		return VALUES.stream();
 	}
 
-	public String getName()
-	{
-		return this.name;
-	}
 
-	public Item getBaseItem()
-	{
-		return this.baseItem;
-	}
 }

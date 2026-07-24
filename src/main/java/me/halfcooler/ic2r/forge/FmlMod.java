@@ -41,20 +41,12 @@ public final class FmlMod {
 
     public static FmlMod instance;
 
-    private final ModContainer modContainer;
-
-    private List<Runnable> toRunAfterRegistryInit = new ArrayList<>();
+	private List<Runnable> toRunAfterRegistryInit = new ArrayList<>();
 
     public FmlMod(IEventBus modEventBus, ModContainer modContainer) {
         instance = this;
-        this.modContainer = modContainer;
-        // W3.2: install platform SPI before common code may use PlatformServices
         ForgePlatformServices.install();
-        // Force class-loading of *Blocks definition files so DeferredRegister entries
-        // exist before BLOCKS DeferredRegister processes during RegisterEvent.
         Ic2rBlocks.init();
-        // MOB_EFFECT RegisterEvent fires BEFORE BLOCK. Status effects must be queued
-        // here (mod constructor), never inside onInitEarly / RegisterEvent.BLOCK.
         EnvProxyForge.queueCoreStatusEffects();
         Ic2rArmorMaterials.REGISTRY.register(modEventBus);
         EnvProxyForge.BLOCKS.register(modEventBus);
@@ -70,19 +62,14 @@ public final class FmlMod {
         EnvFluidHandlerForge.fluidRegistry.register(modEventBus);
         EnvFluidHandlerForge.fluidTypeRegistry.register(modEventBus);
         Ic2rLootModifier.lootModifiersRegistry.register(modEventBus);
-        // W1.7: SoundEvent category fully DeferredRegister + RegistryObject
         Ic2rSoundEventsForge.register(modEventBus);
         if (FMLEnvironment.dist.isClient()) {
             modEventBus.register(new ClientModEventHandlerForge());
             modContainer.registerConfig(ModConfig.Type.CLIENT, IC2RClientConfig.SPEC, "ic2r/ic2r-client.toml");
-            // Enable the Mods list "Config" button via NeoForge's built-in ConfigurationScreen.
-            // Without IConfigScreenFactory the button stays disabled even though configs are registered.
             modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         }
         Ic2rFluids.init();
-        // All IC2R configs live under config/ic2r/
         modContainer.registerConfig(ModConfig.Type.COMMON, IC2RConfig.SPEC, "ic2r/ic2r-common.toml");
-        // UU matter costs: config/ic2r/ic2r-uu-matter.toml (loaded by IC2RUuMatterConfig, not ModConfigSpec)
         modEventBus.addListener(Ic2rCapabilities::register);
         modEventBus.addListener(this::registerPayloads);
     }
@@ -152,13 +139,6 @@ public final class FmlMod {
         }
     }
 
-    /**
-     * After every registry finishes mod registration, alias pre-20.1.40 {@code ic2:*} ids
-     * to current {@code ic2r:*} entries (same path). Replaces removed {@code MissingMappingsEvent}.
-     * <p>
-     * Priority {@link EventPriority#LOWEST} so DeferredRegister / pending item and fluid hooks
-     * have already populated the registry for this event.
-     */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void registerLegacyRegistryAliases(RegisterEvent event) {
         RemapService.apply(event.getRegistry());
@@ -173,7 +153,6 @@ public final class FmlMod {
 
     @SubscribeEvent
     public void registerLate(RegisterEvent event) {
-        // Run post-registry hooks once registries are largely populated (fluid types is late enough).
         if (event.getRegistryKey() == NeoForgeRegistries.Keys.FLUID_TYPES) {
             if (this.toRunAfterRegistryInit != null) {
                 for (Runnable runnable : this.toRunAfterRegistryInit) {

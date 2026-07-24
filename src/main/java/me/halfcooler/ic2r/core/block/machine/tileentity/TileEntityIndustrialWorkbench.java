@@ -25,7 +25,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.item.Item;
@@ -35,7 +34,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.core.component.DataComponents;
 
 @NotClassic
 public class TileEntityIndustrialWorkbench extends TileEntityInventory implements IHasGui
@@ -137,7 +135,7 @@ public class TileEntityIndustrialWorkbench extends TileEntityInventory implement
 					if (!changes.b.isEmpty())
 					{
 						changed = true;
-						ItemStack toPut = changes.a.isEmpty() ? StackUtil.emptyStack : changes.a.get(0);
+						ItemStack toPut = changes.a.isEmpty() ? StackUtil.emptyStack : changes.a.getFirst();
 						this.craftingStorage.put(index, toPut);
 					}
 				}

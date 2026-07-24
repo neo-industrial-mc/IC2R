@@ -1,7 +1,6 @@
 package me.halfcooler.ic2r.forge;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import me.halfcooler.ic2r.api.crops.Crops;
 import me.halfcooler.ic2r.api.crops.CropCard;
@@ -53,7 +52,6 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
@@ -91,7 +89,6 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.common.util.FakePlayer;
@@ -127,9 +124,6 @@ public final class EnvProxyForge implements EnvProxy
 
 		pendingItemRegistrations.clear();
 	}
-
-	// G3.5 / E2: isFabricEnv / isForgeEnv / getServer removed —
-	// use PlatformServices.lifecycle().getLoaderKind() / .getServer()
 
 	@Override
 	public <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(ResourceLocation id, BiFunction<BlockPos, BlockState, T> factory, Block... blocks)
@@ -425,7 +419,7 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public boolean openHandledScreen(Player player, MenuProvider factory, GrowingBuffer data)
 	{
-		((ServerPlayer) player).openMenu(factory, data::writeTo);
+		player.openMenu(factory, data::writeTo);
 		return true;
 	}
 

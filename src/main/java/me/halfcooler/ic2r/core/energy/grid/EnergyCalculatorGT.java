@@ -139,11 +139,11 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 		this.pathCacheDelegate.dumpNodeInfo(node, prefix, console, chat);
 	}
 
-	private static boolean runCalculation(Grid grid, GridData data)
+	private static void runCalculation(Grid grid, GridData data)
 	{
 		if (!data.active)
 		{
-			return false;
+			return;
 		}
 
 		List<Node> activeSources = data.activeSources;
@@ -176,7 +176,7 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 
 		if (activeSources.isEmpty() || activeSinks.isEmpty())
 		{
-			return false;
+			return;
 		}
 
 		Level world = grid.getEnergyNet().getWorld();
@@ -198,7 +198,6 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 		}
 
 		queueDeferredEffects(data, cablesToRemove, sinksToExplode);
-		return true;
 	}
 
 	private static void distribute(
@@ -387,10 +386,9 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 		if (EnergyNetExplosions.isOverVoltage(sink, packetVoltage))
 		{
 			Double prev = sinksToExplode.get(sinkTile);
-			double power = packetVoltage;
-			if (prev == null || prev < power)
+			if (prev == null || prev < (double) packetVoltage)
 			{
-				sinksToExplode.put(sinkTile, power);
+				sinksToExplode.put(sinkTile, (double) packetVoltage);
 			}
 		}
 	}
@@ -436,7 +434,7 @@ public class EnergyCalculatorGT implements IEnergyCalculator
 
 	private static Direction getFirstHopDirection(EnergyPath path)
 	{
-		Node first = path.conductors.isEmpty() ? path.target : path.conductors.get(0);
+		Node first = path.conductors.isEmpty() ? path.target : path.conductors.getFirst();
 		NodeLink link = path.source.getLinkTo(first);
 		return link != null ? link.getDirFrom(path.source) : null;
 	}

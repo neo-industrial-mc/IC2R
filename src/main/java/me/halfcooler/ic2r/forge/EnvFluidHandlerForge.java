@@ -53,6 +53,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 class EnvFluidHandlerForge implements EnvFluidHandler {
@@ -66,7 +67,6 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
     private static final java.util.List<Runnable> pendingFluidRegistrations = new java.util.ArrayList<>();
 
     private static IFluidHandlerItem getFluidHandler(ItemStack stack) {
-        // NeoForge 1.21: ItemCapability returns nullable, not LazyOptional.
         return stack.getCapability(Capabilities.FluidHandler.ITEM);
     }
 
@@ -79,8 +79,6 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
     }
 
     private static IFluidHandler getFluidHandler(BlockState state, Level world, BlockPos pos, BlockEntity be, Direction side) {
-        // Callers such as FluidHandler.isFluidBlock(BlockEntity, ...) only pass the BE and leave
-        // world/pos null. Recover them so Level#getCapability can run (NeoForge 1.21 requires Level).
         if (be != null) {
             if (world == null) {
                 world = be.getLevel();
@@ -97,7 +95,6 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
         if (world == null || pos == null || state == null) {
             return null;
         }
-        // NeoForge 1.21: query via Level#getCapability, not BlockEntity#getCapability.
         return world.getCapability(Capabilities.FluidHandler.BLOCK, pos, state, be, side);
     }
 
@@ -150,17 +147,11 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
         };
     }
 
-    /**
-     * Fluid tick delay for lighter-than-air IC2R gases. Lower delay = faster rise.
-     * Hierarchy: hydrogen &gt;&gt; steam / superheated steam &gt;&gt; biogas &gt;&gt; compressed air
-     * (other gases get a medium default).
-     */
     private static int gaseousTickRate(String fluidName) {
         return switch (fluidName) {
             case "hydrogen" -> 1;
             case "steam", "superheated_steam" -> 5;
-            case "biogas" -> 10;
-            case "air" -> 20;
+	        case "air" -> 20;
             default -> 10;
         };
     }
@@ -183,24 +174,23 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
                         }
 
                         @Override
-                        public ResourceLocation getStillTexture() {
+                        public @NotNull ResourceLocation getStillTexture() {
                             return stillSpriteId;
                         }
 
                         @Override
-                        public ResourceLocation getFlowingTexture() {
+                        public @NotNull ResourceLocation getFlowingTexture() {
                             return flowingSpriteId != null ? flowingSpriteId : stillSpriteId;
                         }
 
                         @Override
-                        public Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
+                        public @NotNull Vector3f modifyFogColor(@NotNull Camera camera, float partialTick, @NotNull ClientLevel level, int renderDistance, float darkenWorldAmount, @NotNull Vector3f fluidFogColor) {
                             float[] rgb = FluidHandler.fogRgb(color);
                             return new Vector3f(rgb[0], rgb[1], rgb[2]);
                         }
 
                         @Override
-                        public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
-                            // Default is no-op; set planes like water (start -8) with density-scaled end.
+                        public void modifyFogRender(@NotNull Camera camera, FogRenderer.@NotNull FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, @NotNull FogShape shape) {
                             float fogEnd = FluidHandler.fogEndForDensity(density);
                             RenderSystem.setShaderFogStart(-8.0F);
                             RenderSystem.setShaderFogEnd(fogEnd);
@@ -214,8 +204,6 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
         });
         AtomicReference<LiquidBlock> fluidBlockRef = new AtomicReference<>();
         pendingFluidRegistrations.add(() -> {
-            // Ic2rFlowingFluid refuses foreign displacement (BaseFlowingFluid would let water
-            // above overwrite these sources in oceans). Gases (density <= 0) only rise upward.
             BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(fluidTypeRef::get, ret::still, ret::flowing).bucket(ret::bucket);
             if (density <= 0)
             {
@@ -230,7 +218,6 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
             Registry.register(BuiltInRegistries.FLUID, ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "flowing_" + id.getPath()), flowing);
             Block.Properties fluidBlockProperties = BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).noLootTable().noCollission().randomTicks().pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY);
             LiquidBlock fluidBlock = createFluidBlock(id.getPath(), (FlowingFluid) ret.still(), fluidBlockProperties);
-            // Same path as still fluid (vanilla water/lava style); Block and Fluid are separate registries.
             Registry.register(BuiltInRegistries.BLOCK, id, fluidBlock);
             fluidBlockRef.set(fluidBlock);
         });
@@ -280,8 +267,6 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
 
     @Override
     public Ic2rFluidStack createFluidStackMb(Fluid fluid, int amount, CompoundTag nbt) {
-        // NeoForge 1.21 FluidStack no longer takes CompoundTag; NBT was replaced by data components.
-        // Domain layer does not keep fluid tags, so ignore nbt here.
         return new Ic2rFluidStackImpl(new FluidStack(fluid, amount));
     }
 
@@ -338,11 +323,9 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
 
     @Override
     public Ic2rFluidStack readFluidStack(CompoundTag nbt) {
-        // Legacy Forge fluid NBT: FluidName + Amount (+ optional Tag). Components path not used by domain yet.
-        // Registry aliases (ic2:* → ic2r:*) are resolved by MappedRegistry#get via resolve().
         String id = nbt.contains("FluidName") ? nbt.getString("FluidName") : nbt.getString("id");
         int amount = nbt.contains("Amount") ? nbt.getInt("Amount") : nbt.getInt("amount");
-        if (id == null || id.isEmpty() || amount <= 0) {
+        if (id.isEmpty() || amount <= 0) {
             return null;
         }
         ResourceLocation loc;
@@ -352,8 +335,7 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
             return null;
         }
         Fluid fluid = BuiltInRegistries.FLUID.get(loc);
-        // Defaulted registry returns EMPTY for unknown keys; treat as missing fluid.
-        if (fluid == null || fluid.isSame(net.minecraft.world.level.material.Fluids.EMPTY))
+        if (fluid.isSame(net.minecraft.world.level.material.Fluids.EMPTY))
         {
             return null;
         }
@@ -362,7 +344,6 @@ class EnvFluidHandlerForge implements EnvFluidHandler {
 
     @Override
     public CompoundTag getFluidStackNbt(Ic2rFluidStack fs) {
-        // Fluid NBT tags were replaced by data components; IC2R paths no longer rely on fluid tags.
         return null;
     }
 

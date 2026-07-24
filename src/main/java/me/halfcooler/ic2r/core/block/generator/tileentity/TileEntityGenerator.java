@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityGenerator extends TileEntityBaseGenerator implements IGuiValueProvider
 {
@@ -81,13 +81,13 @@ public class TileEntityGenerator extends TileEntityBaseGenerator implements IGui
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		this.totalFuel = nbt.getInt("totalFuel");
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.putInt("totalFuel", this.totalFuel);

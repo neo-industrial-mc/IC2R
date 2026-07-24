@@ -1,9 +1,5 @@
 package me.halfcooler.ic2r.core.item;
 
-import me.halfcooler.ic2r.core.IC2R;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;

@@ -33,8 +33,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-
 public class ItemSprayer extends Item implements StandardFluidItem, IBoxable
 {
 	private static final int CAPACITY = 8000;

@@ -29,7 +29,7 @@ public final class EnergyTransferMath
 	public static double icInjectAmount(double offer, double pathLoss)
 	{
 		double injectAmount = offer - pathLoss;
-		return injectAmount <= 0.0 ? 0.0 : injectAmount;
+		return Math.max(injectAmount, 0.0);
 	}
 
 	/**
@@ -225,7 +225,7 @@ public final class EnergyTransferMath
 		}
 
 		int next = packetEu - lossPerMeterPerAmp;
-		return next <= 0 ? 0 : next;
+		return Math.max(next, 0);
 	}
 
 	/**

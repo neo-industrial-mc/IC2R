@@ -12,7 +12,6 @@ import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.proxy.SideProxyClient;
 import me.halfcooler.ic2r.core.util.Util;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 

@@ -15,10 +15,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import net.minecraft.core.component.DataComponents;
 
 /**
  * Crop hydration cell. Intentionally not a fluid container / {@code ItemClassicCell}:

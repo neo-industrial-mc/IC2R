@@ -46,12 +46,10 @@ public class ItemArmorStaticBoots extends ItemArmorUtility
 		int lastZ = compound.contains("z") && !isNotWalking ? compound.getInt("z") : player.blockPosition().getZ();
 		if (!compound.contains("x") || isNotWalking || !compound.contains("z"))
 		{
-			int x = lastX;
-			int z = lastZ;
 			StackUtil.editTag(stack, nbt ->
 			{
-				nbt.putInt("x", x);
-				nbt.putInt("z", z);
+				nbt.putInt("x", lastX);
+				nbt.putInt("z", lastZ);
 			});
 		}
 

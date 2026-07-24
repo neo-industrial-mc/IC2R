@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;

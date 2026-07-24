@@ -1377,5 +1377,7 @@
   "ic2r.upgrade.advancedGUI.greater": "Greater than",
   "ic2r.upgrade.advancedGUI.greater_or_equal": "Greater than or equal",
   "ic2r.tooltip.upgrade.advanced.config": "Right-click to configure filters",
-  "ic2r.tooltip.upgrade.advanced.energy_config": "Sneak + right-click for advanced EU match"
+  "ic2r.tooltip.upgrade.advanced.energy_config": "Sneak + right-click for advanced EU match",
+  "entity.ic2r.itnt": "Primed ITNT",
+  "entity.ic2r.nuke": "Primed Nuke"
 }

@@ -16,12 +16,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.core.HolderLookup;
+
 public abstract class TileEntityInventory extends Ic2rTileEntity implements WorldlyContainer, IInventorySlotHolder<TileEntityInventory>
 {
 	protected final ComparatorEmitter comparator = this.addComponent(new ComparatorEmitter(this));
@@ -78,7 +77,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		CompoundTag invSlotsTag = nbt.getCompound("InvSlots");
 
@@ -89,7 +88,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
 		CompoundTag invSlotsTag = new CompoundTag();

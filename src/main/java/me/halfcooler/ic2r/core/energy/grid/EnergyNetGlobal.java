@@ -156,37 +156,25 @@ public class EnergyNetGlobal implements IEnergyNet
 	@Override
 	public Level getWorld(IEnergyTile tile)
 	{
-		if (tile == null)
+		return switch (tile)
 		{
-			throw new NullPointerException("null tile");
-		} else if (tile instanceof ILocatable)
-		{
-			return ((ILocatable) tile).getWorldObj();
-		} else if (tile instanceof BlockEntity)
-		{
-			return ((BlockEntity) tile).getLevel();
-		} else
-		{
-			throw new UnsupportedOperationException("unlocatable tile type: " + tile.getClass().getName());
-		}
+			case null -> throw new NullPointerException("null tile");
+			case ILocatable iLocatable -> iLocatable.getWorldObj();
+			case BlockEntity blockEntity -> blockEntity.getLevel();
+			default -> throw new UnsupportedOperationException("unlocatable tile type: " + tile.getClass().getName());
+		};
 	}
 
 	@Override
 	public BlockPos getPos(IEnergyTile tile)
 	{
-		if (tile == null)
+		return switch (tile)
 		{
-			throw new NullPointerException("null tile");
-		} else if (tile instanceof ILocatable)
-		{
-			return ((ILocatable) tile).getPosition();
-		} else if (tile instanceof BlockEntity)
-		{
-			return ((BlockEntity) tile).getBlockPos();
-		} else
-		{
-			throw new UnsupportedOperationException("unlocatable tile type: " + tile.getClass().getName());
-		}
+			case null -> throw new NullPointerException("null tile");
+			case ILocatable iLocatable -> iLocatable.getPosition();
+			case BlockEntity blockEntity -> blockEntity.getBlockPos();
+			default -> throw new UnsupportedOperationException("unlocatable tile type: " + tile.getClass().getName());
+		};
 	}
 
 	@Override

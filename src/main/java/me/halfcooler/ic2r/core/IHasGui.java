@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -62,7 +61,6 @@ public interface IHasGui extends Container
 		}
 
 		buffer.flip();
-		// G3.6: open menu via PlatformPlayerUi (Forge → EnvProxy#openHandledScreen)
 		return PlatformServices.playerUi().openMenu(player, new MenuProvider()
 		{
 			public AbstractContainerMenu createMenu(int syncId, @NotNull Inventory playerInventory, @NotNull Player playerx)
@@ -86,7 +84,6 @@ public interface IHasGui extends Container
 
 		buffer.flip();
 		final Item item = player.getMainHandItem().getItem();
-		// G3.6: open menu via PlatformPlayerUi (Forge → EnvProxy#openHandledScreen)
 		return PlatformServices.playerUi().openMenu(player, new MenuProvider()
 		{
 			public AbstractContainerMenu createMenu(int syncId, @NotNull Inventory playerInventory, @NotNull Player playerx)

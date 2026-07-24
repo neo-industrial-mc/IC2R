@@ -10,10 +10,6 @@ import snownee.jade.api.ui.IDisplayHelper;
 import snownee.jade.api.ui.IElementHelper;
 import snownee.jade.api.ui.ProgressStyle;
 
-/**
- * Client-side helpers for reading IC2R options from Jade's plugin config UI.
- * Only call from client code paths (tooltip rendering / client view groups).
- */
 public final class JadeConfigHelper
 {
 	private JadeConfigHelper()
@@ -146,7 +142,7 @@ public final class JadeConfigHelper
 		}
 
 		String unit = energyUnit();
-		int percent = Math.round(Math.min(1.0F, Math.max(0.0F, ratio)) * 100.0F);
+		int percent = Math.round(Math.clamp(ratio, 0.0F, 1.0F) * 100.0F);
 		IDisplayHelper display = IDisplayHelper.get();
 		String current = display.humanReadableNumber(stored, unit, false);
 		String max = display.humanReadableNumber(capacity, unit, false);
@@ -156,7 +152,7 @@ public final class JadeConfigHelper
 			case AMOUNT -> Component.translatable("ic2r.jade.energy.amount", current, max);
 			case PERCENT -> Component.translatable("ic2r.jade.progress", percent);
 			case BOTH -> Component.translatable("ic2r.jade.energy.both", current, max, percent);
-			case NONE -> null;
+			default -> throw new IllegalStateException("Unexpected value: " + mode);
 		};
 	}
 
@@ -173,7 +169,7 @@ public final class JadeConfigHelper
 			return null;
 		}
 
-		int percent = Math.round(Math.min(1.0F, Math.max(0.0F, ratio)) * 100.0F);
+		int percent = Math.round(Math.clamp(ratio, 0.0F, 1.0F) * 100.0F);
 		boolean hasAbsolute = max > 0L;
 
 		if (!hasAbsolute || mode == JadeProgressTextMode.PERCENT)
@@ -217,13 +213,11 @@ public final class JadeConfigHelper
 		}
 		return String.format(Locale.ROOT, "%.2f", seconds);
 	}
-
-	@SuppressWarnings("unchecked")
 	private static <T extends Enum<T>> T getEnum(ResourceLocation key, T fallback)
 	{
 		try
 		{
-			T value = (T) plugin().getEnum(key);
+			T value = plugin().getEnum(key);
 			return value != null ? value : fallback;
 		} catch (RuntimeException ignored)
 		{

@@ -132,7 +132,6 @@ public final class EventHandler
 		// Register resolvers only; graph build needs a live RecipeManager (server start).
 		UuIndex.instance.init();
 		IC2R.sideProxy.onPostInit();
-		// W3.2: first common call site on PlatformLifecycle (dual-track; other sites still use envProxy)
 		IC2R.sideProxy.requestTick(!PlatformServices.lifecycle().isClient(), ChunkLoadAwareBlockHandler::init);
 		IC2R.log.debug(LogCategory.General, "Finished post-init after %d ms.", (System.nanoTime() - startTime) / 1000000L);
 	}
@@ -182,7 +181,6 @@ public final class EventHandler
 		}
 
 		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get());
-		// G3.6: player message via PlatformPlayerUi (Forge → SideProxy#messagePlayer)
 		PlatformServices.playerUi().messagePlayer(
 			player,
 			Component.translatable("ic2r.energynet.mode", Component.translatable("ic2r.energynet.mode." + mode.name().toLowerCase()))

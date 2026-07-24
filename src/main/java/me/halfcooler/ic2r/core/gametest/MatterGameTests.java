@@ -30,7 +30,7 @@ public final class MatterGameTests
 	public static void matterFabricatorIsInactiveWhenHoldingCharge(GameTestHelper helper)
 	{
 		helper.setBlock(MACHINE_POS, Ic2rBlocks.MATTER_GENERATOR.get());
-		TileEntityMatter matter = (TileEntityMatter) helper.getBlockEntity(MACHINE_POS);
+		TileEntityMatter matter = helper.getBlockEntity(MACHINE_POS);
 		matter.getComponent(Energy.class).addEnergy(1000.0);
 
 		// After the charge is applied once, with no further EU intake the fabricator is idle.
@@ -45,7 +45,7 @@ public final class MatterGameTests
 	public static void matterFabricatorIsInactiveWhenEmpty(GameTestHelper helper)
 	{
 		helper.setBlock(MACHINE_POS, Ic2rBlocks.MATTER_GENERATOR.get());
-		TileEntityMatter matter = (TileEntityMatter) helper.getBlockEntity(MACHINE_POS);
+		TileEntityMatter matter = helper.getBlockEntity(MACHINE_POS);
 
 		helper.runAtTickTime(20, () ->
 		{
@@ -58,7 +58,7 @@ public final class MatterGameTests
 	public static void scannerAcceptsHeatVents(GameTestHelper helper)
 	{
 		helper.setBlock(MACHINE_POS, Ic2rBlocks.UU_SCANNER.get());
-		TileEntityScanner scanner = (TileEntityScanner) helper.getBlockEntity(MACHINE_POS);
+		TileEntityScanner scanner = helper.getBlockEntity(MACHINE_POS);
 
 		for (ItemStack vent : List.of(
 			new ItemStack(Ic2rItems.HEAT_VENT),

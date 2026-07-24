@@ -30,8 +30,8 @@ public final class EnergyCalculatorUnifiedGameTests {
                 helper.assertTrue(sourceTile != null, "source must be registered in the energy net");
                 helper.assertTrue(sinkTile != null, "sink must be registered in the energy net");
 
-                Node source = sourceTile.nodes.get(0);
-                Node sink = sinkTile.nodes.get(0);
+                Node source = sourceTile.nodes.getFirst();
+                Node sink = sinkTile.nodes.getFirst();
                 Grid grid = source.getGrid();
                 helper.assertTrue(grid == sink.getGrid(), "source and sink must share a grid");
 

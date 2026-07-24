@@ -43,7 +43,6 @@ import me.halfcooler.ic2r.core.IC2R;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +52,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityMiner extends TileEntityElectricMachine implements IHasGui, IUpgradableBlock, INetworkClientTileEntityEventListener
 {
@@ -116,7 +115,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		this.lastMode = TileEntityMiner.Mode.values()[nbt.getInt("lastMode")];
 		this.progress = nbt.getInt("progress");
@@ -124,7 +123,7 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.putInt("lastMode", this.lastMode.ordinal());

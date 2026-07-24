@@ -1,6 +1,7 @@
 package me.halfcooler.ic2r.core.block.wiring.tileentity;
 
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import me.halfcooler.ic2r.api.energy.profile.VoltageTier;
 import me.halfcooler.ic2r.api.item.ElectricItem;
@@ -31,8 +32,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.core.HolderLookup;
 
 public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock implements ClientTicker
 {
@@ -50,7 +49,7 @@ public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock i
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		this.energy.setDirections(EnumSet.complementOf(EnumSet.of(this.getFacing(), Direction.UP)), EnumSet.of(this.getFacing()));
 	}

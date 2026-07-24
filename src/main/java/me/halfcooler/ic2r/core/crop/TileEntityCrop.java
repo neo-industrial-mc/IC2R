@@ -37,7 +37,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -53,8 +52,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.apache.commons.lang3.mutable.MutableObject;
 import net.minecraft.util.RandomSource;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerTicker
 {
@@ -92,10 +90,8 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
-		// Load each key independently so partial / older saves still restore growth progress.
-		// Previously required both statGrowth AND statGain; missing either dropped growthPoints entirely.
 		if (nbt.contains("statGrowth"))
 		{
 			this.statGrowth = nbt.getByte("statGrowth");
@@ -151,11 +147,9 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
-		// Always persist crop TE fields (including empty crop sticks with nutrient/water storage).
-		// Age stage also lives in the block state; growthPoints only exist here.
 		nbt.putByte("statGrowth", this.statGrowth);
 		nbt.putByte("statGain", this.statGain);
 		nbt.putByte("statResistance", this.statResistance);
@@ -171,10 +165,6 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		nbt.put("customData", this.customData.copy());
 	}
 
-	/**
-	 * Marks this crop for chunk save ({@link #setChanged()}) and client field sync ({@link #dirty}).
-	 * Growth points / storage only live in TE NBT — without setChanged, unload can drop progress.
-	 */
 	private void markCropDataChanged()
 	{
 		this.dirty = true;
@@ -348,7 +338,6 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 				IC2R.log.info(LogCategory.Block, "Crop at %s - growth points (before): %s", this.worldPosition, this.growthPoints);
 			}
 
-			// Pure arithmetic via CropGrowthMath (G3.9); RNG call order preserved.
 			int totalGrowth = 0;
 			int baseGrowth = CropGrowthMath.baseGrowth(this.getStatGrowth(), IC2R.random.nextInt(7));
 			int minimumQuality = CropGrowthMath.minimumQuality(
@@ -371,7 +360,6 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 			} else
 			{
 				int aux = CropGrowthMath.qualityDeficitAux(minimumQuality, providedQuality);
-				// Sample nextInt(32) only when aux > 100 — same stream as pre-slice.
 				if (aux > 100 && CropGrowthMath.shouldResetFromDeficit(aux, this.statResistance, IC2R.random.nextInt(32)))
 				{
 					this.reset();
@@ -383,8 +371,6 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 
 			short previousPoints = this.growthPoints;
 			this.growthPoints = CropGrowthMath.addGrowthPoints(this.growthPoints, totalGrowth);
-			// Must mark chunk dirty: growthPoints exist only in TE NBT. setBlock age updates already
-			// dirty the chunk on stage-up, but partial progress within a stage did not.
 			if (this.growthPoints != previousPoints || totalGrowth != 0)
 			{
 				this.setChanged();
@@ -481,7 +467,6 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 			return InteractionResult.PASS;
 		} else if (this.crop != null)
 		{
-			System.out.println();
 			return this.crop.onLeftClick(this, player) ? InteractionResult.SUCCESS : InteractionResult.PASS;
 		} else if (this.isCrossingBase() && !this.getLevel().isClientSide)
 		{
@@ -1062,8 +1047,6 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 			chance *= Math.pow(1.03, this.getStatGain());
 			if (debug)
 			{
-				System.out.println("chance: " + chance);
-				int simCount = 200;
 				int sum = 0;
 
 				for (int i = 0; i < 200; i++)
@@ -1072,8 +1055,6 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 					sum += dropCount;
 					System.out.print(dropCount + " ");
 				}
-
-				System.out.println();
 				System.out.println("sum: " + sum + ", avg: " + sum / 200.0);
 			}
 
@@ -1268,8 +1249,6 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 		return this.crop == null ? new ItemStack(Ic2rItems.CROP_STICK) : this.generateSeeds(this.crop, this.statGrowth, this.statGain, this.statResistance, this.scanLevel);
 	}
 
-	// $VF: Could not resugar all assert statements!
-	// Please report this to the Vineflower issue tracker, at https://github.com/Vineflower/vineflower/issues with a copy of the class file (if you have the rights to distribute it!)
 	private boolean attemptCrossing()
 	{
 		if (IC2R.random.nextInt(3) != 0)
@@ -1411,7 +1390,7 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 			return false;
 		}
 
-		TileEntityCrop sideCrop = neighbours.get(0);
+		TileEntityCrop sideCrop = neighbours.getFirst();
 		CropCard neighborCrop = sideCrop.getCrop();
 		if (neighborCrop == null)
 		{
@@ -1495,23 +1474,6 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 					{
 						crops.add(sideCrop);
 					}
-				}
-			}
-		}
-	}
-
-	private void checkSpreadingAvailability(BlockPos pos, TileEntityCrop crop)
-	{
-		if (this.getLevel().getBlockEntity(pos) instanceof TileEntityCrop sideCrop)
-		{
-			CropCard neighborCrop = sideCrop.getCrop();
-			if (neighborCrop != null)
-			{
-				if (neighborCrop.canGrow(this) && neighborCrop.canCross(sideCrop))
-				{
-					// Historical no-op path still samples RNG for stream parity; base unused.
-					CropGrowthMath.crossEligibilityBase(sideCrop.statGrowth, sideCrop.statResistance);
-					IC2R.random.nextInt(16);
 				}
 			}
 		}

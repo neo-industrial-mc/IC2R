@@ -198,9 +198,6 @@ class GridUpdater implements Runnable
 
 	private void updateGrid()
 	{
-		long startTime = 0L;
-		int totalChanges = this.changes.size();
-
 		try
 		{
 			GridChange change;
@@ -254,7 +251,7 @@ class GridUpdater implements Runnable
 				}
 			}
 
-			EnergyNetGlobal.getCalculator().handleGridChange(dirtyGrids.get(0));
+			EnergyNetGlobal.getCalculator().handleGridChange(dirtyGrids.getFirst());
 			this.onTaskDone(gen);
 		}
 	}

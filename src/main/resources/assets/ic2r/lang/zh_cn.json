@@ -1377,5 +1377,7 @@
   "ic2r.upgrade.advancedGUI.greater": "大于",
   "ic2r.upgrade.advancedGUI.greater_or_equal": "大于等于",
   "ic2r.tooltip.upgrade.advanced.config": "右键打开过滤配置",
-  "ic2r.tooltip.upgrade.advanced.energy_config": "潜行+右键打开高级 EU 匹配"
+  "ic2r.tooltip.upgrade.advanced.energy_config": "潜行+右键打开高级 EU 匹配",
+  "entity.ic2r.itnt": "被激活的工业TNT",
+  "entity.ic2r.nuke": "被激活的核弹"
 }

@@ -27,7 +27,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 
 public class DynamicCategory extends IORecipeCategory<IORecipeWrapper>

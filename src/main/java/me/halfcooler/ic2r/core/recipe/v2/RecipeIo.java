@@ -30,7 +30,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
@@ -41,7 +40,6 @@ public class RecipeIo
 	{
 		if (json.isJsonArray())
 		{
-			// Shape ARRAY — keep order aligned with RecipeSerializerMath.classifyInputShape
 			return parseMultiple(json.getAsJsonArray(), 1);
 		}
 
@@ -231,71 +229,44 @@ public class RecipeIo
 		randomOutput.addOutput(stack, weight);
 	}
 
-	public static JsonObject resultToJson(ItemStack stack)
-	{
-		JsonObject json = new JsonObject();
-		json.addProperty("item", BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
-		if (stack.getCount() != 1)
-		{
-			json.addProperty("count", stack.getCount());
-		}
-
-		return json;
-	}
-
-	public static JsonObject resultToJson(WeightedItemStack stack)
-	{
-		JsonObject json = new JsonObject();
-		json.addProperty("item", BuiltInRegistries.ITEM.getKey(stack.itemStack.getItem()).toString());
-		if (stack.itemStack.getCount() != 1)
-		{
-			json.addProperty("count", stack.itemStack.getCount());
-		}
-
-		json.addProperty("weight", stack.weight);
-		return json;
-	}
-
-	public static JsonObject fluidStackToJson(Ic2rFluidStack stack)
-	{
-		JsonObject json = new JsonObject();
-		json.addProperty("fluid", BuiltInRegistries.FLUID.getKey(stack.getFluid()).toString());
-		json.addProperty("amount", stack.getAmountMb());
-		return json;
-	}
-
 	public static void writeInput(FriendlyByteBuf buf, IRecipeInput input)
 	{
-		if (input instanceof RecipeInputFluidContainer fluidContainer)
+		switch (input)
 		{
-			buf.writeByte(0);
-			buf.writeVarInt(BuiltInRegistries.FLUID.getId(fluidContainer.fluid));
-			buf.writeVarInt(fluidContainer.amount);
-		} else if (input instanceof RecipeInputIngredient ingredient)
-		{
-			buf.writeByte(1);
-			writeIngredient(buf, ingredient.getIngredient());
-			buf.writeVarInt(ingredient.getAmount());
-		} else if (input instanceof RecipeInputItemStack stack)
-		{
-			buf.writeByte(2);
-			writeItemStack(buf, stack.input);
-		} else
-		{
-			if (!(input instanceof RecipeInputMultiple mult))
+			case RecipeInputFluidContainer fluidContainer ->
 			{
-				throw new IllegalArgumentException("Unkown RecipeInput type: " + input.getClass().getName());
+				buf.writeByte(0);
+				buf.writeVarInt(BuiltInRegistries.FLUID.getId(fluidContainer.fluid));
+				buf.writeVarInt(fluidContainer.amount);
 			}
-
-			buf.writeByte(3);
-			buf.writeVarInt(mult.inputs.length);
-
-			for (IRecipeInput i : mult.inputs)
+			case RecipeInputIngredient ingredient ->
 			{
-				writeInput(buf, i);
+				buf.writeByte(1);
+				writeIngredient(buf, ingredient.getIngredient());
+				buf.writeVarInt(ingredient.getAmount());
 			}
+			case RecipeInputItemStack stack ->
+			{
+				buf.writeByte(2);
+				writeItemStack(buf, stack.input);
+			}
+			case null, default ->
+			{
+				if (!(input instanceof RecipeInputMultiple multi))
+				{
+					throw new IllegalArgumentException("Unknown RecipeInput type: " + input.getClass().getName());
+				}
 
-			buf.writeVarInt(mult.getAmount());
+				buf.writeByte(3);
+				buf.writeVarInt(multi.inputs.length);
+
+				for (IRecipeInput i : multi.inputs)
+				{
+					writeInput(buf, i);
+				}
+
+				buf.writeVarInt(multi.getAmount());
+			}
 		}
 	}
 
@@ -317,7 +288,7 @@ public class RecipeIo
 
 				yield new RecipeInputMultiple(buf.readVarInt(), inputs);
 			}
-			default -> throw new IllegalArgumentException("Unkown RecipeInput type.");
+			default -> throw new IllegalArgumentException("Unknown RecipeInput type.");
 		};
 	}
 
@@ -393,7 +364,6 @@ public class RecipeIo
 		{
 			String string = element.getAsString();
 			return BuiltInRegistries.FLUID
-				// TODO
 				.getOptional(ResourceLocation.parse(string))
 				.orElseThrow(() -> new JsonSyntaxException("Expected " + "fluid" + " to be an fluid, was unknown string '" + string + "'"));
 		} else
@@ -415,7 +385,6 @@ public class RecipeIo
 	}
 
 	@Nullable
-	@Contract("_,_,!null->!null;_,_,null->_")
 	private static CompoundTag getNbt(JsonObject object)
 	{
 		return object.has("nbt") ? asNbt(object.get("nbt"), "nbt") : null;

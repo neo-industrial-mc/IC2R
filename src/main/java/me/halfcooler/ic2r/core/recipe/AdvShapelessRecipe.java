@@ -32,24 +32,17 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class AdvShapelessRecipe implements CraftingRecipe
+/**
+ * @param id Internal id only; vanilla wraps recipes in RecipeHolder.
+ */
+public record AdvShapelessRecipe(ItemStack output, IRecipeInput[] input, boolean hidden, boolean consuming,
+                                 ResourceLocation id) implements CraftingRecipe
 {
 	private static final ResourceLocation RUNTIME_ID = ResourceLocation.fromNamespaceAndPath("ic2r", "shapeless");
 
-	public final ItemStack output;
-	public final IRecipeInput[] input;
-	public final boolean hidden;
-	public final boolean consuming;
-	/** Internal id only; vanilla wraps recipes in RecipeHolder. */
-	private final ResourceLocation id;
-
 	public AdvShapelessRecipe(ResourceLocation id, IRecipeInput[] input, ItemStack output, boolean hidden, boolean consuming)
 	{
-		this.id = id;
-		this.input = input;
-		this.output = output;
-		this.hidden = hidden;
-		this.consuming = consuming;
+		this(output, input, hidden, consuming, id);
 	}
 
 	@Override
@@ -175,7 +168,8 @@ public class AdvShapelessRecipe implements CraftingRecipe
 		return this.hidden;
 	}
 
-	public @NotNull ResourceLocation getId()
+	@Override
+	public @NotNull ResourceLocation id()
 	{
 		return this.id;
 	}

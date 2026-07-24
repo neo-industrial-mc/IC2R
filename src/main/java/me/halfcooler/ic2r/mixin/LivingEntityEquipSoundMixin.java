@@ -12,16 +12,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * Suppress armor equip sound / equip game-event when the same IC2R wearable is
- * re-applied with only component differences (EU charge, toggle flags, etc.).
- * <p>
- * Vanilla {@link LivingEntity#onEquipItem} plays the material equip sound whenever
- * {@link ItemStack#isSameItemSameComponents} fails. IC2R electric armor mutates
- * {@code CUSTOM_DATA}/damage while worn; creative inventory also re-pushes armor
- * slots via {@code ServerboundSetCreativeModeSlotPacket} → {@code setByPlayer},
- * which re-triggers equip sounds every time the player opens the inventory.
- */
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityEquipSoundMixin
 {
@@ -36,8 +26,7 @@ public abstract class LivingEntityEquipSoundMixin
 		{
 			return;
 		}
-
-		// Real swap between different items (or empty ↔ item) still plays equip sound.
+		
 		if (!ItemStack.isSameItem(oldItem, newItem))
 		{
 			return;
@@ -47,8 +36,7 @@ public abstract class LivingEntityEquipSoundMixin
 		{
 			return;
 		}
-
-		// Same IC2R armor / jetpack-augmented piece; only NBT/components differ.
+		
 		ci.cancel();
 	}
 
@@ -59,7 +47,6 @@ public abstract class LivingEntityEquipSoundMixin
 		{
 			return true;
 		}
-		// Jetpack module attached to third-party chest armor also mutates CUSTOM_DATA.
 		return JetpackHandler.hasJetpackAttached(stack);
 	}
 }

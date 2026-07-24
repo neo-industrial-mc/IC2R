@@ -8,11 +8,7 @@ import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityFeConverter;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 import net.minecraft.client.Minecraft;
@@ -193,9 +189,8 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 	}
 
 	@Override
-	public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver)
+	public void resolveParents(@NotNull Function<ResourceLocation, UnbakedModel> resolver)
 	{
-		// Resolves backing (+ active) models and their parents (cube_all → cube, etc.).
 		super.resolveParents(resolver);
 		if (this.feConverter)
 		{
@@ -214,20 +209,19 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 		}
 	}
 
-	/** NeoForge geometry-loader parent resolution (pulls port models into the bake graph). */
 	@Override
-	public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter, IGeometryBakingContext context)
+	public void resolveParents(@NotNull Function<ResourceLocation, UnbakedModel> modelGetter, @NotNull IGeometryBakingContext context)
 	{
 		this.resolveParents(modelGetter);
 	}
 
 	@Override
-	public BakedModel bake(
-		IGeometryBakingContext owner,
-		ModelBaker bakery,
-		Function<Material, TextureAtlasSprite> spriteGetter,
-		ModelState modelTransform,
-		ItemOverrides overrides
+	public @NotNull BakedModel bake(
+		@NotNull IGeometryBakingContext owner,
+		@NotNull ModelBaker bakery,
+		@NotNull Function<Material, TextureAtlasSprite> spriteGetter,
+		@NotNull ModelState modelTransform,
+		@NotNull ItemOverrides overrides
 	)
 	{
 		BakedModel result = super.bake(bakery, spriteGetter, modelTransform);
@@ -239,8 +233,6 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 			{
 				throw new IllegalStateException("missing fe_converter port models");
 			}
-
-			// No facing rotation — face modes are absolute world directions.
 			this.nonePortMesh = this.generateMesh(this.baseModel, 0, false);
 			this.euPortMesh = this.generateMesh(euModel, 0, false);
 			this.fePortMesh = this.generateMesh(feModel, 0, false);
@@ -301,10 +293,6 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 		return tileData;
 	}
 
-	/**
-	 * Build a cube mesh by picking each face from the none/eu/fe port models.
-	 * {@code packed} uses 2 bits per {@link Direction} ordinal (see {@link TileEntityFeConverter}).
-	 */
 	private List<List<BakedQuad>> composeFeConverterMesh(int packed)
 	{
 		List<List<BakedQuad>> mesh = new ArrayList<>(7);
@@ -319,16 +307,10 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 			};
 			mesh.add(src.get(face));
 		}
-
-		// General (null-side) quads from the gray base.
 		mesh.add(this.nonePortMesh.get(6));
 		return mesh;
 	}
 
-	/**
-	 * Parent {@link DynamicBeModel} returns empty for the vanilla overload; that would shadow
-	 * {@link IDynamicBakedModel}'s default, so keep both overloads on this class.
-	 */
 	@Override
 	public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource random)
 	{
@@ -341,7 +323,6 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 		List<List<BakedQuad>> mesh = extraData.get(MESH_DATA);
 		if (mesh == null)
 		{
-			// Missing model-data fallback (item / first frame): gray ports or rotated base mesh.
 			if (this.feConverter && this.nonePortMesh != null)
 			{
 				return this.nonePortMesh.get(getIdx(side));
@@ -411,11 +392,6 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 		{
 			return this.particleSprite;
 		}
-		if (this.baseModel != null)
-		{
-			return this.baseModel.getParticleIcon();
-		}
-		// Last resort: never return null (would NPE on break particles).
-		return Minecraft.getInstance().getModelManager().getMissingModel().getParticleIcon();
+		return Objects.requireNonNullElseGet(this.baseModel, () -> Minecraft.getInstance().getModelManager().getMissingModel()).getParticleIcon();
 	}
 }

@@ -2,7 +2,6 @@ package me.halfcooler.ic2r.core.block.wiring;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class DetectorFoamCableBlock extends AbstractDetectorCableBlock
 {

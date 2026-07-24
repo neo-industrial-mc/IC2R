@@ -44,7 +44,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.component.DataComponents;
 
 public final class DataEncoder
 {
@@ -667,41 +666,47 @@ public final class DataEncoder
 			}
 		} else
 		{
-			if (dst instanceof Ic2rFluidTank dstT)
+			switch (dst)
 			{
-				Ic2rFluidTank srcT = (Ic2rFluidTank) src;
-				dstT.setFluidStack(srcT.getFluidStack());
-				dstT.setCapacity(srcT.getCapacity());
-			} else if (dst instanceof InvSlot dstT)
-			{
-				InvSlot srcT = (InvSlot) src;
-				if (srcT.size() != dstT.size())
+				case Ic2rFluidTank dstT ->
 				{
-					throw new RuntimeException("Can't sync InvSlots with mismatched sizes.");
+					Ic2rFluidTank srcT = (Ic2rFluidTank) src;
+					dstT.setFluidStack(srcT.getFluidStack());
+					dstT.setCapacity(srcT.getCapacity());
 				}
-
-				for (int i = 0; i < srcT.size(); i++)
+				case InvSlot dstT ->
 				{
-					if (!copyValue(srcT.get(i), dstT.get(i)))
+					InvSlot srcT = (InvSlot) src;
+					if (srcT.size() != dstT.size())
 					{
-						dstT.put(i, srcT.get(i));
+						throw new RuntimeException("Can't sync InvSlots with mismatched sizes.");
+					}
+
+					for (int i = 0; i < srcT.size(); i++)
+					{
+						if (!copyValue(srcT.get(i), dstT.get(i)))
+						{
+							dstT.put(i, srcT.get(i));
+						}
 					}
 				}
-			} else if (dst instanceof TileEntityComponent)
-			{
-				CompoundTag nbt = (CompoundTag) src;
-				((TileEntityComponent) dst).readFromNbt(nbt);
-			} else
-			{
-				if (!(dst instanceof Collection))
+				case TileEntityComponent tileEntityComponent ->
 				{
-					return false;
+					CompoundTag nbt = (CompoundTag) src;
+					tileEntityComponent.readFromNbt(nbt);
 				}
+				default ->
+				{
+					if (!(dst instanceof Collection))
+					{
+						return false;
+					}
 
-				Collection<Object> srcT = (Collection<Object>) src;
-				Collection<Object> dstT = (Collection<Object>) dst;
-				dstT.clear();
-				dstT.addAll(srcT);
+					Collection<Object> srcT = (Collection<Object>) src;
+					Collection<Object> dstT = (Collection<Object>) dst;
+					dstT.clear();
+					dstT.addAll(srcT);
+				}
 			}
 
 			return true;

@@ -36,7 +36,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -276,7 +275,7 @@ public final class CommandIc2r
 
 	private static int cmdDebugDumpTextures(CommandSourceStack source, String name, int size)
 	{
-		// Physical dedicated server has no client texture atlas (G3.1: via PlatformLifecycle, not FMLEnvironment).
+		// Physical dedicated server has no client texture atlas.
 		if (!PlatformServices.lifecycle().isClient())
 		{
 			msg(source, "Can't dump textures on the dedicated server.");

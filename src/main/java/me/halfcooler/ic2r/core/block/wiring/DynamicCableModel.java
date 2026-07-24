@@ -225,7 +225,7 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 			}
 
 			prev = this.cache.putIfAbsent(key, var20);
-			return (T) (prev != null ? prev : var20);
+			return prev != null ? prev : var20;
 		} finally
 		{
 			this.cacheLock.unlock(stamp);

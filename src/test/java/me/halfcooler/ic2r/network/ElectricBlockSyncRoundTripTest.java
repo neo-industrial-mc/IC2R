@@ -10,10 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * G1.5 ElectricBlock sync: {@code redstone_mode} + legacy alias {@code redstoneMode}.
@@ -60,7 +57,7 @@ class ElectricBlockSyncRoundTripTest
 
 		assertSame(sync.get("redstone_mode"), sync.lookup("redstone_mode"));
 		assertSame(sync.get("redstone_mode"), sync.lookup(TileEntityElectricBlock.LEGACY_REDSTONE_MODE_FIELD));
-		assertEquals(null, sync.get(TileEntityElectricBlock.LEGACY_REDSTONE_MODE_FIELD));
+		assertNull(sync.get(TileEntityElectricBlock.LEGACY_REDSTONE_MODE_FIELD));
 	}
 
 	@Test

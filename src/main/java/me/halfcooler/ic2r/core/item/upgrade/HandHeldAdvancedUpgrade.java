@@ -18,7 +18,6 @@ import me.halfcooler.ic2r.core.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -164,7 +163,6 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 	@Override
 	public boolean getGuiState(String name)
 	{
-		// NBT indicator only when NBT is on AND EU is off (EU makes NBT inactive)
 		if ("nbt".equals(name))
 		{
 			return this.nbtMatch && !this.energy;
@@ -175,7 +173,6 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 			return this.energy;
 		}
 
-		// E button: open advanced EU comparison while EU Match is enabled
 		if ("energyAdvanced".equals(name))
 		{
 			return this.energy;
@@ -198,56 +195,56 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 			dev = true;
 			event = event.substring(0, event.lastIndexOf("Dev"));
 		}
-
-		// DynamicGui invokes onEvent on both client (optimistic UI) and server (via container event).
-		// openManagedItem must only run on the server — LocalPlayer cannot open a MenuProvider.
+		
 		boolean server = IC2R.sideProxy.isSimulating();
 
-		if ("nbt".equals(event))
+		switch (event)
 		{
-			// While EU Match is on, NBT Match is inactive — do not toggle it from the main UI
-			if (this.energy)
+			case "nbt" ->
 			{
-				return;
-			}
-			this.nbtMatch = !this.nbtMatch;
-			if (server)
-			{
-				this.save();
-			}
-		} else if ("energyAdvanced".equals(event))
-		{
-			// "E" button: advanced EU comparison (only while EU Match is on)
-			if (server && this.energy)
-			{
-				new HandHeldValueConfig(this, "energy").openManagedItem(this.player, this.hand, ENERGY_GUI);
-			}
-		} else if ("energy".equals(event))
-		{
-			if (dev)
-			{
-				if (server)
+				if (this.energy)
 				{
-					new HandHeldValueConfig(this, "energy").openManagedItem(this.player, this.hand, ENERGY_GUI);
+					return;
 				}
-			} else
-			{
-				this.energy = !this.energy;
+				this.nbtMatch = !this.nbtMatch;
 				if (server)
 				{
 					this.save();
 				}
 			}
-		} else if ("ore".equals(event))
-		{
-			if (server)
+			case "energyAdvanced" ->
 			{
-				assert dev;
-				new HandHeldOre(this).openManagedItem(this.player, this.hand, ORE_GUI);
+				if (server && this.energy)
+				{
+					new HandHeldValueConfig(this, "energy").openManagedItem(this.player, this.hand, ENERGY_GUI);
+				}
 			}
-		} else
-		{
-			super.onEvent(event);
+			case "energy" ->
+			{
+				if (dev)
+				{
+					if (server)
+					{
+						new HandHeldValueConfig(this, "energy").openManagedItem(this.player, this.hand, ENERGY_GUI);
+					}
+				} else
+				{
+					this.energy = !this.energy;
+					if (server)
+					{
+						this.save();
+					}
+				}
+			}
+			case "ore" ->
+			{
+				if (server)
+				{
+					assert dev;
+					new HandHeldOre(this).openManagedItem(this.player, this.hand, ORE_GUI);
+				}
+			}
+			case null, default -> super.onEvent(event);
 		}
 	}
 }

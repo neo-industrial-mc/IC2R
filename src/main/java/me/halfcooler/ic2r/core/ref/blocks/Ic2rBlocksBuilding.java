@@ -22,13 +22,11 @@ import me.halfcooler.ic2r.core.block.tileentity.TileEntityWall;
 import me.halfcooler.ic2r.core.util.Util;
 
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.*;
 
 import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 
 
 import net.minecraft.world.level.material.MapColor;
@@ -36,11 +34,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import org.jetbrains.annotations.NotNull;
 import me.halfcooler.ic2r.forge.EnvProxyForge;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 
 /** Domain block registrations: rubber wood, sheets, walls, foam, explosives, building blocks */
 public final class Ic2rBlocksBuilding

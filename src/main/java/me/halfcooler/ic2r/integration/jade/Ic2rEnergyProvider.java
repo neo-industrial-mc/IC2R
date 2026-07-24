@@ -57,7 +57,7 @@ public enum Ic2rEnergyProvider implements IBlockComponentProvider, IServerDataPr
 
 		Energy energy = te.getComponent(Energy.class);
 		long capacity = Math.max(0L, (long) energy.getCapacity());
-		if (capacity <= 0L)
+		if (capacity == 0L)
 		{
 			return;
 		}

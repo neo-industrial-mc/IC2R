@@ -87,7 +87,7 @@ public class BoatEntityRenderer extends EntityRenderer<AbstractBoatEntity>
 
 	protected String getTextureLocation(BoatType type, boolean chest)
 	{
-		return chest ? "textures/entity/chest_boat/" + type.getName() + ".png" : "textures/entity/boat/" + type.getName() + ".png";
+		return chest ? "textures/entity/chest_boat/" + type.name() + ".png" : "textures/entity/boat/" + type.name() + ".png";
 	}
 
 	public @NotNull ResourceLocation getTextureLocation(AbstractBoatEntity boatEntity)

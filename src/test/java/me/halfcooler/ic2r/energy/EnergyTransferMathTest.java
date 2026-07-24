@@ -155,11 +155,9 @@ class EnergyTransferMathTest
 		assertEquals(32, low);
 		assertEquals(128, high);
 		assertTrue(EnergyTransferMath.icTransformerConservesEnergy(low, high, true));
-		// 4 * 32 = 128 * 1
-		assertEquals(low * 4L, high * 1L);
+		assertEquals(low * 4L, high);
 	}
 
-	/** @Spec EN-IC-010 降压：1× 高压 → 4× 低压 packet，能量守恒 */
 	@Test
 	void icTransformer_stepDown_oneHighToFourLow_conservesEnergy()
 	{
@@ -169,7 +167,7 @@ class EnergyTransferMathTest
 		int high = VoltageTier.HV.getVoltage();
 		assertTrue(EnergyTransferMath.icTransformerConservesEnergy(low, high, false));
 		// 1 * 512 = 4 * 128
-		assertEquals(high * 1L, low * 4L);
+		assertEquals(high, low * 4L);
 	}
 
 	/** IC tier ladder anchors used by overvoltage / transformer checks */

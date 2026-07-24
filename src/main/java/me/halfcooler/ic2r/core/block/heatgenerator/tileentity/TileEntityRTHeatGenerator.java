@@ -14,7 +14,6 @@ import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -53,7 +52,7 @@ public class TileEntityRTHeatGenerator extends TileEntityHeatSourceInventory imp
 	@Override
 	protected int fillHeatBuffer(int maxAmount)
 	{
-		return maxAmount >= this.getMaxHeatEmittedPerTick() ? this.getMaxHeatEmittedPerTick() : maxAmount;
+		return Math.min(maxAmount, this.getMaxHeatEmittedPerTick());
 	}
 
 	@Override

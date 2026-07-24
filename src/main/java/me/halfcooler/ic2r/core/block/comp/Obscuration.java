@@ -116,11 +116,6 @@ public class Obscuration extends TileEntityComponent
 		this.changeHandler.run();
 	}
 
-	public boolean hasObscuration()
-	{
-		return this.dataMap != null;
-	}
-
 	public Obscuration.ObscurationData[] getRenderState()
 	{
 		return this.dataMap == null ? null : Arrays.copyOf(this.dataMap, this.dataMap.length);
@@ -137,12 +132,12 @@ public class Obscuration extends TileEntityComponent
 					return true;
 				} else
 				{
-					return !(obj instanceof ObscurationData o)
-						? false
-						: o.state.equals(this.state)
-						  && o.variant.equals(this.variant)
-						  && o.side == this.side
-						  && Arrays.equals(o.colorMultipliers, this.colorMultipliers);
+					return obj instanceof ObscurationData(
+						BlockState state1, String variant1, Direction side1, int[] multipliers
+					) && state1.equals(this.state)
+						&& variant1.equals(this.variant)
+						&& side1 == this.side
+						&& Arrays.equals(multipliers, this.colorMultipliers);
 				}
 			}
 	

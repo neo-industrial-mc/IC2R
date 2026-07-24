@@ -1,7 +1,6 @@
 package me.halfcooler.ic2r.core.proxy;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import me.halfcooler.ic2r.core.Ic2rItemGroupType;
 import me.halfcooler.ic2r.core.fluid.EnvFluidHandler;
@@ -29,7 +28,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -63,10 +61,7 @@ import net.minecraft.world.phys.Vec3;
 
 public interface EnvProxy
 {
-	// W3.3: isClientEnv removed — use PlatformServices.lifecycle().isClient()
-	// G3.5 / E2: isFabricEnv / isForgeEnv / getServer removed —
-	// use PlatformServices.lifecycle().getLoaderKind() / .getServer()
-
+	// Client / server: PlatformServices.lifecycle().isClient() / .getServer()
 
 	<T extends BlockEntity> BlockEntityType<T> registerBlockEntity(ResourceLocation var1, BiFunction<BlockPos, BlockState, T> var2, Block... var3);
 

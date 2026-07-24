@@ -17,7 +17,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.core.HolderLookup;
 
 public class TileEntityWall extends Ic2rTileEntity
 {
@@ -84,13 +83,13 @@ public class TileEntityWall extends Ic2rTileEntity
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		this.color = DyeColor.byId(nbt.getByte("color"));
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.putByte("color", (byte) this.color.getId());
@@ -176,7 +175,9 @@ public class TileEntityWall extends Ic2rTileEntity
 					return true;
 				} else
 				{
-					return !(obj instanceof WallRenderState o) ? false : o.color == this.color && Arrays.equals(o.obscurations, this.obscurations);
+					return obj instanceof WallRenderState(
+						DyeColor color1, Obscuration.ObscurationData[] obscurations1
+					) && color1 == this.color && Arrays.equals(obscurations1, this.obscurations);
 				}
 			}
 	

@@ -16,7 +16,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -869,21 +868,11 @@ public class LiquidUtil
 		}
 	}
 
-	private static class ContainerTankTransferResult
-	{
-		static final LiquidUtil.ContainerTankTransferResult UNCHANGED = new LiquidUtil.ContainerTankTransferResult(false, StackUtil.emptyStack, StackUtil.emptyStack);
-
-		final boolean changed;
-		final ItemStack remaining;
-		final ItemStack output;
-
-		ContainerTankTransferResult(boolean changed, ItemStack remaining, ItemStack output)
+	private record ContainerTankTransferResult(boolean changed, ItemStack remaining, ItemStack output)
 		{
-			this.changed = changed;
-			this.remaining = remaining;
-			this.output = output;
+			static final ContainerTankTransferResult UNCHANGED = new ContainerTankTransferResult(false, StackUtil.emptyStack, StackUtil.emptyStack);
+
 		}
-	}
 
 	public static class LiquidData
 	{

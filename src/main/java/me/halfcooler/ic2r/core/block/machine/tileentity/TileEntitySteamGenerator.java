@@ -25,11 +25,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.NotNull;
 
 @NotClassic
 public class TileEntitySteamGenerator extends TileEntityInventory implements IHasGui, IGuiValueProvider, INetworkClientTileEntityEventListener, ServerTicker
@@ -60,7 +59,7 @@ public class TileEntitySteamGenerator extends TileEntityInventory implements IHa
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		this.inputMB = nbt.getInt("inputmb");
 		this.pressure = nbt.getInt("pressurevalve");
@@ -69,7 +68,7 @@ public class TileEntitySteamGenerator extends TileEntityInventory implements IHa
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.putInt("inputmb", this.inputMB);
@@ -120,7 +119,7 @@ public class TileEntitySteamGenerator extends TileEntityInventory implements IHa
 			Fluid inputFluid = this.waterTank.getFluidStack().getFluid();
 			boolean hasDistilledWater = inputFluid == Ic2rFluids.DISTILLED_WATER.still();
 			int maxAmount = Math.min(this.inputMB, this.waterTank.getFluidAmount());
-			float hUneeded = 100.0F + this.pressure / 220.0F * 100.0F;
+			float huNeeded = 100.0F + this.pressure / 220.0F * 100.0F;
 			float targetTemp = 100.0F + this.pressure / 220.0F * 100.0F * 2.74F;
 			float reqHeat = targetTemp - this.systemHeat;
 			float remainingHuInput = this.heatInput;
@@ -129,7 +128,7 @@ public class TileEntitySteamGenerator extends TileEntityInventory implements IHa
 				int heatReq = (int) Math.ceil(reqHeat / 5.0E-4F);
 				if (this.heatInput <= heatReq)
 				{
-					this.heatup(this.heatInput);
+					this.heatUp(this.heatInput);
 					if (this.pressure == 0 && this.systemHeat < 99.9999F)
 					{
 						this.outputMB = maxAmount;
@@ -144,7 +143,7 @@ public class TileEntitySteamGenerator extends TileEntityInventory implements IHa
 					return true;
 				}
 
-				this.heatup(heatReq);
+				this.heatUp(heatReq);
 				remainingHuInput -= heatReq;
 				reqHeat = targetTemp - this.systemHeat;
 			}
@@ -152,9 +151,9 @@ public class TileEntitySteamGenerator extends TileEntityInventory implements IHa
 			assert this.systemHeat >= targetTemp - 1.0E-4F;
 			assert this.systemHeat >= 99.9999F;
 			float availableSystemHu = Math.min(-reqHeat / 5.0E-4F, 1200 - this.heatInput);
-			int activeAmount = Math.min(maxAmount, (int) ((remainingHuInput + availableSystemHu) / hUneeded));
+			int activeAmount = Math.min(maxAmount, (int) ((remainingHuInput + availableSystemHu) / huNeeded));
 			int totalAmount = activeAmount;
-			remainingHuInput -= activeAmount * hUneeded;
+			remainingHuInput -= activeAmount * huNeeded;
 			if (remainingHuInput < 0.0F)
 			{
 				this.cooldown(-remainingHuInput * 5.0E-4F);
@@ -172,7 +171,7 @@ public class TileEntitySteamGenerator extends TileEntityInventory implements IHa
 
 			if (remainingHuInput > 0.0F)
 			{
-				this.heatup(remainingHuInput);
+				this.heatUp(remainingHuInput);
 			}
 
 			if (totalAmount <= 0)
@@ -217,18 +216,17 @@ public class TileEntitySteamGenerator extends TileEntityInventory implements IHa
 				}
 			}
 
-			return true;
 		} else
 		{
-			this.heatup(this.heatInput);
-			return true;
+			this.heatUp(this.heatInput);
 		}
+		return true;
 	}
 
-	private void heatup(float heatinput)
+	private void heatUp(float heatInput)
 	{
-		assert heatinput >= -1.0E-4F;
-		this.systemHeat += heatinput * 5.0E-4F;
+		assert heatInput >= -1.0E-4F;
+		this.systemHeat += heatInput * 5.0E-4F;
 		if (this.systemHeat > 500.0F)
 		{
 			Level world = this.getLevel();
@@ -272,7 +270,7 @@ public class TileEntitySteamGenerator extends TileEntityInventory implements IHa
 	{
 		if (event <= 2000 && event >= -2000)
 		{
-			this.inputMB = Math.max(Math.min(this.inputMB + event, 1000), 0);
+			this.inputMB = Math.clamp(this.inputMB + event, 0, 1000);
 		} else
 		{
 			if (event > 2000)

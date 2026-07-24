@@ -9,14 +9,10 @@ import me.halfcooler.ic2r.platform.services.PlatformPlayerUi;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Forge implementation of {@link PlatformPlayerUi} (G3.6).
- * <p>
- * Thin adapter: {@link #openMenu} → {@link EnvProxy#openHandledScreen};
- * messaging / errors → {@link SideProxy#messagePlayer} / {@link SideProxy#displayError}.
+ * Forge implementation of {@link PlatformPlayerUi}.
  */
 public final class PlatformPlayerUiForge implements PlatformPlayerUi
 {
@@ -50,23 +46,5 @@ public final class PlatformPlayerUiForge implements PlatformPlayerUi
 	public void messagePlayer(Player player, Component message)
 	{
 		side().messagePlayer(player, message);
-	}
-
-	@Override
-	public void messagePlayer(Player player, String translationKey, Object... args)
-	{
-		side().messagePlayer(player, translationKey, args);
-	}
-
-	@Override
-	public void displayError(String message, Object... args)
-	{
-		side().displayError(message, args);
-	}
-
-	@Override
-	public void displayError(Exception exception, String message, Object... args)
-	{
-		side().displayError(exception, message, args);
 	}
 }

@@ -1,7 +1,6 @@
 package me.halfcooler.ic2r.core.item.tool;
 
 import me.halfcooler.ic2r.api.item.ElectricItem;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;

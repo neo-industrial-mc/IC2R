@@ -25,11 +25,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityIronFurnace extends TileEntityBase implements IHasGui, IGuiValueProvider, INetworkClientTileEntityEventListener
 {
@@ -77,7 +76,7 @@ public class TileEntityIronFurnace extends TileEntityBase implements IHasGui, IG
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		this.fuel = nbt.getInt("fuel");
 		this.totalFuel = nbt.getInt("totalFuel");
@@ -86,7 +85,7 @@ public class TileEntityIronFurnace extends TileEntityBase implements IHasGui, IG
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.putInt("fuel", this.fuel);

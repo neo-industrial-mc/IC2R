@@ -38,7 +38,7 @@ public final class Ic2rTooltip
 			return true;
 		}
 
-		if (component.getContents() instanceof PlainTextContents.LiteralContents literal && literal.text().indexOf('§') >= 0)
+		if (component.getContents() instanceof PlainTextContents.LiteralContents(String text) && text.indexOf('§') >= 0)
 		{
 			return true;
 		}

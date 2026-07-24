@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 import me.halfcooler.ic2r.forge.EnvProxyForge;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 
 /** Domain block registrations: crop sticks and crop blocks */
 public final class Ic2rBlocksCrops

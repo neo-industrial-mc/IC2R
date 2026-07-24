@@ -23,7 +23,6 @@ import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -65,7 +64,7 @@ public final class Ic2rTileEntityBlock extends Block implements EntityBlock, IWr
 	public static final Property<Direction> verticalFacingProperty = DirectionProperty.create("facing", Util.verticalFacings);
 	public static final BooleanProperty CROSSING_BASE = BooleanProperty.create("crossing_base");
 	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
-	private static final BlockEntityTicker<Ic2rTileEntity> TICKER = (world, pos, state, be) -> be.tick();
+	private static final BlockEntityTicker<Ic2rTileEntity> TICKER = (level, pos, state, be) -> be.tick();
 	private static final Map<Integer, IntegerProperty> ageProperties = new HashMap<>();
 	private static final ThreadLocal<Ic2rTileEntityBlock.InitData> pendingInitData = new ThreadLocal<>();
 	public final Property<Direction> facingProperty;
@@ -459,11 +458,6 @@ public final class Ic2rTileEntityBlock extends Block implements EntityBlock, IWr
 		}
 	}
 
-	/**
-	 * 1.21: {@code Block.use} was split into {@link #useWithoutItem} / {@link #useItemOn}.
-	 * Holding an item still reaches this method when {@code useItemOn} returns
-	 * {@link net.minecraft.world.ItemInteractionResult#PASS_TO_DEFAULT_BLOCK_INTERACTION}.
-	 */
 	@Override
 	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit)
 	{
@@ -473,7 +467,6 @@ public final class Ic2rTileEntityBlock extends Block implements EntityBlock, IWr
 		}
 
 		Ic2rTileEntity te = getTe(world, pos);
-		// MAIN_HAND: useWithoutItem has no hand; item-in-hand path falls through from useItemOn(MAIN_HAND)
 		return te == null ? InteractionResult.PASS : te.onActivated(player, InteractionHand.MAIN_HAND, hit.getDirection(), hit.getLocation());
 	}
 
@@ -569,20 +562,17 @@ public final class Ic2rTileEntityBlock extends Block implements EntityBlock, IWr
 	}
 
 	@Override
-	public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion)
+	public void onBlockExploded(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Explosion explosion)
 	{
-		// Explosive blocks must be primed, never silently deleted by the default
-		// setBlock(AIR)+wasExploded path (wasExploded is a no-op for TE explosives).
 		if (!level.isClientSide && this.explosive)
 		{
 			BlockEntity blockEntity = level.getBlockEntity(pos);
-			if (blockEntity instanceof TileEntityExplosive explosive)
+			if (blockEntity instanceof TileEntityExplosive _explosive)
 			{
-				explosive.onExploded(explosion);
+				_explosive.onExploded(explosion);
 				return;
 			}
 
-			// TE missing (edge case): remove without item drops; do not fall through to wasExploded.
 			level.removeBlock(pos, false);
 			return;
 		}
@@ -591,7 +581,7 @@ public final class Ic2rTileEntityBlock extends Block implements EntityBlock, IWr
 	}
 
 	@Override
-	public boolean canDropFromExplosion(BlockState state, BlockGetter level, BlockPos pos, Explosion explosion)
+	public boolean canDropFromExplosion(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull Explosion explosion)
 	{
 		return !this.explosive && super.canDropFromExplosion(state, level, pos, explosion);
 	}
@@ -607,8 +597,7 @@ public final class Ic2rTileEntityBlock extends Block implements EntityBlock, IWr
 		Self, None, Generator, Machine, AdvMachine
 	}
 
-	private record InitData(Set<Direction> supportedFacings, boolean canActive, Class<?> teClass, Ic2rCropType cropType,
-	                        int maxAge)
+	private record InitData(Set<Direction> supportedFacings, boolean canActive, Class<?> teClass, Ic2rCropType cropType, int maxAge)
 	{
 	}
 }

@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.MapColor;
 import me.halfcooler.ic2r.forge.EnvProxyForge;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 
 /** Domain block registrations: nuclear reactor and RCI blocks */
 public final class Ic2rBlocksReactor

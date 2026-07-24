@@ -46,7 +46,7 @@ class EnergyPath
 			this.targetDirection = knownTargetDirection;
 		} else
 		{
-			NodeLink lastLink = conductors.isEmpty() ? source.getLinkTo(target) : target.getLinkTo(conductors.get(conductors.size() - 1));
+			NodeLink lastLink = conductors.isEmpty() ? source.getLinkTo(target) : target.getLinkTo(conductors.getLast());
 			this.targetDirection = lastLink != null ? lastLink.getDirFrom(target) : null;
 		}
 		int minX = Integer.MAX_VALUE;

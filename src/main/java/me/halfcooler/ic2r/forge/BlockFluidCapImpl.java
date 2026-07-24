@@ -10,10 +10,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * NeoForge 1.21 fluid capability adapter for {@link Ic2rFluidBlock} block entities.
- * Returns a sided {@link IFluidHandler}; registration is via {@link RegisterCapabilitiesEvent}.
- */
 final class BlockFluidCapImpl {
 
     private final Ic2rFluidBlock parent;

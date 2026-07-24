@@ -30,7 +30,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -49,7 +48,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Ic2rTileEntity extends BlockEntity implements INetworkDataProvider, INetworkUpdateListener, IGuiConditionProvider
 {
@@ -62,7 +61,6 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 	private boolean active = false;
 	private byte loadState = 0;
 	private boolean enableWorldTick;
-	/** Modern SyncKey registry; empty until subclasses override {@link #registerSyncedData}. Unregistered fields still use reflection. */
 	private BlockEntitySync blockEntitySync;
 
 	public Ic2rTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
@@ -71,21 +69,11 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		this.teBlock = (Ic2rTileEntityBlock) state.getBlock();
 	}
 
-	/**
-	 * Whether this TE should invoke {@link #updateEntityServer()} each server tick after load.
-	 * Default: {@code this instanceof ServerTicker}. Prefer implementing {@link ServerTicker}
-	 * over overriding this; keep override for rare edge cases only.
-	 */
 	protected boolean enablesServerWorldTick()
 	{
 		return this instanceof ServerTicker;
 	}
 
-	/**
-	 * Whether this TE should invoke {@link #updateEntityClient()} each client tick after load.
-	 * Default: {@code this instanceof ClientTicker}. Prefer implementing {@link ClientTicker}
-	 * over overriding this; keep override for rare edge cases only.
-	 */
 	protected boolean enablesClientWorldTick()
 	{
 		return this instanceof ClientTicker;
@@ -198,16 +186,11 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		}
 	}
 
-	/**
-	 * NBT key for TE component bag (Energy, Fluids, …).
-	 * Must not collide with vanilla {@code BlockEntity} data-component map key {@code "components"}.
-	 */
 	public static final String NBT_TE_COMPONENTS = "ic2r_components";
 
-	/** Pre-1.21.1 / pre-collision-fix key; still readable when it looks like IC2R component data. */
 	public static final String LEGACY_NBT_TE_COMPONENTS = "components";
 
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		this.active = nbt.getBoolean("active");
 		if (this.components != null)
@@ -232,7 +215,7 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		}
 	}
 
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.putBoolean("active", this.active);
@@ -248,7 +231,6 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 					if (componentsNbt == null)
 					{
 						componentsNbt = new CompoundTag();
-						// Write only the non-colliding modern key (legacy "components" is still readable).
 						nbt.put(NBT_TE_COMPONENTS, componentsNbt);
 					}
 
@@ -264,10 +246,6 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		}
 	}
 
-	/**
-	 * Prefer {@link #NBT_TE_COMPONENTS}; fall back to legacy {@code "components"} only when the
-	 * compound looks like IC2R TE components (known short ids), not a vanilla DataComponentMap.
-	 */
 	public static CompoundTag readTeComponentsNbt(CompoundTag nbt)
 	{
 		if (nbt.contains(NBT_TE_COMPONENTS, 10))
@@ -285,7 +263,6 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		return null;
 	}
 
-	/** True if any key is a registered {@link Components} id (energy, fluid, process, …). */
 	public static boolean looksLikeIc2rTeComponents(CompoundTag tag)
 	{
 		if (tag == null || tag.isEmpty())
@@ -344,12 +321,6 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		return ret;
 	}
 
-	/**
-	 * Modern sync registry (W1.1+ / G1.1). Subclasses register SyncKeys via {@link #registerSyncedData}.
-	 * TeUpdate and {@code NetworkManager.writeFieldData} prefer this table when a field (or legacy alias)
-	 * is registered; unregistered names still use reflection. Packet field <em>names</em> remain
-	 * legacy strings from {@link #getNetworkedFields()}.
-	 */
 	public final BlockEntitySync getBlockEntitySync()
 	{
 		if (this.blockEntitySync == null)
@@ -362,18 +333,10 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		return this.blockEntitySync;
 	}
 
-	/**
-	 * Override to register {@link me.halfcooler.ic2r.core.network.sync.SyncKey}-based fields
-	 * (snake_case logical names + optional legacy TeUpdate aliases). Default no-op.
-	 */
 	protected void registerSyncedData(BlockEntitySync sync)
 	{
 	}
 
-	/**
-	 * Apply {@code active} from modern sync decode without network re-broadcast
-	 * (mirrors client-side reflection field write).
-	 */
 	protected void applySyncedActive(boolean active)
 	{
 		this.active = active;
@@ -427,7 +390,7 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 
 		if (aabbs.size() == 1)
 		{
-			return Shapes.create(aabbs.get(0));
+			return Shapes.create(aabbs.getFirst());
 		}
 
 		VoxelShape ret = null;
@@ -619,9 +582,6 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 			return;
 		}
 
-		// Keep blockstate ACTIVE in sync on the server. Network-only updates used to leave
-		// server state false; later chunk/block resyncs then "randomly" snapped clients back
-		// to the idle model (reported on liquid heat exchanger and similar setActive-only TEs).
 		IC2R.network.get(true).updateTileEntityField(this, "active");
 		BlockState state = this.getBlockState();
 		if (state.is(this.teBlock) && state.getValue(Ic2rTileEntityBlock.ACTIVE) != active)

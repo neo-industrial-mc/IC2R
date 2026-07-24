@@ -16,7 +16,6 @@ import java.util.List;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
 public class ContainerBatchCrafter extends ContainerElectricMachine<TileEntityBatchCrafter>
@@ -70,7 +69,7 @@ public class ContainerBatchCrafter extends ContainerElectricMachine<TileEntityBa
 			this.slots.get(this.indexToSlot.get(currentSlot)).setChanged();
 		}
 
-		return changes.a.isEmpty() ? StackUtil.emptyStack : changes.a.get(0);
+		return changes.a.isEmpty() ? StackUtil.emptyStack : changes.a.getFirst();
 	}
 
 	/**

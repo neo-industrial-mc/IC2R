@@ -3,14 +3,14 @@
 
 <img src="https://img.shields.io/badge/Minecraft-1.21.1-green" alt="Minecraft 1.21.1">
 <img src="https://img.shields.io/badge/NeoForge-21.1.238-orange" alt="NeoForge 21.1.238">
-<img src="https://img.shields.io/badge/Version-21.1.45-blue" alt="Version 21.1.45">
+<img src="https://img.shields.io/badge/Version-21.1.46-blue" alt="Version 21.1.46">
 <img src="https://img.shields.io/badge/License-AGPLv3-yellow" alt="License AGPLv3">
 
 ## 继续维护说明
 
-|      Branch       | Version | Status |
+| Branch            | Version | Status |
 |:------------------|:-------:|:------:|
-|   `forge/1.20.1`  | 20.1.39 | Bugfix |
+| `forge/1.20.1`    | 20.1.39 | Bugfix |
 | `neoforge/1.21.1` | 21.1.45 | Active |
 
 ## 附属与联动
@@ -74,7 +74,7 @@ IC2 大概是死了。没有官方回复的开源，继任开发者仍在缺席�
 
 ## 快速开始
 
-请使用 Java 21 构建和编译本分支。
+请使用 Java 21 构建和编译本分支。Java 25 已测试兼容。
 
 其他信息请查看 [Release](./release.md)。
 

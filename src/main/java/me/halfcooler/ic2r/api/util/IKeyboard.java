@@ -1,7 +1,6 @@
 package me.halfcooler.ic2r.api.util;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 
 public interface IKeyboard
 {

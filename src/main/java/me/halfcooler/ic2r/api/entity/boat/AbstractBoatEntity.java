@@ -262,9 +262,9 @@ public abstract class AbstractBoatEntity extends Boat
 
 	public ItemEntity spawnAtLocation(@NotNull ItemLike item)
 	{
-		if (item == this.getOverrideBoatType().getBaseItem())
+		if (item == this.getOverrideBoatType().baseItem())
 		{
-			return this.spawnAtLocation(new ItemStack(this.getOverrideBoatType().getBaseItem()));
+			return this.spawnAtLocation(new ItemStack(this.getOverrideBoatType().baseItem()));
 		} else if (item == Items.STICK && !this.isExtraItemDropped)
 		{
 			this.isExtraItemDropped = true;

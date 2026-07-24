@@ -24,7 +24,6 @@ import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -87,18 +86,6 @@ public class TileEntityOreWashing extends TileEntityStandardMachine<IRecipeInput
 	public boolean gainFluid()
 	{
 		return this.fluidSlot.processIntoTank(this.fluidTank, this.cellSlot);
-	}
-
-	@Override
-	public ContainerBase<?> createServerScreenHandler(int syncId, Player player)
-	{
-		return DynamicContainer.create(syncId, player.getInventory(), this);
-	}
-
-	@Override
-	public ContainerBase<?> createClientScreenHandler(int syncId, Inventory inventory, GrowingBuffer data)
-	{
-		return DynamicContainer.create(syncId, inventory, this);
 	}
 
 	@Override

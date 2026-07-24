@@ -24,10 +24,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +38,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityLuminator extends Ic2rTileEntity implements ServerTicker
 {
@@ -95,13 +93,13 @@ public class TileEntityLuminator extends Ic2rTileEntity implements ServerTicker
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		this.invertRedstone = nbt.getBoolean("invert");
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.putBoolean("invert", this.invertRedstone);
@@ -135,7 +133,7 @@ public class TileEntityLuminator extends Ic2rTileEntity implements ServerTicker
 
 	private void igniteTouchingMonsters()
 	{
-		AABB bounds = aabbMap.get(this.getFacing()).get(0).move(this.worldPosition);
+		AABB bounds = aabbMap.get(this.getFacing()).getFirst().move(this.worldPosition);
 		for (Monster monster : this.getLevel().getEntitiesOfClass(Monster.class, bounds, Entity::isAlive))
 		{
 			boolean isUndead = monster.getType().is(net.minecraft.tags.EntityTypeTags.UNDEAD);

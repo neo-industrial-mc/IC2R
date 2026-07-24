@@ -27,8 +27,6 @@ public class IC2RConfig
 		SPEC = b.build();
 	}
 
-	// -- worldgen ------------------------------------------------------------
-
 	public static class Worldgen
 	{
 		public final ModConfigSpec.BooleanValue rubberTree;
@@ -73,8 +71,6 @@ public class IC2RConfig
 		}
 	}
 
-	// -- protection ----------------------------------------------------------
-
 	public static class Protection
 	{
 		public final ModConfigSpec.BooleanValue wrenchLogging;
@@ -96,8 +92,6 @@ public class IC2RConfig
 			b.pop();
 		}
 	}
-
-	// -- balance -------------------------------------------------------------
 
 	public static class Balance
 	{
@@ -371,8 +365,6 @@ public class IC2RConfig
 
 	}
 
-	// -- recipes -------------------------------------------------------------
-
 	public static class Recipes
 	{
 		public final ModConfigSpec.ConfigValue<String> disable;
@@ -415,8 +407,6 @@ public class IC2RConfig
 		}
 	}
 
-	// -- misc ----------------------------------------------------------------
-
 	public static class Misc
 	{
 		public final ModConfigSpec.BooleanValue allowBurningScrap;
@@ -454,8 +444,6 @@ public class IC2RConfig
 			b.pop();
 		}
 	}
-
-	// -- debug ---------------------------------------------------------------
 
 	public static class Debug
 	{

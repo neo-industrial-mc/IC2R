@@ -36,7 +36,7 @@ public final class StorageBoxGameTests
 	public static void storageBoxDropPreservesEnchantedItem(GameTestHelper helper)
 	{
 		helper.setBlock(BOX_POS, Ic2rBlocks.WOODEN_STORAGE_BOX.get());
-		TileEntityWoodenStorageBox box = (TileEntityWoodenStorageBox) helper.getBlockEntity(BOX_POS);
+		TileEntityWoodenStorageBox box = helper.getBlockEntity(BOX_POS);
 
 		HolderLookup.RegistryLookup<Enchantment> enchantments =
 			helper.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
@@ -49,7 +49,7 @@ public final class StorageBoxGameTests
 		helper.setBlock(BOX_POS, Blocks.AIR);
 		helper.setBlock(BOX_POS, Ic2rBlocks.WOODEN_STORAGE_BOX.get());
 		TileEntityWoodenStorageBox restored =
-			(TileEntityWoodenStorageBox) helper.getBlockEntity(BOX_POS);
+			helper.getBlockEntity(BOX_POS);
 		Player placer = helper.makeMockPlayer(GameType.SURVIVAL);
 		restored.onPlaced(drop, placer, Direction.NORTH);
 

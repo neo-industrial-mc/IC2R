@@ -2,8 +2,6 @@ package me.halfcooler.ic2r.forge;
 
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 
-import java.util.Objects;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
@@ -43,8 +41,8 @@ record Ic2rFluidStackImpl(FluidStack parent) implements Ic2rFluidStack
 	@Override
 	public boolean hasExactFluid(Ic2rFluidStack fs)
 	{
-		return fs instanceof Ic2rFluidStackImpl other
-			? FluidStack.isSameFluidSameComponents(this.parent, other.parent)
+		return fs instanceof Ic2rFluidStackImpl(FluidStack parent1)
+			? FluidStack.isSameFluidSameComponents(this.parent, parent1)
 			: this.hasExactFluid(fs.getFluid());
 	}
 
@@ -84,8 +82,8 @@ record Ic2rFluidStackImpl(FluidStack parent) implements Ic2rFluidStack
 		{
 			return false;
 		}
-		return o instanceof Ic2rFluidStackImpl other
-			? FluidStack.isSameFluidSameComponents(this.parent, other.parent)
+		return o instanceof Ic2rFluidStackImpl(FluidStack parent1)
+			? FluidStack.isSameFluidSameComponents(this.parent, parent1)
 			: this.parent.isComponentsPatchEmpty();
 	}
 

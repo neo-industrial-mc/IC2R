@@ -196,11 +196,7 @@ public final class EventHandlerForge {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onEntityAttacked(LivingDamageEvent.Pre event) {
         float remaining = EventHandler.onEntityAttacked(event.getEntity(), event.getSource(), event.getNewDamage());
-        if (remaining <= 0.0F) {
-            event.setNewDamage(0.0F);
-        } else {
-            event.setNewDamage(remaining);
-        }
+	    event.setNewDamage(Math.max(remaining, 0.0F));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)

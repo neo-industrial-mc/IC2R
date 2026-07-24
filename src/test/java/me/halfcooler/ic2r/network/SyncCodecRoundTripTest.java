@@ -13,10 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Pure-logic SyncKey / SyncCodec round-trips (no Level / client).
@@ -137,8 +134,8 @@ class SyncCodecRoundTripTest
 		BlockEntitySync empty = new BlockEntitySync();
 		assertTrue(empty.isEmpty());
 		assertEquals(0, empty.size());
-		assertEquals(null, empty.lookup(null));
-		assertEquals(null, empty.lookup("gui_progress"));
+		assertNull(empty.lookup(null));
+		assertNull(empty.lookup("gui_progress"));
 
 		AtomicInteger progress = new AtomicInteger(12);
 		BlockEntitySync sync = new BlockEntitySync();
@@ -154,7 +151,7 @@ class SyncCodecRoundTripTest
 		// modern wire + legacy alias resolve to the same field
 		assertEquals(sync.get("gui_progress"), sync.lookup("gui_progress"));
 		assertEquals(sync.get("gui_progress"), sync.lookup("guiProgress"));
-		assertEquals(null, sync.lookup("unknown_field"));
+		assertNull(sync.lookup("unknown_field"));
 
 		Object[] out = new Object[1];
 		assertTrue(sync.tryGetValue("guiProgress", out));

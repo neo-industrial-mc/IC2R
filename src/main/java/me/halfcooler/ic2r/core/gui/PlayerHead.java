@@ -2,16 +2,12 @@ package me.halfcooler.ic2r.core.gui;
 
 import com.mojang.authlib.GameProfile;
 import me.halfcooler.ic2r.core.Ic2rGui;
-import me.halfcooler.ic2r.core.util.GameProfileNbt;
-import me.halfcooler.ic2r.core.util.StackUtil;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.WeakHashMap;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 

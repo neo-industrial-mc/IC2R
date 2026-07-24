@@ -99,11 +99,7 @@ public final class FluidHandler
 		{
 			return 2.0F;
 		}
-		if (end > 96.0F)
-		{
-			return 96.0F;
-		}
-		return end;
+		return Math.min(end, 96.0F);
 	}
 
 	/** RGB channels in {@code [0,1]} from an ARGB tint (alpha ignored). */

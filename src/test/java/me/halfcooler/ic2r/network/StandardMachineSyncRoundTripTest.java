@@ -11,10 +11,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * W1.2 standard-machine sync pilot: encode/decode of {@code gui_progress} + {@code active}
@@ -43,11 +40,7 @@ class StandardMachineSyncRoundTripTest
 		assertEquals("active", TileEntityStandardMachine.LEGACY_ACTIVE_FIELD);
 		// progress renames camel→snake; active already legal as wire name
 		assertEquals(TileEntityStandardMachine.LEGACY_ACTIVE_FIELD, TileEntityStandardMachine.KEY_ACTIVE.wireName());
-		assertFalse(
-			TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD.equals(
-				TileEntityStandardMachine.KEY_GUI_PROGRESS.wireName()
-			)
-		);
+		assertNotEquals(TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD, TileEntityStandardMachine.KEY_GUI_PROGRESS.wireName());
 	}
 
 	/** @Spec NS-005: gui_progress + active encode → decode restores values (standard-machine semantics) */
@@ -179,8 +172,8 @@ class StandardMachineSyncRoundTripTest
 		assertSame(sync.get("gui_progress"), sync.lookup(TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD));
 		assertSame(sync.get("active"), sync.lookup("active"));
 		assertSame(sync.get("active"), sync.lookup(TileEntityStandardMachine.LEGACY_ACTIVE_FIELD));
-		assertEquals(null, sync.lookup("unknownField"));
-		assertEquals(null, sync.get(TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD));
+		assertNull(sync.lookup("unknownField"));
+		assertNull(sync.get(TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD));
 	}
 
 	/**

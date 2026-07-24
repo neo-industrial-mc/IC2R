@@ -12,10 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * G1.5 BatchCrafter sync expansion: {@code gui_progress} + legacy alias {@code guiProgress}.
@@ -62,7 +59,7 @@ class BatchCrafterSyncRoundTripTest
 
 		assertSame(sync.get("gui_progress"), sync.lookup("gui_progress"));
 		assertSame(sync.get("gui_progress"), sync.lookup(TileEntityBatchCrafter.LEGACY_GUI_PROGRESS_FIELD));
-		assertEquals(null, sync.get(TileEntityBatchCrafter.LEGACY_GUI_PROGRESS_FIELD));
+		assertNull(sync.get(TileEntityBatchCrafter.LEGACY_GUI_PROGRESS_FIELD));
 	}
 
 	@Test

@@ -1,5 +1,6 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import me.halfcooler.ic2r.api.network.INetworkTileEntityEventListener;
 import me.halfcooler.ic2r.api.tile.IEnergyStorage;
@@ -34,7 +35,6 @@ import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
@@ -42,8 +42,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.core.HolderLookup;
 
 public class TileEntityTeleporter extends TileEntityBase implements INetworkTileEntityEventListener
 {
@@ -62,7 +60,7 @@ public class TileEntityTeleporter extends TileEntityBase implements INetworkTile
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("targetX"))
 		{
@@ -71,7 +69,7 @@ public class TileEntityTeleporter extends TileEntityBase implements INetworkTile
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries)
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.saveAdditional(nbt, registries);
 		if (this.target != null)

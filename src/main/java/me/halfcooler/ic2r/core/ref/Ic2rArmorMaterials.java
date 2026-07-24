@@ -16,9 +16,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/**
- * NeoForge 1.21 armor materials are registry entries ({@link Holder}{@code <ArmorMaterial>}), not enums.
- */
 public final class Ic2rArmorMaterials
 {
 	public static final int BRONZE_DURABILITY_MULTIPLIER = 15;
@@ -63,10 +60,6 @@ public final class Ic2rArmorMaterials
 	{
 	}
 
-	/**
-	 * protectionAmounts index order matches legacy IC2: boots, leggings, chest, helmet
-	 * (same as {@link EquipmentSlot} FEET/LEGS/CHEST/HEAD index).
-	 */
 	private static DeferredHolder<ArmorMaterial, ArmorMaterial> register(
 		String name,
 		int[] protectionAmounts,

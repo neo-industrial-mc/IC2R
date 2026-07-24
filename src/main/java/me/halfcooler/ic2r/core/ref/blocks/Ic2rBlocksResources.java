@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.MapColor;
 import me.halfcooler.ic2r.forge.EnvProxyForge;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 
 /** Domain block registrations: ores, metal blocks, machine casings, structural resources */
 public final class Ic2rBlocksResources

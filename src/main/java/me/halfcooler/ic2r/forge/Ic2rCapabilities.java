@@ -23,24 +23,18 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 
-/**
- * Registers NeoForge 1.21 capabilities (replaces AttachCapabilitiesEvent + LazyOptional).
- */
 public final class Ic2rCapabilities {
 
     private Ic2rCapabilities() {
     }
 
     public static void register(RegisterCapabilitiesEvent event) {
-        // --- Block entity item / fluid handlers for every ic2r BE type ---
         for (BlockEntityType<?> type : BuiltInRegistries.BLOCK_ENTITY_TYPE) {
             if (!isIc2r(type)) {
                 continue;
             }
             registerBlockEntity(event, type);
         }
-
-        // --- EU → FE converter only: extract-only EnergyStorage (no FE receive / no grid-wide FE) ---
         event.registerBlockEntity(
             Capabilities.EnergyStorage.BLOCK,
             Ic2rBlockEntities.FE_CONVERTER,
@@ -50,11 +44,8 @@ public final class Ic2rCapabilities {
                 }
                 return null;
             });
-
-        // --- Items: fluid handlers + nano saber ---
         for (Item item : BuiltInRegistries.ITEM) {
-            if (BuiltInRegistries.ITEM.getKey(item) == null
-                || !"ic2r".equals(BuiltInRegistries.ITEM.getKey(item).getNamespace())) {
+	        if (!"ic2r".equals(BuiltInRegistries.ITEM.getKey(item).getNamespace())) {
                 continue;
             }
             if (item instanceof Ic2rFluidItem) {
@@ -82,12 +73,12 @@ public final class Ic2rCapabilities {
         event.registerBlockEntity(
             Capabilities.FluidHandler.BLOCK,
             type,
-            (BlockEntity be, Direction side) -> fluidHandler(be, side));
+	        Ic2rCapabilities::fluidHandler);
 
         event.registerBlockEntity(
             Capabilities.ItemHandler.BLOCK,
             type,
-            (BlockEntity be, Direction side) -> itemHandler(be, side));
+	        Ic2rCapabilities::itemHandler);
     }
 
     private static net.neoforged.neoforge.fluids.capability.IFluidHandler fluidHandler(BlockEntity be, Direction side) {
@@ -108,32 +99,42 @@ public final class Ic2rCapabilities {
         if (!(be instanceof Ic2rTileEntity)) {
             return null;
         }
-        if (be instanceof TileEntityInventory teInv) {
-            if (side == null) {
-                return TileEntityInventoryCap.createCombinedItemHandler(teInv);
-            }
-            IItemHandler[] sided = cacheSided(teInv);
-            int idx = side.ordinal();
-            if (idx >= 0 && idx < sided.length) {
-                return sided[idx];
-            }
-            return null;
-        }
-        if (be instanceof WorldlyContainer worldly) {
-            if (side == null) {
-                return null;
-            }
-            return new SidedInvWrapper(worldly, side);
-        }
-        if (be instanceof Container container) {
-            return new InvWrapper(container);
-        }
-        return null;
+	    switch (be)
+	    {
+		    case TileEntityInventory teInv ->
+		    {
+			    if (side == null)
+			    {
+				    return TileEntityInventoryCap.createCombinedItemHandler(teInv);
+			    }
+			    IItemHandler[] sided = cacheSided(teInv);
+			    int idx = side.ordinal();
+			    if (idx < sided.length)
+			    {
+				    return sided[idx];
+			    }
+			    return null;
+		    }
+		    case WorldlyContainer worldly ->
+		    {
+			    if (side == null)
+			    {
+				    return null;
+			    }
+			    return new SidedInvWrapper(worldly, side);
+		    }
+		    case Container container ->
+		    {
+			    return new InvWrapper(container);
+		    }
+		    default ->
+		    {
+		    }
+	    }
+	    return null;
     }
-
-    /** Per-BE sided wrappers; create on demand without LazyOptional. */
+    
     private static IItemHandler[] cacheSided(TileEntityInventory teInv) {
-        // SidedInvWrapper.create returns LazyOptional[] in old API; new API is per-side constructor.
         IItemHandler[] handlers = new IItemHandler[Util.ALL_DIRS.length];
         for (int i = 0; i < Util.ALL_DIRS.length; i++) {
             handlers[i] = new SidedInvWrapper(teInv, Util.ALL_DIRS[i]);

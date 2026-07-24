@@ -19,7 +19,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
@@ -31,7 +30,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityIndustrialWorkbench>
 {
-	public static final int WIDTH = 194;	protected final CraftingContainer craftMatrix = new SimpleCraftingInventory.InvSlotCraftingInventory(this.base.craftingGrid, 3)
+	public static final int WIDTH = 194;
+	protected final CraftingContainer craftMatrix = new SimpleCraftingInventory.InvSlotCraftingInventory(this.base.craftingGrid, 3)
 	{
 		@Override
 		protected void set(int index, ItemStack stack)
@@ -197,7 +197,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 			this.slots.get(currentSlot + 37).setChanged();
 		}
 
-		return !changes.a.isEmpty() ? super.handlePlayerSlotShiftClick(player, changes.a.get(0)) : StackUtil.emptyStack;
+		return !changes.a.isEmpty() ? super.handlePlayerSlotShiftClick(player, changes.a.getFirst()) : StackUtil.emptyStack;
 	}
 
 	@Override

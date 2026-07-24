@@ -36,7 +36,7 @@ public final class TeslaCoilGameTests
 
 		helper.setBlock(COIL_POS, Ic2rBlocks.TESLA_COIL.get());
 		helper.setBlock(new BlockPos(0, 1, 1), Blocks.REDSTONE_BLOCK);
-		TileEntityTesla tesla = (TileEntityTesla) helper.getBlockEntity(COIL_POS);
+		TileEntityTesla tesla = helper.getBlockEntity(COIL_POS);
 		tesla.getComponent(Energy.class).addEnergy(8000.0);
 		Pig pig = helper.spawn(EntityType.PIG, new BlockPos(2, 1, 1));
 

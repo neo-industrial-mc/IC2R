@@ -5,7 +5,6 @@ import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
