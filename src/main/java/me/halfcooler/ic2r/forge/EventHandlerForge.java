@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -36,6 +37,7 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkDataEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -49,6 +51,17 @@ public final class EventHandlerForge {
 
     private static final ResourceLocation nanoSaberCapId = IC2R.getIdentifier("nano_saber_state");
 
+    /**
+     * Rewrite player advancement progress files before any {@link net.minecraft.server.PlayerAdvancements}
+     * load (which happens when the first player joins). Must run before join so unknown legacy
+     * {@code ic2:*} ids are not discarded.
+     */
+    @SubscribeEvent
+    public void serverAboutToStart(ServerAboutToStartEvent event) {
+        var dir = event.getServer().getWorldPath(LevelResource.PLAYER_ADVANCEMENTS_DIR);
+        LegacyAdvancementProgressMigrator.migrateDirectory(dir);
+    }
+
     @SubscribeEvent
     public void serverStart(ServerStartingEvent event) {
         EventHandler.onServerStart(event.getServer());
@@ -57,6 +70,7 @@ public final class EventHandlerForge {
     // Registry id migration (ic2 → ic2r, empty_cell → facade_cell) is handled via
     // LegacyRegistryRemap aliases on RegisterEvent (see FmlMod#registerLegacyRegistryAliases).
     // MissingMappingsEvent was removed in NeoForge 1.21.
+    // Advancement progress migration: LegacyAdvancementProgressMigrator on ServerAboutToStart.
 
     @SubscribeEvent
     public void registerCommands(RegisterCommandsEvent event) {
