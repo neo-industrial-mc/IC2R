@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "ic2r:block/wiring/fe_converter/none",
+    "down": "ic2r:block/wiring/fe_converter/none",
+    "up": "ic2r:block/wiring/fe_converter/none",
+    "north": "ic2r:block/wiring/fe_converter/fe",
+    "south": "ic2r:block/wiring/fe_converter/eu",
+    "east": "ic2r:block/wiring/fe_converter/eu",
+    "west": "ic2r:block/wiring/fe_converter/eu"
+  }
+}

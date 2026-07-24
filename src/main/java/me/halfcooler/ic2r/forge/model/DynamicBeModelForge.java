@@ -1,12 +1,16 @@
 package me.halfcooler.ic2r.forge.model;
 
+import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.DynamicBeModel;
 import me.halfcooler.ic2r.core.block.comp.Obscuration;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
+import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityFeConverter;
+import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -15,11 +19,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -27,19 +33,37 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.IDynamicBakedModel;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> implements Ic2rModel
+final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> implements Ic2rModel, IDynamicBakedModel
 {
 	private static final ModelProperty<List<List<BakedQuad>>> MESH_DATA = new ModelProperty<>();
+
+	private final boolean feConverter;
+	private final ResourceLocation euModelId;
+	private final ResourceLocation feModelId;
+	private final ResourceLocation particleTextureId;
+	/** Per-port full-cube meshes (same texture on all faces); index = face ordinal. */
+	private List<List<BakedQuad>> nonePortMesh;
+	private List<List<BakedQuad>> euPortMesh;
+	private List<List<BakedQuad>> fePortMesh;
+	/** Explicit particle sprite so break FX never falls back to missing texture. */
+	private TextureAtlasSprite particleSprite;
 
 	DynamicBeModelForge(ResourceLocation id)
 	{
 		super(id);
+		this.feConverter = TileEntityFeConverter.class.isAssignableFrom(this.block.getTeClass());
+		this.euModelId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "block/wiring/fe_converter_eu");
+		this.feModelId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "block/wiring/fe_converter_fe");
+		this.particleTextureId = this.feConverter
+			? ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "block/wiring/fe_converter/none")
+			: null;
 	}
 
 	private static int getIdx(Direction dir)
@@ -155,6 +179,49 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 	}
 
 	@Override
+	public @NotNull Collection<ResourceLocation> getDependencies()
+	{
+		if (!this.feConverter)
+		{
+			return super.getDependencies();
+		}
+
+		List<ResourceLocation> deps = new ArrayList<>(super.getDependencies());
+		deps.add(this.euModelId);
+		deps.add(this.feModelId);
+		return deps;
+	}
+
+	@Override
+	public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver)
+	{
+		// Resolves backing (+ active) models and their parents (cube_all → cube, etc.).
+		super.resolveParents(resolver);
+		if (this.feConverter)
+		{
+			for (ResourceLocation id : List.of(this.euModelId, this.feModelId))
+			{
+				UnbakedModel model = resolver.apply(id);
+				if (model == null)
+				{
+					IC2R.log.warn(LogCategory.Resource, "Missing model %s", id);
+				}
+				else
+				{
+					model.resolveParents(resolver);
+				}
+			}
+		}
+	}
+
+	/** NeoForge geometry-loader parent resolution (pulls port models into the bake graph). */
+	@Override
+	public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter, IGeometryBakingContext context)
+	{
+		this.resolveParents(modelGetter);
+	}
+
+	@Override
 	public BakedModel bake(
 		IGeometryBakingContext owner,
 		ModelBaker bakery,
@@ -163,14 +230,46 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 		ItemOverrides overrides
 	)
 	{
-		return super.bake(bakery, spriteGetter, modelTransform);
+		BakedModel result = super.bake(bakery, spriteGetter, modelTransform);
+		if (this.feConverter)
+		{
+			BakedModel euModel = bakery.bake(this.euModelId, modelTransform, spriteGetter);
+			BakedModel feModel = bakery.bake(this.feModelId, modelTransform, spriteGetter);
+			if (euModel == null || feModel == null)
+			{
+				throw new IllegalStateException("missing fe_converter port models");
+			}
+
+			// No facing rotation — face modes are absolute world directions.
+			this.nonePortMesh = this.generateMesh(this.baseModel, 0, false);
+			this.euPortMesh = this.generateMesh(euModel, 0, false);
+			this.fePortMesh = this.generateMesh(feModel, 0, false);
+			this.particleSprite = spriteGetter.apply(new Material(TextureAtlas.LOCATION_BLOCKS, this.particleTextureId));
+		}
+		else if (this.baseModel != null)
+		{
+			this.particleSprite = this.baseModel.getParticleIcon();
+		}
+
+		return result;
 	}
 
+	@Override
 	public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull ModelData tileData)
 	{
-		BlockEntity be = null;
-		boolean active = this.block.canActive() && (be = world.getBlockEntity(pos)) instanceof Ic2rTileEntity && ((Ic2rTileEntity) be).getActive();
-		List<List<BakedQuad>> mesh = this.getMesh(state, active);
+		BlockEntity be = world.getBlockEntity(pos);
+		List<List<BakedQuad>> mesh;
+
+		if (this.feConverter && be instanceof TileEntityFeConverter converter
+			&& this.nonePortMesh != null && this.euPortMesh != null && this.fePortMesh != null)
+		{
+			mesh = this.composeFeConverterMesh(converter.getFaceModesPacked());
+		}
+		else
+		{
+			boolean active = this.block.canActive() && be instanceof Ic2rTileEntity te && te.getActive();
+			mesh = this.getMesh(state, active);
+		}
 
 		if (be instanceof Ic2rTileEntity te)
 		{
@@ -202,12 +301,59 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 		return tileData;
 	}
 
-	public @NotNull List<BakedQuad> getQuads(BlockState state, Direction side, @NotNull RandomSource rand, ModelData extraData, @Nullable RenderType renderType)
+	/**
+	 * Build a cube mesh by picking each face from the none/eu/fe port models.
+	 * {@code packed} uses 2 bits per {@link Direction} ordinal (see {@link TileEntityFeConverter}).
+	 */
+	private List<List<BakedQuad>> composeFeConverterMesh(int packed)
+	{
+		List<List<BakedQuad>> mesh = new ArrayList<>(7);
+		for (int face = 0; face < 6; face++)
+		{
+			int mode = (packed >> (face * 2)) & 0x3;
+			List<List<BakedQuad>> src = switch (mode)
+			{
+				case 1 -> this.euPortMesh;
+				case 2 -> this.fePortMesh;
+				default -> this.nonePortMesh;
+			};
+			mesh.add(src.get(face));
+		}
+
+		// General (null-side) quads from the gray base.
+		mesh.add(this.nonePortMesh.get(6));
+		return mesh;
+	}
+
+	/**
+	 * Parent {@link DynamicBeModel} returns empty for the vanilla overload; that would shadow
+	 * {@link IDynamicBakedModel}'s default, so keep both overloads on this class.
+	 */
+	@Override
+	public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource random)
+	{
+		return this.getQuads(state, side, random, ModelData.EMPTY, null);
+	}
+
+	@Override
+	public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData extraData, @Nullable RenderType renderType)
 	{
 		List<List<BakedQuad>> mesh = extraData.get(MESH_DATA);
 		if (mesh == null)
 		{
-			return Collections.emptyList();
+			// Missing model-data fallback (item / first frame): gray ports or rotated base mesh.
+			if (this.feConverter && this.nonePortMesh != null)
+			{
+				return this.nonePortMesh.get(getIdx(side));
+			}
+			if (state != null && this.baseModel != null)
+			{
+				mesh = this.getMesh(state, false);
+			}
+			else
+			{
+				return Collections.emptyList();
+			}
 		}
 
 		List<BakedQuad> quads = mesh.get(getIdx(side));
@@ -255,12 +401,21 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 	@Override
 	public @NotNull TextureAtlasSprite getParticleIcon(@NotNull ModelData modelData)
 	{
-		return super.getParticleIcon(modelData);
+		return this.getParticleIcon();
 	}
 
 	@Override
 	public @NotNull TextureAtlasSprite getParticleIcon()
 	{
-		return this.baseModel.getParticleIcon();
+		if (this.particleSprite != null)
+		{
+			return this.particleSprite;
+		}
+		if (this.baseModel != null)
+		{
+			return this.baseModel.getParticleIcon();
+		}
+		// Last resort: never return null (would NPE on break particles).
+		return Minecraft.getInstance().getModelManager().getMissingModel().getParticleIcon();
 	}
 }

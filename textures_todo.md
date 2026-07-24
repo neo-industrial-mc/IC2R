@@ -81,11 +81,11 @@ Switching state does nothing visually until textures differ.
 - Path: `models/block/generator/kinetic/wind_kinetic_generator*.json`
 - **Art needed:** rotor/active faces.
 
-### `eu_to_fe_converter`
+### `fe_converter` (done)
 
-- Active file is a full copy of idle (MV transformer faces)
-- Path: `models/block/wiring/eu_to_fe_converter*.json`
-- **Art needed:** distinct active (conversion/energy) faces; currently reuses transformer art.
+- Port textures: `textures/block/wiring/fe_converter/{none,eu,fe}.png` (gray / red / yellow)
+- Dynamic face modes via `ic2r:be` model + TE neighbour detection
+- Path: `models/block/wiring/fe_converter*.json`
 
 ### `trade_o_mat`
 

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "particle": "ic2r:block/wiring/fe_converter/none",
+    "all": "ic2r:block/wiring/fe_converter/none"
+  }
+}

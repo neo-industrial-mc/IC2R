@@ -5,6 +5,7 @@
   "refmap": "ic2r.refmap.json",
   "minVersion": "0.8",
   "mixins": [
+    "LivingEntityEquipSoundMixin",
     "RecipeManagerMixin"
   ]
 }

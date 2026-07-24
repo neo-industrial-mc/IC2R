@@ -39,7 +39,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ic2r:shaped/eu_to_fe_converter"
+        "recipe": "ic2r:shaped/fe_converter"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -54,7 +54,7 @@
   ],
   "rewards": {
     "recipes": [
-      "ic2r:shaped/eu_to_fe_converter"
+      "ic2r:shaped/fe_converter"
     ]
   },
   "sends_telemetry_event": true

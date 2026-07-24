@@ -7,6 +7,7 @@ import me.halfcooler.ic2r.forge.model.MaskOverlayItemLoader;
 import me.halfcooler.ic2r.forge.model.WallModelLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -85,6 +86,19 @@ public final class ClientModEventHandlerForge
 		event.register(ResourceLocation.fromNamespaceAndPath("ic2r", "cable"), new CableModelLoader());
 		event.register(ResourceLocation.fromNamespaceAndPath("ic2r", "mask_overlay"), new MaskOverlayItemLoader());
 		event.register(ResourceLocation.fromNamespaceAndPath("ic2r", "wall"), new WallModelLoader());
+	}
+
+	/**
+	 * Side-load FE converter port cubes so their parents/textures are resolved as top-level models.
+	 * The world model uses {@code ic2r:be} and bakes these as face meshes; without this they can bake empty.
+	 */
+	@SubscribeEvent
+	public void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event)
+	{
+		event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("ic2r", "block/wiring/fe_converter")));
+		event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("ic2r", "block/wiring/fe_converter_active")));
+		event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("ic2r", "block/wiring/fe_converter_eu")));
+		event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("ic2r", "block/wiring/fe_converter_fe")));
 	}
 
 	@SubscribeEvent

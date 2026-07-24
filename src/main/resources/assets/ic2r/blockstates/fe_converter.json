@@ -1,0 +1,40 @@
+{
+  "variants": {
+    "facing=east,active=false": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    },
+    "facing=east,active=true": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    },
+    "facing=north,active=false": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    },
+    "facing=north,active=true": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    },
+    "facing=south,active=false": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    },
+    "facing=south,active=true": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    },
+    "facing=west,active=false": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    },
+    "facing=west,active=true": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    },
+    "facing=up,active=false": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    },
+    "facing=up,active=true": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    },
+    "facing=down,active=false": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    },
+    "facing=down,active=true": {
+      "model": "ic2r:block/be/wiring/fe_converter"
+    }
+  }
+}

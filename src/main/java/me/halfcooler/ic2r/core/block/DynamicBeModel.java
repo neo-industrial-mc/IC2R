@@ -143,9 +143,16 @@ public abstract class DynamicBeModel<T> implements UnbakedModel, BakedModel
 	{
 		for (ResourceLocation id : this.getDependencies())
 		{
-			if (resolver.apply(id) == null)
+			UnbakedModel model = resolver.apply(id);
+			if (model == null)
 			{
 				IC2R.log.warn(LogCategory.Resource, "Missing model %s", id);
+			}
+			else
+			{
+				// Nested cube models must resolve parents (e.g. block/cube_all) before bake,
+				// otherwise bakery produces an empty mesh + missing particle texture.
+				model.resolveParents(resolver);
 			}
 		}
 	}

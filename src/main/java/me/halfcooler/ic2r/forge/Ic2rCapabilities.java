@@ -2,7 +2,7 @@ package me.halfcooler.ic2r.forge;
 
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityEuToFeConverter;
+import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityFeConverter;
 import me.halfcooler.ic2r.core.fluid.FluidBeBridge;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidBlock;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidItem;
@@ -43,9 +43,9 @@ public final class Ic2rCapabilities {
         // --- EU → FE converter only: extract-only EnergyStorage (no FE receive / no grid-wide FE) ---
         event.registerBlockEntity(
             Capabilities.EnergyStorage.BLOCK,
-            Ic2rBlockEntities.EU_TO_FE_CONVERTER,
+            Ic2rBlockEntities.FE_CONVERTER,
             (BlockEntity be, Direction side) -> {
-                if (be instanceof TileEntityEuToFeConverter converter) {
+                if (be instanceof TileEntityFeConverter converter) {
                     return converter.getFeStorage(side);
                 }
                 return null;
