@@ -456,6 +456,8 @@
   "death.attack.ic2.crop_eating": "%1$s was eaten by a crop",
   "death.attack.ic2.crop_eating.player": "%1$s was eaten by a crop whilst trying to escape %2$s",
   "effect.ic2.radiation": "Radiation",
+  "entity.ic2.itnt": "Primed ITNT",
+  "entity.ic2.nuke": "Primed Nuke",
   "fluid_type.ic2.air": "Compressed Air",
   "fluid_type.ic2.biogas": "Biogas",
   "fluid_type.ic2.biomass": "Biomass",
