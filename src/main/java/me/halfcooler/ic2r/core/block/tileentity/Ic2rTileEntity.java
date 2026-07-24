@@ -608,13 +608,25 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 
 	public void setActive(boolean active)
 	{
-		if (this.teBlock.canActive())
+		if (!this.teBlock.canActive() || this.active == active)
 		{
-			if (this.active != active)
-			{
-				this.active = active;
-				IC2R.network.get(true).updateTileEntityField(this, "active");
-			}
+			return;
+		}
+
+		this.active = active;
+		if (this.level == null || this.level.isClientSide)
+		{
+			return;
+		}
+
+		// Keep blockstate ACTIVE in sync on the server. Network-only updates used to leave
+		// server state false; later chunk/block resyncs then "randomly" snapped clients back
+		// to the idle model (reported on liquid heat exchanger and similar setActive-only TEs).
+		IC2R.network.get(true).updateTileEntityField(this, "active");
+		BlockState state = this.getBlockState();
+		if (state.is(this.teBlock) && state.getValue(Ic2rTileEntityBlock.ACTIVE) != active)
+		{
+			this.level.setBlockAndUpdate(this.worldPosition, state.setValue(Ic2rTileEntityBlock.ACTIVE, active));
 		}
 	}
 

@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "active=false": {
       "model": "ic2r:block/generator/electric/creative_generator"
+    },
+    "active=true": {
+      "model": "ic2r:block/generator/electric/creative_generator_active"
     }
   }
 }
