@@ -3,6 +3,7 @@ package ic2.core.gametest;
 import ic2.core.block.comp.Energy;
 import ic2.core.block.machine.tileentity.TileEntityAdvMiner;
 import ic2.core.item.ElectricItemManager;
+import ic2.core.item.upgrade.ItemUpgradeModule;
 import ic2.core.ref.Ic2Blocks;
 import ic2.core.ref.Ic2Items;
 import ic2.core.util.StackUtil;
@@ -31,13 +32,13 @@ public class AdvMinerGameTests {
   private static final BlockPos ORE_POS = new BlockPos(0, 1, 1);
   private static final BlockPos CHEST_POS = new BlockPos(2, 2, 1);
 
-  // whitelist filter card: only listed drops are mined, everything else is skipped by the scan
+  // whitelist filter upgrade: only listed drops are mined, everything else is skipped by the scan
   @GameTest(template = EMPTY, timeoutTicks = 400)
   public static void advMinerMinesWhitelistedOreIntoChest(GameTestHelper helper) {
     helper.setBlock(ORE_POS, Blocks.GOLD_ORE);
     helper.setBlock(CHEST_POS, Blocks.CHEST);
     TileEntityAdvMiner te = setupAdvMiner(helper);
-    te.cardSlot.put(0, makeFilterCard(helper, false, Items.RAW_GOLD));
+    te.upgradeSlot.put(0, makeFilterUpgrade(helper, false, Items.RAW_GOLD));
     pointScanAt(helper, te, ORE_POS);
 
     helper.succeedWhen(
@@ -55,7 +56,7 @@ public class AdvMinerGameTests {
   public static void advMinerSkipsOreOutsideWhitelist(GameTestHelper helper) {
     helper.setBlock(ORE_POS, Blocks.GOLD_ORE);
     TileEntityAdvMiner te = setupAdvMiner(helper);
-    te.cardSlot.put(0, makeFilterCard(helper, false, Items.DIAMOND));
+    te.upgradeSlot.put(0, makeFilterUpgrade(helper, false, Items.DIAMOND));
     pointScanAt(helper, te, ORE_POS);
 
     helper.runAtTickTime(
@@ -69,32 +70,39 @@ public class AdvMinerGameTests {
   }
 
   @GameTest(template = EMPTY)
-  public static void advMinerFilterCardControlsMineability(GameTestHelper helper) {
+  public static void advMinerFilterUpgradeControlsMineability(GameTestHelper helper) {
     helper.setBlock(ORE_POS, Blocks.GOLD_ORE);
     TileEntityAdvMiner te = setupAdvMiner(helper);
     BlockPos orePos = helper.absolutePos(ORE_POS);
     BlockState oreState = helper.getLevel().getBlockState(orePos);
 
+    // the upgrade must be accepted by the miner's upgrade slots in the first place
+    ItemUpgradeModule upgradeItem = (ItemUpgradeModule) Ic2Items.MINING_FILTER_UPGRADE;
+    helper.assertTrue(
+        upgradeItem.isSuitableFor(
+            new ItemStack(upgradeItem), te.getUpgradableProperties()),
+        "the mining filter upgrade must be suitable for the advanced miner");
+
     helper.assertTrue(
         te.canMine(orePos, oreState.getBlock(), oreState),
         "without any filter every ore is mineable");
 
-    te.cardSlot.put(0, makeFilterCard(helper, true, Items.RAW_GOLD));
+    te.upgradeSlot.put(0, makeFilterUpgrade(helper, true, Items.RAW_GOLD));
     helper.assertFalse(
         te.canMine(orePos, oreState.getBlock(), oreState),
-        "a blacklist card listing raw gold must block the gold ore");
+        "a blacklist upgrade listing raw gold must block the gold ore");
 
-    te.cardSlot.put(0, makeFilterCard(helper, true, Items.DIAMOND));
+    te.upgradeSlot.put(0, makeFilterUpgrade(helper, true, Items.DIAMOND));
     helper.assertTrue(
         te.canMine(orePos, oreState.getBlock(), oreState),
-        "a blacklist card listing something else must not block the gold ore");
+        "a blacklist upgrade listing something else must not block the gold ore");
 
-    te.cardSlot.put(0, makeFilterCard(helper, false, Items.RAW_GOLD));
+    te.upgradeSlot.put(0, makeFilterUpgrade(helper, false, Items.RAW_GOLD));
     helper.assertTrue(
         te.canMine(orePos, oreState.getBlock(), oreState),
-        "a whitelist card listing raw gold must allow the gold ore");
+        "a whitelist upgrade listing raw gold must allow the gold ore");
 
-    te.cardSlot.clear(0);
+    te.upgradeSlot.clear(0);
     te.filterSlot.put(0, new ItemStack(Items.RAW_GOLD));
     te.blacklist = true;
     helper.assertFalse(
@@ -106,6 +114,49 @@ public class AdvMinerGameTests {
         te.canMine(orePos, oreState.getBlock(), oreState),
         "the machine's own whitelist must allow the gold ore");
 
+    helper.succeed();
+  }
+
+  // pre-refactor saves stored the filter card in InvSlots.card; loading must migrate the stack
+  // into the upgrade slots, rewriting the removed mining_filter_card item id while keeping the
+  // filter configuration
+  @GameTest(template = EMPTY)
+  public static void advMinerMigratesLegacyFilterCardSlot(GameTestHelper helper) {
+    helper.setBlock(ORE_POS, Blocks.GOLD_ORE);
+    TileEntityAdvMiner te = setupAdvMiner(helper);
+
+    CompoundTag stackTag =
+        (CompoundTag)
+            makeFilterUpgrade(helper, true, Items.RAW_GOLD)
+                .save(helper.getLevel().registryAccess());
+    stackTag.putString("id", "ic2:mining_filter_card");
+    stackTag.putByte("Index", (byte) 0);
+
+    CompoundTag saved = te.saveWithoutMetadata(helper.getLevel().registryAccess());
+    ListTag contents = new ListTag();
+    contents.add(stackTag);
+    CompoundTag cardSlotTag = new CompoundTag();
+    cardSlotTag.put("Contents", contents);
+    CompoundTag invSlotsTag = saved.getCompound("InvSlots");
+    invSlotsTag.put("card", cardSlotTag);
+    saved.put("InvSlots", invSlotsTag);
+
+    te.loadWithComponents(saved, helper.getLevel().registryAccess());
+
+    ItemStack migrated = te.upgradeSlot.get(0);
+    helper.assertTrue(
+        !migrated.isEmpty() && migrated.getItem() == Ic2Items.MINING_FILTER_UPGRADE,
+        "legacy card slot stack must migrate into the upgrade slots as a mining filter upgrade");
+    CompoundTag nbt = StackUtil.getTag(migrated);
+    helper.assertTrue(
+        nbt != null && nbt.getBoolean("blacklist") && nbt.getList("Items", 10).size() == 1,
+        "migrated filter upgrade must keep its blacklist configuration");
+
+    BlockPos orePos = helper.absolutePos(ORE_POS);
+    BlockState oreState = helper.getLevel().getBlockState(orePos);
+    helper.assertFalse(
+        te.canMine(orePos, oreState.getBlock(), oreState),
+        "the migrated blacklist filter must still block the gold ore");
     helper.succeed();
   }
 
@@ -133,9 +184,10 @@ public class AdvMinerGameTests {
         te.getMineTarget(), target.west(), "scan cursor after aiming at " + target);
   }
 
-  private static ItemStack makeFilterCard(GameTestHelper helper, boolean blacklist, Item... items) {
-    ItemStack card = new ItemStack(Ic2Items.MINING_FILTER_CARD);
-    CompoundTag nbt = StackUtil.getOrCreateNbtData(card);
+  private static ItemStack makeFilterUpgrade(
+      GameTestHelper helper, boolean blacklist, Item... items) {
+    ItemStack upgrade = new ItemStack(Ic2Items.MINING_FILTER_UPGRADE);
+    CompoundTag nbt = StackUtil.getOrCreateNbtData(upgrade);
     nbt.putBoolean("blacklist", blacklist);
     ListTag list = new ListTag();
 
@@ -144,7 +196,7 @@ public class AdvMinerGameTests {
     }
 
     nbt.put("Items", list);
-    return card;
+    return upgrade;
   }
 
   private static int countItems(Container container, Item item) {

@@ -10,7 +10,6 @@ public class ContainerAdvMiner extends ContainerElectricMachine<TileEntityAdvMin
   public ContainerAdvMiner(int syncId, Inventory playerInventory, TileEntityAdvMiner be) {
     super(Ic2ScreenHandlers.ADVANCED_MINER, syncId, playerInventory, be, 203, 8, 80);
     this.addSlot(new SlotInvSlot(be.scannerSlot, 0, 8, 26));
-    this.addSlot(new SlotInvSlot(be.cardSlot, 0, 152, 8));
 
     for (int i = 0; i < 4; i++) {
       this.addSlot(new SlotInvSlot(be.upgradeSlot, i, 152, 26 + i * 18));

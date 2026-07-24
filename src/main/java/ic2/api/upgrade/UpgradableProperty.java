@@ -10,5 +10,7 @@ public enum UpgradableProperty {
   ItemProducing,
   FluidConsuming,
   FluidProducing,
-  RemotelyAccessible
+  RemotelyAccessible,
+  /** Advanced miner: accepts mining filter upgrade modules. */
+  MiningFilter
 }

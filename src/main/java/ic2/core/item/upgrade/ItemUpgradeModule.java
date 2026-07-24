@@ -14,6 +14,7 @@ import ic2.core.gui.dynamic.DynamicHandHeldContainer;
 import ic2.core.item.EnvItemHandler;
 import ic2.core.item.IHandHeldSubInventory;
 import ic2.core.item.tool.HandHeldInventory;
+import ic2.core.item.tool.HandHeldMiningFilter;
 import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.LiquidUtil;
 import ic2.core.util.StackUtil;
@@ -272,6 +273,24 @@ public class ItemUpgradeModule extends Item
             tooltip,
             Component.translatable(
                 "ic2.tooltip.upgrade.remote_interface", StackUtil.getSize(stack)));
+        break;
+      case mining_filter:
+        {
+          CompoundTag nbt = StackUtil.getTag(stack);
+          if (nbt != null) {
+            boolean isBlacklist = !nbt.contains("blacklist") || nbt.getBoolean("blacklist");
+            ListTag items = nbt.getList("Items", 10);
+            Ic2Tooltip.add(
+                tooltip,
+                Component.translatable(
+                    isBlacklist
+                        ? "ic2.MiningFilter.gui.mode.blacklist"
+                        : "ic2.MiningFilter.gui.mode.whitelist"));
+            Ic2Tooltip.add(
+                tooltip, Component.translatable("ic2.MiningFilter.tooltip.entries", items.size()));
+          }
+          break;
+        }
     }
   }
 
@@ -315,9 +334,9 @@ public class ItemUpgradeModule extends Item
 
   public @NotNull InteractionResultHolder<ItemStack> use(
       @NotNull Level world, Player player, @NotNull InteractionHand hand) {
-    ItemStack stack = player.getMainHandItem();
+    ItemStack stack = StackUtil.get(player, hand);
     return switch (this.type) {
-      case advanced_ejector, advanced_pulling -> {
+      case advanced_ejector, advanced_pulling, mining_filter -> {
         if (!world.isClientSide) {
           this.getInventory(player, hand, stack).openManagedItem(player, hand, null);
         }
@@ -341,9 +360,22 @@ public class ItemUpgradeModule extends Item
             player.closeContainer();
           }
         }
+        break;
+      case mining_filter:
+        if (!player.getCommandSenderWorld().isClientSide
+            && !StackUtil.isEmpty(stack)
+            && player.containerMenu instanceof DynamicHandHeldContainer) {
+          HandHeldInventory base = ((DynamicHandHeldContainer<?>) player.containerMenu).base;
+          if (base instanceof HandHeldMiningFilter && base.isThisContainer(stack)) {
+            base.saveAsThrown(stack);
+            player.closeContainer();
+          }
+        }
+        break;
       default:
-        return true;
+        break;
     }
+    return true;
   }
 
   @Override
@@ -360,6 +392,7 @@ public class ItemUpgradeModule extends Item
       case fluid_pulling -> types.contains(UpgradableProperty.FluidConsuming);
       case redstone_inverter -> types.contains(UpgradableProperty.RedstoneSensitive);
       case remote_interface -> types.contains(UpgradableProperty.RemotelyAccessible);
+      case mining_filter -> types.contains(UpgradableProperty.MiningFilter);
     };
   }
 
@@ -539,6 +572,7 @@ public class ItemUpgradeModule extends Item
   public IHasGui getInventory(Player player, InteractionHand hand, ItemStack stack) {
     return switch (this.type) {
       case advanced_ejector, advanced_pulling -> new HandHeldAdvancedUpgrade(player, hand, stack);
+      case mining_filter -> new HandHeldMiningFilter(player, hand, stack);
       default -> null;
     };
   }
@@ -563,7 +597,8 @@ public class ItemUpgradeModule extends Item
     advanced_pulling(true),
     fluid_ejector(true),
     fluid_pulling(true),
-    remote_interface(false);
+    remote_interface(false),
+    mining_filter(false);
 
     public final boolean directional;
 

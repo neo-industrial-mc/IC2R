@@ -13,10 +13,9 @@
     {
       "item": "ic2:item_buffer"
     }
-    
   ],
   "consuming": true,
   "result": {
-    "item": "ic2:mining_filter_card"
+    "item": "ic2:mining_filter_upgrade"
   }
 }
