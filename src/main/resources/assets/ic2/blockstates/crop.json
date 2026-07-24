@@ -571,7 +571,7 @@
       "model": "ic2:block/crop/cherry_sapling_3"
     },
     "crop_type=cherry_sapling,age=4": {
-      "model": "ic2:block/crop/crop"
+      "model": "ic2:block/crop/cherry_sapling_4"
     },
     "crop_type=cherry_sapling,age=5": {
       "model": "ic2:block/crop/crop"

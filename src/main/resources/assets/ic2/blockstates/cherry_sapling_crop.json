@@ -11,6 +11,9 @@
     },
     "age=3": {
       "model": "ic2:block/crop/cherry_sapling_3"
+    },
+    "age=4": {
+      "model": "ic2:block/crop/cherry_sapling_4"
     }
   }
 }

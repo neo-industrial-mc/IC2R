@@ -170,6 +170,21 @@ public class CropGameTests {
     helper.succeed();
   }
 
+  // the cherry sapling crop has a fifth visual stage like the other sapling crops; its block age
+  // bound was stuck at 3, clamping mature crops to the stage-3 model (upstream 18602bb9)
+  @GameTest(template = EMPTY)
+  public static void cherrySaplingCropReachesStageFour(GameTestHelper helper) {
+    helper.assertValueEqual(
+        ((Ic2TileEntityBlock) Ic2Crops.cropCherrySapling.getCropBlock()).getCropMaxAge(),
+        4,
+        "cherry sapling crop block age bound");
+
+    TileEntityCrop crop = plant(helper, CROP_POS, Ic2Crops.cropCherrySapling, 4, 1, 1, 1);
+    helper.assertValueEqual(
+        crop.getCurrentAge(), 4, "cherry sapling crop age when planted at its final stage");
+    helper.succeed();
+  }
+
   // right-clicking an empty crop stick with a registered base seed (wheat seeds) plants the
   // matching crop with the base seed's stats and consumes one item
   @GameTest(template = EMPTY)
