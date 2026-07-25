@@ -15,6 +15,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
@@ -22,6 +23,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
@@ -71,17 +73,14 @@ public class JetpackHandler implements IBackupElectricItemManager {
     }
 
     if (!value) {
-      if (!stack.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA)) {
+      if (!stack.has(DataComponents.CUSTOM_DATA)) {
         return;
       }
 
-      CompoundTag nbt = StackUtil.getTag(stack);
-      if (nbt != null) {
-        nbt.remove("hasIC2Jetpack");
-        StackUtil.setTag(stack, nbt);
-      }
+      CustomData.update(DataComponents.CUSTOM_DATA, stack, nbt -> nbt.remove("hasIC2Jetpack"));
     } else if (StackUtil.getEquipmentSlotForItem(stack) == EquipmentSlot.CHEST) {
-      StackUtil.getOrCreateNbtData(stack).putBoolean("hasIC2Jetpack", true);
+      CustomData.update(
+          DataComponents.CUSTOM_DATA, stack, nbt -> nbt.putBoolean("hasIC2Jetpack", true));
     }
   }
 

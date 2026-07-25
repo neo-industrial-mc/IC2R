@@ -6,17 +6,23 @@ import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.item.ElectricItemManager;
 import ic2.core.item.armor.ItemArmorJetpack;
 import ic2.core.item.armor.jetpack.IJetpack;
+import ic2.core.item.armor.jetpack.JetpackAttachmentRecipe;
 import ic2.core.item.armor.jetpack.JetpackHandler;
 import ic2.core.item.armor.jetpack.JetpackLogic;
 import ic2.core.ref.Ic2Fluids;
 import ic2.core.ref.Ic2Items;
 import ic2.core.util.Keyboard;
 import java.util.EnumSet;
+import java.util.List;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -273,5 +279,89 @@ public class JetpackGameTests {
         JetpackHandler.hasJetpack(chestplate), "detached chestplate is no longer a jetpack");
 
     helper.succeed();
+  }
+
+  @GameTest(template = EMPTY)
+  public static void attachingJetpackToCopyDoesNotMutateNanoSuitSource(GameTestHelper helper) {
+    ItemStack source =
+        ElectricItemManager.getCharged(Ic2Items.NANO_CHESTPLATE, Double.POSITIVE_INFINITY);
+    ItemStack attached = source.copy();
+
+    JetpackHandler.setJetpackAttached(attached, true);
+
+    helper.assertTrue(
+        JetpackHandler.hasJetpackAttached(attached), "copied chestplate should gain a jetpack");
+    helper.assertFalse(
+        JetpackHandler.hasJetpackAttached(source),
+        "attaching a jetpack to a copy must not mutate the source chestplate");
+
+    helper.succeed();
+  }
+
+  @GameTest(template = EMPTY)
+  public static void jetpackAttachmentCraftDoesNotContaminateNanoSuitRecipe(GameTestHelper helper) {
+    ItemStack nanoChestplate =
+        ElectricItemManager.getCharged(Ic2Items.NANO_CHESTPLATE, Double.POSITIVE_INFINITY);
+    CraftingInput attachmentInput =
+        CraftingInput.of(
+            3,
+            1,
+            List.of(
+                nanoChestplate,
+                ElectricItemManager.getCharged(Ic2Items.JETPACK_ELECTRIC, Double.POSITIVE_INFINITY),
+                new ItemStack(Ic2Items.JETPACK_ATTACHMENT_PLATE)));
+    CraftingRecipe attachmentRecipe = findCraftingRecipe(helper, attachmentInput);
+
+    helper.assertTrue(
+        attachmentRecipe instanceof JetpackAttachmentRecipe,
+        "attachment ingredients should resolve to the jetpack attachment recipe");
+    helper.assertTrue(
+        attachmentRecipe.matches(attachmentInput, helper.getLevel()),
+        "charged NanoSuit bodyarmor should match the jetpack attachment recipe");
+    helper.assertFalse(
+        JetpackHandler.hasJetpackAttached(nanoChestplate),
+        "checking the attachment recipe must not mutate its NanoSuit input");
+
+    ItemStack attached =
+        attachmentRecipe.assemble(attachmentInput, helper.getLevel().registryAccess());
+    helper.assertTrue(
+        JetpackHandler.hasJetpackAttached(attached),
+        "assembling the attachment recipe should produce attached NanoSuit bodyarmor");
+
+    CraftingInput nanoSuitInput =
+        CraftingInput.of(
+            3,
+            3,
+            List.of(
+                new ItemStack(Ic2Items.CARBON_PLATE),
+                ItemStack.EMPTY,
+                new ItemStack(Ic2Items.CARBON_PLATE),
+                new ItemStack(Ic2Items.CARBON_PLATE),
+                new ItemStack(Ic2Items.ENERGY_CRYSTAL),
+                new ItemStack(Ic2Items.CARBON_PLATE),
+                new ItemStack(Ic2Items.CARBON_PLATE),
+                new ItemStack(Ic2Items.CARBON_PLATE),
+                new ItemStack(Ic2Items.CARBON_PLATE)));
+    ItemStack craftedNanoSuit =
+        findCraftingRecipe(helper, nanoSuitInput)
+            .assemble(nanoSuitInput, helper.getLevel().registryAccess());
+
+    helper.assertTrue(
+        craftedNanoSuit.is(Ic2Items.NANO_CHESTPLATE),
+        "NanoSuit recipe should produce NanoSuit bodyarmor");
+    helper.assertFalse(
+        JetpackHandler.hasJetpackAttached(craftedNanoSuit),
+        "ordinary NanoSuit crafting must not inherit a jetpack attachment");
+
+    helper.succeed();
+  }
+
+  private static CraftingRecipe findCraftingRecipe(GameTestHelper helper, CraftingInput input) {
+    return helper
+        .getLevel()
+        .getRecipeManager()
+        .getRecipeFor(RecipeType.CRAFTING, input, helper.getLevel())
+        .map(RecipeHolder::value)
+        .orElseThrow(() -> new AssertionError("missing crafting recipe for test input"));
   }
 }
