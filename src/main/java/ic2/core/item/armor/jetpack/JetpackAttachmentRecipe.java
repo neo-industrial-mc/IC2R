@@ -51,6 +51,11 @@ public class JetpackAttachmentRecipe implements CraftingRecipe {
     blacklistedItems.add(Ic2Items.JETPACK_ELECTRIC);
     blacklistedItems.add(Ic2Items.QUANTUM_CHESTPLATE);
     blacklistedItems.add(Items.ELYTRA);
+    blacklistedItems.add(Ic2Items.BATPACK);
+    blacklistedItems.add(Ic2Items.ADVANCED_BATPACK);
+    blacklistedItems.add(Ic2Items.ENERGY_PACK);
+    blacklistedItems.add(Ic2Items.LAPPACK);
+    blacklistedItems.add(Ic2Items.CF_PACK);
   }
 
   @Override
