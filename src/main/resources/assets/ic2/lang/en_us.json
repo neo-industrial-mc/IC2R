@@ -741,6 +741,7 @@
   "ic2.itemrotor.fitsin.false": "This rotor does not fit into this gearbox",
   "ic2.itemrotor.fitsin.true": "This rotor fits into this gearbox",
   "ic2.itemrotor.wind.info": "Requirements Min: %s MCW; Max: %s MCW",
+  "ic2.jei.recipes": "Show Recipes",
   "ic2.jei.transfer.error.fluid_mismatch": "Input tank contains wrong fluid. Required: %s",
   "ic2.jei.transfer.error.missing_additive": "Missing additive item in inventory",
   "ic2.jei.transfer.error.missing_container": "Missing empty container in inventory",

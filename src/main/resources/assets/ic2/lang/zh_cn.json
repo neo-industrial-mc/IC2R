@@ -740,6 +740,7 @@
   "ic2.itemrotor.fitsin.false": "转子与这个动能发生机不兼容",
   "ic2.itemrotor.fitsin.true": "转子与这个动能发生机兼容",
   "ic2.itemrotor.wind.info": "最小风力：%s MCW；最大风力：%s MCW",
+  "ic2.jei.recipes": "显示配方",
   "ic2.jei.transfer.error.fluid_mismatch": "输入罐内流体不匹配，需要：%s",
   "ic2.jei.transfer.error.missing_additive": "背包中缺少添加剂物品",
   "ic2.jei.transfer.error.missing_container": "背包中缺少空容器",
