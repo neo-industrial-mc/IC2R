@@ -80,7 +80,10 @@ public class CannerEnrichRecipeManager implements ICannerEnrichRecipeManager {
       remainingFluid = null;
     } else {
       remainingFluid = input.fluid().copy();
-      remainingFluid.decreaseMb(recipe.getInput().fluid().getAmountMb());
+      // An accept test matches recipes needing more fluid than the tank holds; clamp so the
+      // remaining amount can't go negative.
+      remainingFluid.decreaseMb(
+          Math.min(recipe.getInput().fluid().getAmountMb(), remainingFluid.getAmountMb()));
       if (remainingFluid.isEmpty()) {
         remainingFluid = null;
       }

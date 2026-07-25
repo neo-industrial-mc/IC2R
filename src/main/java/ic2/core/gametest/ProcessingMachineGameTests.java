@@ -431,6 +431,26 @@ public class ProcessingMachineGameTests {
         });
   }
 
+  // canner, enrich mode: the accept test must not fail when the input tank holds less fluid than
+  // the recipe requires, e.g. distilled water from a solar distiller that only partially filled
+  // the tank. The recipe needs 1000 mB; with only 500 mB the slot must still accept lapis dust
+  // (the accept test asks "could this ever be processed"), not throw from computing a negative
+  // remaining fluid amount.
+  @GameTest(template = EMPTY)
+  public static void cannerEnrichAcceptsLapisWithPartiallyFilledTank(GameTestHelper helper) {
+    helper.setBlock(MACHINE_POS, Ic2Blocks.CANNER);
+    TileEntityCanner te = getMachine(helper, TileEntityCanner.class);
+    te.setMode(TileEntityCanner.Mode.EnrichLiquid);
+    int filled =
+        te.inputTank.fillMb(Ic2FluidStack.create(Ic2Fluids.DISTILLED_WATER.still(), 500), false);
+    helper.assertValueEqual(filled, 500, "distilled water accepted by the canner input tank");
+
+    helper.assertTrue(
+        te.inputSlot.accepts(new ItemStack(Ic2Items.LAPIS_DUST)),
+        "canner should accept lapis dust while the tank holds less than the recipe amount");
+    helper.succeed();
+  }
+
   // electrolyzer: 32 EU/t over 200 ticks, tier 2; 40 mB water -> 26 mB hydrogen (down) + 13 mB
   // oxygen (up),
   // each output pushed into an adjacent fluid tank.
