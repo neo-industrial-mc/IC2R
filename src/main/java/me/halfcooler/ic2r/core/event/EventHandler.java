@@ -23,7 +23,6 @@ import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityMatter;
 import me.halfcooler.ic2r.core.block.inherit.Ic2rFenceBlock;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityRecycler;
 import me.halfcooler.ic2r.core.crop.Ic2rCrops;
-import me.halfcooler.ic2r.core.energy.EnergyNetMode;
 import me.halfcooler.ic2r.core.energy.grid.EnergyNetGlobal;
 import me.halfcooler.ic2r.core.init.BlocksItems;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
@@ -53,11 +52,9 @@ import me.halfcooler.ic2r.core.world.Ic2rWorldGen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -175,16 +172,7 @@ public final class EventHandler
 
 	public static void onPlayerLogin(Player player)
 	{
-		if (!(player instanceof ServerPlayer))
-		{
-			return;
-		}
-
-		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get());
-		PlatformServices.playerUi().messagePlayer(
-			player,
-			Component.translatable("ic2r.energynet.mode", Component.translatable("ic2r.energynet.mode." + mode.name().toLowerCase()))
-		);
+		// Energy-net mode chat tip lives in optional ic2r_gt_addon only.
 	}
 
 	public static void onWorldLoad(Level world)

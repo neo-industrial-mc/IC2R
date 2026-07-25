@@ -386,7 +386,7 @@ public class EnergyNetLocal
 		return !this.grids.isEmpty();
 	}
 
-	Collection<Grid> getGrids()
+	public Collection<Grid> getGrids()
 	{
 		return this.grids;
 	}

@@ -7,6 +7,7 @@ import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
 
 import me.halfcooler.ic2r.api.network.ClientModifiable;
 import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.energy.EnergyNetMode;
 import me.halfcooler.ic2r.core.item.ContainerHandHeldInventory;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 
@@ -102,6 +103,10 @@ public class ContainerMeter extends ContainerHandHeldInventory<HandHeldMeter>
 
 	public void setMode(ContainerMeter.Mode mode)
 	{
+		if (mode == ContainerMeter.Mode.Amperage && !EnergyNetMode.isGt())
+		{
+			mode = ContainerMeter.Mode.Voltage;
+		}
 		this.mode = mode;
 		IC2R.network.get(false).sendContainerField(this, "mode");
 		this.reset();

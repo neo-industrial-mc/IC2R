@@ -609,17 +609,26 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 			Energy energy = this.getComponent(Energy.class);
 			boolean hasSource = !energy.getSourceDirs().isEmpty();
 			boolean hasSink = !energy.getSinkDirs().isEmpty();
-			if (hasSource || hasSink)
+			if (!hasSource && !hasSink)
 			{
-				Ic2rTooltip.add(tooltip, ElectricalDisplay.formatVoltage(energy.getWorkingVoltage()));
+				return;
 			}
 
-			if (hasSource && !hasSink)
+			if (ElectricalDisplay.isGtDisplay())
 			{
-				Ic2rTooltip.add(tooltip, ElectricalDisplay.formatPower(energy));
-			} else if (hasSink && !hasSource)
+				Ic2rTooltip.add(tooltip, ElectricalDisplay.formatVoltage(energy.getWorkingVoltage()));
+				if (hasSource ^ hasSink)
+				{
+					Ic2rTooltip.add(tooltip, ElectricalDisplay.formatPower(energy));
+				}
+			}
+			else if (hasSource)
 			{
-				Ic2rTooltip.add(tooltip, ElectricalDisplay.formatPower(energy));
+				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.item.tooltip.power_tier", energy.getSourceTier()));
+			}
+			else
+			{
+				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.item.tooltip.power_tier", energy.getSinkTier()));
 			}
 		}
 	}

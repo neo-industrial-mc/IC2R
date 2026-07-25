@@ -415,7 +415,6 @@ public class IC2RConfig
 		public final ModConfigSpec.BooleanValue roundEnetLoss;
 		public final ModConfigSpec.BooleanValue enableEnetExplosions;
 		public final ModConfigSpec.BooleanValue enableEnetCableMeltdown;
-		public final ModConfigSpec.BooleanValue useGregTechEnergyNet;
 
 		Misc(ModConfigSpec.Builder b)
 		{
@@ -436,11 +435,7 @@ public class IC2RConfig
 			enableEnetExplosions = b.define("enableEnetExplosions", true);
 			b.comment("Same for cable meltdown.");
 			enableEnetCableMeltdown = b.define("enableEnetCableMeltdown", true);
-			b.comment(
-				"Use GregTech-style voltage/current/ampere energy net limits.",
-				"false (default) = classic IC2R EU packet model; true = GT V/A limits."
-			);
-			useGregTechEnergyNet = b.define("useGregTechEnergyNet", false);
+			// GT energy net mode is enabled by loading the optional IC++ GT Addons mod (ic2r_gt_addon).
 			b.pop();
 		}
 	}

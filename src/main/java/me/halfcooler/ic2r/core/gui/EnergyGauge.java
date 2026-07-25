@@ -41,8 +41,11 @@ public class EnergyGauge extends Gauge<EnergyGauge>
 		double amount = this.energy.getEnergy();
 		double capacity = this.energy.getCapacity();
 		ret.add(Component.literal(Util.toSiString(amount, 4) + "/" + Util.toSiString(capacity, 4) + " " + Component.translatable("ic2r.generic.text.EU").getString()));
-		ret.add(ElectricalDisplay.formatVoltage(this.energy.getWorkingVoltage()));
-		ret.add(ElectricalDisplay.formatPower(this.energy));
+		if (ElectricalDisplay.isGtDisplay())
+		{
+			ret.add(ElectricalDisplay.formatVoltage(this.energy.getWorkingVoltage()));
+			ret.add(ElectricalDisplay.formatPower(this.energy));
+		}
 		return ret;
 	}
 

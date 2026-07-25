@@ -9,7 +9,6 @@ import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.comp.Energy;
-import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.block.wiring.ContainerTransformer;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
@@ -166,13 +165,20 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 	@Override
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		if (EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get()) != EnergyNetMode.GT)
+		super.appendItemTooltip(stack, tooltip, advanced);
+		if (EnergyNetMode.isGt())
 		{
-			super.appendItemTooltip(stack, tooltip, advanced);
+			Ic2rTooltip.add(tooltip, Component.translatable("ic2r.Transformer.tooltip.high", this.formatRatedPower(true)));
+			Ic2rTooltip.add(tooltip, Component.translatable("ic2r.Transformer.tooltip.low", this.formatRatedPower(false)));
 		}
-
-		Ic2rTooltip.add(tooltip, Component.translatable("ic2r.Transformer.tooltip.high", this.formatRatedPower(true)));
-		Ic2rTooltip.add(tooltip, Component.translatable("ic2r.Transformer.tooltip.low", this.formatRatedPower(false)));
+		else
+		{
+			Ic2rTooltip.add(tooltip, Component.translatable(
+				"item.ic2r.transformer.tooltip",
+				EnergyNet.instance.getPowerFromTier(this.energy.getSinkTier()),
+				EnergyNet.instance.getPowerFromTier(this.energy.getSourceTier() + 1)
+			));
+		}
 	}
 
 	public Component getInputFlowDisplay()
@@ -187,6 +193,12 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 
 	private Component getFlowDisplay(boolean input)
 	{
+		if (!EnergyNetMode.isGt())
+		{
+			double flow = input ? this.getInputFlow() : this.getOutputFlow();
+			return Component.literal((long) flow + " " + Component.translatable("ic2r.generic.text.EUt").getString());
+		}
+
 		boolean stepUp = this.isStepUp();
 		int amps;
 		VoltageTier tier;

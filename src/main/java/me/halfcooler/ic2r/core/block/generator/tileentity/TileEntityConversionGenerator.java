@@ -11,7 +11,6 @@ import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
-import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.network.GuiSynced;
 import me.halfcooler.ic2r.core.util.LegacyNbt;
@@ -300,7 +299,7 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 
 	private boolean isGtEnergyNet()
 	{
-		return EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get()) == EnergyNetMode.GT;
+		return EnergyNetMode.isGt();
 	}
 
 	@Override

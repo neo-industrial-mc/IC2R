@@ -20,7 +20,6 @@ import me.halfcooler.ic2r.core.energy.grid.EnergyNetExplosions;
 import me.halfcooler.ic2r.core.energy.grid.EnergyNetGlobal;
 import me.halfcooler.ic2r.core.energy.grid.Tile;
 import me.halfcooler.ic2r.core.energy.profile.ElectricalProfile;
-import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.util.LegacyNbt;
 import me.halfcooler.ic2r.core.util.LogCategory;
@@ -474,7 +473,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 			return false;
 		}
 
-		if (EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get()) != EnergyNetMode.GT)
+		if (!EnergyNetMode.isGt())
 		{
 			return false;
 		}

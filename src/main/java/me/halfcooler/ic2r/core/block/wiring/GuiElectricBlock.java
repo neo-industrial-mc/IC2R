@@ -29,18 +29,33 @@ public class GuiElectricBlock extends Ic2rGui<ContainerElectricBlock>
 		int color = 4207152;
 		super.drawForegroundLayer(guiGraphics, mouseX, mouseY);
 		this.drawString(guiGraphics, 8, 74, Component.translatable("ic2r.EUStorage.gui.info.armor").getString(), color);
-		this.drawString(guiGraphics, 82, rightTextHeight, Component.translatable("ic2r.EUStorage.gui.info.level", ElectricalDisplay.formatTierName(this.menu.base.energy.getWorkingVoltage())).getString(), color);
+		if (ElectricalDisplay.isGtDisplay())
+		{
+			this.drawString(guiGraphics, 82, rightTextHeight, ElectricalDisplay.formatVoltage(this.menu.base.energy.getWorkingVoltage()).getString(), color);
+		}
+		else
+		{
+			this.drawString(guiGraphics, 82, rightTextHeight, Component.translatable("ic2r.EUStorage.gui.info.level").getString(), color);
+		}
 		int e = (int) Math.min(this.menu.base.energy.getEnergy(), this.menu.base.energy.getCapacity());
 		this.drawString(guiGraphics, 110, rightTextHeight + 10, " " + e, color);
 		this.drawString(guiGraphics, 110, rightTextHeight + 20, "/" + (int) this.menu.base.energy.getCapacity(), color);
-		String output = Component.translatable("ic2r.EUStorage.gui.info.output").getString();
-		String power = ElectricalDisplay.formatPower(
-			this.menu.base.energy.getWorkingVoltage().getVoltage() * this.menu.base.energy.getMaxSourceAmperage(),
-			this.menu.base.energy.getWorkingVoltage(),
-			this.menu.base.energy.getMaxSourceAmperage()
-		).getString();
-		this.drawString(guiGraphics, 82, rightTextHeight + 35, output, color);
-		this.drawString(guiGraphics, 82, rightTextHeight + 45, power, color);
+		if (ElectricalDisplay.isGtDisplay())
+		{
+			String output = Component.translatable("ic2r.EUStorage.gui.info.output").getString();
+			String power = ElectricalDisplay.formatPower(
+				this.menu.base.energy.getWorkingVoltage().getVoltage() * this.menu.base.energy.getMaxSourceAmperage(),
+				this.menu.base.energy.getWorkingVoltage(),
+				this.menu.base.energy.getMaxSourceAmperage()
+			).getString();
+			this.drawString(guiGraphics, 82, rightTextHeight + 35, output, color);
+			this.drawString(guiGraphics, 82, rightTextHeight + 45, power, color);
+		}
+		else
+		{
+			String output = Component.translatable("ic2r.EUStorage.gui.info.output", this.menu.base.getOutput()).getString();
+			this.drawString(guiGraphics, 82, rightTextHeight + 35, output, color);
+		}
 	}
 
 	@Override

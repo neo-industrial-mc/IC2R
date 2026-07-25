@@ -9,26 +9,30 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
-class EnergyPath
+/**
+ * Cached source→sink path used by energy calculators. Public for optional external solvers
+ * (GT addon) that live outside this package.
+ */
+public class EnergyPath
 {
-	final Node source;
-	final Node target;
-	final List<Node> conductors;
-	final double loss;
-	final Direction targetDirection;
-	final double minEffectEnergy;
-	final double minInsulationEnergyAbsorption;
-	final double minInsulationBreakdownEnergy;
-	final double minConductorBreakdownEnergy;
-	final int minX;
-	final int minY;
-	final int minZ;
-	final int maxX;
-	final int maxY;
-	final int maxZ;
-	int lastCalcId = -1;
-	double energySupplied;
-	double maxPacketConducted;
+	public final Node source;
+	public final Node target;
+	public final List<Node> conductors;
+	public final double loss;
+	public final Direction targetDirection;
+	public final double minEffectEnergy;
+	public final double minInsulationEnergyAbsorption;
+	public final double minInsulationBreakdownEnergy;
+	public final double minConductorBreakdownEnergy;
+	public final int minX;
+	public final int minY;
+	public final int minZ;
+	public final int maxX;
+	public final int maxY;
+	public final int maxZ;
+	public int lastCalcId = -1;
+	public double energySupplied;
+	public double maxPacketConducted;
 
 	EnergyPath(Node source, Node target, List<Node> conductors, double loss)
 	{

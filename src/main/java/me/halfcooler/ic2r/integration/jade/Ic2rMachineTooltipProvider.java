@@ -99,7 +99,7 @@ public enum Ic2rMachineTooltipProvider implements IBlockComponentProvider, IServ
 		{
 			VoltageTier voltage = VoltageTier.fromIcTier(data.getInt(KEY_VOLTAGE));
 
-			if (JadeConfigHelper.voltageMode().isVisible(details))
+			if (ElectricalDisplay.isGtDisplay() && JadeConfigHelper.voltageMode().isVisible(details))
 			{
 				tooltip.add(ElectricalDisplay.formatVoltage(voltage));
 			}
@@ -115,7 +115,14 @@ public enum Ic2rMachineTooltipProvider implements IBlockComponentProvider, IServ
 				{
 					// Storage block: show continuous output rating.
 					int euPerTick = voltage.getVoltage() * sourceAmps;
-					tooltip.add(Component.translatable("ic2r.electric.tooltip.output", ElectricalDisplay.formatPowerCompact(euPerTick, voltage, sourceAmps)));
+					if (ElectricalDisplay.isGtDisplay())
+					{
+						tooltip.add(Component.translatable("ic2r.electric.tooltip.output", ElectricalDisplay.formatPowerCompact(euPerTick, voltage, sourceAmps)));
+					}
+					else
+					{
+						tooltip.add(Component.translatable("ic2r.item.tooltip.Output", euPerTick));
+					}
 				} else if (hasSource && !hasSink && recipePower > 0)
 				{
 					// Pure generator / source.

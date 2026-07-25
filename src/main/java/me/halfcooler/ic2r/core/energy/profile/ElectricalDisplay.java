@@ -5,7 +5,6 @@ import me.halfcooler.ic2r.api.energy.profile.VoltageTier;
 import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.wiring.AbstractCableBlock;
 import me.halfcooler.ic2r.core.energy.EnergyNetMode;
-import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 
 import java.math.BigDecimal;
@@ -13,15 +12,29 @@ import java.util.List;
 
 import net.minecraft.network.chat.Component;
 
+/**
+ * Player-facing electrical text. Classic IC2R shows power tier / EU/t only;
+ * GT mode (optional addon) shows voltage tiers and amperage.
+ */
 public final class ElectricalDisplay
 {
 	private ElectricalDisplay()
 	{
 	}
 
+	public static boolean isGtDisplay()
+	{
+		return EnergyNetMode.isGt();
+	}
+
 	public static Component formatVoltage(VoltageTier tier)
 	{
-		return Component.translatable("ic2r.electric.tooltip.voltage", formatTierWithValue(tier));
+		if (isGtDisplay())
+		{
+			return Component.translatable("ic2r.electric.tooltip.voltage", formatTierWithValue(tier));
+		}
+
+		return Component.translatable("ic2r.item.tooltip.power_tier", tier.getIcTier());
 	}
 
 	public static Component formatPower(IElectricalNode node)
@@ -31,7 +44,7 @@ public final class ElectricalDisplay
 		double avgAmps = node.getAverageCurrent();
 		if (avgAmps <= 0.0 && power > 0)
 		{
-			avgAmps = (double) power / tier.getVoltage();
+			avgAmps = (double) power / Math.max(1, tier.getVoltage());
 		}
 
 		return formatPower(power, tier, avgAmps);
@@ -39,6 +52,11 @@ public final class ElectricalDisplay
 
 	public static Component formatPower(int euPerTick, VoltageTier tier, double avgAmps)
 	{
+		if (!isGtDisplay())
+		{
+			return Component.translatable("ic2r.item.tooltip.Output", euPerTick);
+		}
+
 		if (avgAmps > 0.0 && avgAmps == Math.rint(avgAmps) && (int) avgAmps == 1)
 		{
 			return formatPower(euPerTick, tier, 1);
@@ -49,11 +67,21 @@ public final class ElectricalDisplay
 
 	public static Component formatPower(int euPerTick, VoltageTier tier, int amps)
 	{
+		if (!isGtDisplay())
+		{
+			return Component.translatable("ic2r.item.tooltip.Output", euPerTick);
+		}
+
 		return Component.translatable("ic2r.electric.tooltip.power.with_tier", euPerTick, amps, formatTierName(tier));
 	}
 
 	public static Component formatPowerCompact(int euPerTick, VoltageTier tier, int amps)
 	{
+		if (!isGtDisplay())
+		{
+			return Component.literal(euPerTick + " " + Component.translatable("ic2r.generic.text.EUt").getString());
+		}
+
 		return Component.translatable("ic2r.electric.tooltip.power.compact", euPerTick, amps, formatTierName(tier));
 	}
 
@@ -61,12 +89,17 @@ public final class ElectricalDisplay
 	{
 		VoltageTier tier = energy.getWorkingVoltage();
 		int euPerTick = tier.getVoltage() * energy.getMaxSourceAmperage();
+		if (!isGtDisplay())
+		{
+			return Component.translatable("ic2r.item.tooltip.Output", euPerTick);
+		}
+
 		return Component.translatable("ic2r.electric.tooltip.output", formatPowerCompact(euPerTick, tier, energy.getMaxSourceAmperage()));
 	}
 
 	public static void appendCableTooltip(AbstractCableBlock block, List<Component> tooltip)
 	{
-		if (EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get()) == EnergyNetMode.GT)
+		if (isGtDisplay())
 		{
 			CableSpec spec = CableSpec.forType(block.type);
 			int loss = spec.getLossPerMeterPerAmp();

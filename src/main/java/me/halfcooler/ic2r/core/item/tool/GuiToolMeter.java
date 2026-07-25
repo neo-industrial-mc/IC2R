@@ -2,6 +2,7 @@ package me.halfcooler.ic2r.core.item.tool;
 
 import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
+import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.gui.CustomButton;
 import me.halfcooler.ic2r.core.gui.IClickHandler;
 import me.halfcooler.ic2r.core.util.Util;
@@ -14,11 +15,13 @@ public class GuiToolMeter extends Ic2rGui<ContainerMeter>
 	public GuiToolMeter(ContainerMeter container, Inventory playerInventory, Component title)
 	{
 		super(container, playerInventory, title, 217);
-		this.addElement(new CustomButton(this, 112, 55, 20, 20, this.createModeSetter(ContainerMeter.Mode.EnergyIn)).withTooltip("ic2r.meter.mode.switch\nic2.meter.mode.EnergyIn"));
-		this.addElement(new CustomButton(this, 132, 55, 20, 20, this.createModeSetter(ContainerMeter.Mode.EnergyOut)).withTooltip("ic2r.meter.mode.switch\nic2.meter.mode.EnergyOut"));
-		this.addElement(new CustomButton(this, 112, 75, 20, 20, this.createModeSetter(ContainerMeter.Mode.EnergyGain)).withTooltip("ic2r.meter.mode.switch\nic2.meter.mode.EnergyGain"));
-		this.addElement(new CustomButton(this, 132, 75, 20, 20, this.createModeSetter(ContainerMeter.Mode.Voltage)).withTooltip("ic2r.meter.mode.switch\nic2.meter.mode.Voltage"));
-		this.addElement(new CustomButton(this, 152, 65, 20, 20, this.createModeSetter(ContainerMeter.Mode.Amperage)).withTooltip("ic2r.meter.mode.switch\nic2.meter.mode.Amperage"));
+		this.addElement(new CustomButton(this, 112, 55, 20, 20, this.createModeSetter(ContainerMeter.Mode.EnergyIn)).withTooltip("ic2r.meter.mode.switch\nic2r.meter.mode.EnergyIn"));
+		this.addElement(new CustomButton(this, 132, 55, 20, 20, this.createModeSetter(ContainerMeter.Mode.EnergyOut)).withTooltip("ic2r.meter.mode.switch\nic2r.meter.mode.EnergyOut"));
+		this.addElement(new CustomButton(this, 112, 75, 20, 20, this.createModeSetter(ContainerMeter.Mode.EnergyGain)).withTooltip("ic2r.meter.mode.switch\nic2r.meter.mode.EnergyGain"));
+		this.addElement(new CustomButton(this, 132, 75, 20, 20, this.createModeSetter(ContainerMeter.Mode.Voltage)).withTooltip("ic2r.meter.mode.switch\nic2r.meter.mode.Voltage"));
+		this.addElement(new CustomButton(this, 152, 65, 20, 20, this.createModeSetter(ContainerMeter.Mode.Amperage))
+			.withTooltip("ic2r.meter.mode.switch\nic2r.meter.mode.Amperage")
+			.withEnableHandler(ElectricalDisplay::isGtDisplay));
 	}
 
 	private IClickHandler createModeSetter(ContainerMeter.Mode mode)
@@ -46,7 +49,12 @@ public class GuiToolMeter extends Ic2rGui<ContainerMeter>
 	{
 		super.drawForegroundLayer(guiGraphics, mouseX, mouseY);
 		ContainerMeter container = this.getContainer();
-		String unit = switch (container.getMode())
+		ContainerMeter.Mode mode = container.getMode();
+		if (mode == ContainerMeter.Mode.Amperage && !ElectricalDisplay.isGtDisplay())
+		{
+			mode = ContainerMeter.Mode.Voltage;
+		}
+		String unit = switch (mode)
 		{
 			case Voltage -> Component.translatable("ic2r.generic.text.v").getString();
 			case Amperage -> Component.translatable("ic2r.generic.text.a").getString();
@@ -60,7 +68,7 @@ public class GuiToolMeter extends Ic2rGui<ContainerMeter>
 		this.drawString(guiGraphics, 15, 86, Util.toSiString(container.getResultMin(), 6) + unit, 2157374);
 		this.drawString(guiGraphics, 15, 100, Component.translatable("ic2r.meter.cycle", container.getResultCount() / 20).getString(), 2157374);
 		this.drawString(guiGraphics, 39, 114, Component.translatable("ic2r.meter.mode.reset").getString(), 2157374);
-		switch (container.getMode())
+		switch (mode)
 		{
 			case EnergyIn:
 				this.drawString(guiGraphics, 105, 1236, Component.translatable("ic2r.meter.mode.EnergyIn").getString(), 2157374);
@@ -85,7 +93,12 @@ public class GuiToolMeter extends Ic2rGui<ContainerMeter>
 		super.renderBg(guiGraphics, delta, mouseX, mouseY);
 		this.bindTexture();
 		ContainerMeter container = this.getContainer();
-		switch (container.getMode())
+		ContainerMeter.Mode bgMode = container.getMode();
+		if (bgMode == ContainerMeter.Mode.Amperage && !ElectricalDisplay.isGtDisplay())
+		{
+			bgMode = ContainerMeter.Mode.Voltage;
+		}
+		switch (bgMode)
 		{
 			case EnergyIn:
 				this.drawTexturedRect(guiGraphics.pose(), 112.0, 55.0, 40.0, 40.0, 176.0, 0.0);

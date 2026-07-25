@@ -8,12 +8,12 @@ import me.halfcooler.ic2r.api.info.ILocatable;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.energy.EnergyNetMode;
 import me.halfcooler.ic2r.core.event.WorldData;
-import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
 
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.minecraft.core.BlockPos;
@@ -35,10 +35,27 @@ public class EnergyNetGlobal implements IEnergyNet
 		return new EnergyNetGlobal();
 	}
 
+	/**
+	 * Installs the classic IC solver. When the optional GT addon has already enabled GT mode
+	 * and installed its calculator via {@link #setCalculator(IEnergyCalculator)}, this is a no-op.
+	 */
 	public static void initCalculator()
 	{
-		EnergyNetMode mode = EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get());
-		calculator = mode == EnergyNetMode.GT ? new EnergyCalculatorGT() : new IcEnergySolver();
+		if (EnergyNetMode.isGt())
+		{
+			return;
+		}
+
+		calculator = new IcEnergySolver();
+	}
+
+	/**
+	 * Replace the active energy-net calculator. Intended for the optional GT addon
+	 * ({@code ic2r_gt_addon}) to install {@code EnergyCalculatorGT} at load time.
+	 */
+	public static void setCalculator(IEnergyCalculator calc)
+	{
+		calculator = Objects.requireNonNull(calc, "calculator");
 	}
 
 	private static void addTile(IEnergyTile tile, Level world, BlockPos pos)

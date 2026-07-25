@@ -116,9 +116,12 @@ public class TileEntityKineticGenerator extends TileEntityConversionGenerator
 	@Override
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		Ic2rTooltip.add(
-			tooltip,
-			Component.translatable("ic2r.KineticGenerator.tooltip.max_output_voltage", ElectricalDisplay.formatTierWithValue(MAX_OUTPUT_VOLTAGE))
-		);
+		if (ElectricalDisplay.isGtDisplay())
+		{
+			Ic2rTooltip.add(
+				tooltip,
+				Component.translatable("ic2r.KineticGenerator.tooltip.max_output_voltage", ElectricalDisplay.formatTierWithValue(MAX_OUTPUT_VOLTAGE))
+			);
+		}
 	}
 }

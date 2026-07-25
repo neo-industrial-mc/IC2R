@@ -21,7 +21,7 @@ public class ElectricItemTooltipHandler
 			if (tooltip != null && !tooltip.trim().isEmpty())
 			{
 				Ic2rTooltip.add(out, Component.literal(tooltip));
-				if (Screen.hasShiftDown())
+				if (ElectricalDisplay.isGtDisplay() && Screen.hasShiftDown())
 				{
 					Ic2rTooltip.add(out, ElectricalDisplay.formatVoltage(VoltageTier.fromIcTier(ElectricItem.manager.getTier(stack))));
 				}

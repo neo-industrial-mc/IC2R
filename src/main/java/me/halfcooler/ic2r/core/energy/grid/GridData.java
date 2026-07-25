@@ -9,21 +9,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-class GridData
+/**
+ * Per-grid solver state shared by energy calculators (IC path cache and optional GT addon).
+ * Public so external calculators (e.g. GT addon) can run against the same structures.
+ */
+public class GridData
 {
-	final Map<Node, List<EnergyPath>> energySourceToEnergyPathMap = new IdentityHashMap<>();
-	final List<Node> activeSources = new ArrayList<>();
-	final Map<Node, MutableDouble> activeSinks = new IdentityHashMap<>();
-	final Set<EnergyPath> eventPaths = Collections.newSetFromMap(new IdentityHashMap<>());
-	final Map<Node, List<EnergyPath>> pathCache = new IdentityHashMap<>();
-	final Set<Tile> deferredCablesToRemove = Collections.newSetFromMap(new IdentityHashMap<>());
-	final Set<Tile> deferredCablesToStrip = Collections.newSetFromMap(new IdentityHashMap<>());
-	final Map<Tile, Double> deferredSinksToExplode = new IdentityHashMap<>();
-	final List<EnergyPath> deferredEventPaths = new ArrayList<>();
-	boolean active;
-	int currentCalcId = -1;
+	public final Map<Node, List<EnergyPath>> energySourceToEnergyPathMap = new IdentityHashMap<>();
+	public final List<Node> activeSources = new ArrayList<>();
+	public final Map<Node, MutableDouble> activeSinks = new IdentityHashMap<>();
+	public final Set<EnergyPath> eventPaths = Collections.newSetFromMap(new IdentityHashMap<>());
+	public final Map<Node, List<EnergyPath>> pathCache = new IdentityHashMap<>();
+	public final Set<Tile> deferredCablesToRemove = Collections.newSetFromMap(new IdentityHashMap<>());
+	public final Set<Tile> deferredCablesToStrip = Collections.newSetFromMap(new IdentityHashMap<>());
+	public final Map<Tile, Double> deferredSinksToExplode = new IdentityHashMap<>();
+	public final List<EnergyPath> deferredEventPaths = new ArrayList<>();
+	public boolean active;
+	public int currentCalcId = -1;
 
-	static GridData get(Grid grid)
+	public static GridData get(Grid grid)
 	{
 		GridData ret = grid.getData();
 		if (ret == null)
@@ -41,7 +45,7 @@ class GridData
 	 * energy and therefore skips {@code runCalculation} — without this, meters/detectors keep
 	 * reporting the last non-zero throughput forever.
 	 */
-	static void advanceCalcIds(EnergyNetLocal enet)
+	public static void advanceCalcIds(EnergyNetLocal enet)
 	{
 		for (Grid grid : enet.getGrids())
 		{

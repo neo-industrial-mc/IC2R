@@ -9,7 +9,6 @@ import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.wiring.ContainerChargepadBlock;
 import me.halfcooler.ic2r.core.energy.EnergyNetMode;
-import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.Util;
@@ -239,7 +238,7 @@ public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock i
 		double charge = Math.min(freeAmount, (double) chargeFactor * this.getTickRate());
 		charge = Math.min(charge, this.energy.getEnergy());
 
-		if (EnergyNetMode.fromConfig(IC2RConfig.misc.useGregTechEnergyNet.get()) == EnergyNetMode.GT)
+		if (EnergyNetMode.isGt())
 		{
 			int voltage = VoltageTier.fromIcTier(tier).getVoltage();
 			if (voltage > 0)

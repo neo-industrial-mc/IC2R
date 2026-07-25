@@ -22,7 +22,9 @@ public class GuiChargePadBlock extends Ic2rGui<ContainerChargepadBlock>
 		super(container, playerInventory, title, 161);
 		this.addElement(EnergyGauge.asBar(this, 79, 38, container.base));
 		this.addElement(new VanillaButton(this, 152, 4, 20, 20, this.createEventSender(0)).withIcon(() -> new ItemStack(Items.REDSTONE)).withTooltip((container.base::getRedstoneMode)));
-		this.addElement(TextLabel.create(this, 79, 25, TextProvider.of(() -> Component.translatable("ic2r.EUStorage.gui.info.level", ElectricalDisplay.formatTierName(container.base.energy.getWorkingVoltage())).getString()), 4210752, false));
+		this.addElement(TextLabel.create(this, 79, 25, TextProvider.of(() -> ElectricalDisplay.isGtDisplay()
+			? ElectricalDisplay.formatVoltage(container.base.energy.getWorkingVoltage()).getString()
+			: Component.translatable("ic2r.EUStorage.gui.info.level").getString()), 4210752, false));
 		this.addElement(TextLabel.create(this, 110, 35, TextProvider.of(() -> " " + (int) Math.min(container.base.energy.getEnergy(), container.base.energy.getCapacity())), 4210752, false));
 		this.addElement(TextLabel.create(this, 110, 45, TextProvider.of(() -> "/" + (int) container.base.energy.getCapacity()), 4210752, false));
 	}

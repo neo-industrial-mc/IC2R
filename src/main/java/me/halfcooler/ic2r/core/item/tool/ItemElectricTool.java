@@ -125,7 +125,10 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 	{
 		List<String> info = new LinkedList<>();
 		info.add(ElectricItem.manager.getToolTip(stack));
-		info.add(ElectricalDisplay.formatVoltage(VoltageTier.fromIcTier(this.tier)).getString());
+		if (ElectricalDisplay.isGtDisplay())
+		{
+			info.add(ElectricalDisplay.formatVoltage(VoltageTier.fromIcTier(this.tier)).getString());
+		}
 		return info;
 	}
 

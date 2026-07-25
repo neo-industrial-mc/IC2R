@@ -298,8 +298,16 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 	@Override
 	public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced)
 	{
-		Ic2rTooltip.add(tooltip, ElectricalDisplay.formatVoltage(this.energy.getWorkingVoltage()));
-		Ic2rTooltip.add(tooltip, ElectricalDisplay.formatStorageOutput(this.energy));
+		if (ElectricalDisplay.isGtDisplay())
+		{
+			Ic2rTooltip.add(tooltip, ElectricalDisplay.formatVoltage(this.energy.getWorkingVoltage()));
+			Ic2rTooltip.add(tooltip, ElectricalDisplay.formatStorageOutput(this.energy));
+		}
+		else
+		{
+			super.appendItemTooltip(stack, tooltip, advanced);
+			Ic2rTooltip.add(tooltip, Component.translatable("ic2r.item.tooltip.Output", Math.round(this.getOutputEnergyUnitsPerTick())));
+		}
 		Ic2rTooltip.add(tooltip, Component.translatable("ic2r.item.tooltip.Capacity", this.getCapacity()));
 		double stored = StackUtil.getOrCreateNbtData(stack).getDouble("energy");
 		Ic2rTooltip.add(tooltip, Component.translatable("ic2r.item.tooltip.Store", (long) stored));
