@@ -94,8 +94,8 @@ public class ItemBatteryChargeHotbar extends ItemBattery implements IBoxable
 		Mode mode = getMode(stack);
 		mode = Mode.values()[(mode.ordinal() + 1) % Mode.values().length];
 		setMode(stack, mode);
-		IC2R.sideProxy.messagePlayer(player, "ic2r.tooltip.mode",
-			"ic2r.tooltip.mode." + mode.name().toLowerCase(Locale.ENGLISH));
+		IC2R.sideProxy.messagePlayer(player, Component.translatable("ic2r.tooltip.mode").getString(),
+			Component.translatable("ic2r.tooltip.mode." + mode.name().toLowerCase(Locale.ENGLISH)).getString());
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
