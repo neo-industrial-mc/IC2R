@@ -353,15 +353,19 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 		ItemStack stack = context.getItemInHand();
 		if (this.type.directional)
 		{
+			// 1.21: getOrCreateNbtData returns a copy — must persist via editTag/setTag.
 			int dir = 1 + context.getClickedFace().ordinal();
-			CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);
-			if (nbtData.getByte("dir") == dir)
+			StackUtil.editTag(stack, nbtData ->
 			{
-				nbtData.putByte("dir", (byte) 0);
-			} else
-			{
-				nbtData.putByte("dir", (byte) dir);
-			}
+				if (nbtData.getByte("dir") == dir)
+				{
+					nbtData.putByte("dir", (byte) 0);
+				}
+				else
+				{
+					nbtData.putByte("dir", (byte) dir);
+				}
+			});
 
 			if (context.getLevel().isClientSide())
 			{
