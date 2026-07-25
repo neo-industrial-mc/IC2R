@@ -563,6 +563,61 @@ public class EnergyNetGameTests {
         });
   }
 
+  // powering a splitter must only cut its own branch; sinks that don't route through the
+  // splitter keep receiving energy
+  @GameTest(template = TALL, timeoutTicks = 120)
+  public static void poweredSplitterOnlyCutsItsOwnBranch(GameTestHelper helper) {
+    // build the splitter branch first so the splitter's first grid link points at it and the
+    // source side ends up in the component that splits off into a new grid
+    helper.setBlock(new BlockPos(1, 2, 1), Ic2Blocks.SPLITTER_CABLE);
+    helper.setBlock(new BlockPos(1, 1, 1), Ic2Blocks.MACERATOR);
+
+    helper.runAtTickTime(
+        10,
+        () -> {
+          helper.setBlock(new BlockPos(1, 3, 1), Ic2Blocks.COPPER_CABLE);
+          helper.setBlock(new BlockPos(0, 3, 1), Ic2Blocks.MACERATOR);
+          helper.setBlock(new BlockPos(1, 4, 1), Ic2Blocks.BATBOX);
+        });
+
+    helper.runAtTickTime(
+        20, () -> helper.setBlock(new BlockPos(2, 2, 1), Blocks.REDSTONE_BLOCK));
+
+    helper.runAtTickTime(
+        30,
+        () -> {
+          helper.assertBlockProperty(
+              new BlockPos(1, 2, 1), AbstractSplitterCableBlock.active, true);
+          getTe(helper, new BlockPos(1, 4, 1), TileEntityElectricBatBox.class)
+              .energy
+              .addEnergy(320.0);
+        });
+
+    helper.runAtTickTime(
+        90,
+        () -> {
+          TileEntityMacerator nearMacerator =
+              getTe(helper, new BlockPos(0, 3, 1), TileEntityMacerator.class);
+          TileEntityMacerator farMacerator =
+              getTe(helper, new BlockPos(1, 1, 1), TileEntityMacerator.class);
+          TileEntityElectricBatBox batbox =
+              getTe(helper, new BlockPos(1, 4, 1), TileEntityElectricBatBox.class);
+          Ic2GameTestAssertions.assertNear(
+              helper,
+              nearMacerator.getEnergy(),
+              320.0,
+              "macerator on the source side of a powered splitter must keep receiving energy");
+          Ic2GameTestAssertions.assertNear(
+              helper,
+              farMacerator.getEnergy(),
+              0.0,
+              "macerator behind the powered splitter must not receive energy");
+          Ic2GameTestAssertions.assertNear(
+              helper, batbox.energy.getEnergy(), 0.0, "batbox buffer");
+          helper.succeed();
+        });
+  }
+
   // the luminator lights on redstone + EU and goes dark once the redstone signal is gone
   // (the ACTIVE block state and thus the light level only sync on the client, so assert the tile
   // state)

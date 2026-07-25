@@ -216,6 +216,10 @@ public class Grid {
         Set<Node> connectedNodes = nodeTable[i];
         if (connectedNodes != null) {
           Grid grid = new Grid(this.enet);
+          // the nodes below are moved via the plain add(Node), which doesn't mark the new
+          // grid dirty - invalidate it here or the calculator never builds its path cache
+          // and the whole split-off component stops conducting
+          grid.invalidate();
           if (EnergyNetSettings.logGridUpdatesVerbose) {
             IC2.log.debug(
                 LogCategory.EnergyNet,
