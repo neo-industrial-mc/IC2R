@@ -1,11 +1,17 @@
 package me.halfcooler.ic2r.forge;
 
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.halfcooler.ic2r.core.event.EventHandlerClient;
+import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.forge.model.BeModelLoader;
 import me.halfcooler.ic2r.forge.model.CableModelLoader;
 import me.halfcooler.ic2r.forge.model.MaskOverlayItemLoader;
 import me.halfcooler.ic2r.forge.model.WallModelLoader;
+import net.minecraft.client.Camera;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +22,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.sound.SoundEngineLoadEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 public final class ClientModEventHandlerForge
 {
@@ -135,6 +146,79 @@ public final class ClientModEventHandlerForge
 				ItemBlockRenderTypes.setRenderLayer(block, reg.layer());
 			}
 		}
+	}
+
+	/**
+	 * NeoForge 1.21+ replacement for {@code FluidType#initializeClient}: register
+	 * textures, tint, and underwater fog per fluid type on the client mod bus.
+	 */
+	@SubscribeEvent
+	public void onRegisterClientExtensions(RegisterClientExtensionsEvent event)
+	{
+		for (EnvFluidHandlerForge.PendingClientFluidExtensions pending : EnvFluidHandlerForge.pendingClientFluidExtensions)
+		{
+			FluidType fluidType = pending.fluidType().get();
+			if (fluidType == null)
+			{
+				continue;
+			}
+			ResourceLocation still = pending.stillSpriteId();
+			ResourceLocation flowing = pending.flowingSpriteId() != null ? pending.flowingSpriteId() : still;
+			int color = pending.color();
+			int density = pending.density();
+			event.registerFluidType(new IClientFluidTypeExtensions()
+			{
+				@Override
+				public int getTintColor()
+				{
+					return color;
+				}
+
+				@Override
+				public @NotNull ResourceLocation getStillTexture()
+				{
+					return still;
+				}
+
+				@Override
+				public @NotNull ResourceLocation getFlowingTexture()
+				{
+					return flowing;
+				}
+
+				@Override
+				public @NotNull Vector3f modifyFogColor(
+					@NotNull Camera camera,
+					float partialTick,
+					@NotNull ClientLevel level,
+					int renderDistance,
+					float darkenWorldAmount,
+					@NotNull Vector3f fluidFogColor
+				)
+				{
+					float[] rgb = FluidHandler.fogRgb(color);
+					return new Vector3f(rgb[0], rgb[1], rgb[2]);
+				}
+
+				@Override
+				public void modifyFogRender(
+					@NotNull Camera camera,
+					FogRenderer.@NotNull FogMode mode,
+					float renderDistance,
+					float partialTick,
+					float nearDistance,
+					float farDistance,
+					@NotNull FogShape shape
+				)
+				{
+					float fogEnd = FluidHandler.fogEndForDensity(density);
+					RenderSystem.setShaderFogStart(-8.0F);
+					RenderSystem.setShaderFogEnd(fogEnd);
+					RenderSystem.setShaderFogShape(FogShape.SPHERE);
+				}
+			}, fluidType);
+		}
+		EnvFluidHandlerForge.pendingClientFluidExtensions.clear();
 	}
 
 	/**

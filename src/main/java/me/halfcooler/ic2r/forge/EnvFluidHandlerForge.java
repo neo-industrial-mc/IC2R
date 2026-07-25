@@ -1,16 +1,10 @@
 package me.halfcooler.ic2r.forge;
 
-import com.mojang.blaze3d.shaders.FogShape;
-import com.mojang.blaze3d.systems.RenderSystem;
 import me.halfcooler.ic2r.core.block.misc.*;
 import me.halfcooler.ic2r.core.fluid.EnvFluidHandler;
-import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.forge.fluid.Ic2rFlowingFluid;
-import net.minecraft.client.Camera;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -33,7 +27,6 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -42,24 +35,40 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 class EnvFluidHandlerForge implements EnvFluidHandler
 {
+
+	/**
+	 * Common-safe client rendering data for a fluid type.
+	 * Registered via {@link net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent}
+	 * (replaces the removed {@code FluidType#initializeClient}).
+	 */
+	record PendingClientFluidExtensions(
+		AtomicReference<FluidType> fluidType,
+		ResourceLocation stillSpriteId,
+		ResourceLocation flowingSpriteId,
+		int color,
+		int density
+	)
+	{
+	}
 
 	static final DeferredRegister<Fluid> fluidRegistry = DeferredRegister.create(Registries.FLUID, "ic2r");
 
 	static final DeferredRegister<FluidType> fluidTypeRegistry = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, "ic2r");
 
-	private static final java.util.List<Runnable> pendingFluidTypeRegistrations = new java.util.ArrayList<>();
+	private static final List<Runnable> pendingFluidTypeRegistrations = new ArrayList<>();
 
-	private static final java.util.List<Runnable> pendingFluidRegistrations = new java.util.ArrayList<>();
+	private static final List<Runnable> pendingFluidRegistrations = new ArrayList<>();
+
+	static final List<PendingClientFluidExtensions> pendingClientFluidExtensions = new ArrayList<>();
 
 	private static IFluidHandlerItem getFluidHandler(ItemStack stack)
 	{
@@ -169,54 +178,14 @@ class EnvFluidHandlerForge implements EnvFluidHandler
 	{
 		EnvFluidHandler.FluidRefs ret = new EnvFluidHandler.FluidRefs(null, null, null, null);
 		AtomicReference<FluidType> fluidTypeRef = new AtomicReference<>();
+		// Client textures/tint/fog are registered on RegisterClientExtensionsEvent (client-only).
+		pendingClientFluidExtensions.add(new PendingClientFluidExtensions(
+			fluidTypeRef, stillSpriteId, flowingSpriteId, color, density
+		));
 		pendingFluidTypeRegistrations.add(() ->
 		{
 			FluidType.Properties attributesBuilder = FluidType.Properties.create().density(density).viscosity(viscosity).lightLevel(luminosity).temperature(temperature);
-			FluidType fluidType = new FluidType(attributesBuilder)
-			{
-
-				@Override
-				public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
-				{
-					consumer.accept(new IClientFluidTypeExtensions()
-					{
-
-						@Override
-						public int getTintColor()
-						{
-							return color;
-						}
-
-						@Override
-						public @NotNull ResourceLocation getStillTexture()
-						{
-							return stillSpriteId;
-						}
-
-						@Override
-						public @NotNull ResourceLocation getFlowingTexture()
-						{
-							return flowingSpriteId != null ? flowingSpriteId : stillSpriteId;
-						}
-
-						@Override
-						public @NotNull Vector3f modifyFogColor(@NotNull Camera camera, float partialTick, @NotNull ClientLevel level, int renderDistance, float darkenWorldAmount, @NotNull Vector3f fluidFogColor)
-						{
-							float[] rgb = FluidHandler.fogRgb(color);
-							return new Vector3f(rgb[0], rgb[1], rgb[2]);
-						}
-
-						@Override
-						public void modifyFogRender(@NotNull Camera camera, FogRenderer.@NotNull FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, @NotNull FogShape shape)
-						{
-							float fogEnd = FluidHandler.fogEndForDensity(density);
-							RenderSystem.setShaderFogStart(-8.0F);
-							RenderSystem.setShaderFogEnd(fogEnd);
-							RenderSystem.setShaderFogShape(FogShape.SPHERE);
-						}
-					});
-				}
-			};
+			FluidType fluidType = new FluidType(attributesBuilder);
 			Registry.register(NeoForgeRegistries.FLUID_TYPES, id, fluidType);
 			fluidTypeRef.set(fluidType);
 		});
