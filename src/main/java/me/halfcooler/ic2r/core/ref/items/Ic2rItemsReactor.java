@@ -12,10 +12,6 @@ import net.minecraft.world.item.Item.Properties;
  */
 public final class Ic2rItemsReactor
 {
-	private Ic2rItemsReactor()
-	{
-	}
-
 	public static final Item REACTOR_COOLANT_CELL = Ic2rItems.register("reactor_coolant_cell", new ItemReactorHeatStorage(new Properties(), 10000));
 	public static final Item TRIPLE_REACTOR_COOLANT_CELL = Ic2rItems.register("triple_reactor_coolant_cell", new ItemReactorHeatStorage(new Properties(), 30000));
 	public static final Item SEXTUPLE_REACTOR_COOLANT_CELL = Ic2rItems.register("sextuple_reactor_coolant_cell", new ItemReactorHeatStorage(new Properties(), 60000));
@@ -47,4 +43,7 @@ public final class Ic2rItemsReactor
 	public static final Item LITHIUM_FUEL_ROD = Ic2rItems.register("lithium_fuel_rod", new ItemReactorLithiumCell(new Properties()));
 	public static final Item TRITIUM_FUEL_ROD = Ic2rItems.register("tritium_fuel_rod", new Item(new Properties()));
 	public static final Item DEPLETED_ISOTOPE_FUEL_ROD = Ic2rItems.register("depleted_isotope_fuel_rod", new ItemReactorDepletedUranium(new Properties()));
+	private Ic2rItemsReactor()
+	{
+	}
 }

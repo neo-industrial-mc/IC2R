@@ -45,8 +45,6 @@ import java.util.function.Supplier;
 
 public abstract class TileEntityElectricBlock extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener, IEnergyStorage, ServerTicker
 {
-	public static byte redstoneModes = 7;
-
 	/**
 	 * Modern SyncKey for redstone mode (wire: {@code redstone_mode}).
 	 * TeUpdate packets still carry {@link #LEGACY_REDSTONE_MODE_FIELD} (G1.1 / G1.5).
@@ -64,7 +62,7 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 	 * Legacy camelCase NBT key; still readable via {@link LegacyNbt}.
 	 */
 	public static final String LEGACY_NBT_REDSTONE_MODE = "redstoneMode";
-
+	public static byte redstoneModes = 7;
 	public final InvSlotCharge chargeSlot;
 	public final InvSlotDischarge dischargeSlot;
 	public final Energy energy;
@@ -90,6 +88,35 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 		this.comparator.setUpdate(this.energy::getComparatorValue);
 	}
 
+	/**
+	 * Pure NBT write (snake_case only). Unit-test entry (G1.5).
+	 */
+	public static void writeRedstoneModeNbt(CompoundTag nbt, byte mode)
+	{
+		nbt.putByte(NBT_REDSTONE_MODE, mode);
+	}
+
+	/**
+	 * Pure NBT read: prefer {@link #NBT_REDSTONE_MODE}, else legacy {@link #LEGACY_NBT_REDSTONE_MODE}.
+	 */
+	public static byte readRedstoneModeNbt(CompoundTag nbt)
+	{
+		return LegacyNbt.getByte(nbt, NBT_REDSTONE_MODE, LEGACY_NBT_REDSTONE_MODE);
+	}
+
+	/**
+	 * Registers electric-block SyncKeys with TeUpdate legacy name aliases (G1.5).
+	 * Shared by BE registration and pure unit tests.
+	 */
+	public static void bindElectricBlockSync(
+		BlockEntitySync sync,
+		Supplier<Byte> redstoneModeGetter,
+		Consumer<Byte> redstoneModeSetter
+	)
+	{
+		sync.add(KEY_REDSTONE_MODE, redstoneModeGetter, redstoneModeSetter, LEGACY_REDSTONE_MODE_FIELD);
+	}
+
 	@Override
 	protected void onLoaded()
 	{
@@ -113,22 +140,6 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 	}
 
 	/**
-	 * Pure NBT write (snake_case only). Unit-test entry (G1.5).
-	 */
-	public static void writeRedstoneModeNbt(CompoundTag nbt, byte mode)
-	{
-		nbt.putByte(NBT_REDSTONE_MODE, mode);
-	}
-
-	/**
-	 * Pure NBT read: prefer {@link #NBT_REDSTONE_MODE}, else legacy {@link #LEGACY_NBT_REDSTONE_MODE}.
-	 */
-	public static byte readRedstoneModeNbt(CompoundTag nbt)
-	{
-		return LegacyNbt.getByte(nbt, NBT_REDSTONE_MODE, LEGACY_NBT_REDSTONE_MODE);
-	}
-
-	/**
 	 * G1.5: registers modern SyncKeys for storage-block network fields.
 	 * TeUpdate / writeFieldData resolve values via this table (legacy names aliased).
 	 */
@@ -137,19 +148,6 @@ public abstract class TileEntityElectricBlock extends TileEntityInventory implem
 	{
 		super.registerSyncedData(sync);
 		bindElectricBlockSync(sync, () -> this.redstoneMode, this::setRedstoneModeSynced);
-	}
-
-	/**
-	 * Registers electric-block SyncKeys with TeUpdate legacy name aliases (G1.5).
-	 * Shared by BE registration and pure unit tests.
-	 */
-	public static void bindElectricBlockSync(
-		BlockEntitySync sync,
-		Supplier<Byte> redstoneModeGetter,
-		Consumer<Byte> redstoneModeSetter
-	)
-	{
-		sync.add(KEY_REDSTONE_MODE, redstoneModeGetter, redstoneModeSetter, LEGACY_REDSTONE_MODE_FIELD);
 	}
 
 	/**

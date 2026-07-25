@@ -48,15 +48,6 @@ public class EnergyNetGlobal implements IEnergyNet
 		calculator = new IcEnergySolver();
 	}
 
-	/**
-	 * Replace the active energy-net calculator. Intended for the optional GT addon
-	 * ({@code ic2r_gt_addon}) to install {@code EnergyCalculatorGT} at load time.
-	 */
-	public static void setCalculator(IEnergyCalculator calc)
-	{
-		calculator = Objects.requireNonNull(calc, "calculator");
-	}
-
 	private static void addTile(IEnergyTile tile, Level world, BlockPos pos)
 	{
 		if (EnergyNetSettings.logEnetApiAccessTraces)
@@ -83,6 +74,15 @@ public class EnergyNetGlobal implements IEnergyNet
 		}
 
 		return calculator;
+	}
+
+	/**
+	 * Replace the active energy-net calculator. Intended for the optional GT addon
+	 * ({@code ic2r_gt_addon}) to install {@code EnergyCalculatorGT} at load time.
+	 */
+	public static void setCalculator(IEnergyCalculator calc)
+	{
+		calculator = Objects.requireNonNull(calc, "calculator");
 	}
 
 	public static EnergyNetLocal getLocal(Level world)

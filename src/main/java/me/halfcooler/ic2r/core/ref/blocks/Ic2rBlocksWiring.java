@@ -16,10 +16,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  */
 public final class Ic2rBlocksWiring
 {
-	private Ic2rBlocksWiring()
-	{
-	}
-
 	public static final DeferredHolder<Block, Block> LUMINATOR_FLAT = EnvProxyForge.BLOCKS.register("luminator", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL).noOcclusion().noCollission().lightLevel(state -> state.getValue(Ic2rTileEntityBlock.ACTIVE) ? 15 : 0), TileEntityLuminator.class, true, Ic2rTileEntityBlock.DefaultDrop.Self, Util.allFacings, false));
 	public static final DeferredHolder<Block, FoamCableBlock> GLASS_FIBRE_FOAM_CABLE = EnvProxyForge.BLOCKS.register("glass_fibre_foam_cable", () -> FoamCableBlock.create(Properties.of().strength(0.5F, 5.0F).sound(SoundType.GLASS), CableType.glass, 0));
 	public static final DeferredHolder<Block, Block> GLASS_FIBRE_CABLE = EnvProxyForge.BLOCKS.register("glass_fibre_cable", () -> CableBlock.create(Properties.of().strength(0.5F, 5.0F).sound(SoundType.GLASS), CableType.glass, 0, GLASS_FIBRE_FOAM_CABLE.get()));
@@ -39,7 +35,6 @@ public final class Ic2rBlocksWiring
 	 * One-way EU → FE converter: EnergyNet sink + extract-only FE capability.
 	 */
 	public static final DeferredHolder<Block, Block> FE_CONVERTER = EnvProxyForge.BLOCKS.register("fe_converter", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityFeConverter.class, true, Ic2rTileEntityBlock.DefaultDrop.Machine, Util.allFacings, true));
-	private static final Properties cableSettings = Properties.of().strength(0.5F, 5.0F).sound(SoundType.METAL);
 	public static final DeferredHolder<Block, FoamCableBlock> COPPER_FOAM_CABLE = EnvProxyForge.BLOCKS.register("copper_foam_cable", () -> FoamCableBlock.create(cableSettings, CableType.copper, 0));
 	public static final DeferredHolder<Block, Block> COPPER_CABLE = EnvProxyForge.BLOCKS.register("copper_cable", () -> CableBlock.create(cableSettings, CableType.copper, 0, COPPER_FOAM_CABLE.get()));
 	public static final DeferredHolder<Block, FoamCableBlock> GOLD_FOAM_CABLE = EnvProxyForge.BLOCKS.register("gold_foam_cable", () -> FoamCableBlock.create(cableSettings, CableType.gold, 0));
@@ -52,7 +47,6 @@ public final class Ic2rBlocksWiring
 	public static final DeferredHolder<Block, Block> DETECTOR_CABLE = EnvProxyForge.BLOCKS.register("detector_cable", () -> DetectorCableBlock.create(cableSettings, DETECTOR_FOAM_CABLE.get()));
 	public static final DeferredHolder<Block, SplitterFoamCableBlock> SPLITTER_FOAM_CABLE = EnvProxyForge.BLOCKS.register("splitter_foam_cable", () -> SplitterFoamCableBlock.create(cableSettings));
 	public static final DeferredHolder<Block, Block> SPLITTER_CABLE = EnvProxyForge.BLOCKS.register("splitter_cable", () -> SplitterCableBlock.create(cableSettings, SPLITTER_FOAM_CABLE.get()));
-	private static final Properties insulatedCableSettings = Properties.of().strength(0.5F, 5.0F).sound(SoundType.WOOL);
 	public static final DeferredHolder<Block, FoamCableBlock> INSULATED_COPPER_FOAM_CABLE = EnvProxyForge.BLOCKS.register("insulated_copper_foam_cable", () -> FoamCableBlock.create(insulatedCableSettings, CableType.copper, 1));
 	public static final DeferredHolder<Block, Block> INSULATED_COPPER_CABLE = EnvProxyForge.BLOCKS.register("insulated_copper_cable", () -> CableBlock.create(insulatedCableSettings, CableType.copper, 1, INSULATED_COPPER_FOAM_CABLE.get()));
 	public static final DeferredHolder<Block, FoamCableBlock> INSULATED_GOLD_FOAM_CABLE = EnvProxyForge.BLOCKS.register("insulated_gold_foam_cable", () -> FoamCableBlock.create(insulatedCableSettings, CableType.gold, 1));
@@ -67,4 +61,9 @@ public final class Ic2rBlocksWiring
 	public static final DeferredHolder<Block, Block> TRIPLE_INSULATED_IRON_CABLE = EnvProxyForge.BLOCKS.register("triple_insulated_iron_cable", () -> CableBlock.create(insulatedCableSettings, CableType.iron, 3, TRIPLE_INSULATED_IRON_FOAM_CABLE.get()));
 	public static final DeferredHolder<Block, FoamCableBlock> INSULATED_TIN_FOAM_CABLE = EnvProxyForge.BLOCKS.register("insulated_tin_foam_cable", () -> FoamCableBlock.create(insulatedCableSettings, CableType.tin, 1));
 	public static final DeferredHolder<Block, Block> INSULATED_TIN_CABLE = EnvProxyForge.BLOCKS.register("insulated_tin_cable", () -> CableBlock.create(insulatedCableSettings, CableType.tin, 1, INSULATED_TIN_FOAM_CABLE.get()));
+	private static final Properties cableSettings = Properties.of().strength(0.5F, 5.0F).sound(SoundType.METAL);
+	private static final Properties insulatedCableSettings = Properties.of().strength(0.5F, 5.0F).sound(SoundType.WOOL);
+	private Ic2rBlocksWiring()
+	{
+	}
 }

@@ -30,6 +30,19 @@ import java.util.ListIterator;
 public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityIndustrialWorkbench>
 {
 	public static final int WIDTH = 194;
+	public static final int HEIGHT = 228;
+	public final Player player;
+	public final int indexOutput;
+	public final int indexGridStart;
+	public final int indexGridEnd;
+	public final int indexBufferStart;
+	public final int indexBufferEnd;
+	public final int indexToolHammer;
+	public final int indexInputHammer;
+	public final int indexOutputHammer;
+	public final int indexToolCutter;
+	public final int indexInputCutter;
+	public final int indexOutputCutter;
 	protected final CraftingContainer craftMatrix = new SimpleCraftingInventory.InvSlotCraftingInventory(this.base.craftingGrid, 3)
 	{
 		@Override
@@ -47,19 +60,6 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 			return stack;
 		}
 	};
-	public static final int HEIGHT = 228;
-	public final Player player;
-	public final int indexOutput;
-	public final int indexGridStart;
-	public final int indexGridEnd;
-	public final int indexBufferStart;
-	public final int indexBufferEnd;
-	public final int indexToolHammer;
-	public final int indexInputHammer;
-	public final int indexOutputHammer;
-	public final int indexToolCutter;
-	public final int indexInputCutter;
-	public final int indexOutputCutter;
 	protected final Container craftResult = new ResultContainer();
 	protected final Slot[] outputs = new Slot[3];
 

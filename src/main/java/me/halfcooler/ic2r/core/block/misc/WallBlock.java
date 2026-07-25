@@ -21,17 +21,9 @@ public class WallBlock extends Block implements StainableBlock, RetexturableBloc
 		DyeColor.CODEC.fieldOf("color").forGetter(o -> o.color),
 		propertiesCodec()
 	).apply(instance, (color, properties) -> new WallBlock(properties, color)));
-
-	@Override
-	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
-	{
-		return CODEC;
-	}
-
 	public static final DyeColor DEFAULT_COLOR = DyeColor.LIGHT_GRAY;
 	private static final Map<DyeColor, WallBlock> types = new EnumMap<>(DyeColor.class);
 	final DyeColor color;
-
 	public WallBlock(Properties settings, DyeColor color)
 	{
 		super(settings);
@@ -42,6 +34,12 @@ public class WallBlock extends Block implements StainableBlock, RetexturableBloc
 	public static WallBlock get(DyeColor color)
 	{
 		return types.get(color);
+	}
+
+	@Override
+	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
+	{
+		return CODEC;
 	}
 
 	@Override

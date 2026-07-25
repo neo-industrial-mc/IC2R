@@ -28,19 +28,38 @@ import org.jetbrains.annotations.NotNull;
 public class RubberLogBlock extends RotatedPillarBlock
 {
 	public static final com.mojang.serialization.MapCodec<RubberLogBlock> CODEC = simpleCodec(RubberLogBlock::new);
-
-	@Override
-	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.RotatedPillarBlock> codec()
-	{
-		return CODEC;
-	}
-
 	public static final EnumProperty<RubberLogBlock.RubberWoodState> stateProperty = EnumProperty.create("state", RubberLogBlock.RubberWoodState.class);
 
 	public RubberLogBlock(Properties settings)
 	{
 		super(settings);
 		this.registerDefaultState(this.defaultBlockState().setValue(stateProperty, RubberWoodState.plain));
+	}
+
+	private static boolean hasContactingLeaves(Level world, BlockPos pos)
+	{
+		BlockPos.MutableBlockPos top = new BlockPos.MutableBlockPos();
+		top.set(pos);
+
+		while (world.getBlockState(top).is(Ic2rBlocks.RUBBER_LOG.get()))
+		{
+			BlockPos above = top.above();
+			if (world.getBlockState(above).is(Ic2rBlocks.RUBBER_LOG.get()))
+			{
+				top.set(above);
+			} else
+			{
+				return world.getBlockState(above).is(BlockTags.LEAVES);
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.RotatedPillarBlock> codec()
+	{
+		return CODEC;
 	}
 
 	protected void createBlockStateDefinition(@NotNull Builder<Block, BlockState> builder)
@@ -101,26 +120,6 @@ public class RubberLogBlock extends RotatedPillarBlock
 		return rwState.isPlain() ? PushReaction.NORMAL : PushReaction.BLOCK;
 	}
 
-	private static boolean hasContactingLeaves(Level world, BlockPos pos)
-	{
-		BlockPos.MutableBlockPos top = new BlockPos.MutableBlockPos();
-		top.set(pos);
-
-		while (world.getBlockState(top).is(Ic2rBlocks.RUBBER_LOG.get()))
-		{
-			BlockPos above = top.above();
-			if (world.getBlockState(above).is(Ic2rBlocks.RUBBER_LOG.get()))
-			{
-				top.set(above);
-			} else
-			{
-				return world.getBlockState(above).is(BlockTags.LEAVES);
-			}
-		}
-
-		return false;
-	}
-
 	@Override
 	protected @NotNull net.minecraft.world.ItemInteractionResult useItemOn(@NotNull ItemStack mainHandItem, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit)
 	{
@@ -171,6 +170,18 @@ public class RubberLogBlock extends RotatedPillarBlock
 			this.wet = wet;
 		}
 
+		public static RubberWoodState getWet(Direction facing)
+		{
+			return switch (facing)
+			{
+				case NORTH -> wet_north;
+				case SOUTH -> wet_south;
+				case WEST -> wet_west;
+				case EAST -> wet_east;
+				default -> throw new IllegalArgumentException("incompatible facing: " + facing);
+			};
+		}
+
 		public @NotNull String getSerializedName()
 		{
 			return this.name();
@@ -200,18 +211,6 @@ public class RubberLogBlock extends RotatedPillarBlock
 		public RubberLogBlock.RubberWoodState getDry()
 		{
 			return !this.isPlain() && this.wet ? values[this.ordinal() - 4] : this;
-		}
-
-		public static RubberWoodState getWet(Direction facing)
-		{
-			return switch (facing)
-			{
-				case NORTH -> wet_north;
-				case SOUTH -> wet_south;
-				case WEST -> wet_west;
-				case EAST -> wet_east;
-				default -> throw new IllegalArgumentException("incompatible facing: " + facing);
-			};
 		}
 	}
 }

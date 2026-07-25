@@ -15,6 +15,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityEquipSoundMixin
 {
+	private static boolean isIc2rComponentDrivenWearable(ItemStack stack)
+	{
+		Item item = stack.getItem();
+		if (item instanceof ItemArmorIC2R || item instanceof ItemArmorUtility)
+		{
+			return true;
+		}
+		return JetpackHandler.hasJetpackAttached(stack);
+	}
+
 	@Inject(method = "onEquipItem", at = @At("HEAD"), cancellable = true)
 	private void ic2r$suppressComponentOnlyArmorEquip(
 		EquipmentSlot slot,
@@ -38,15 +48,5 @@ public abstract class LivingEntityEquipSoundMixin
 		}
 
 		ci.cancel();
-	}
-
-	private static boolean isIc2rComponentDrivenWearable(ItemStack stack)
-	{
-		Item item = stack.getItem();
-		if (item instanceof ItemArmorIC2R || item instanceof ItemArmorUtility)
-		{
-			return true;
-		}
-		return JetpackHandler.hasJetpackAttached(stack);
 	}
 }

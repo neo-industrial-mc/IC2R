@@ -41,6 +41,7 @@ import java.util.List;
 public abstract class ItemElectricTool extends DiggerItem implements IElectricItem, INetworkItemEventListener, IItemHudInfo
 {
 	private final Collection<TagKey<Block>> effectiveBlocks;
+	private final float toolSpeed;
 	public double operationEnergyCost;
 	public int maxCharge;
 	public int transferLimit;
@@ -59,8 +60,6 @@ public abstract class ItemElectricTool extends DiggerItem implements IElectricIt
 	{
 		this(settings, 2.0F, operationEnergyCost, material, effectiveBlocks);
 	}
-
-	private final float toolSpeed;
 
 	private ItemElectricTool(Properties settings, float attackDamage, int operationEnergyCost, Tier material, Collection<TagKey<Block>> effectiveBlocks)
 	{

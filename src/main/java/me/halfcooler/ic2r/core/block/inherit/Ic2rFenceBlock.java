@@ -34,16 +34,9 @@ import java.util.WeakHashMap;
 
 public class Ic2rFenceBlock extends FenceBlock
 {
-	@Override
-	public com.mojang.serialization.@NotNull MapCodec<FenceBlock> codec()
-	{
-		return FenceBlock.CODEC;
-	}
-
 	public static final Map<Direction, BooleanProperty> connectProperties = getConnectProperties();
 	private static final Map<Player, Long> lastBoostTick = new WeakHashMap<>();
 	public final boolean canBoost;
-
 	public Ic2rFenceBlock(Properties settings, boolean canBoost)
 	{
 		super(settings);
@@ -110,6 +103,12 @@ public class Ic2rFenceBlock extends FenceBlock
 	private static Map<Direction, BooleanProperty> getConnectProperties()
 	{
 		return CrossCollisionBlock.PROPERTY_BY_DIRECTION;
+	}
+
+	@Override
+	public com.mojang.serialization.@NotNull MapCodec<FenceBlock> codec()
+	{
+		return FenceBlock.CODEC;
 	}
 
 	public @NotNull BlockState getStateForPlacement(BlockPlaceContext ctx)

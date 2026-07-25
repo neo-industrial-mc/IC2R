@@ -49,6 +49,13 @@ public final class ClientModEventHandlerForge
 		event.registerBlockEntityRenderer(reg.type(), reg.factory());
 	}
 
+	private static <H extends AbstractContainerMenu> void registerScreen(
+		ClientEnvProxyForge.ScreenRegistration<H> reg, RegisterMenuScreensEvent event
+	)
+	{
+		event.register(reg.type(), reg.factory()::create);
+	}
+
 	@SubscribeEvent
 	public void onRegisterBlockColorProviders(RegisterColorHandlersEvent.Block event)
 	{
@@ -116,13 +123,6 @@ public final class ClientModEventHandlerForge
 			registerScreen(reg, event);
 		}
 		ClientEnvProxyForge.screenRegistrations.clear();
-	}
-
-	private static <H extends AbstractContainerMenu> void registerScreen(
-		ClientEnvProxyForge.ScreenRegistration<H> reg, RegisterMenuScreensEvent event
-	)
-	{
-		event.register(reg.type(), reg.factory()::create);
 	}
 
 	@SubscribeEvent

@@ -29,6 +29,11 @@ public class TileEntityWall extends Ic2rTileEntity
 		this.obscuration = this.addComponent(new Obscuration(this, () -> IC2R.network.get(true).updateTileEntityField(TileEntityWall.this, "obscuration")));
 	}
 
+	public DyeColor getColor()
+	{
+		return this.color;
+	}
+
 	public void setColor(DyeColor color)
 	{
 		if (this.color == color)
@@ -50,11 +55,6 @@ public class TileEntityWall extends Ic2rTileEntity
 		{
 			this.rerender();
 		}
-	}
-
-	public DyeColor getColor()
-	{
-		return this.color;
 	}
 
 	public void initializeFromWall(

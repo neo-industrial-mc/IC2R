@@ -41,22 +41,7 @@ import java.util.List;
 public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiValueProvider
 {
 	protected static final int TICK_RATE = 20;
-	protected int updateTicker;
-	protected boolean isFormed = false;
-	protected final InvSlotOutput outputSlot;
 	protected static final List<CokeRecipe> recipes = new ArrayList<>();
-	protected int progress = 0;
-	protected int operationLength = 0;
-	protected CokeRecipe currentRecipe = null;
-	@GuiSynced
-	protected float guiProgress;
-
-	public TileEntityCokeKiln(BlockPos pos, BlockState state)
-	{
-		super(Ic2rBlockEntities.COKE_KILN, pos, state);
-		this.updateTicker = IC2R.random.nextInt(TICK_RATE);
-		this.outputSlot = new InvSlotOutput(this, "output", 1, InvSlot.InvSide.ANY);
-	}
 
 	static
 	{
@@ -74,6 +59,22 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 			1800,
 			true
 		));
+	}
+
+	protected final InvSlotOutput outputSlot;
+	protected int updateTicker;
+	protected boolean isFormed = false;
+	protected int progress = 0;
+	protected int operationLength = 0;
+	protected CokeRecipe currentRecipe = null;
+	@GuiSynced
+	protected float guiProgress;
+
+	public TileEntityCokeKiln(BlockPos pos, BlockState state)
+	{
+		super(Ic2rBlockEntities.COKE_KILN, pos, state);
+		this.updateTicker = IC2R.random.nextInt(TICK_RATE);
+		this.outputSlot = new InvSlotOutput(this, "output", 1, InvSlot.InvSide.ANY);
 	}
 
 	@Override

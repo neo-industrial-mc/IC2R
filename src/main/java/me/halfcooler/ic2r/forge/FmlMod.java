@@ -78,6 +78,11 @@ public final class FmlMod
 		modEventBus.addListener(this::registerPayloads);
 	}
 
+	private static <FC extends FeatureConfiguration, F extends Feature<FC>> ConfiguredFeature<FC, ?> createConfiguredFeature(EnvProxyForge.ConfiguredFeatureRegistration<FC, F> reg)
+	{
+		return new ConfiguredFeature<>(reg.feature(), reg.config());
+	}
+
 	private void registerPayloads(RegisterPayloadHandlersEvent event)
 	{
 		PayloadRegistrar registrar = event.registrar("1").optional();
@@ -213,10 +218,5 @@ public final class FmlMod
 				event.register(Registries.CONFIGURED_FEATURE, reg.id(), () -> cf);
 			}
 		}
-	}
-
-	private static <FC extends FeatureConfiguration, F extends Feature<FC>> ConfiguredFeature<FC, ?> createConfiguredFeature(EnvProxyForge.ConfiguredFeatureRegistration<FC, F> reg)
-	{
-		return new ConfiguredFeature<>(reg.feature(), reg.config());
 	}
 }

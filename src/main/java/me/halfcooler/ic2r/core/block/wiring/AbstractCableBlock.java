@@ -50,12 +50,6 @@ import java.util.*;
 
 public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadAwareBlock, SimpleWaterloggedBlock
 {
-	@Override
-	protected com.mojang.serialization.@NotNull MapCodec<? extends PipeBlock> codec()
-	{
-		return com.mojang.serialization.MapCodec.unit(this);
-	}
-
 	public static final DyeColor DEFAULT_COLOR = DyeColor.BLACK;
 	public static final EnumProperty<DyeColor> colorProperty = EnumProperty.create("color", DyeColor.class);
 	public static final EnumProperty<CableFoam> foamProperty = EnumProperty.create("foam", CableFoam.class);
@@ -71,12 +65,6 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	private static boolean pendingHasColor;
 	public final CableType type;
 	final int insulation;
-
-	public int getCableInsulation()
-	{
-		return this.insulation;
-	}
-
 	private final boolean hasColor;
 
 	protected AbstractCableBlock(Properties settings, CableType type, int insulation)
@@ -113,6 +101,52 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 		foamToCable.put(foamBlock, cableBlock);
 	}
 
+	public static DyeColor getColor(BlockState state, CableType type, int insulation)
+	{
+		return insulation >= type.minColoredInsulation ? state.getValue(colorProperty) : DEFAULT_COLOR;
+	}
+
+	private static boolean isEuConnectable(Level world, BlockPos pos)
+	{
+		if (world.getBlockState(pos).isAir())
+		{
+			return false;
+		}
+
+		if (!world.isClientSide)
+		{
+			IEnergyTile tile = EnergyNet.instance.getTile(world, pos);
+			if (tile != null)
+			{
+				return !(tile instanceof IEnergyConductor);
+			}
+		}
+
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof Ic2rTileEntity ic2 && ic2.hasComponent(Energy.class))
+		{
+			return true;
+		}
+
+		if (be instanceof TileEntityNuclearReactorElectric reactor)
+		{
+			return !reactor.isFluidCooled();
+		}
+
+		return be instanceof IEnergySink || be instanceof IEnergyEmitter;
+	}
+
+	@Override
+	protected com.mojang.serialization.@NotNull MapCodec<? extends PipeBlock> codec()
+	{
+		return com.mojang.serialization.MapCodec.unit(this);
+	}
+
+	public int getCableInsulation()
+	{
+		return this.insulation;
+	}
+
 	public AbstractCableBlock getCableCounterpart()
 	{
 		return foamToCable.get(this);
@@ -121,11 +155,6 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	public BlockState toFoamState(BlockState cableState, AbstractCableBlock foamBlock)
 	{
 		return this.copyState(cableState, foamBlock).setValue(foamProperty, CableFoam.SOFT);
-	}
-
-	public static DyeColor getColor(BlockState state, CableType type, int insulation)
-	{
-		return insulation >= type.minColoredInsulation ? state.getValue(colorProperty) : DEFAULT_COLOR;
 	}
 
 	public abstract boolean isFoam();
@@ -248,36 +277,6 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 		{
 			return true;
 		}
-	}
-
-	private static boolean isEuConnectable(Level world, BlockPos pos)
-	{
-		if (world.getBlockState(pos).isAir())
-		{
-			return false;
-		}
-
-		if (!world.isClientSide)
-		{
-			IEnergyTile tile = EnergyNet.instance.getTile(world, pos);
-			if (tile != null)
-			{
-				return !(tile instanceof IEnergyConductor);
-			}
-		}
-
-		BlockEntity be = world.getBlockEntity(pos);
-		if (be instanceof Ic2rTileEntity ic2 && ic2.hasComponent(Energy.class))
-		{
-			return true;
-		}
-
-		if (be instanceof TileEntityNuclearReactorElectric reactor)
-		{
-			return !reactor.isFluidCooled();
-		}
-
-		return be instanceof IEnergySink || be instanceof IEnergyEmitter;
 	}
 
 	public BlockState getStateForPlacement(BlockPlaceContext ctx)

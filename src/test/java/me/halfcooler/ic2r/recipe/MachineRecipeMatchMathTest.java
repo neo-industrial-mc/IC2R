@@ -22,6 +22,40 @@ import static org.junit.jupiter.api.Assertions.*;
 class MachineRecipeMatchMathTest
 {
 
+	private static void assertDatapackDeclaresType(
+		String resource,
+		String typeId,
+		String inputToken,
+		String outputToken
+	) throws Exception
+	{
+		try (InputStream in = openClasspathResource(resource))
+		{
+			assertNotNull(in, "expected classpath resource " + resource);
+			String json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+			assertTrue(
+				json.contains("\"type\": \"" + typeId + "\"") || json.contains("\"type\":\"" + typeId + "\""),
+				"JSON must declare type " + typeId
+			);
+			assertTrue(json.contains(inputToken), "expected input token " + inputToken);
+			assertTrue(json.contains(outputToken), "expected output token " + outputToken);
+		}
+	}
+
+	/**
+	 * NeoForge unitTest runs under a TRANSFORMER/mod classloader; prefer the test
+	 * class loader, then fall back to the thread context loader.
+	 */
+	private static InputStream openClasspathResource(String resource)
+	{
+		InputStream in = MachineRecipeMatchMathTest.class.getClassLoader().getResourceAsStream(resource);
+		if (in == null)
+		{
+			in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+		}
+		return in;
+	}
+
 	@Test
 	void hasSufficientCount_requires_positive_and_at_least_recipe_amount()
 	{
@@ -58,7 +92,6 @@ class MachineRecipeMatchMathTest
 		assertEquals(4, MachineRecipeMatchMath.countAfterConsume(4, 0));
 	}
 
-
 	@Test
 	void firstMatchIndex_returns_earliest_true()
 	{
@@ -78,7 +111,6 @@ class MachineRecipeMatchMathTest
 		assertNull(MachineRecipeMatchMath.firstMatch(recipes, s -> false));
 		assertNull(MachineRecipeMatchMath.firstMatch(null, s -> true));
 	}
-
 
 	@Test
 	void macerator_datapack_json_declares_pilot_type() throws Exception
@@ -124,7 +156,6 @@ class MachineRecipeMatchMathTest
 		assertEquals("ic2r:compressor", MachineRecipeMatchMath.COMPRESSOR_RECIPE_TYPE_ID);
 		assertEquals("compressor", MachineRecipeMatchMath.COMPRESSOR_RECIPE_PATH);
 	}
-
 
 	/**
 	 * @Spec RC-001 item 精确匹配：只接受相同 id token
@@ -319,39 +350,5 @@ class MachineRecipeMatchMathTest
 		assertEquals(-1, MachineRecipeMatchMath.findMatchingIndex(
 			"ic2r:rubber", 1, false, ids, amounts
 		));
-	}
-
-	private static void assertDatapackDeclaresType(
-		String resource,
-		String typeId,
-		String inputToken,
-		String outputToken
-	) throws Exception
-	{
-		try (InputStream in = openClasspathResource(resource))
-		{
-			assertNotNull(in, "expected classpath resource " + resource);
-			String json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-			assertTrue(
-				json.contains("\"type\": \"" + typeId + "\"") || json.contains("\"type\":\"" + typeId + "\""),
-				"JSON must declare type " + typeId
-			);
-			assertTrue(json.contains(inputToken), "expected input token " + inputToken);
-			assertTrue(json.contains(outputToken), "expected output token " + outputToken);
-		}
-	}
-
-	/**
-	 * NeoForge unitTest runs under a TRANSFORMER/mod classloader; prefer the test
-	 * class loader, then fall back to the thread context loader.
-	 */
-	private static InputStream openClasspathResource(String resource)
-	{
-		InputStream in = MachineRecipeMatchMathTest.class.getClassLoader().getResourceAsStream(resource);
-		if (in == null)
-		{
-			in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-		}
-		return in;
 	}
 }

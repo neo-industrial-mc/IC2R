@@ -12,10 +12,6 @@ import net.minecraft.world.item.Item.Properties;
  */
 public final class Ic2rItemsUpgrades
 {
-	private Ic2rItemsUpgrades()
-	{
-	}
-
 	public static final Item OVERCLOCKER_UPGRADE = Ic2rItems.register("overclocker_upgrade", new ItemUpgradeModule(new Properties(), ItemUpgradeModule.UpgradeType.overclocker));
 	public static final Item TRANSFORMER_UPGRADE = Ic2rItems.register("transformer_upgrade", new ItemUpgradeModule(new Properties(), ItemUpgradeModule.UpgradeType.transformer));
 	public static final Item ENERGY_STORAGE_UPGRADE = Ic2rItems.register("energy_storage_upgrade", new ItemUpgradeModule(new Properties(), ItemUpgradeModule.UpgradeType.energy_storage));
@@ -36,4 +32,7 @@ public final class Ic2rItemsUpgrades
 	public static final Item FLATIFICATION_TFBP = Ic2rItems.register("flatification_tfbp", new Tfbp(new Properties().stacksTo(1), 4000.0, 40, new Flatification()));
 	public static final Item IRRIGATION_TFBP = Ic2rItems.register("irrigation_tfbp", new Tfbp(new Properties().stacksTo(1), 3000.0, 60, new Irrigation()));
 	public static final Item MUSHROOM_TFBP = Ic2rItems.register("mushroom_tfbp", new Tfbp(new Properties().stacksTo(1), 8000.0, 25, new Mushroom()));
+	private Ic2rItemsUpgrades()
+	{
+	}
 }

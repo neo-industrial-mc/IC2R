@@ -39,11 +39,6 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	INetworkTileEntityEventListener,
 	IUpgradableBlock
 {
-	protected static final int EventStart = 0;
-	protected static final int EventInterrupt = 1;
-	protected static final int EventFinish = 2;
-	protected static final int EventStop = 3;
-
 	/**
 	 * Modern SyncKey for GUI progress (logical wire name: {@code gui_progress}).
 	 * TeUpdate packets still carry {@link #LEGACY_GUI_PROGRESS_FIELD} as the string name (G1.1 alias).
@@ -63,14 +58,16 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	 * Legacy TeUpdate / {@code getNetworkedFields()} field name for active (same as modern wire).
 	 */
 	public static final String LEGACY_ACTIVE_FIELD = "active";
-
 	/**
 	 * World-save NBT key for process progress (W1.5).
 	 * Already a single-segment lowercase / snake_case-legal name — retained; no camelCase legacy key.
 	 * Network GUI fraction uses {@link #KEY_GUI_PROGRESS} ({@code gui_progress}), not this key.
 	 */
 	public static final String NBT_PROGRESS = "progress";
-
+	protected static final int EventStart = 0;
+	protected static final int EventInterrupt = 1;
+	protected static final int EventFinish = 2;
+	protected static final int EventStop = 3;
 	public final int defaultEnergyConsume;
 	public final int defaultOperationLength;
 	public final int defaultTier;
@@ -136,20 +133,6 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		return a.equals(b);
 	}
 
-	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
-	{
-		super.loadAdditional(nbt, registries);
-		this.progress = readProgressNbt(nbt);
-	}
-
-	@Override
-	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
-	{
-		super.saveAdditional(nbt, registries);
-		writeProgressNbt(nbt, this.progress);
-	}
-
 	/**
 	 * Pure NBT write for standard-machine progress (snake_case key {@link #NBT_PROGRESS} only).
 	 * Unit-test entry (NS-003).
@@ -166,6 +149,36 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	public static short readProgressNbt(CompoundTag nbt)
 	{
 		return nbt.getShort(NBT_PROGRESS);
+	}
+
+	/**
+	 * Registers standard-machine SyncKeys with TeUpdate legacy name aliases (NS-005 / G1.1).
+	 * Shared by BE registration and pure unit tests.
+	 */
+	public static void bindStandardMachineSync(
+		BlockEntitySync sync,
+		Supplier<Boolean> activeGetter,
+		Consumer<Boolean> activeSetter,
+		Supplier<Float> guiProgressGetter,
+		Consumer<Float> guiProgressSetter
+	)
+	{
+		sync.add(KEY_ACTIVE, activeGetter, activeSetter, LEGACY_ACTIVE_FIELD);
+		sync.add(KEY_GUI_PROGRESS, guiProgressGetter, guiProgressSetter, LEGACY_GUI_PROGRESS_FIELD);
+	}
+
+	@Override
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
+		super.loadAdditional(nbt, registries);
+		this.progress = readProgressNbt(nbt);
+	}
+
+	@Override
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
+		super.saveAdditional(nbt, registries);
+		writeProgressNbt(nbt, this.progress);
 	}
 
 	public float getProgress()
@@ -188,22 +201,6 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 			this::getProgress,
 			this::setGuiProgressSynced
 		);
-	}
-
-	/**
-	 * Registers standard-machine SyncKeys with TeUpdate legacy name aliases (NS-005 / G1.1).
-	 * Shared by BE registration and pure unit tests.
-	 */
-	public static void bindStandardMachineSync(
-		BlockEntitySync sync,
-		Supplier<Boolean> activeGetter,
-		Consumer<Boolean> activeSetter,
-		Supplier<Float> guiProgressGetter,
-		Consumer<Float> guiProgressSetter
-	)
-	{
-		sync.add(KEY_ACTIVE, activeGetter, activeSetter, LEGACY_ACTIVE_FIELD);
-		sync.add(KEY_GUI_PROGRESS, guiProgressGetter, guiProgressSetter, LEGACY_GUI_PROGRESS_FIELD);
 	}
 
 	/**

@@ -23,6 +23,8 @@ import java.util.Set;
 public class JetpackAttachmentRecipe extends CustomRecipe
 {
 	public static final Set<Item> blacklistedItems = Collections.newSetFromMap(new IdentityHashMap<>());
+	public static final RecipeSerializer<JetpackAttachmentRecipe> SERIALIZER =
+		new SimpleCraftingRecipeSerializer<>(JetpackAttachmentRecipe::new);
 
 	public JetpackAttachmentRecipe(CraftingBookCategory category)
 	{
@@ -46,6 +48,12 @@ public class JetpackAttachmentRecipe extends CustomRecipe
 		blacklistedItems.add(Ic2rItems.JETPACK_ELECTRIC);
 		blacklistedItems.add(Ic2rItems.QUANTUM_CHESTPLATE);
 		blacklistedItems.add(Items.ELYTRA);
+	}
+
+	private static boolean isChestSlotItem(ItemStack stack)
+	{
+		EquipmentSlot slot = stack.getEquipmentSlot();
+		return slot == EquipmentSlot.CHEST;
 	}
 
 	@Override
@@ -107,12 +115,6 @@ public class JetpackAttachmentRecipe extends CustomRecipe
 		}
 	}
 
-	private static boolean isChestSlotItem(ItemStack stack)
-	{
-		EquipmentSlot slot = stack.getEquipmentSlot();
-		return slot == EquipmentSlot.CHEST;
-	}
-
 	@Override
 	public boolean canCraftInDimensions(int x, int y)
 	{
@@ -130,7 +132,4 @@ public class JetpackAttachmentRecipe extends CustomRecipe
 	{
 		return Ic2rRecipeSerializers.JETPACK_ATTACHMENT;
 	}
-
-	public static final RecipeSerializer<JetpackAttachmentRecipe> SERIALIZER =
-		new SimpleCraftingRecipeSerializer<>(JetpackAttachmentRecipe::new);
 }

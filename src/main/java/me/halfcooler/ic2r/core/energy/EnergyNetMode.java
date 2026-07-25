@@ -14,6 +14,11 @@ public enum EnergyNetMode
 
 	private static volatile boolean gtModeEnabled;
 
+	public static boolean isGtModeEnabled()
+	{
+		return gtModeEnabled;
+	}
+
 	/**
 	 * Enable or disable GT energy-net mode. Intended for the GT addon to call from its
 	 * mod constructor (together with installing the GT calculator).
@@ -21,11 +26,6 @@ public enum EnergyNetMode
 	public static void setGtModeEnabled(boolean enabled)
 	{
 		gtModeEnabled = enabled;
-	}
-
-	public static boolean isGtModeEnabled()
-	{
-		return gtModeEnabled;
 	}
 
 	public static EnergyNetMode current()

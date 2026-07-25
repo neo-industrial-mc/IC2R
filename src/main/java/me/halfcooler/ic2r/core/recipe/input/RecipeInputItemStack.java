@@ -25,34 +25,6 @@ public class RecipeInputItemStack extends RecipeInputBase
 		this.input = input.copy();
 	}
 
-	@Override
-	public boolean matches(ItemStack subject)
-	{
-		if (this.input.getItem() != subject.getItem()) return false;
-
-		CompoundTag requiredNbt = StackUtil.getTag(this.input);
-		if (requiredNbt == null || requiredNbt.isEmpty()) return true;
-
-		CompoundTag subjectNbt = StackUtil.getTag(subject);
-		if (subjectNbt == null)
-		{
-			for (String key : requiredNbt.getAllKeys())
-			{
-				if (!isDefaultTag(requiredNbt.get(key))) return false;
-			}
-
-			return true;
-		}
-
-		for (String key : requiredNbt.getAllKeys())
-		{
-			if (!subjectNbt.contains(key)) return false;
-			if (!subjectNbt.get(key).equals(requiredNbt.get(key))) return false;
-		}
-
-		return true;
-	}
-
 	private static boolean isDefaultTag(Tag tag)
 	{
 		if (tag instanceof NumericTag num)
@@ -91,6 +63,34 @@ public class RecipeInputItemStack extends RecipeInputBase
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean matches(ItemStack subject)
+	{
+		if (this.input.getItem() != subject.getItem()) return false;
+
+		CompoundTag requiredNbt = StackUtil.getTag(this.input);
+		if (requiredNbt == null || requiredNbt.isEmpty()) return true;
+
+		CompoundTag subjectNbt = StackUtil.getTag(subject);
+		if (subjectNbt == null)
+		{
+			for (String key : requiredNbt.getAllKeys())
+			{
+				if (!isDefaultTag(requiredNbt.get(key))) return false;
+			}
+
+			return true;
+		}
+
+		for (String key : requiredNbt.getAllKeys())
+		{
+			if (!subjectNbt.contains(key)) return false;
+			if (!subjectNbt.get(key).equals(requiredNbt.get(key))) return false;
+		}
+
+		return true;
 	}
 
 	@Override

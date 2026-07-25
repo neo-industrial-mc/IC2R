@@ -41,6 +41,7 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	public static final String LEGACY_NBT_ENERGY_BUFFER = "energyBuffer";
 
 	private static final NumberFormat FORMAT = new DecimalFormat("#.#");
+	private final ElectricalProfile profile = new ElectricalProfile(VoltageTier.LV);
 	@GuiSynced
 	private double lastProduction;
 	@GuiSynced
@@ -48,25 +49,10 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	private double production;
 	private double energyBuffer;
 	private boolean registeredToEnet;
-	private final ElectricalProfile profile = new ElectricalProfile(VoltageTier.LV);
 
 	public TileEntityConversionGenerator(BlockEntityType<? extends TileEntityConversionGenerator> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state);
-	}
-
-	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
-	{
-		super.loadAdditional(nbt, registries);
-		this.energyBuffer = readEnergyBufferNbt(nbt);
-	}
-
-	@Override
-	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
-	{
-		super.saveAdditional(nbt, registries);
-		writeEnergyBufferNbt(nbt, this.energyBuffer);
 	}
 
 	/**
@@ -83,6 +69,20 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	public static double readEnergyBufferNbt(CompoundTag nbt)
 	{
 		return LegacyNbt.getDouble(nbt, NBT_ENERGY_BUFFER, LEGACY_NBT_ENERGY_BUFFER);
+	}
+
+	@Override
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
+		super.loadAdditional(nbt, registries);
+		this.energyBuffer = readEnergyBufferNbt(nbt);
+	}
+
+	@Override
+	public void saveAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
+		super.saveAdditional(nbt, registries);
+		writeEnergyBufferNbt(nbt, this.energyBuffer);
 	}
 
 	@Override

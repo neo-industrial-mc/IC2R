@@ -45,6 +45,11 @@ import java.util.function.BiFunction;
 
 public final class Ic2rScreenHandlers
 {
+	/**
+	 * W2.4 pure-code GUI sample (no guidef XML, no real block). See {@link CodeGuiSampleMenu}
+	 * and {@code docs/spec/gui_modernization.md}. Not opened in-game by default.
+	 */
+	public static final MenuType<CodeGuiSampleMenu> CODE_GUI_SAMPLE = register("code_gui_sample", CodeGuiSampleMenu::create);
 	private static final EnvProxy.ExtendedClientScreenHandlerFactory<ContainerBase<?>> MANAGED_CLIENT_BE_HANDLER = createManagedBeClientHandler();
 	public static final MenuType<DynamicContainer<TileEntityInventory>> DYNAMIC_BE = registerManagedBe("dynamic_be");
 	public static final MenuType<ContainerSolarGenerator> SOLAR_GENERATOR = registerManagedBe("solar_generator");
@@ -106,12 +111,6 @@ public final class Ic2rScreenHandlers
 	public static final MenuType<ContainerContainmentbox> CONTAINMENT_BOX = registerManagedItem("containment_box");
 	public static final MenuType<ContainerAnalyzer> CROP_ANALYZER = registerManagedItem("crop_analyzer");
 	public static final MenuType<ContainerMiningFilter> MINING_FILTER = registerManagedItem("mining_filter");
-
-	/**
-	 * W2.4 pure-code GUI sample (no guidef XML, no real block). See {@link CodeGuiSampleMenu}
-	 * and {@code docs/spec/gui_modernization.md}. Not opened in-game by default.
-	 */
-	public static final MenuType<CodeGuiSampleMenu> CODE_GUI_SAMPLE = register("code_gui_sample", CodeGuiSampleMenu::create);
 
 	public static void init()
 	{

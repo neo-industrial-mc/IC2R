@@ -167,6 +167,35 @@ public class TileEntityBatchCrafter
 		this.comparator.setUpdate(() -> this.progress * 15 / this.operationLength);
 	}
 
+	/**
+	 * Pure NBT write for batch-crafter progress (snake_case-legal key {@link #NBT_PROGRESS} only).
+	 */
+	public static void writeProgressNbt(CompoundTag nbt, short progress)
+	{
+		nbt.putShort(NBT_PROGRESS, progress);
+	}
+
+	/**
+	 * Pure NBT read for batch-crafter progress (already snake_case-legal; no camelCase legacy).
+	 */
+	public static short readProgressNbt(CompoundTag nbt)
+	{
+		return nbt.getShort(NBT_PROGRESS);
+	}
+
+	/**
+	 * Registers batch-crafter SyncKeys with TeUpdate legacy name aliases (G1.5).
+	 * Shared by BE registration and pure unit tests.
+	 */
+	public static void bindBatchCrafterSync(
+		BlockEntitySync sync,
+		Supplier<Float> guiProgressGetter,
+		Consumer<Float> guiProgressSetter
+	)
+	{
+		sync.add(KEY_GUI_PROGRESS, guiProgressGetter, guiProgressSetter, LEGACY_GUI_PROGRESS_FIELD);
+	}
+
 	@Override
 	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
@@ -489,22 +518,6 @@ public class TileEntityBatchCrafter
 	}
 
 	/**
-	 * Pure NBT write for batch-crafter progress (snake_case-legal key {@link #NBT_PROGRESS} only).
-	 */
-	public static void writeProgressNbt(CompoundTag nbt, short progress)
-	{
-		nbt.putShort(NBT_PROGRESS, progress);
-	}
-
-	/**
-	 * Pure NBT read for batch-crafter progress (already snake_case-legal; no camelCase legacy).
-	 */
-	public static short readProgressNbt(CompoundTag nbt)
-	{
-		return nbt.getShort(NBT_PROGRESS);
-	}
-
-	/**
 	 * G1.5: registers modern SyncKeys for batch-crafter network fields.
 	 * TeUpdate / writeFieldData resolve values via this table (legacy names aliased).
 	 * {@code recipeOutput} stays on reflection until an ItemStack SyncCodec is available.
@@ -514,19 +527,6 @@ public class TileEntityBatchCrafter
 	{
 		super.registerSyncedData(sync);
 		bindBatchCrafterSync(sync, this::getProgress, this::setGuiProgressSynced);
-	}
-
-	/**
-	 * Registers batch-crafter SyncKeys with TeUpdate legacy name aliases (G1.5).
-	 * Shared by BE registration and pure unit tests.
-	 */
-	public static void bindBatchCrafterSync(
-		BlockEntitySync sync,
-		Supplier<Float> guiProgressGetter,
-		Consumer<Float> guiProgressSetter
-	)
-	{
-		sync.add(KEY_GUI_PROGRESS, guiProgressGetter, guiProgressSetter, LEGACY_GUI_PROGRESS_FIELD);
 	}
 
 	/**

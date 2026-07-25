@@ -30,6 +30,28 @@ public class GuiOverlayer
 		this.mc = mc;
 	}
 
+	private static int getCharge(ItemStack stack)
+	{
+		Item item = stack.getItem();
+		if (item instanceof IItemHudProvider.IItemHudBarProvider)
+		{
+			return ((IItemHudProvider.IItemHudBarProvider) item).getBarPercent(stack);
+		} else if (item instanceof IElectricItem)
+		{
+			return mapCharge(stack);
+		} else
+		{
+			return stack.isDamageableItem() ? (int) Util.map(1.0 - (double) stack.getDamageValue() / stack.getMaxDamage(), 1.0, 100.0) : -1;
+		}
+	}
+
+	private static int mapCharge(ItemStack stack)
+	{
+		double charge = ElectricItem.manager.getCharge(stack);
+		double maxCharge = charge + ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, Integer.MAX_VALUE, true, true);
+		return (int) Util.map(charge, maxCharge, 100.0);
+	}
+
 	public void render(GuiGraphics guiGraphics)
 	{
 		assert this.mc.player != null;
@@ -183,27 +205,5 @@ public class GuiOverlayer
 				}
 			}
 		}
-	}
-
-	private static int getCharge(ItemStack stack)
-	{
-		Item item = stack.getItem();
-		if (item instanceof IItemHudProvider.IItemHudBarProvider)
-		{
-			return ((IItemHudProvider.IItemHudBarProvider) item).getBarPercent(stack);
-		} else if (item instanceof IElectricItem)
-		{
-			return mapCharge(stack);
-		} else
-		{
-			return stack.isDamageableItem() ? (int) Util.map(1.0 - (double) stack.getDamageValue() / stack.getMaxDamage(), 1.0, 100.0) : -1;
-		}
-	}
-
-	private static int mapCharge(ItemStack stack)
-	{
-		double charge = ElectricItem.manager.getCharge(stack);
-		double maxCharge = charge + ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, Integer.MAX_VALUE, true, true);
-		return (int) Util.map(charge, maxCharge, 100.0);
 	}
 }

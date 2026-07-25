@@ -23,15 +23,6 @@ public final class RecipeSerializerMath
 		return hasCountKey ? declaredCount : defaultCount;
 	}
 
-	public enum InputShape
-	{
-		ARRAY,
-		FLUID,
-		ITEM_DATA,
-		ANY,
-		INGREDIENT
-	}
-
 	public static InputShape classifyInputShape(boolean isArray, boolean hasFluid, boolean hasData, boolean hasAny)
 	{
 		if (isArray)
@@ -55,5 +46,14 @@ public final class RecipeSerializerMath
 		}
 
 		return InputShape.INGREDIENT;
+	}
+
+	public enum InputShape
+	{
+		ARRAY,
+		FLUID,
+		ITEM_DATA,
+		ANY,
+		INGREDIENT
 	}
 }

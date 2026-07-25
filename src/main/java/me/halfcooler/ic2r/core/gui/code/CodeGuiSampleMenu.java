@@ -24,18 +24,18 @@ public final class CodeGuiSampleMenu extends ContainerFullInv<SimpleContainer>
 	public static final int DEMO_SLOTS = 1;
 	public static final int GUI_HEIGHT = 166;
 
+	public CodeGuiSampleMenu(int syncId, Inventory playerInventory)
+	{
+		super(Ic2rScreenHandlers.CODE_GUI_SAMPLE, syncId, playerInventory, new SimpleContainer(DEMO_SLOTS), GUI_HEIGHT);
+
+		this.addSlot(new Slot(this.base, 0, 80, 35));
+	}
+
 	/**
 	 * Client MenuType factory ({@code BiFunction} style registration).
 	 */
 	public static CodeGuiSampleMenu create(int syncId, Inventory playerInventory)
 	{
 		return new CodeGuiSampleMenu(syncId, playerInventory);
-	}
-
-	public CodeGuiSampleMenu(int syncId, Inventory playerInventory)
-	{
-		super(Ic2rScreenHandlers.CODE_GUI_SAMPLE, syncId, playerInventory, new SimpleContainer(DEMO_SLOTS), GUI_HEIGHT);
-
-		this.addSlot(new Slot(this.base, 0, 80, 35));
 	}
 }

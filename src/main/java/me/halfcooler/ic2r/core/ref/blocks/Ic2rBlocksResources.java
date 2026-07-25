@@ -13,10 +13,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  */
 public final class Ic2rBlocksResources
 {
-	private Ic2rBlocksResources()
-	{
-	}
-
 	public static final DeferredHolder<Block, Block> LEAD_ORE = EnvProxyForge.BLOCKS.register("lead_ore", () -> new Block(Properties.of().strength(2.0F, 4.0F).requiresCorrectToolForDrops()));
 	public static final DeferredHolder<Block, Block> TIN_ORE = EnvProxyForge.BLOCKS.register("tin_ore", () -> new Block(Properties.of().strength(3.0F, 5.0F).requiresCorrectToolForDrops()));
 	public static final DeferredHolder<Block, Block> URANIUM_ORE = EnvProxyForge.BLOCKS.register("uranium_ore", () -> new Block(Properties.of().strength(4.0F, 6.0F).requiresCorrectToolForDrops()));
@@ -38,4 +34,7 @@ public final class Ic2rBlocksResources
 	public static final DeferredHolder<Block, Block> ADVANCED_MACHINE = EnvProxyForge.BLOCKS.register("advanced_machine", () -> new Block(Properties.of().strength(8.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 	public static final DeferredHolder<Block, Block> REACTOR_VESSEL = EnvProxyForge.BLOCKS.register("reactor_vessel", () -> new Block(Properties.of().strength(40.0F, 90.0F).requiresCorrectToolForDrops()));
 	public static final DeferredHolder<Block, Block> SILVER_BLOCK = EnvProxyForge.BLOCKS.register("silver_block", () -> new Block(Properties.of().strength(4.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+	private Ic2rBlocksResources()
+	{
+	}
 }

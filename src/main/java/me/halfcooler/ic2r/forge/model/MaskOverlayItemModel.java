@@ -38,15 +38,6 @@ public final class MaskOverlayItemModel implements Ic2rModel, BakedModel
 	private final ResourceLocation maskTextureLocation;
 	private final boolean scaleOverlay;
 	private final float offset;
-
-	private BakedModel baseModel;
-	private List<BakedQuad> baseQuads = List.of();
-	private List<OverlayQuad> overlayTemplates = List.of();
-	private float uS;
-	private float vS;
-	private float uE;
-	private float vE;
-
 	private final ItemOverrides itemOverrides = new ItemOverrides()
 	{
 		@Override
@@ -80,6 +71,13 @@ public final class MaskOverlayItemModel implements Ic2rModel, BakedModel
 			return new OverlaidModel(MaskOverlayItemModel.this.baseModel, MaskOverlayItemModel.this.getDefaultQuads(), overlayQuads);
 		}
 	};
+	private BakedModel baseModel;
+	private List<BakedQuad> baseQuads = List.of();
+	private List<OverlayQuad> overlayTemplates = List.of();
+	private float uS;
+	private float vS;
+	private float uE;
+	private float vE;
 
 	public MaskOverlayItemModel(ResourceLocation baseModelLocation, ResourceLocation maskTextureLocation, boolean scaleOverlay, float offset)
 	{
@@ -92,22 +90,6 @@ public final class MaskOverlayItemModel implements Ic2rModel, BakedModel
 	private static ResourceLocation maskToResource(ResourceLocation maskLocation)
 	{
 		return ResourceLocation.fromNamespaceAndPath(maskLocation.getNamespace(), "textures/" + maskLocation.getPath() + ".png");
-	}
-
-	private List<BakedQuad> getDefaultQuads()
-	{
-		if (!this.baseQuads.isEmpty())
-		{
-			return this.baseQuads;
-		}
-
-		if (this.baseModel == null)
-		{
-			return List.of();
-		}
-
-		RandomSource rand = RandomSource.create(42L);
-		return this.baseModel.getQuads(null, null, rand, ModelData.EMPTY, null);
 	}
 
 	private static BakedQuad remapQuad(BakedQuad template, TextureAtlasSprite sprite, float uS, float vS, float uE, float vE, int colorMul)
@@ -239,6 +221,22 @@ public final class MaskOverlayItemModel implements Ic2rModel, BakedModel
 		}
 
 		return ret;
+	}
+
+	private List<BakedQuad> getDefaultQuads()
+	{
+		if (!this.baseQuads.isEmpty())
+		{
+			return this.baseQuads;
+		}
+
+		if (this.baseModel == null)
+		{
+			return List.of();
+		}
+
+		RandomSource rand = RandomSource.create(42L);
+		return this.baseModel.getQuads(null, null, rand, ModelData.EMPTY, null);
 	}
 
 	@Override

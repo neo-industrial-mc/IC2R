@@ -18,6 +18,27 @@ import static org.junit.jupiter.api.Assertions.*;
 class InvSlotHandlerMathTest
 {
 
+	/**
+	 * discharge(1) + output(1) + upgrade(4) + input(1).
+	 */
+	private static int[] maceratorSlotSizes()
+	{
+		return new int[] { 1, 1, 4, 1 };
+	}
+
+	private static InvSlot.Access[] maceratorAccessByCombinedIndex()
+	{
+		return new InvSlot.Access[] {
+			InvSlot.Access.NONE,
+			InvSlot.Access.O,
+			InvSlot.Access.NONE,
+			InvSlot.Access.NONE,
+			InvSlot.Access.NONE,
+			InvSlot.Access.NONE,
+			InvSlot.Access.I
+		};
+	}
+
 	@Test
 	void access_flags_match_inv_slot_enum()
 	{
@@ -78,7 +99,6 @@ class InvSlotHandlerMathTest
 		assertFalse(InvSlotTransferMath.allowsExtract(canOutput, false));
 	}
 
-
 	@Test
 	void insertable_into_empty_slot_respects_limits()
 	{
@@ -126,7 +146,6 @@ class InvSlotHandlerMathTest
 		assertEquals(16, InvSlotTransferMath.extractableCount(40, 30, 16));
 	}
 
-
 	@Test
 	void combined_index_layout_matches_macerator_construction_order()
 	{
@@ -165,7 +184,6 @@ class InvSlotHandlerMathTest
 		assertEquals(0, InvSlotTransferMath.remainingAfterExtract(0, 3));
 		assertEquals(4, InvSlotTransferMath.remainingAfterExtract(4, 0));
 	}
-
 
 	/**
 	 * Macerator-style Access per combined index (null-facing view).
@@ -333,7 +351,6 @@ class InvSlotHandlerMathTest
 		assertEquals(0, output.count);
 	}
 
-
 	/**
 	 * Role accepts: default true, output always false, linked requires non-empty match.
 	 * Insert gate composes access + policy.
@@ -391,39 +408,17 @@ class InvSlotHandlerMathTest
 		));
 	}
 
-
-	/**
-	 * discharge(1) + output(1) + upgrade(4) + input(1).
-	 */
-	private static int[] maceratorSlotSizes()
-	{
-		return new int[] { 1, 1, 4, 1 };
-	}
-
-	private static InvSlot.Access[] maceratorAccessByCombinedIndex()
-	{
-		return new InvSlot.Access[] {
-			InvSlot.Access.NONE,
-			InvSlot.Access.O,
-			InvSlot.Access.NONE,
-			InvSlot.Access.NONE,
-			InvSlot.Access.NONE,
-			InvSlot.Access.NONE,
-			InvSlot.Access.I
-		};
-	}
-
 	/**
 	 * Count-only mirror of {@code InvSlotItemHandler} insert/extract residual rules.
 	 * Assumes a single item identity (stacks always compatible when non-empty).
 	 */
 	static final class VirtualSlot
 	{
-		int count;
 		final boolean canInput;
 		final boolean canOutput;
 		final int slotLimit;
 		final int maxStack;
+		int count;
 
 		VirtualSlot(boolean canInput, boolean canOutput, int slotLimit, int maxStack)
 		{

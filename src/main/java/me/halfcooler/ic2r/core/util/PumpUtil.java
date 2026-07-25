@@ -15,24 +15,16 @@ import java.util.Set;
 
 public class PumpUtil
 {
+	private static final int MAX_TRACE_STEPS = 64;
+	private static final int MAX_AIR_BRIDGE = 64;
+	private static final int LOCAL_AIR_BRIDGE = 8;
+	private static final int FALLBACK_RADIUS = 2;
 	private static PumpFluidAccess fluidAccess;
-
-	@FunctionalInterface
-	public interface PumpFluidAccess
-	{
-		@org.jetbrains.annotations.Nullable
-		Integer getForgeFluidDecay(BlockState state, Level world, BlockPos pos);
-	}
 
 	public static void setFluidAccess(PumpFluidAccess access)
 	{
 		fluidAccess = access;
 	}
-
-	private static final int MAX_TRACE_STEPS = 64;
-	private static final int MAX_AIR_BRIDGE = 64;
-	private static final int LOCAL_AIR_BRIDGE = 8;
-	private static final int FALLBACK_RADIUS = 2;
 
 	private static int moveUp(Level world, MutableBlockPos pos)
 	{
@@ -388,5 +380,12 @@ public class PumpUtil
 		}
 
 		return false;
+	}
+
+	@FunctionalInterface
+	public interface PumpFluidAccess
+	{
+		@org.jetbrains.annotations.Nullable
+		Integer getForgeFluidDecay(BlockState state, Level world, BlockPos pos);
 	}
 }

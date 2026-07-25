@@ -50,14 +50,13 @@ import java.util.List;
 public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable, BlockBreakableItem, IEnhancedOverlayProvider, IHitSoundOverride
 {
 	/**
-	 * Durability cost when mining/removing a machine (matches 1.12 ItemTool mining).
-	 */
-	private static final int MINE_DAMAGE = 1;
-
-	/**
 	 * Mining efficiency for wrenchable machines (HarvestLevel.Iron in 1.12 ItemToolWrenchNew).
 	 */
 	public static final float WRENCH_DESTROY_SPEED = 6.0F;
+	/**
+	 * Durability cost when mining/removing a machine (matches 1.12 ItemTool mining).
+	 */
+	private static final int MINE_DAMAGE = 1;
 
 	public ItemToolWrench(Properties settings)
 	{

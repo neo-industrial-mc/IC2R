@@ -64,6 +64,17 @@ public final class SideProxyClient implements SideProxy
 	public static final Keyboard keyboard = new KeyboardClient();
 	private static final SoundManager soundManager = new SoundManagerClient();
 
+	private static int getFluidCellTintColor(ItemStack stack, int tintIndex)
+	{
+		if (tintIndex != 1 || !(stack.getItem() instanceof Ic2rFluidItem fluidItem))
+		{
+			return -1;
+		}
+
+		Ic2rFluidStack fluidStack = fluidItem.getFluidStack(stack);
+		return fluidStack != null && !fluidStack.isEmpty() ? FluidHandler.getColor(fluidStack.getFluid()) : -1;
+	}
+
 	@Override
 	public void preInit()
 	{
@@ -364,17 +375,6 @@ public final class SideProxyClient implements SideProxy
 	public <T extends BlockEntity & IRotorProvider> void registerRotorProvider(BlockEntityType<T> type)
 	{
 		envProxy.registerBer(type, KineticGeneratorRenderer::new);
-	}
-
-	private static int getFluidCellTintColor(ItemStack stack, int tintIndex)
-	{
-		if (tintIndex != 1 || !(stack.getItem() instanceof Ic2rFluidItem fluidItem))
-		{
-			return -1;
-		}
-
-		Ic2rFluidStack fluidStack = fluidItem.getFluidStack(stack);
-		return fluidStack != null && !fluidStack.isEmpty() ? FluidHandler.getColor(fluidStack.getFluid()) : -1;
 	}
 
 }

@@ -45,56 +45,6 @@ public enum Ic2rProgressProvider implements IServerExtensionProvider<CompoundTag
 	 */
 	private static final String KEY_TIME_BASED = "ic2Time";
 
-	@Override
-	public ResourceLocation getUid()
-	{
-		return UID;
-	}
-
-	@Override
-	public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor)
-	{
-		Object target = accessor.getTarget();
-		ProgressSnapshot snap = resolve(target);
-		if (snap == null || snap.ratio <= MIN_VISIBLE)
-		{
-			return null;
-		}
-
-		float progress = Math.min(1.0F, snap.ratio);
-		ViewGroup<CompoundTag> group = new ViewGroup<>(List.of(ProgressView.create(progress)));
-		if (snap.max > 0L)
-		{
-			group.getExtraData().putLong(KEY_CURRENT, snap.current);
-			group.getExtraData().putLong(KEY_MAX, snap.max);
-			group.getExtraData().putBoolean(KEY_TIME_BASED, snap.timeBased);
-		}
-		return List.of(group);
-	}
-
-	@Override
-	public List<ClientViewGroup<ProgressView>> getClientGroups(Accessor<?> accessor, List<ViewGroup<CompoundTag>> groups)
-	{
-		if (!JadeConfigHelper.progressMode().isVisible(accessor.showDetails()))
-		{
-			return List.of();
-		}
-
-		return ClientViewGroup.map(groups, ProgressView::read, (serverGroup, clientGroup) ->
-		{
-			CompoundTag extra = serverGroup.getExtraData();
-			long current = extra.getLong(KEY_CURRENT);
-			long max = extra.getLong(KEY_MAX);
-			boolean timeBased = extra.getBoolean(KEY_TIME_BASED);
-
-			for (ProgressView view : clientGroup.views)
-			{
-				view.style = JadeConfigHelper.progressStyle();
-				view.text = JadeConfigHelper.formatProgressText(view.progress, current, max, timeBased);
-			}
-		});
-	}
-
 	/**
 	 * @return progress snapshot, or {@code null} when nothing to display
 	 */
@@ -172,6 +122,56 @@ public enum Ic2rProgressProvider implements IServerExtensionProvider<CompoundTag
 		}
 
 		return null;
+	}
+
+	@Override
+	public ResourceLocation getUid()
+	{
+		return UID;
+	}
+
+	@Override
+	public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor)
+	{
+		Object target = accessor.getTarget();
+		ProgressSnapshot snap = resolve(target);
+		if (snap == null || snap.ratio <= MIN_VISIBLE)
+		{
+			return null;
+		}
+
+		float progress = Math.min(1.0F, snap.ratio);
+		ViewGroup<CompoundTag> group = new ViewGroup<>(List.of(ProgressView.create(progress)));
+		if (snap.max > 0L)
+		{
+			group.getExtraData().putLong(KEY_CURRENT, snap.current);
+			group.getExtraData().putLong(KEY_MAX, snap.max);
+			group.getExtraData().putBoolean(KEY_TIME_BASED, snap.timeBased);
+		}
+		return List.of(group);
+	}
+
+	@Override
+	public List<ClientViewGroup<ProgressView>> getClientGroups(Accessor<?> accessor, List<ViewGroup<CompoundTag>> groups)
+	{
+		if (!JadeConfigHelper.progressMode().isVisible(accessor.showDetails()))
+		{
+			return List.of();
+		}
+
+		return ClientViewGroup.map(groups, ProgressView::read, (serverGroup, clientGroup) ->
+		{
+			CompoundTag extra = serverGroup.getExtraData();
+			long current = extra.getLong(KEY_CURRENT);
+			long max = extra.getLong(KEY_MAX);
+			boolean timeBased = extra.getBoolean(KEY_TIME_BASED);
+
+			for (ProgressView view : clientGroup.views)
+			{
+				view.style = JadeConfigHelper.progressStyle();
+				view.text = JadeConfigHelper.formatProgressText(view.progress, current, max, timeBased);
+			}
+		});
 	}
 
 	/**

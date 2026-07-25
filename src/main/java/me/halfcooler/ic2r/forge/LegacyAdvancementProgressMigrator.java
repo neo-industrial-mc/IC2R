@@ -40,24 +40,20 @@ import java.util.Optional;
  */
 public final class LegacyAdvancementProgressMigrator
 {
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-
-	private static final String DATA_VERSION_KEY = "DataVersion";
-
 	/**
 	 * Path segment used under both namespaces for the main IC2R tree.
 	 */
 	public static final String TREE_PATH_PREFIX_LEGACY = "ic2/";
 	public static final String TREE_PATH_PREFIX_CURRENT = "ic2r/";
-
 	/**
 	 * Advancement path (no namespace) for coal→diamond challenge.
 	 */
 	public static final String COAL_DIAMOND_PATH = "ic2r/build_generator/build_compressor/build_coal_diamond";
-
 	public static final String CRITERION_INDUSTRIAL_DIAMOND_LEGACY = "ic2:industrial_diamond";
 	public static final String CRITERION_INDUSTRIAL_DIAMOND = "ic2r:industrial_diamond";
 	public static final String CRITERION_IMPOSSIBLE = "impossible";
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+	private static final String DATA_VERSION_KEY = "DataVersion";
 
 	private LegacyAdvancementProgressMigrator()
 	{

@@ -19,6 +19,7 @@ import java.util.*;
 
 public class InvSlot implements Iterable<ItemStack>
 {
+	private static java.util.function.Function<InvSlot, Object> handlerFactory;
 	public final IInventorySlotHolder<?> base;
 	public final String name;
 	public final InvSlot.InvSide preferredSide;
@@ -29,7 +30,6 @@ public class InvSlot implements Iterable<ItemStack>
 	 * Lazy Forge IItemHandler adapter (W2.1); storage stays in {@link #contents}.
 	 */
 	private Object itemHandler;
-	private static java.util.function.Function<InvSlot, Object> handlerFactory;
 
 	public InvSlot(IInventorySlotHolder<?> base, String name, InvSlot.Access access, int count)
 	{
@@ -61,6 +61,15 @@ public class InvSlot implements Iterable<ItemStack>
 		this.name = null;
 		this.access = InvSlot.Access.NONE;
 		this.preferredSide = InvSlot.InvSide.ANY;
+	}
+
+	/**
+	 * Forge item-handler view of this slot group (W2.1). Domain code may keep using get/put;
+	 * automation should prefer this adapter (access + accepts enforced on insert/extract).
+	 */
+	public static void setHandlerFactory(java.util.function.Function<InvSlot, Object> factory)
+	{
+		handlerFactory = factory;
 	}
 
 	public void readFromNbt(CompoundTag nbt)
@@ -282,15 +291,6 @@ public class InvSlot implements Iterable<ItemStack>
 	public void setStackSizeLimit(int stackSizeLimit)
 	{
 		this.stackSizeLimit = stackSizeLimit;
-	}
-
-	/**
-	 * Forge item-handler view of this slot group (W2.1). Domain code may keep using get/put;
-	 * automation should prefer this adapter (access + accepts enforced on insert/extract).
-	 */
-	public static void setHandlerFactory(java.util.function.Function<InvSlot, Object> factory)
-	{
-		handlerFactory = factory;
 	}
 
 	public Object getItemHandler()

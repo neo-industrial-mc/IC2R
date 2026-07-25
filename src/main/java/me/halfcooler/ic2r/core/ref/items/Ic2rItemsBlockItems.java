@@ -17,10 +17,6 @@ import net.minecraft.world.item.SignItem;
  */
 public final class Ic2rItemsBlockItems
 {
-	private Ic2rItemsBlockItems()
-	{
-	}
-
 	public static final Item LEAD_ORE = Ic2rItems.register("lead_ore", new ItemBlockIc2r(Ic2rBlocks.LEAD_ORE.get(), new Properties()));
 	public static final Item TIN_ORE = Ic2rItems.register("tin_ore", new ItemBlockIc2r(Ic2rBlocks.TIN_ORE.get(), new Properties()));
 	public static final Item URANIUM_ORE = Ic2rItems.register("uranium_ore", new ItemBlockIc2r(Ic2rBlocks.URANIUM_ORE.get(), new Properties()));
@@ -200,4 +196,7 @@ public final class Ic2rItemsBlockItems
 	public static final Item ENERGY_O_MAT = Ic2rItems.register("energy_o_mat", new ItemBlockIc2r(Ic2rBlocks.ENERGY_O_MAT.get(), new Properties()));
 	public static final Item PERSONAL_CHEST = Ic2rItems.register("personal_chest", new ItemBlockIc2r(Ic2rBlocks.PERSONAL_CHEST.get(), new Properties().rarity(Rarity.UNCOMMON)));
 	public static final Item TRADE_O_MAT = Ic2rItems.register("trade_o_mat", new ItemBlockIc2r(Ic2rBlocks.TRADE_O_MAT.get(), new Properties()));
+	private Ic2rItemsBlockItems()
+	{
+	}
 }

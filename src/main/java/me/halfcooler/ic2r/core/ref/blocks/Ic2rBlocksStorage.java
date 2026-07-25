@@ -19,10 +19,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  */
 public final class Ic2rBlocksStorage
 {
-	private Ic2rBlocksStorage()
-	{
-	}
-
 	public static final DeferredHolder<Block, Block> WOODEN_STORAGE_BOX = EnvProxyForge.BLOCKS.register("wooden_storage_box", () -> Ic2rTileEntityBlock.create(Properties.of().strength(1.0F, 10.0F).sound(SoundType.WOOD), TileEntityWoodenStorageBox.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
 	public static final DeferredHolder<Block, Block> IRON_STORAGE_BOX = EnvProxyForge.BLOCKS.register("iron_storage_box", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(1.0F, 15.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityIronStorageBox.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
 	public static final DeferredHolder<Block, Block> BRONZE_STORAGE_BOX = EnvProxyForge.BLOCKS.register("bronze_storage_box", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(1.0F, 15.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityBronzeStorageBox.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
@@ -32,4 +28,7 @@ public final class Ic2rBlocksStorage
 	public static final DeferredHolder<Block, Block> IRON_TANK = EnvProxyForge.BLOCKS.register("iron_tank", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(3.0F, 15.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityIronTank.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
 	public static final DeferredHolder<Block, Block> STEEL_TANK = EnvProxyForge.BLOCKS.register("steel_tank", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(4.0F, 20.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntitySteelTank.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
 	public static final DeferredHolder<Block, Block> IRIDIUM_TANK = EnvProxyForge.BLOCKS.register("iridium_tank", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 100.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityIridiumTank.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
+	private Ic2rBlocksStorage()
+	{
+	}
 }

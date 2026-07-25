@@ -67,6 +67,15 @@ import java.util.List;
 
 public class TileEntityNuclearReactorElectric extends TileEntityInventory implements IHasGui, IReactor, IEnergySource, IMetaDelegate, IGuiValueProvider, IElectricalNode, ServerTicker, ClientTicker
 {
+	/**
+	 * Modern NBT key for GT-mode energy buffer (G1.5 naming expansion).
+	 * Same logical name as {@link me.halfcooler.ic2r.core.block.comp.Energy#NBT_ENERGY_BUFFER}.
+	 */
+	public static final String NBT_ENERGY_BUFFER = "energy_buffer";
+	/**
+	 * Legacy camelCase key; still readable via {@link LegacyNbt}.
+	 */
+	public static final String LEGACY_NBT_ENERGY_BUFFER = "energyBuffer";
 	public final Fluids.InternalFluidTank inputTank;
 	public final Fluids.InternalFluidTank outputTank;
 	public final InvSlotReactor reactorSlot;
@@ -77,6 +86,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	public final Redstone redstone;
 	protected final Fluids fluids;
 	private final List<IEnergyTile> subTiles = new ArrayList<>();
+	private final ElectricalProfile profile = new ElectricalProfile(VoltageTier.LV);
 	public Sound soundMain;
 	public Sound soundGeiger;
 	public float output = 0.0F;
@@ -87,21 +97,10 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	public int EmitHeat = 0;
 	public boolean addedToEnergyNet = false;
 	private float lastOutput = 0.0F;
-	private final ElectricalProfile profile = new ElectricalProfile(VoltageTier.LV);
 	private float lastSyncedOfferedOutput = -1.0F;
 	private double energyBuffer = 0.0;
 	private int EmitHeatBuffer = 0;
 	private boolean fluidCooled = false;
-
-	/**
-	 * Modern NBT key for GT-mode energy buffer (G1.5 naming expansion).
-	 * Same logical name as {@link me.halfcooler.ic2r.core.block.comp.Energy#NBT_ENERGY_BUFFER}.
-	 */
-	public static final String NBT_ENERGY_BUFFER = "energy_buffer";
-	/**
-	 * Legacy camelCase key; still readable via {@link LegacyNbt}.
-	 */
-	public static final String LEGACY_NBT_ENERGY_BUFFER = "energyBuffer";
 
 	public TileEntityNuclearReactorElectric(BlockPos pos, BlockState state)
 	{
@@ -159,6 +158,22 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 
 		BlockEntity te = world.getBlockEntity(pos);
 		return te instanceof IReactorChamber && ((IReactorChamber) te).isWall();
+	}
+
+	/**
+	 * Pure NBT write (snake_case only). Unit-test entry (NS-003 / G1.5).
+	 */
+	public static void writeEnergyBufferNbt(CompoundTag nbt, double energy)
+	{
+		nbt.putDouble(NBT_ENERGY_BUFFER, energy);
+	}
+
+	/**
+	 * Pure NBT read: prefer {@link #NBT_ENERGY_BUFFER}, else legacy {@link #LEGACY_NBT_ENERGY_BUFFER}.
+	 */
+	public static double readEnergyBufferNbt(CompoundTag nbt)
+	{
+		return LegacyNbt.getDouble(nbt, NBT_ENERGY_BUFFER, LEGACY_NBT_ENERGY_BUFFER);
 	}
 
 	private float getHuOutputModifier()
@@ -225,22 +240,6 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		nbt.putInt("heat", this.heat);
 		nbt.putShort("output", (short) this.getReactorEnergyOutput());
 		writeEnergyBufferNbt(nbt, this.energyBuffer);
-	}
-
-	/**
-	 * Pure NBT write (snake_case only). Unit-test entry (NS-003 / G1.5).
-	 */
-	public static void writeEnergyBufferNbt(CompoundTag nbt, double energy)
-	{
-		nbt.putDouble(NBT_ENERGY_BUFFER, energy);
-	}
-
-	/**
-	 * Pure NBT read: prefer {@link #NBT_ENERGY_BUFFER}, else legacy {@link #LEGACY_NBT_ENERGY_BUFFER}.
-	 */
-	public static double readEnergyBufferNbt(CompoundTag nbt)
-	{
-		return LegacyNbt.getDouble(nbt, NBT_ENERGY_BUFFER, LEGACY_NBT_ENERGY_BUFFER);
 	}
 
 	@Override

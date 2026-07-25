@@ -48,13 +48,12 @@ public class TileEntityFeConverter extends Ic2rTileEntity implements ServerTicke
 	public static final int SINK_TIER = 4;
 
 	public static final SyncKey<Integer> FACE_MODES = SyncKey.of("face_modes", SyncCodecs.INT);
-
+	private final Energy energy;
+	private final EuToFeEnergyStorage feStorage;
 	/**
 	 * 2 bits per {@link Direction} ordinal: 0=none, 1=eu, 2=fe.
 	 */
 	private int faceModesPacked;
-	private final Energy energy;
-	private final EuToFeEnergyStorage feStorage;
 
 	public TileEntityFeConverter(BlockPos pos, BlockState state)
 	{

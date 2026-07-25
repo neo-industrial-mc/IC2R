@@ -44,24 +44,17 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 {
 	private static ShearableAccess shearableAccess;
 
-	public interface ShearableAccess
-	{
-		boolean isShearable(net.minecraft.world.entity.Entity entity, net.minecraft.world.item.ItemStack stack, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos);
-
-		java.util.List<net.minecraft.world.item.ItemStack> onSheared(net.minecraft.world.entity.Entity entity, net.minecraft.world.entity.player.Player player, net.minecraft.world.item.ItemStack stack, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos);
-	}
-
-	public static void setShearableAccess(ShearableAccess access)
-	{
-		shearableAccess = access;
-	}
-
 	public ItemElectricToolChainsaw(Properties settings)
 	{
 		super(settings, 100, Ic2rToolMaterials.CHAINSAW, Collections.singletonList(BlockTags.MINEABLE_WITH_AXE));
 		this.maxCharge = 30000;
 		this.transferLimit = 100;
 		this.tier = 1;
+	}
+
+	public static void setShearableAccess(ShearableAccess access)
+	{
+		shearableAccess = access;
 	}
 
 	private boolean isShearMode(ItemStack stack)
@@ -234,5 +227,12 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	@Override
 	public void afterBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity)
 	{
+	}
+
+	public interface ShearableAccess
+	{
+		boolean isShearable(net.minecraft.world.entity.Entity entity, net.minecraft.world.item.ItemStack stack, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos);
+
+		java.util.List<net.minecraft.world.item.ItemStack> onSheared(net.minecraft.world.entity.Entity entity, net.minecraft.world.entity.player.Player player, net.minecraft.world.item.ItemStack stack, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos);
 	}
 }

@@ -53,16 +53,6 @@ public final class StackUtil
 	 * Touches {@link IC2R} first so {@code ForgePlatformServices.install()} has run.
 	 */
 	public static final EnvItemHandler ENV = createEnvItemHandler();
-
-	private static EnvItemHandler createEnvItemHandler()
-	{
-		if (IC2R.envProxy == null)
-		{
-			throw new IllegalStateException("IC2R.envProxy missing before PlatformItemTransfer factory");
-		}
-		return PlatformServices.itemTransfer().createHandler();
-	}
-
 	static final Set<String> ignoredNbtKeys = new HashSet<>(Arrays.asList("damage", "charge", "energy", "advDmg"));
 	private static final List<TagKey<Item>> oreTags = List.of(
 		Ic2rItemTags.ORES,
@@ -76,6 +66,15 @@ public final class StackUtil
 		ItemTags.REDSTONE_ORES
 	);
 	private static final int[] emptySlotArray = new int[0];
+
+	private static EnvItemHandler createEnvItemHandler()
+	{
+		if (IC2R.envProxy == null)
+		{
+			throw new IllegalStateException("IC2R.envProxy missing before PlatformItemTransfer factory");
+		}
+		return PlatformServices.itemTransfer().createHandler();
+	}
 
 	public static boolean isEmpty(ItemStack stack)
 	{

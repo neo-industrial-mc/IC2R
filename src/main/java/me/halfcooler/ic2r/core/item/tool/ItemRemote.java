@@ -38,72 +38,6 @@ public class ItemRemote extends Item
 		super(properties.stacksTo(1));
 	}
 
-	@NotNull
-	public InteractionResult useOn(UseOnContext context)
-	{
-		Level level = context.getLevel();
-		if (level.isClientSide)
-		{
-			return InteractionResult.SUCCESS;
-		}
-
-		BlockPos pos = context.getClickedPos();
-		BlockState state = level.getBlockState(pos);
-		if (!state.is(Ic2rBlocks.DYNAMITE.get()))
-		{
-			return InteractionResult.SUCCESS;
-		}
-
-		Player player = context.getPlayer();
-		if (player == null)
-		{
-			return InteractionResult.SUCCESS;
-		}
-
-		ItemStack stack = StackUtil.get(player, context.getHand());
-		if (!state.getValue(BlockDynamite.LINKED))
-		{
-			addRemote(pos, stack);
-			level.setBlock(pos, state.setValue(BlockDynamite.LINKED, true), 3);
-		} else
-		{
-			int index = hasRemote(pos, stack);
-			if (index > -1)
-			{
-				level.setBlock(pos, state.setValue(BlockDynamite.LINKED, false), 3);
-				removeRemote(index, stack);
-			} else
-			{
-				IC2R.sideProxy.messagePlayer(player, "ic2r.remote.cannot_unlink");
-			}
-		}
-
-		return InteractionResult.SUCCESS;
-	}
-
-	@NotNull
-	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand)
-	{
-		ItemStack stack = StackUtil.get(player, hand);
-		if (level.isClientSide)
-		{
-			return InteractionResultHolder.success(stack);
-		}
-
-		level.playSound(null, player.getX(), player.getY(), player.getZ(), Ic2rSoundEvents.ITEM_REMOTE_USE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-		launchRemotes(level, stack, player);
-		return InteractionResultHolder.success(stack);
-	}
-
-	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag)
-	{
-		int linked = getLinkedCount(stack);
-		if (linked > 0)
-		{
-			Ic2rTooltip.add(tooltip, Component.translatable("ic2r.remote.tooltip.linked", linked));
-		}
-	}
-
 	public static void addRemote(BlockPos pos, ItemStack freq)
 	{
 		CompoundTag compound = StackUtil.getOrCreateNbtData(freq);
@@ -214,5 +148,71 @@ public class ItemRemote extends Item
 		}
 
 		return compound.getList(COORDS_KEY, Tag.TAG_COMPOUND).size();
+	}
+
+	@NotNull
+	public InteractionResult useOn(UseOnContext context)
+	{
+		Level level = context.getLevel();
+		if (level.isClientSide)
+		{
+			return InteractionResult.SUCCESS;
+		}
+
+		BlockPos pos = context.getClickedPos();
+		BlockState state = level.getBlockState(pos);
+		if (!state.is(Ic2rBlocks.DYNAMITE.get()))
+		{
+			return InteractionResult.SUCCESS;
+		}
+
+		Player player = context.getPlayer();
+		if (player == null)
+		{
+			return InteractionResult.SUCCESS;
+		}
+
+		ItemStack stack = StackUtil.get(player, context.getHand());
+		if (!state.getValue(BlockDynamite.LINKED))
+		{
+			addRemote(pos, stack);
+			level.setBlock(pos, state.setValue(BlockDynamite.LINKED, true), 3);
+		} else
+		{
+			int index = hasRemote(pos, stack);
+			if (index > -1)
+			{
+				level.setBlock(pos, state.setValue(BlockDynamite.LINKED, false), 3);
+				removeRemote(index, stack);
+			} else
+			{
+				IC2R.sideProxy.messagePlayer(player, "ic2r.remote.cannot_unlink");
+			}
+		}
+
+		return InteractionResult.SUCCESS;
+	}
+
+	@NotNull
+	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand)
+	{
+		ItemStack stack = StackUtil.get(player, hand);
+		if (level.isClientSide)
+		{
+			return InteractionResultHolder.success(stack);
+		}
+
+		level.playSound(null, player.getX(), player.getY(), player.getZ(), Ic2rSoundEvents.ITEM_REMOTE_USE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+		launchRemotes(level, stack, player);
+		return InteractionResultHolder.success(stack);
+	}
+
+	public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag)
+	{
+		int linked = getLinkedCount(stack);
+		if (linked > 0)
+		{
+			Ic2rTooltip.add(tooltip, Component.translatable("ic2r.remote.tooltip.linked", linked));
+		}
 	}
 }

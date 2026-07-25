@@ -39,23 +39,6 @@ public class PlayerHead extends ItemImage
 
 	private record PlayerHeadSupplier(GameProfile profile) implements Supplier<ItemStack>
 	{
-		public ItemStack get()
-		{
-			try
-			{
-				GameProfile resolved = resolve(this.profile);
-				return PlayerHead.IMAGE_MAKER.computeIfAbsent(resolved, resolvedProfile ->
-				{
-					ItemStack skull = new ItemStack(Items.PLAYER_HEAD);
-					skull.set(DataComponents.PROFILE, new ResolvableProfile(resolvedProfile));
-					return skull;
-				});
-			} catch (InterruptedException | ExecutionException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-
 		private static GameProfile resolve(GameProfile profile) throws InterruptedException, ExecutionException
 		{
 			if (profile.getId() != null)
@@ -75,6 +58,23 @@ public class PlayerHead extends ItemImage
 				}
 			}
 			return profile;
+		}
+
+		public ItemStack get()
+		{
+			try
+			{
+				GameProfile resolved = resolve(this.profile);
+				return PlayerHead.IMAGE_MAKER.computeIfAbsent(resolved, resolvedProfile ->
+				{
+					ItemStack skull = new ItemStack(Items.PLAYER_HEAD);
+					skull.set(DataComponents.PROFILE, new ResolvableProfile(resolvedProfile));
+					return skull;
+				});
+			} catch (InterruptedException | ExecutionException e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
 	}
 }

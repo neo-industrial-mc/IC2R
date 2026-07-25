@@ -21,6 +21,15 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SyncCodecRoundTripTest
 {
+	private static <T> void assertRoundTrip(me.halfcooler.ic2r.core.network.sync.SyncCodec<T> codec, T value)
+		throws IOException
+	{
+		GrowingBuffer buffer = new GrowingBuffer(32);
+		codec.encode(buffer, value);
+		buffer.flip();
+		assertEquals(value, codec.decode(buffer));
+	}
+
 	/**
 	 * @Spec NS-005 codec: boolean / int / double value round-trip
 	 */
@@ -178,14 +187,5 @@ class SyncCodecRoundTripTest
 		{
 		});
 		assertThrows(IOException.class, () -> other.decodeAll(buffer));
-	}
-
-	private static <T> void assertRoundTrip(me.halfcooler.ic2r.core.network.sync.SyncCodec<T> codec, T value)
-		throws IOException
-	{
-		GrowingBuffer buffer = new GrowingBuffer(32);
-		codec.encode(buffer, value);
-		buffer.flip();
-		assertEquals(value, codec.decode(buffer));
 	}
 }

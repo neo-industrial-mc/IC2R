@@ -41,12 +41,11 @@ import java.util.Set;
 @NotClassic
 public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgradableBlock, IHasGui, IGuiValueProvider, ServerTicker
 {
-	public static int maxHeat = 50000;
 	/**
 	 * Oxygen doubles progress per tick (100% acceleration → half wall-clock time).
 	 */
 	public static final int OXYGEN_PROGRESS_MULTIPLIER = 2;
-
+	public static int maxHeat = 50000;
 	public final InvSlotProcessableGeneric inputSlot = new InvSlotProcessableGeneric(this, "input", 1, Recipes.blast_furnace);
 	public final InvSlotOutput outputSlot = new InvSlotOutput(this, "output", 2);
 	public final InvSlotConsumableLiquidByList tankInputSlot = new InvSlotConsumableLiquidByList(

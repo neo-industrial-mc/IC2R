@@ -124,6 +124,51 @@ public class Ic2rJeiPlugin implements IModPlugin
 		}
 	}
 
+	private static void putUidAliases(Map<String, RecipeType<?>> aliases, RecipeType<?> type)
+	{
+		ResourceLocation uid = type.getUid();
+		aliases.put(uid.toString(), type);
+		aliases.put(uid.getPath(), type);
+	}
+
+	@Nullable
+	private static RecipeType<?> resolveRecipeButtonKey(String key, Map<String, RecipeType<?>> aliases)
+	{
+		if (key == null || key.isEmpty())
+		{
+			return null;
+		}
+
+		RecipeType<?> direct = aliases.get(key);
+		if (direct != null)
+		{
+			return direct;
+		}
+
+		String normalized = key.indexOf('.') >= 0 && key.indexOf(':') < 0 ? key.replace('.', ':') : key;
+		direct = aliases.get(normalized);
+		if (direct != null)
+		{
+			return direct;
+		}
+
+		if (normalized.indexOf(':') >= 0)
+		{
+			ResourceLocation id = ResourceLocation.tryParse(normalized);
+			if (id != null)
+			{
+				direct = aliases.get(id.toString());
+				if (direct != null)
+				{
+					return direct;
+				}
+				return aliases.get(id.getPath());
+			}
+		}
+
+		return aliases.get("ic2r:" + key);
+	}
+
 	public @NotNull ResourceLocation getPluginUid()
 	{
 		return IC2R.getIdentifier("plugin");
@@ -270,51 +315,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 		return aliases;
 	}
 
-	private static void putUidAliases(Map<String, RecipeType<?>> aliases, RecipeType<?> type)
-	{
-		ResourceLocation uid = type.getUid();
-		aliases.put(uid.toString(), type);
-		aliases.put(uid.getPath(), type);
-	}
-
-	@Nullable
-	private static RecipeType<?> resolveRecipeButtonKey(String key, Map<String, RecipeType<?>> aliases)
-	{
-		if (key == null || key.isEmpty())
-		{
-			return null;
-		}
-
-		RecipeType<?> direct = aliases.get(key);
-		if (direct != null)
-		{
-			return direct;
-		}
-
-		String normalized = key.indexOf('.') >= 0 && key.indexOf(':') < 0 ? key.replace('.', ':') : key;
-		direct = aliases.get(normalized);
-		if (direct != null)
-		{
-			return direct;
-		}
-
-		if (normalized.indexOf(':') >= 0)
-		{
-			ResourceLocation id = ResourceLocation.tryParse(normalized);
-			if (id != null)
-			{
-				direct = aliases.get(id.toString());
-				if (direct != null)
-				{
-					return direct;
-				}
-				return aliases.get(id.getPath());
-			}
-		}
-
-		return aliases.get("ic2r:" + key);
-	}
-
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
 	{
 		registration.addRecipeTransferHandler(new IndustrialWorkbenchTransferInfo());
@@ -453,77 +453,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 	 */
 	private static final class IndustrialWorkbenchTransferInfo implements IRecipeTransferInfo<ContainerIndustrialWorkbench, CraftingRecipe>
 	{
-		private record ToolCombo(boolean hammer, int toolIngredientIndex)
-		{
-			boolean isHammer()
-			{
-				return this.hammer;
-			}
-		}
-
-		@Override
-		public @NotNull Class<? extends ContainerIndustrialWorkbench> getContainerClass()
-		{
-			return ContainerIndustrialWorkbench.class;
-		}
-
-		@Override
-		public @NotNull Optional<MenuType<ContainerIndustrialWorkbench>> getMenuType()
-		{
-			return Optional.of(Ic2rScreenHandlers.INDUSTRIAL_WORKBENCH);
-		}
-
-		@Override
-		@SuppressWarnings("unchecked")
-		public @NotNull RecipeType<CraftingRecipe> getRecipeType()
-		{
-			return (RecipeType<CraftingRecipe>) (RecipeType<?>) RecipeTypes.CRAFTING;
-		}
-
-		@Override
-		public boolean canHandle(@NotNull ContainerIndustrialWorkbench container, @NotNull CraftingRecipe recipe)
-		{
-			return true;
-		}
-
-		@Override
-		public @NotNull List<Slot> getRecipeSlots(@NotNull ContainerIndustrialWorkbench container, @NotNull CraftingRecipe recipe)
-		{
-			ToolCombo combo = detectToolCombo(recipe);
-			if (combo != null)
-			{
-				return getToolComboRecipeSlots(container, combo);
-			}
-			return getGridRecipeSlots(container);
-		}
-
-		@Override
-		public @NotNull List<Slot> getInventorySlots(@NotNull ContainerIndustrialWorkbench container, @NotNull CraftingRecipe recipe)
-		{
-			List<Slot> slots = new ArrayList<>(36 + 18 + 4);
-			for (int i = 0; i < 36; i++)
-			{
-				slots.add(container.getSlot(i));
-			}
-			for (int i = container.indexBufferStart; i < container.indexBufferEnd; i++)
-			{
-				slots.add(container.getSlot(i));
-			}
-
-			ToolCombo combo = detectToolCombo(recipe);
-			if (combo == null)
-			{
-				addToolRowInventorySlots(container, slots, true, true);
-			} else if (combo.isHammer())
-			{
-				addToolRowInventorySlots(container, slots, false, true);
-			} else
-			{
-				addToolRowInventorySlots(container, slots, true, false);
-			}
-			return slots;
-		}
-
 		private static List<Slot> getGridRecipeSlots(ContainerIndustrialWorkbench container)
 		{
 			List<Slot> slots = new ArrayList<>(9);
@@ -631,6 +560,77 @@ public class Ic2rJeiPlugin implements IModPlugin
 				}
 			}
 			return false;
+		}
+
+		@Override
+		public @NotNull Class<? extends ContainerIndustrialWorkbench> getContainerClass()
+		{
+			return ContainerIndustrialWorkbench.class;
+		}
+
+		@Override
+		public @NotNull Optional<MenuType<ContainerIndustrialWorkbench>> getMenuType()
+		{
+			return Optional.of(Ic2rScreenHandlers.INDUSTRIAL_WORKBENCH);
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public @NotNull RecipeType<CraftingRecipe> getRecipeType()
+		{
+			return (RecipeType<CraftingRecipe>) (RecipeType<?>) RecipeTypes.CRAFTING;
+		}
+
+		@Override
+		public boolean canHandle(@NotNull ContainerIndustrialWorkbench container, @NotNull CraftingRecipe recipe)
+		{
+			return true;
+		}
+
+		@Override
+		public @NotNull List<Slot> getRecipeSlots(@NotNull ContainerIndustrialWorkbench container, @NotNull CraftingRecipe recipe)
+		{
+			ToolCombo combo = detectToolCombo(recipe);
+			if (combo != null)
+			{
+				return getToolComboRecipeSlots(container, combo);
+			}
+			return getGridRecipeSlots(container);
+		}
+
+		@Override
+		public @NotNull List<Slot> getInventorySlots(@NotNull ContainerIndustrialWorkbench container, @NotNull CraftingRecipe recipe)
+		{
+			List<Slot> slots = new ArrayList<>(36 + 18 + 4);
+			for (int i = 0; i < 36; i++)
+			{
+				slots.add(container.getSlot(i));
+			}
+			for (int i = container.indexBufferStart; i < container.indexBufferEnd; i++)
+			{
+				slots.add(container.getSlot(i));
+			}
+
+			ToolCombo combo = detectToolCombo(recipe);
+			if (combo == null)
+			{
+				addToolRowInventorySlots(container, slots, true, true);
+			} else if (combo.isHammer())
+			{
+				addToolRowInventorySlots(container, slots, false, true);
+			} else
+			{
+				addToolRowInventorySlots(container, slots, true, false);
+			}
+			return slots;
+		}
+
+		private record ToolCombo(boolean hammer, int toolIngredientIndex)
+		{
+			boolean isHammer()
+			{
+				return this.hammer;
+			}
 		}
 	}
 

@@ -9,6 +9,13 @@ import java.util.function.Predicate;
 
 public final class MachineRecipeMatchMath
 {
+	public static final String MACERATOR_RECIPE_TYPE_ID = "ic2r:macerator";
+	public static final String MACERATOR_RECIPE_PATH = "macerator";
+	public static final String EXTRACTOR_RECIPE_TYPE_ID = "ic2r:extractor";
+	public static final String EXTRACTOR_RECIPE_PATH = "extractor";
+	public static final String COMPRESSOR_RECIPE_TYPE_ID = "ic2r:compressor";
+	public static final String COMPRESSOR_RECIPE_PATH = "compressor";
+
 	private MachineRecipeMatchMath()
 	{
 	}
@@ -136,18 +143,6 @@ public final class MachineRecipeMatchMath
 
 		return null;
 	}
-
-	public static final String MACERATOR_RECIPE_TYPE_ID = "ic2r:macerator";
-
-	public static final String MACERATOR_RECIPE_PATH = "macerator";
-
-	public static final String EXTRACTOR_RECIPE_TYPE_ID = "ic2r:extractor";
-
-	public static final String EXTRACTOR_RECIPE_PATH = "extractor";
-
-	public static final String COMPRESSOR_RECIPE_TYPE_ID = "ic2r:compressor";
-
-	public static final String COMPRESSOR_RECIPE_PATH = "compressor";
 
 	public static int findMatchingIndex(
 		String subjectItemId,

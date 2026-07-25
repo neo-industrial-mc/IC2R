@@ -25,6 +25,17 @@ public class RecipeResolver implements IRecipeResolver
 {
 	private static final double transformCost = 1.0;
 
+	private static RegistryAccess resolveRegistryAccess()
+	{
+		MinecraftServer server = PlatformServices.lifecycle().getServer();
+		if (server != null)
+		{
+			return server.registryAccess();
+		}
+
+		return null;
+	}
+
 	@Override
 	public List<RecipeTransformation> getTransformations()
 	{
@@ -78,16 +89,5 @@ public class RecipeResolver implements IRecipeResolver
 		}
 
 		return ret;
-	}
-
-	private static RegistryAccess resolveRegistryAccess()
-	{
-		MinecraftServer server = PlatformServices.lifecycle().getServer();
-		if (server != null)
-		{
-			return server.registryAccess();
-		}
-
-		return null;
 	}
 }

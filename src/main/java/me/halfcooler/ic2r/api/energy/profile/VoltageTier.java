@@ -19,29 +19,6 @@ public enum VoltageTier
 		this.icTier = icTier;
 	}
 
-	public int getVoltage()
-	{
-		return this.voltage;
-	}
-
-	public int getIcTier()
-	{
-		return this.icTier;
-	}
-
-	public String getTranslationKey()
-	{
-		return switch (this)
-		{
-			case ULV -> "ic2r.voltage.ulv";
-			case LV -> "ic2r.voltage.lv";
-			case MV -> "ic2r.voltage.mv";
-			case HV -> "ic2r.voltage.hv";
-			case EV -> "ic2r.voltage.ev";
-			case IV -> "ic2r.voltage.iv";
-		};
-	}
-
 	public static VoltageTier fromIcTier(int tier)
 	{
 		if (tier <= ULV.icTier)
@@ -65,5 +42,28 @@ public enum VoltageTier
 		}
 
 		return fromIcTier((int) Math.ceil(Math.log(power / 8.0) / Math.log(4.0)));
+	}
+
+	public int getVoltage()
+	{
+		return this.voltage;
+	}
+
+	public int getIcTier()
+	{
+		return this.icTier;
+	}
+
+	public String getTranslationKey()
+	{
+		return switch (this)
+		{
+			case ULV -> "ic2r.voltage.ulv";
+			case LV -> "ic2r.voltage.lv";
+			case MV -> "ic2r.voltage.mv";
+			case HV -> "ic2r.voltage.hv";
+			case EV -> "ic2r.voltage.ev";
+			case IV -> "ic2r.voltage.iv";
+		};
 	}
 }

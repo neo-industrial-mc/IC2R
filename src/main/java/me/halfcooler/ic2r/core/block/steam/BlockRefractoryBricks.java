@@ -7,17 +7,11 @@ public class BlockRefractoryBricks extends Block
 {
 	public static final com.mojang.serialization.MapCodec<BlockRefractoryBricks> CODEC = simpleCodec(BlockRefractoryBricks::new);
 
-	@Override
-	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
-	{
-		return CODEC;
-	}
-
-
 	public BlockRefractoryBricks(net.minecraft.world.level.block.state.BlockBehaviour.Properties properties)
 	{
 		super(properties);
 	}
+
 
 	public BlockRefractoryBricks()
 	{
@@ -25,5 +19,11 @@ public class BlockRefractoryBricks extends Block
 			.strength(2.0F, 10.0F)
 			.requiresCorrectToolForDrops()
 			.sound(SoundType.STONE));
+	}
+
+	@Override
+	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
+	{
+		return CODEC;
 	}
 }

@@ -38,11 +38,17 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 {
 	public static final int[] CHARGED_PROTECTION = new int[] { 3, 6, 8, 3 };
 	protected static final Map<Holder<MobEffect>, Integer> potionRemovalCost = new IdentityHashMap<>();
+	private static final Map<Player, Float> jumpCharges = new WeakHashMap<>();
 
 	static
 	{
 		potionRemovalCost.put(MobEffects.POISON, 10000);
 		potionRemovalCost.put(MobEffects.WITHER, 25000);
+	}
+
+	public ItemArmorQuantumSuit(Holder<ArmorMaterial> material, EquipmentSlot armorType, Properties settings)
+	{
+		super(material, armorType, settings, 1.0E7, 12000.0, 4);
 	}
 
 	private static Integer getBaseRemovalCost(Holder<MobEffect> potion)
@@ -67,13 +73,6 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 		}
 
 		return baseCost * (effect.getAmplifier() + 1);
-	}
-
-	private static final Map<Player, Float> jumpCharges = new WeakHashMap<>();
-
-	public ItemArmorQuantumSuit(Holder<ArmorMaterial> material, EquipmentSlot armorType, Properties settings)
-	{
-		super(material, armorType, settings, 1.0E7, 12000.0, 4);
 	}
 
 	@Override

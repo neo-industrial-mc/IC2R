@@ -19,8 +19,14 @@ import java.util.WeakHashMap;
 
 public class JetpackHandler implements IBackupElectricItemManager
 {
-	private static ItemStack jetpackCache;
 	private static final Map<Player, ItemStack> playerArmorBuffer = new WeakHashMap<>();
+	public static JetpackHandler instance;
+	private static ItemStack jetpackCache;
+	private boolean internalHandlesCheck = false;
+	private JetpackHandler()
+	{
+		ElectricItem.registerBackupManager(this);
+	}
 
 	static ItemStack getJetpackStack()
 	{
@@ -29,14 +35,6 @@ public class JetpackHandler implements IBackupElectricItemManager
 			jetpackCache = new ItemStack(Ic2rItems.JETPACK_ELECTRIC);
 		}
 		return jetpackCache;
-	}
-
-	public static JetpackHandler instance;
-	private boolean internalHandlesCheck = false;
-
-	private JetpackHandler()
-	{
-		ElectricItem.registerBackupManager(this);
 	}
 
 	public static void init()
@@ -99,6 +97,66 @@ public class JetpackHandler implements IBackupElectricItemManager
 	public static double getTransferLimit()
 	{
 		return ((IElectricItem) getJetpackStack().getItem()).getTransferLimit(getJetpackStack());
+	}
+
+	/**
+	 * Called by JetpackHandlerForge on player tick START.
+	 */
+	public static void restoreArmorIfBuffered(Player player)
+	{
+		if (playerArmorBuffer.containsKey(player))
+		{
+			ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
+			ItemStack lastStack = playerArmorBuffer.get(player);
+			if (!StackUtil.isEmpty(lastStack) && hasJetpackAttached(lastStack) && StackUtil.isEmpty(stack))
+			{
+				ItemStack newJetpack = getJetpackStack().copy();
+				double oldCharge = ElectricItem.manager.getCharge(lastStack);
+				ElectricItem.manager.charge(newJetpack, oldCharge, Integer.MAX_VALUE, true, false);
+				player.setItemSlot(EquipmentSlot.CHEST, newJetpack);
+			}
+			playerArmorBuffer.remove(player);
+		}
+	}
+
+	/**
+	 * Called by JetpackHandlerForge for jetpack tooltip injection.
+	 */
+	public static void addJetpackTooltip(ItemStack stack, java.util.List<Component> tip)
+	{
+		if (hasJetpackAttached(stack))
+		{
+			Ic2rTooltip.add(tip, Component.translatable("ic2r.jetpackAttached").withStyle(ChatFormatting.YELLOW));
+			String energyTooltip = ElectricItem.manager.getToolTip(stack);
+			if (energyTooltip != null && !energyTooltip.trim().isEmpty())
+			{
+				Ic2rTooltip.add(tip, Component.literal(energyTooltip));
+			}
+		}
+	}
+
+	/**
+	 * Called by JetpackHandlerForge on equipment slot change.
+	 */
+	public static void onEquipmentChanged(LivingEntity entity)
+	{
+		if (!(entity instanceof Player player))
+		{
+			return;
+		}
+		JetpackLogic.stopJetpackSound(player);
+	}
+
+	/**
+	 * Called by JetpackHandlerForge before damage; buffers chest armor for potential restore.
+	 */
+	public static void bufferChestArmor(Player player)
+	{
+		ItemStack currentArmor = player.getItemBySlot(EquipmentSlot.CHEST);
+		if (hasJetpackAttached(currentArmor))
+		{
+			playerArmorBuffer.put(player, currentArmor);
+		}
 	}
 
 	@Override
@@ -227,66 +285,6 @@ public class JetpackHandler implements IBackupElectricItemManager
 		boolean handle = hasJetpackAttached(stack) && ElectricItem.manager.getMaxCharge(stack) <= 0.0;
 		this.internalHandlesCheck = false;
 		return handle;
-	}
-
-	/**
-	 * Called by JetpackHandlerForge on player tick START.
-	 */
-	public static void restoreArmorIfBuffered(Player player)
-	{
-		if (playerArmorBuffer.containsKey(player))
-		{
-			ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
-			ItemStack lastStack = playerArmorBuffer.get(player);
-			if (!StackUtil.isEmpty(lastStack) && hasJetpackAttached(lastStack) && StackUtil.isEmpty(stack))
-			{
-				ItemStack newJetpack = getJetpackStack().copy();
-				double oldCharge = ElectricItem.manager.getCharge(lastStack);
-				ElectricItem.manager.charge(newJetpack, oldCharge, Integer.MAX_VALUE, true, false);
-				player.setItemSlot(EquipmentSlot.CHEST, newJetpack);
-			}
-			playerArmorBuffer.remove(player);
-		}
-	}
-
-	/**
-	 * Called by JetpackHandlerForge for jetpack tooltip injection.
-	 */
-	public static void addJetpackTooltip(ItemStack stack, java.util.List<Component> tip)
-	{
-		if (hasJetpackAttached(stack))
-		{
-			Ic2rTooltip.add(tip, Component.translatable("ic2r.jetpackAttached").withStyle(ChatFormatting.YELLOW));
-			String energyTooltip = ElectricItem.manager.getToolTip(stack);
-			if (energyTooltip != null && !energyTooltip.trim().isEmpty())
-			{
-				Ic2rTooltip.add(tip, Component.literal(energyTooltip));
-			}
-		}
-	}
-
-	/**
-	 * Called by JetpackHandlerForge on equipment slot change.
-	 */
-	public static void onEquipmentChanged(LivingEntity entity)
-	{
-		if (!(entity instanceof Player player))
-		{
-			return;
-		}
-		JetpackLogic.stopJetpackSound(player);
-	}
-
-	/**
-	 * Called by JetpackHandlerForge before damage; buffers chest armor for potential restore.
-	 */
-	public static void bufferChestArmor(Player player)
-	{
-		ItemStack currentArmor = player.getItemBySlot(EquipmentSlot.CHEST);
-		if (hasJetpackAttached(currentArmor))
-		{
-			playerArmorBuffer.put(player, currentArmor);
-		}
 	}
 
 

@@ -56,6 +56,8 @@ import java.util.function.Consumer;
 
 public class EventHandlerClient
 {
+	private static final GuiOverlayer guiOverlayer = new GuiOverlayer(SideProxyClient.mc);
+
 	public static void onClientSetup()
 	{
 		List<Block> fluidBlocks = new ArrayList<>();
@@ -226,8 +228,6 @@ public class EventHandlerClient
 	public static void onGuiCreate(Screen screen, List<GuiEventListener> widgets, Consumer<GuiEventListener> widgetAdder)
 	{
 	}
-
-	private static final GuiOverlayer guiOverlayer = new GuiOverlayer(SideProxyClient.mc);
 
 	public static void onRenderHotBar(GuiGraphics guiGraphics)
 	{

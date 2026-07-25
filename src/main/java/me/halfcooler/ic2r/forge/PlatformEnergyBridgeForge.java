@@ -15,6 +15,21 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class PlatformEnergyBridgeForge implements PlatformEnergyBridge
 {
+	@Nullable
+	private static IEnergyStorage getStorage(BlockEntity be, @Nullable Direction side)
+	{
+		if (be == null)
+		{
+			return null;
+		}
+		Level level = be.getLevel();
+		if (level == null)
+		{
+			return null;
+		}
+		return level.getCapability(Capabilities.EnergyStorage.BLOCK, be.getBlockPos(), side);
+	}
+
 	@Override
 	public boolean canReceive(BlockEntity be, @Nullable Direction side)
 	{
@@ -67,20 +82,5 @@ public final class PlatformEnergyBridgeForge implements PlatformEnergyBridge
 			return 0L;
 		}
 		return storage.extractEnergy(request, simulate);
-	}
-
-	@Nullable
-	private static IEnergyStorage getStorage(BlockEntity be, @Nullable Direction side)
-	{
-		if (be == null)
-		{
-			return null;
-		}
-		Level level = be.getLevel();
-		if (level == null)
-		{
-			return null;
-		}
-		return level.getCapability(Capabilities.EnergyStorage.BLOCK, be.getBlockPos(), side);
 	}
 }

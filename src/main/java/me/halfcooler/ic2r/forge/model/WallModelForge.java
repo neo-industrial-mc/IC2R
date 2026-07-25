@@ -37,18 +37,6 @@ public final class WallModelForge implements Ic2rModel
 	private static final ModelProperty<List<BakedQuad>[]> MESH_DATA = new ModelProperty<>();
 	private static final ModelProperty<TextureAtlasSprite> PARTICLE_DATA = new ModelProperty<>();
 
-	@Override
-	public BakedModel bake(
-		IGeometryBakingContext owner,
-		ModelBaker bakery,
-		Function<Material, TextureAtlasSprite> spriteGetter,
-		ModelState modelTransform,
-		ItemOverrides overrides
-	)
-	{
-		return new BakedWallModel();
-	}
-
 	private static List<BakedQuad>[] buildDefaultMesh(DyeColor color)
 	{
 		Block wallBlock = WallBlock.get(color);
@@ -127,6 +115,18 @@ public final class WallModelForge implements Ic2rModel
 
 		Block wallBlock = WallBlock.get(wall.getColor());
 		return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(wallBlock.defaultBlockState()).getParticleIcon();
+	}
+
+	@Override
+	public BakedModel bake(
+		IGeometryBakingContext owner,
+		ModelBaker bakery,
+		Function<Material, TextureAtlasSprite> spriteGetter,
+		ModelState modelTransform,
+		ItemOverrides overrides
+	)
+	{
+		return new BakedWallModel();
 	}
 
 	private static final class BakedWallModel implements BakedModel

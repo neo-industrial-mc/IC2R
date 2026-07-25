@@ -24,16 +24,8 @@ import org.jetbrains.annotations.Nullable;
 public class Ic2rSheetBlock extends Block
 {
 	public static final com.mojang.serialization.MapCodec<Ic2rSheetBlock> CODEC = simpleCodec(Ic2rSheetBlock::new);
-
-	@Override
-	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
-	{
-		return CODEC;
-	}
-
 	private static final VoxelShape aabb = Shapes.box(0.0, 0.0, 0.0, 1.0, 0.125, 1.0);
 	private static final Direction[] positiveHorizontalFacings = new Direction[] { Direction.EAST, Direction.SOUTH };
-
 	public Ic2rSheetBlock(Properties settings)
 	{
 		super(settings);
@@ -90,6 +82,12 @@ public class Ic2rSheetBlock extends Block
 		}
 
 		return false;
+	}
+
+	@Override
+	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
+	{
+		return CODEC;
 	}
 
 	@Nullable

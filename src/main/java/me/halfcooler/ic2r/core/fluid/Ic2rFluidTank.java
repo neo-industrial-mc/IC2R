@@ -5,16 +5,16 @@ import net.minecraft.world.level.material.Fluid;
 
 public class Ic2rFluidTank
 {
+	/**
+	 * Set by forge/ init so core never imports forge types.
+	 */
+	private static java.util.function.Function<Ic2rFluidTank, Object> handlerFactory;
 	private int capacity;
 	private Ic2rFluidStack fluidStack;
 	/**
 	 * Lazy forge adapter (G2.5); type is {@code Object} so core stays forge-free.
 	 */
 	private Object fluidHandler;
-	/**
-	 * Set by forge/ init so core never imports forge types.
-	 */
-	private static java.util.function.Function<Ic2rFluidTank, Object> handlerFactory;
 
 	public Ic2rFluidTank(int capacity)
 	{

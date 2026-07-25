@@ -44,6 +44,8 @@ import java.util.*;
 
 public abstract class Ic2rTileEntity extends BlockEntity implements INetworkDataProvider, INetworkUpdateListener, IGuiConditionProvider
 {
+	public static final String NBT_TE_COMPONENTS = "ic2r_components";
+	public static final String LEGACY_NBT_TE_COMPONENTS = "components";
 	private static final List<AABB> defaultAabbs = List.of(new AABB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
 	private static final List<TileEntityComponent> emptyComponents = Collections.emptyList();
 	private static final boolean debugLoad = System.getProperty("ic2r.te.debugload") != null;
@@ -59,6 +61,39 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 	{
 		super(type, pos, state);
 		this.teBlock = (Ic2rTileEntityBlock) state.getBlock();
+	}
+
+	public static CompoundTag readTeComponentsNbt(CompoundTag nbt)
+	{
+		if (nbt.contains(NBT_TE_COMPONENTS, 10))
+		{
+			return nbt.getCompound(NBT_TE_COMPONENTS);
+		}
+		if (nbt.contains(LEGACY_NBT_TE_COMPONENTS, 10))
+		{
+			CompoundTag legacy = nbt.getCompound(LEGACY_NBT_TE_COMPONENTS);
+			if (looksLikeIc2rTeComponents(legacy))
+			{
+				return legacy;
+			}
+		}
+		return null;
+	}
+
+	public static boolean looksLikeIc2rTeComponents(CompoundTag tag)
+	{
+		if (tag == null || tag.isEmpty())
+		{
+			return false;
+		}
+		for (String key : tag.getAllKeys())
+		{
+			if (Components.getClass(key) != null)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected boolean enablesServerWorldTick()
@@ -178,10 +213,6 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 		}
 	}
 
-	public static final String NBT_TE_COMPONENTS = "ic2r_components";
-
-	public static final String LEGACY_NBT_TE_COMPONENTS = "components";
-
 	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
 	{
 		super.loadAdditional(nbt, registries);
@@ -237,39 +268,6 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 				}
 			}
 		}
-	}
-
-	public static CompoundTag readTeComponentsNbt(CompoundTag nbt)
-	{
-		if (nbt.contains(NBT_TE_COMPONENTS, 10))
-		{
-			return nbt.getCompound(NBT_TE_COMPONENTS);
-		}
-		if (nbt.contains(LEGACY_NBT_TE_COMPONENTS, 10))
-		{
-			CompoundTag legacy = nbt.getCompound(LEGACY_NBT_TE_COMPONENTS);
-			if (looksLikeIc2rTeComponents(legacy))
-			{
-				return legacy;
-			}
-		}
-		return null;
-	}
-
-	public static boolean looksLikeIc2rTeComponents(CompoundTag tag)
-	{
-		if (tag == null || tag.isEmpty())
-		{
-			return false;
-		}
-		for (String key : tag.getAllKeys())
-		{
-			if (Components.getClass(key) != null)
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public final void tick()

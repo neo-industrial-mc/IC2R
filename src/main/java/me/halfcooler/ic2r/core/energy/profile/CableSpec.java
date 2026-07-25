@@ -27,29 +27,6 @@ public final class CableSpec implements ICableSpec
 		this.lossPerMeterPerAmp = lossPerMeterPerAmp;
 	}
 
-	public CableType getCableType()
-	{
-		return this.type;
-	}
-
-	@Override
-	public VoltageTier getMaxVoltage()
-	{
-		return this.maxVoltage;
-	}
-
-	@Override
-	public int getMaxAmperage()
-	{
-		return this.maxAmperage;
-	}
-
-	@Override
-	public int getLossPerMeterPerAmp()
-	{
-		return this.lossPerMeterPerAmp;
-	}
-
 	public static CableSpec forType(CableType type)
 	{
 		return switch (type)
@@ -125,5 +102,28 @@ public final class CableSpec implements ICableSpec
 		}
 
 		return 1;
+	}
+
+	public CableType getCableType()
+	{
+		return this.type;
+	}
+
+	@Override
+	public VoltageTier getMaxVoltage()
+	{
+		return this.maxVoltage;
+	}
+
+	@Override
+	public int getMaxAmperage()
+	{
+		return this.maxAmperage;
+	}
+
+	@Override
+	public int getLossPerMeterPerAmp()
+	{
+		return this.lossPerMeterPerAmp;
 	}
 }

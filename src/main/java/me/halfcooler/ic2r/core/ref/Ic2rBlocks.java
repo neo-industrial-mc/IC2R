@@ -22,10 +22,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  */
 public final class Ic2rBlocks
 {
-	private Ic2rBlocks()
-	{
-	}
-
 	public static final DeferredHolder<Block, Block> LEAD_ORE = Ic2rBlocksResources.LEAD_ORE;
 	public static final DeferredHolder<Block, Block> TIN_ORE = Ic2rBlocksResources.TIN_ORE;
 	public static final DeferredHolder<Block, Block> URANIUM_ORE = Ic2rBlocksResources.URANIUM_ORE;
@@ -276,6 +272,9 @@ public final class Ic2rBlocks
 	public static final DeferredHolder<Block, Block> SPIDERNIP_CROP = Ic2rBlocksCrops.SPIDERNIP_CROP;
 	public static final DeferredHolder<Block, Block> TEARSTALKS_CROP = Ic2rBlocksCrops.TEARSTALKS_CROP;
 	public static final DeferredHolder<Block, Block> WITHEREED_CROP = Ic2rBlocksCrops.WITHEREED_CROP;
+	private Ic2rBlocks()
+	{
+	}
 
 	public static void init()
 	{

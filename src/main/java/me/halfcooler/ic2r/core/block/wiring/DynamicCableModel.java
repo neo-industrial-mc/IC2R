@@ -71,6 +71,26 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 		return new Material(atlas, IC2R.getIdentifier(path));
 	}
 
+	private static int getConnections(BlockState state)
+	{
+		if (!(state.getBlock() instanceof AbstractCableBlock cable) || cable.isFoam())
+		{
+			return 0;
+		}
+
+		int connections = 0;
+
+		for (Direction direction : Direction.values())
+		{
+			if (state.getValue(PipeBlock.PROPERTY_BY_DIRECTION.get(direction)))
+			{
+				connections |= 1 << direction.ordinal();
+			}
+		}
+
+		return connections;
+	}
+
 	public @NotNull Collection<ResourceLocation> getDependencies()
 	{
 		return Collections.emptyList();
@@ -219,26 +239,6 @@ public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedMode
 		{
 			this.cacheLock.unlock(stamp);
 		}
-	}
-
-	private static int getConnections(BlockState state)
-	{
-		if (!(state.getBlock() instanceof AbstractCableBlock cable) || cable.isFoam())
-		{
-			return 0;
-		}
-
-		int connections = 0;
-
-		for (Direction direction : Direction.values())
-		{
-			if (state.getValue(PipeBlock.PROPERTY_BY_DIRECTION.get(direction)))
-			{
-				connections |= 1 << direction.ordinal();
-			}
-		}
-
-		return connections;
 	}
 
 	protected abstract T generateMesh(DyeColor var1, int var2);

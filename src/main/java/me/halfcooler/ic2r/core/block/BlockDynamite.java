@@ -29,28 +29,17 @@ import org.jetbrains.annotations.Nullable;
 public class BlockDynamite extends Block
 {
 	public static final com.mojang.serialization.MapCodec<BlockDynamite> CODEC = simpleCodec(BlockDynamite::new);
-
-	@Override
-	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
-	{
-		return CODEC;
-	}
-
-
-	public BlockDynamite(net.minecraft.world.level.block.state.BlockBehaviour.Properties properties)
-	{
-		super(properties);
-	}
-
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	public static final BooleanProperty LINKED = BooleanProperty.create("linked");
-
 	private static final VoxelShape FLOOR = Block.box(6.0, 0.0, 6.0, 10.0, 10.0, 10.0);
 	private static final VoxelShape NORTH = Block.box(5.0, 3.0, 11.0, 11.0, 13.0, 16.0);
 	private static final VoxelShape SOUTH = Block.box(5.0, 3.0, 0.0, 11.0, 13.0, 5.0);
 	private static final VoxelShape WEST = Block.box(11.0, 3.0, 5.0, 16.0, 13.0, 11.0);
 	private static final VoxelShape EAST = Block.box(0.0, 3.0, 5.0, 5.0, 13.0, 11.0);
-
+	public BlockDynamite(net.minecraft.world.level.block.state.BlockBehaviour.Properties properties)
+	{
+		super(properties);
+	}
 	public BlockDynamite()
 	{
 		super(Properties.of()
@@ -62,6 +51,12 @@ public class BlockDynamite extends Block
 			.noLootTable()
 			.pushReaction(PushReaction.DESTROY));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.UP).setValue(LINKED, false));
+	}
+
+	@Override
+	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
+	{
+		return CODEC;
 	}
 
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)

@@ -21,10 +21,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
  */
 public final class Ic2rBlocksMachines
 {
-	private Ic2rBlocksMachines()
-	{
-	}
-
 	public static final DeferredHolder<Block, Block> CONDENSER = EnvProxyForge.BLOCKS.register("condenser", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityCondenser.class, true, Ic2rTileEntityBlock.DefaultDrop.Machine, Util.horizontalFacings, true));
 	public static final DeferredHolder<Block, Block> FLUID_BOTTLER = EnvProxyForge.BLOCKS.register("fluid_bottler", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityFluidBottler.class, true, Ic2rTileEntityBlock.DefaultDrop.Machine, Util.horizontalFacings, true));
 	public static final DeferredHolder<Block, Block> FLUID_DISTRIBUTOR = EnvProxyForge.BLOCKS.register("fluid_distributor", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityFluidDistributor.class, true, Ic2rTileEntityBlock.DefaultDrop.Machine, Util.allFacings, true));
@@ -76,4 +72,7 @@ public final class Ic2rBlocksMachines
 	public static final DeferredHolder<Block, Block> COKE_KILN = EnvProxyForge.BLOCKS.register("coke_kiln", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.STONE), TileEntityCokeKiln.class, true, Ic2rTileEntityBlock.DefaultDrop.Self, Util.horizontalFacings, true));
 	public static final DeferredHolder<Block, Block> COKE_KILN_HATCH = EnvProxyForge.BLOCKS.register("coke_kiln_hatch", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.STONE), TileEntityCokeKilnHatch.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.allFacings, true));
 	public static final DeferredHolder<Block, Block> COKE_KILN_GRATE = EnvProxyForge.BLOCKS.register("coke_kiln_grate", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.STONE), TileEntityCokeKilnGrate.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.allFacings, true));
+	private Ic2rBlocksMachines()
+	{
+	}
 }

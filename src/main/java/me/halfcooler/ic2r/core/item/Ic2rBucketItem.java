@@ -37,6 +37,11 @@ import java.util.List;
 
 public abstract class Ic2rBucketItem extends BucketItem
 {
+	/**
+	 * Forge-event hook set by forge/ init; no-op unless forge layer wires {@code EventHooks#onBucketUse}.
+	 */
+	@Nullable
+	private static BucketUseHook bucketUseHook;
 	protected Fluid fluid;
 
 	public Ic2rBucketItem(Fluid fluid, Properties settings)
@@ -44,6 +49,11 @@ public abstract class Ic2rBucketItem extends BucketItem
 		super(fluid, settings);
 		this.fluid = fluid;
 		this.getDrainableFluidList();
+	}
+
+	public static void setBucketUseHook(@Nullable BucketUseHook hook)
+	{
+		bucketUseHook = hook;
 	}
 
 	/**
@@ -261,21 +271,10 @@ public abstract class Ic2rBucketItem extends BucketItem
 		world.gameEvent(player, GameEvent.FLUID_PLACE, pos);
 	}
 
-	/**
-	 * Forge-event hook set by forge/ init; no-op unless forge layer wires {@code EventHooks#onBucketUse}.
-	 */
-	@Nullable
-	private static BucketUseHook bucketUseHook;
-
 	@FunctionalInterface
 	public interface BucketUseHook
 	{
 		@Nullable
 		InteractionResultHolder<ItemStack> onBucketUse(Player user, Level world, ItemStack stack, BlockHitResult hit);
-	}
-
-	public static void setBucketUseHook(@Nullable BucketUseHook hook)
-	{
-		bucketUseHook = hook;
 	}
 }

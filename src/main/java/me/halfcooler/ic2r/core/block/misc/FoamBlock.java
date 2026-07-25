@@ -32,13 +32,6 @@ import java.util.List;
 public class FoamBlock extends Block
 {
 	public static final com.mojang.serialization.MapCodec<FoamBlock> CODEC = simpleCodec(FoamBlock::new);
-
-	@Override
-	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
-	{
-		return CODEC;
-	}
-
 	public static final EnumProperty<FoamBlock.FoamType> typeProperty = EnumProperty.create("type", FoamBlock.FoamType.class);
 
 	public FoamBlock(Properties settings)
@@ -60,6 +53,12 @@ public class FoamBlock extends Block
 
 		int avgTime = type.hardenTime * (16 - light);
 		return 1.0F / (avgTime * 20);
+	}
+
+	@Override
+	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
+	{
+		return CODEC;
 	}
 
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)

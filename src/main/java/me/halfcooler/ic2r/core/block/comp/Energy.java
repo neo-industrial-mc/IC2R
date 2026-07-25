@@ -45,10 +45,11 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 
 	private static final boolean debugLoad = System.getProperty("ic2r.comp.energy.debugload") != null;
 	private final boolean fullEnergy;
+	private final int nativeSinkTier;
+	private final ElectricalProfile profile;
 	private double capacity;
 	private double storage;
 	private int sinkTier;
-	private final int nativeSinkTier;
 	private int sourceTier;
 	private Set<Direction> sinkDirections;
 	private Set<Direction> sourceDirections;
@@ -59,7 +60,6 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 	private boolean loaded;
 	private boolean receivingDisabled;
 	private boolean sendingSidabled;
-	private final ElectricalProfile profile;
 
 	public Energy(Ic2rTileEntity parent, double capacity)
 	{
@@ -108,6 +108,23 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		return new Energy(parent, capacity, Collections.emptySet(), Util.allFacings, tier);
 	}
 
+	/**
+	 * Pure NBT write for energy buffer (snake_case only). Used by component + unit tests (NS-003).
+	 */
+	public static void writeEnergyBuffer(CompoundTag nbt, double energy)
+	{
+		nbt.putDouble(NBT_ENERGY_BUFFER, energy);
+	}
+
+	/**
+	 * Pure NBT read for energy buffer: prefer {@link #NBT_ENERGY_BUFFER}, else legacy {@link #LEGACY_NBT_STORAGE}.
+	 * Aligns with golden suite NS-001 / NS-002.
+	 */
+	public static double readEnergyBuffer(CompoundTag nbt)
+	{
+		return LegacyNbt.getDouble(nbt, NBT_ENERGY_BUFFER, LEGACY_NBT_STORAGE);
+	}
+
 	public Energy addManagedSlot(InvSlot slot)
 	{
 		if (!(slot instanceof IChargingSlot) && !(slot instanceof IDischargingSlot))
@@ -136,23 +153,6 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		CompoundTag ret = new CompoundTag();
 		writeEnergyBuffer(ret, this.storage);
 		return ret;
-	}
-
-	/**
-	 * Pure NBT write for energy buffer (snake_case only). Used by component + unit tests (NS-003).
-	 */
-	public static void writeEnergyBuffer(CompoundTag nbt, double energy)
-	{
-		nbt.putDouble(NBT_ENERGY_BUFFER, energy);
-	}
-
-	/**
-	 * Pure NBT read for energy buffer: prefer {@link #NBT_ENERGY_BUFFER}, else legacy {@link #LEGACY_NBT_STORAGE}.
-	 * Aligns with golden suite NS-001 / NS-002.
-	 */
-	public static double readEnergyBuffer(CompoundTag nbt)
-	{
-		return LegacyNbt.getDouble(nbt, NBT_ENERGY_BUFFER, LEGACY_NBT_STORAGE);
 	}
 
 	@Override
@@ -372,11 +372,6 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		this.profile.setRecipePower(recipePower);
 	}
 
-	public void setWorkingVoltage(VoltageTier workingVoltage)
-	{
-		this.profile.setWorkingVoltage(workingVoltage);
-	}
-
 	public void syncConsumerProfile(int recipePowerEuPerTick)
 	{
 		VoltageTier voltage = resolveConsumerWorkingVoltage(recipePowerEuPerTick);
@@ -492,6 +487,11 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 	public VoltageTier getWorkingVoltage()
 	{
 		return this.profile.getWorkingVoltage();
+	}
+
+	public void setWorkingVoltage(VoltageTier workingVoltage)
+	{
+		this.profile.setWorkingVoltage(workingVoltage);
 	}
 
 	@Override

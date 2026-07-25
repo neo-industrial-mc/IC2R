@@ -45,30 +45,12 @@ import java.util.concurrent.atomic.AtomicReference;
 class EnvFluidHandlerForge implements EnvFluidHandler
 {
 
-	/**
-	 * Common-safe client rendering data for a fluid type.
-	 * Registered via {@link net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent}
-	 * (replaces the removed {@code FluidType#initializeClient}).
-	 */
-	record PendingClientFluidExtensions(
-		AtomicReference<FluidType> fluidType,
-		ResourceLocation stillSpriteId,
-		ResourceLocation flowingSpriteId,
-		int color,
-		int density
-	)
-	{
-	}
-
 	static final DeferredRegister<Fluid> fluidRegistry = DeferredRegister.create(Registries.FLUID, "ic2r");
-
 	static final DeferredRegister<FluidType> fluidTypeRegistry = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, "ic2r");
-
+	static final List<PendingClientFluidExtensions> pendingClientFluidExtensions = new ArrayList<>();
 	private static final List<Runnable> pendingFluidTypeRegistrations = new ArrayList<>();
 
 	private static final List<Runnable> pendingFluidRegistrations = new ArrayList<>();
-
-	static final List<PendingClientFluidExtensions> pendingClientFluidExtensions = new ArrayList<>();
 
 	private static IFluidHandlerItem getFluidHandler(ItemStack stack)
 	{
@@ -583,5 +565,20 @@ class EnvFluidHandlerForge implements EnvFluidHandler
 			return Ic2rFluidStack.create(fluid, 1000);
 		}
 		return null;
+	}
+
+	/**
+	 * Common-safe client rendering data for a fluid type.
+	 * Registered via {@link net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent}
+	 * (replaces the removed {@code FluidType#initializeClient}).
+	 */
+	record PendingClientFluidExtensions(
+		AtomicReference<FluidType> fluidType,
+		ResourceLocation stillSpriteId,
+		ResourceLocation flowingSpriteId,
+		int color,
+		int density
+	)
+	{
 	}
 }

@@ -20,10 +20,6 @@ import java.util.function.Supplier;
  */
 public final class Ic2rItems
 {
-	private Ic2rItems()
-	{
-	}
-
 	public static final Item LEAD_ORE = Ic2rItemsBlockItems.LEAD_ORE;
 	public static final Item TIN_ORE = Ic2rItemsBlockItems.TIN_ORE;
 	public static final Item URANIUM_ORE = Ic2rItemsBlockItems.URANIUM_ORE;
@@ -536,7 +532,6 @@ public final class Ic2rItems
 	public static final Item NIGHT_VISION_GOGGLES = Ic2rItemsArmor.NIGHT_VISION_GOGGLES;
 	public static final Item SOLAR_HELMET = Ic2rItemsArmor.SOLAR_HELMET;
 	public static final Item STATIC_BOOTS = Ic2rItemsArmor.STATIC_BOOTS;
-
 	public static final EnumMap<Ic2rItemGroupType, List<Supplier<Item>>> CREATIVE_TAB_ITEMS = new EnumMap<>(Ic2rItemGroupType.class);
 
 	static
@@ -1034,6 +1029,10 @@ public final class Ic2rItems
 		addToCreativeTab(Ic2rItemGroupType.TOOLS_AND_UTILITIES, () -> WOODEN_ROTOR);
 		addToCreativeTab(Ic2rItemGroupType.TOOLS_AND_UTILITIES, () -> WRENCH);
 		addToCreativeTab(Ic2rItemGroupType.TOOLS_AND_UTILITIES, () -> YELLOW_PAINTER);
+	}
+
+	private Ic2rItems()
+	{
 	}
 
 	public static void addToCreativeTab(Ic2rItemGroupType type, Supplier<Item> itemSupplier)

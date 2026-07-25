@@ -13,10 +13,6 @@ import net.minecraft.world.level.material.Fluids;
  */
 public final class Ic2rItemsCells
 {
-	private Ic2rItemsCells()
-	{
-	}
-
 	public static final Item FACADE_CELL = Ic2rItems.register("facade_cell", new ItemClassicCell(new Properties(), Fluids.EMPTY));
 	public static final Item WATER_CELL = Ic2rItems.register("water_cell", new ItemClassicCell(new Properties(), Fluids.WATER));
 	public static final Item LAVA_CELL = Ic2rItems.register("lava_cell", new ItemClassicCell(new Properties(), Fluids.LAVA));
@@ -39,4 +35,7 @@ public final class Ic2rItemsCells
 	public static final Item HYDROGEN_CELL = Ic2rItems.register("hydrogen_cell", new ItemClassicCell(new Properties(), Ic2rFluids.HYDROGEN.still()));
 	public static final Item OXYGEN_CELL = Ic2rItems.register("oxygen_cell", new ItemClassicCell(new Properties(), Ic2rFluids.OXYGEN.still()));
 	public static final Item HEAVY_WATER_CELL = Ic2rItems.register("heavy_water_cell", new ItemClassicCell(new Properties(), Ic2rFluids.HEAVY_WATER.still()));
+	private Ic2rItemsCells()
+	{
+	}
 }

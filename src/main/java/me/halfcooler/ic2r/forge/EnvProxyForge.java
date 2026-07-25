@@ -82,6 +82,7 @@ import java.util.function.Supplier;
 
 public final class EnvProxyForge implements EnvProxy
 {
+	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, "ic2r");
 	static final DeferredRegister<BlockEntityType<?>> blockEntityRegistry = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "ic2r");
 	static final DeferredRegister<MenuType<?>> screenHandlerRegistry = DeferredRegister.create(Registries.MENU, "ic2r");
 	static final DeferredRegister<EntityType<?>> entityRegistry = DeferredRegister.create(Registries.ENTITY_TYPE, "ic2r");
@@ -91,7 +92,6 @@ public final class EnvProxyForge implements EnvProxy
 	static final DeferredRegister<FoliagePlacerType<?>> foliagePlacerRegistry = DeferredRegister.create(Registries.FOLIAGE_PLACER_TYPE, "ic2r");
 	static final DeferredRegister<RecipeType<?>> recipeTypeRegistry = DeferredRegister.create(Registries.RECIPE_TYPE, "ic2r");
 	static final DeferredRegister<RecipeSerializer<?>> recipeSerializerRegistry = DeferredRegister.create(Registries.RECIPE_SERIALIZER, "ic2r");
-	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, "ic2r");
 	private static final boolean isClient = FMLEnvironment.dist.isClient();
 	static List<Runnable> pendingItemRegistrations = new ArrayList<>();
 	static List<ConfiguredFeatureRegistration<?, ?>> configuredFeatureRegistrations = new ArrayList<>();
@@ -107,6 +107,25 @@ public final class EnvProxyForge implements EnvProxy
 		}
 
 		pendingItemRegistrations.clear();
+	}
+
+	/**
+	 * Queue entries on {@link #statusEffectRegistry} <b>before</b> any
+	 * {@code RegisterEvent} for {@code MOB_EFFECT}. Calling this (or
+	 * {@link #registerStatusEffect}) after that event freezes the DeferredRegister
+	 * and throws {@link IllegalStateException}.
+	 * <p>
+	 * Invoked from {@link FmlMod} constructor — not from {@code onInitEarly}
+	 * (which runs during BLOCK registration, after MOB_EFFECT has already frozen).
+	 */
+	static void queueCoreStatusEffects()
+	{
+		statusEffectRegistry.register("radiation", () ->
+		{
+			Ic2rPotion effect = new Ic2rPotion(MobEffectCategory.HARMFUL, 5149489);
+			Ic2rPotion.radiation = effect;
+			return effect;
+		});
 	}
 
 	@Override
@@ -151,25 +170,6 @@ public final class EnvProxyForge implements EnvProxy
 	public WoodType registerSignType(String name)
 	{
 		return WoodType.register(new WoodType("ic2r:" + name, BlockSetType.OAK));
-	}
-
-	/**
-	 * Queue entries on {@link #statusEffectRegistry} <b>before</b> any
-	 * {@code RegisterEvent} for {@code MOB_EFFECT}. Calling this (or
-	 * {@link #registerStatusEffect}) after that event freezes the DeferredRegister
-	 * and throws {@link IllegalStateException}.
-	 * <p>
-	 * Invoked from {@link FmlMod} constructor — not from {@code onInitEarly}
-	 * (which runs during BLOCK registration, after MOB_EFFECT has already frozen).
-	 */
-	static void queueCoreStatusEffects()
-	{
-		statusEffectRegistry.register("radiation", () ->
-		{
-			Ic2rPotion effect = new Ic2rPotion(MobEffectCategory.HARMFUL, 5149489);
-			Ic2rPotion.radiation = effect;
-			return effect;
-		});
 	}
 
 	@Override

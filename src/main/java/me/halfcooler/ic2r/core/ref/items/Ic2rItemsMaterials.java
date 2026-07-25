@@ -23,10 +23,6 @@ import java.util.List;
  */
 public final class Ic2rItemsMaterials
 {
-	private Ic2rItemsMaterials()
-	{
-	}
-
 	public static final Item RAW_LEAD = Ic2rItems.register("raw_lead", new Item(new Properties()));
 	public static final Item RAW_TIN = Ic2rItems.register("raw_tin", new Item(new Properties()));
 	public static final Item RAW_URANIUM = Ic2rItems.register("raw_uranium", new Item(new Properties()));
@@ -185,4 +181,7 @@ public final class Ic2rItemsMaterials
 	public static final Item COIN = Ic2rItems.register("coin", new Item(new Properties()));
 	public static final Item BRONZE_ROTOR_BLADE = Ic2rItems.register("bronze_rotor_blade", new Item(new Properties()));
 	public static final Item BRONZE_SHAFT = Ic2rItems.register("bronze_shaft", new Item(new Properties()));
+	private Ic2rItemsMaterials()
+	{
+	}
 }

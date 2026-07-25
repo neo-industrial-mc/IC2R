@@ -147,33 +147,8 @@ public final class Ic2rBlockEntities
 	public static final BlockEntityType<TileEntityCentrifuge> CENTRIFUGE = register("centrifuge", TileEntityCentrifuge::new, Ic2rBlocks.CENTRIFUGE.get());
 	public static final BlockEntityType<TileEntityCrop> WITHEREED_CROP = register("withereed_crop", TileEntityCrop::new, Ic2rBlocks.WITHEREED_CROP.get());
 	public static final BlockEntityType<TileEntityFermenter> FERMENTER = register("fermenter", TileEntityFermenter::new, Ic2rBlocks.FERMENTER.get());
-
-	public static void init()
-	{
-	}
-
 	public static final BlockEntityType<TileEntityInduction> INDUCTION_FURNACE = register("induction_furnace", TileEntityInduction::new, Ic2rBlocks.INDUCTION_FURNACE.get());
-
-	private static <T extends BlockEntity> BlockEntityType<T> register(String name, BiFunction<BlockPos, BlockState, T> factory, Block... blocks)
-	{
-		if (blockEntityTypeMap == null)
-		{
-			blockEntityTypeMap = new HashMap<>();
-		}
-
-		ResourceLocation identifier = IC2R.getIdentifier(name);
-		BlockEntityType<T> blockEntityType = IC2R.envProxy.registerBlockEntity(identifier, factory, blocks);
-		blockEntityTypeMap.put(identifier.toString(), blockEntityType);
-		return blockEntityType;
-	}
-
 	public static final BlockEntityType<TileEntityMetalFormer> METAL_FORMER = register("metal_former", TileEntityMetalFormer::new, Ic2rBlocks.METAL_FORMER.get());
-
-	public static BlockEntityType<?> get(ResourceLocation identifier)
-	{
-		return blockEntityTypeMap.get(identifier.toString());
-	}
-
 	public static final BlockEntityType<TileEntityOreWashing> ORE_WASHING_PLANT = register("ore_washing_plant", TileEntityOreWashing::new, Ic2rBlocks.ORE_WASHING_PLANT.get());
 	public static final BlockEntityType<TileEntityAdvMiner> ADVANCED_MINER = register("advanced_miner", TileEntityAdvMiner::new, Ic2rBlocks.ADVANCED_MINER.get());
 	public static final BlockEntityType<TileEntityCropHarvester> CROP_HARVESTER = register("crop_harvester", TileEntityCropHarvester::new, Ic2rBlocks.CROP_HARVESTER.get());
@@ -208,8 +183,6 @@ public final class Ic2rBlockEntities
 	public static final BlockEntityType<TileEntityWeightedItemDistributor> WEIGHTED_ITEM_DISTRIBUTOR = register("weighted_item_distributor", TileEntityWeightedItemDistributor::new, Ic2rBlocks.WEIGHTED_ITEM_DISTRIBUTOR.get());
 	public static final BlockEntityType<TileEntityRCI_RSH> RCI_RSH = register("rci_rsh", TileEntityRCI_RSH::new, Ic2rBlocks.RCI_RSH.get());
 	public static final BlockEntityType<TileEntityRCI_LZH> RCI_LZH = register("rci_lzh", TileEntityRCI_LZH::new, Ic2rBlocks.RCI_LZH.get());
-
-
 	public static final BlockEntityType<TileEntityIndustrialWorkbench> INDUSTRIAL_WORKBENCH = register("industrial_workbench", TileEntityIndustrialWorkbench::new, Ic2rBlocks.INDUSTRIAL_WORKBENCH.get());
 	public static final BlockEntityType<TileEntityBatchCrafter> BATCH_CRAFTER = register("batch_crafter", TileEntityBatchCrafter::new, Ic2rBlocks.BATCH_CRAFTER.get());
 	public static final BlockEntityType<TileEntityWoodenStorageBox> WOODEN_STORAGE_BOX = register("wooden_storage_box", TileEntityWoodenStorageBox::new, Ic2rBlocks.WOODEN_STORAGE_BOX.get());
@@ -224,6 +197,28 @@ public final class Ic2rBlockEntities
 	public static final BlockEntityType<TileEntityCokeKiln> COKE_KILN = register("coke_kiln", TileEntityCokeKiln::new, Ic2rBlocks.COKE_KILN.get());
 	public static final BlockEntityType<TileEntityCokeKilnHatch> COKE_KILN_HATCH = register("coke_kiln_hatch", TileEntityCokeKilnHatch::new, Ic2rBlocks.COKE_KILN_HATCH.get());
 	public static final BlockEntityType<TileEntityCokeKilnGrate> COKE_KILN_GRATE = register("coke_kiln_grate", TileEntityCokeKilnGrate::new, Ic2rBlocks.COKE_KILN_GRATE.get());
+
+	public static void init()
+	{
+	}
+
+	private static <T extends BlockEntity> BlockEntityType<T> register(String name, BiFunction<BlockPos, BlockState, T> factory, Block... blocks)
+	{
+		if (blockEntityTypeMap == null)
+		{
+			blockEntityTypeMap = new HashMap<>();
+		}
+
+		ResourceLocation identifier = IC2R.getIdentifier(name);
+		BlockEntityType<T> blockEntityType = IC2R.envProxy.registerBlockEntity(identifier, factory, blocks);
+		blockEntityTypeMap.put(identifier.toString(), blockEntityType);
+		return blockEntityType;
+	}
+
+	public static BlockEntityType<?> get(ResourceLocation identifier)
+	{
+		return blockEntityTypeMap.get(identifier.toString());
+	}
 
 
 }

@@ -19,6 +19,29 @@ public record Ic2rFluidTankHandler(Ic2rFluidTank tank) implements IFluidHandler
 
 	}
 
+	public static Ic2rFluidStack toDomain(FluidStack resource)
+	{
+		if (resource == null || resource.isEmpty())
+		{
+			return Ic2rFluidStack.EMPTY;
+		}
+
+		return FluidHandler.createFluidStackMb(
+			resource.getFluid(),
+			resource.getAmount(),
+			null
+		);
+	}
+
+	public static FluidStack toForge(Ic2rFluidStack fs)
+	{
+		if (fs == null || fs.isEmpty())
+		{
+			return FluidStack.EMPTY;
+		}
+
+		return new FluidStack(fs.getFluid(), fs.getAmountMb());
+	}
 
 	@Override
 	public int getTanks()
@@ -100,29 +123,5 @@ public record Ic2rFluidTankHandler(Ic2rFluidTank tank) implements IFluidHandler
 		{
 			throw new IndexOutOfBoundsException("tank index " + tank + " / 1");
 		}
-	}
-
-	public static Ic2rFluidStack toDomain(FluidStack resource)
-	{
-		if (resource == null || resource.isEmpty())
-		{
-			return Ic2rFluidStack.EMPTY;
-		}
-
-		return FluidHandler.createFluidStackMb(
-			resource.getFluid(),
-			resource.getAmount(),
-			null
-		);
-	}
-
-	public static FluidStack toForge(Ic2rFluidStack fs)
-	{
-		if (fs == null || fs.isEmpty())
-		{
-			return FluidStack.EMPTY;
-		}
-
-		return new FluidStack(fs.getFluid(), fs.getAmountMb());
 	}
 }

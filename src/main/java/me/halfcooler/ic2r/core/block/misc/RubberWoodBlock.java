@@ -17,15 +17,15 @@ public class RubberWoodBlock extends Block
 {
 	public static final com.mojang.serialization.MapCodec<RubberWoodBlock> CODEC = simpleCodec(RubberWoodBlock::new);
 
+	public RubberWoodBlock(Properties settings)
+	{
+		super(settings);
+	}
+
 	@Override
 	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
 	{
 		return CODEC;
-	}
-
-	public RubberWoodBlock(Properties settings)
-	{
-		super(settings);
 	}
 
 	@Override

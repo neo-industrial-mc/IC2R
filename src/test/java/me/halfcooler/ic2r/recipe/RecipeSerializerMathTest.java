@@ -16,6 +16,20 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class RecipeSerializerMathTest
 {
+	/**
+	 * NeoForge unitTest runs under a TRANSFORMER/mod classloader; prefer the test
+	 * class loader, then fall back to the thread context loader.
+	 */
+	private static InputStream openClasspathResource(String resource)
+	{
+		InputStream in = RecipeSerializerMathTest.class.getClassLoader().getResourceAsStream(resource);
+		if (in == null)
+		{
+			in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+		}
+		return in;
+	}
+
 	@Test
 	void basic_network_marker_is_zero_only()
 	{
@@ -72,19 +86,5 @@ class RecipeSerializerMathTest
 			boolean hasResult = json.contains("\"result\"");
 			assertTrue(RecipeSerializerMath.hasBasicMachineJsonKeys(hasIngredient, hasResult));
 		}
-	}
-
-	/**
-	 * NeoForge unitTest runs under a TRANSFORMER/mod classloader; prefer the test
-	 * class loader, then fall back to the thread context loader.
-	 */
-	private static InputStream openClasspathResource(String resource)
-	{
-		InputStream in = RecipeSerializerMathTest.class.getClassLoader().getResourceAsStream(resource);
-		if (in == null)
-		{
-			in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-		}
-		return in;
 	}
 }
