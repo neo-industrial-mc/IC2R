@@ -11,6 +11,7 @@ import ic2.core.block.machine.tileentity.TileEntityCanner;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.gui.RecipeButton;
 import ic2.core.gui.dynamic.DynamicContainer;
+import ic2.core.item.armor.jetpack.JetpackAttachmentRecipe;
 import ic2.core.recipe.AdvRecipe;
 import ic2.core.recipe.v2.RecipeHolder;
 import ic2.core.ref.Ic2Blocks;
@@ -198,9 +199,12 @@ public class Ic2JeiPlugin implements IModPlugin {
   @Override
   public void registerVanillaCategoryExtensions(
       IVanillaCategoryExtensionRegistration registration) {
-    registration
-        .getCraftingCategory()
-        .addExtension(AdvRecipe.class, new AdvRecipeCategoryExtension());
+    var craftingCategory = registration.getCraftingCategory();
+    craftingCategory.addExtension(
+        JetpackAttachmentRecipe.class,
+        new JetpackAttachmentCategoryExtension(
+            registration.getJeiHelpers().getIngredientManager()));
+    craftingCategory.addExtension(AdvRecipe.class, new AdvRecipeCategoryExtension());
   }
 
   public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
