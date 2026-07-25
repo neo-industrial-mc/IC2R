@@ -488,7 +488,7 @@ public final class Ic2Blocks {
           "reinforced_door",
           new DoorBlock(
               BlockSetType.IRON,
-              Properties.of().strength(50.0F, 150.0F).sound(SoundType.METAL)) {});
+              Properties.of().strength(50.0F, 150.0F).noOcclusion().sound(SoundType.METAL)) {});
   public static final Block ITNT =
       register(
           "itnt",
