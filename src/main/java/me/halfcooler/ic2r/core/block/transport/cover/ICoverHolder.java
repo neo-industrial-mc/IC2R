@@ -1,11 +1,11 @@
 package me.halfcooler.ic2r.core.block.transport.cover;
 
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import java.util.Set;
 
 public interface ICoverHolder
 {

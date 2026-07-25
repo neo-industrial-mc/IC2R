@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
 public final class SyncedField<T>
 {
 	private final SyncKey<T> key;
@@ -34,13 +35,17 @@ public final class SyncedField<T>
 		this.setter.accept(value);
 	}
 
-	/** Encodes the current value (payload bytes only; no wire name). */
+	/**
+	 * Encodes the current value (payload bytes only; no wire name).
+	 */
 	public void encodeValue(IGrowingBuffer out) throws IOException
 	{
 		this.key.codec().encode(out, this.get());
 	}
 
-	/** Decodes a value and applies it via the setter. */
+	/**
+	 * Decodes a value and applies it via the setter.
+	 */
 	public void decodeValue(IGrowingBuffer in) throws IOException
 	{
 		this.set(this.key.codec().decode(in));

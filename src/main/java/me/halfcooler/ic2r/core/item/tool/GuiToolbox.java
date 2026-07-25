@@ -1,9 +1,9 @@
 package me.halfcooler.ic2r.core.item.tool;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.gui.TextLabel;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;

@@ -18,7 +18,9 @@ public final class ShearableAccessForge implements ItemElectricToolChainsaw.Shea
 {
 	private static final ShearableAccessForge INSTANCE = new ShearableAccessForge();
 
-	private ShearableAccessForge() {}
+	private ShearableAccessForge()
+	{
+	}
 
 	public static void install()
 	{

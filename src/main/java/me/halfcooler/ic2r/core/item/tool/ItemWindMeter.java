@@ -9,9 +9,6 @@ import me.halfcooler.ic2r.core.item.PriorityUsableItem;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -25,6 +22,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @NotClassic
 public class ItemWindMeter extends ItemElectricTool implements PriorityUsableItem

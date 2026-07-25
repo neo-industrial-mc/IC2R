@@ -10,10 +10,6 @@ import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.KeyboardClient;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -41,6 +37,9 @@ import net.minecraft.world.level.gameevent.GameEvent.Context;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.List;
+
 public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSoundOverride, BlockBreakableItem, IEntityAttackableItem
 {
 	private static ShearableAccess shearableAccess;
@@ -48,6 +47,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 	public interface ShearableAccess
 	{
 		boolean isShearable(net.minecraft.world.entity.Entity entity, net.minecraft.world.item.ItemStack stack, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos);
+
 		java.util.List<net.minecraft.world.item.ItemStack> onSheared(net.minecraft.world.entity.Entity entity, net.minecraft.world.entity.player.Player player, net.minecraft.world.item.ItemStack stack, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos);
 	}
 
@@ -92,8 +92,7 @@ public class ItemElectricToolChainsaw extends ItemElectricTool implements IHitSo
 			if (disableShear)
 			{
 				IC2R.sideProxy.messagePlayer(player, Component.translatable("item.ic2r.mining_laser.tooltip.mode", Component.translatable("item.ic2r.mining_laser.tooltip.mode.normal")));
-			}
-			else
+			} else
 			{
 				IC2R.sideProxy.messagePlayer(player, Component.translatable("item.ic2r.mining_laser.tooltip.mode", Component.translatable("item.ic2r.mining_laser.tooltip.mode.no_shear")));
 			}

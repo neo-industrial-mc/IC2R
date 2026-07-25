@@ -1,12 +1,11 @@
 package me.halfcooler.ic2r.core.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Supplier;
-
-import net.minecraft.world.item.ItemStack;
 
 public class ItemImage extends GuiElement<ItemImage>
 {

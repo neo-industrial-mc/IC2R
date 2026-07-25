@@ -21,7 +21,9 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public final class FluidPlacementGameTests
 {
 	private static final String TEMPLATE = "gametest/empty3x9x3";
-	/** Center column of empty3x9x3 (width 3, height 9, depth 3). */
+	/**
+	 * Center column of empty3x9x3 (width 3, height 9, depth 3).
+	 */
 	private static final BlockPos FLUID_POS = new BlockPos(1, 2, 1);
 	private static final BlockPos WATER_ABOVE = new BlockPos(1, 3, 1);
 	private static final BlockPos WATER_SIDE = new BlockPos(2, 2, 1);
@@ -38,8 +40,8 @@ public final class FluidPlacementGameTests
 		helper.setBlock(WATER_ABOVE, Blocks.WATER.defaultBlockState());
 		helper.setBlock(WATER_SIDE, Blocks.WATER.defaultBlockState());
 
-		// Allow water fluid ticks (tick delay ~5) to attempt displacement.
-		helper.runAfterDelay(20, () -> {
+		helper.runAfterDelay(20, () ->
+		{
 			FluidState remaining = helper.getLevel().getFluidState(helper.absolutePos(FLUID_POS));
 			helper.assertTrue(
 				remaining.getType().isSame(Ic2rFluids.COOLANT.still()),
@@ -50,36 +52,45 @@ public final class FluidPlacementGameTests
 		});
 	}
 
-	/** Steam rises (tick delay 5); source stays, flowing appears above. */
+	/**
+	 * Steam rises (tick delay 5); source stays, flowing appears above.
+	 */
 	@GameTest(template = TEMPLATE, timeoutTicks = 80)
 	public static void steamRisesWithoutSideSpread(GameTestHelper helper)
 	{
 		assertGasRisesWithoutSideSpread(helper, Ic2rFluids.STEAM.still(), 30);
 	}
 
-	/** Superheated steam same rise rules as steam. */
+	/**
+	 * Superheated steam same rise rules as steam.
+	 */
 	@GameTest(template = TEMPLATE, timeoutTicks = 80)
 	public static void superheatedSteamRisesWithoutSideSpread(GameTestHelper helper)
 	{
 		assertGasRisesWithoutSideSpread(helper, Ic2rFluids.SUPERHEATED_STEAM.still(), 30);
 	}
 
-	/** Hydrogen rises every tick; source stays, flowing appears above. */
+	/**
+	 * Hydrogen rises every tick; source stays, flowing appears above.
+	 */
 	@GameTest(template = TEMPLATE, timeoutTicks = 40)
 	public static void hydrogenRisesWithoutSideSpread(GameTestHelper helper)
 	{
-		// tickRate=1: after 8 ticks the column should be multi-block (source + several flowing cells).
 		assertGasRisesWithoutSideSpread(helper, Ic2rFluids.HYDROGEN.still(), 8, 3);
 	}
 
-	/** Biogas is lighter-than-air; source stays, flowing rises. */
+	/**
+	 * Biogas is lighter-than-air; source stays, flowing rises.
+	 */
 	@GameTest(template = TEMPLATE, timeoutTicks = 80)
 	public static void biogasRisesWithoutSideSpread(GameTestHelper helper)
 	{
 		assertGasRisesWithoutSideSpread(helper, Ic2rFluids.BIOGAS.still(), 35);
 	}
 
-	/** Compressed air is slow (tick delay 20); still rises, and never spreads sideways. */
+	/**
+	 * Compressed air is slow (tick delay 20); still rises, and never spreads sideways.
+	 */
 	@GameTest(template = TEMPLATE, timeoutTicks = 100)
 	public static void airRisesWithoutSideSpread(GameTestHelper helper)
 	{
@@ -105,7 +116,8 @@ public final class FluidPlacementGameTests
 		BlockPos side = new BlockPos(2, 1, 1);
 		helper.setBlock(start, gas.defaultFluidState().createLegacyBlock());
 
-		helper.runAfterDelay(delayTicks, () -> {
+		helper.runAfterDelay(delayTicks, () ->
+		{
 			FluidState atStart = helper.getLevel().getFluidState(helper.absolutePos(start));
 			helper.assertTrue(
 				atStart.getType().isSame(gas) && atStart.isSource(),
@@ -123,8 +135,7 @@ public final class FluidPlacementGameTests
 						"rising gas must use uniform amount 7 (flowed-one-block look), got " + above.getAmount() + " at y=" + y
 					);
 					flowingCells++;
-				}
-				else if (above.getType().isSame(gas) && above.isSource())
+				} else if (above.getType().isSame(gas) && above.isSource())
 				{
 					helper.fail("rising gas must be flowing, not a second source at y=" + y);
 				}

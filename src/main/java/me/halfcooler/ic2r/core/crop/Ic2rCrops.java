@@ -1,53 +1,18 @@
 package me.halfcooler.ic2r.core.crop;
 
-import me.halfcooler.ic2r.core.util.StackUtil;
-
 import me.halfcooler.ic2r.api.crops.BaseSeed;
 import me.halfcooler.ic2r.api.crops.CropCard;
 import me.halfcooler.ic2r.api.crops.CropProperties;
 import me.halfcooler.ic2r.api.crops.Crops;
 import me.halfcooler.ic2r.core.IC2R;
-import me.halfcooler.ic2r.core.crop.cropcard.CropBaseMetalCommon;
-import me.halfcooler.ic2r.core.crop.cropcard.CropBaseMetalUncommon;
-import me.halfcooler.ic2r.core.crop.cropcard.CropBaseMushroom;
-import me.halfcooler.ic2r.core.crop.cropcard.CropBaseSapling;
-import me.halfcooler.ic2r.core.crop.cropcard.CropBeetroots;
-import me.halfcooler.ic2r.core.crop.cropcard.CropCarrots;
-import me.halfcooler.ic2r.core.crop.cropcard.CropCocoa;
-import me.halfcooler.ic2r.core.crop.cropcard.CropCoffee;
-import me.halfcooler.ic2r.core.crop.cropcard.CropColorFlower;
-import me.halfcooler.ic2r.core.crop.cropcard.CropEating;
-import me.halfcooler.ic2r.core.crop.cropcard.CropFlax;
-import me.halfcooler.ic2r.core.crop.cropcard.CropHops;
-import me.halfcooler.ic2r.core.crop.cropcard.CropMelon;
-import me.halfcooler.ic2r.core.crop.cropcard.CropNetherWart;
-import me.halfcooler.ic2r.core.crop.cropcard.CropPotato;
-import me.halfcooler.ic2r.core.crop.cropcard.CropPumpkin;
-import me.halfcooler.ic2r.core.crop.cropcard.CropRedWheat;
-import me.halfcooler.ic2r.core.crop.cropcard.CropReed;
-import me.halfcooler.ic2r.core.crop.cropcard.CropStickyReed;
-import me.halfcooler.ic2r.core.crop.cropcard.CropTerraWart;
-import me.halfcooler.ic2r.core.crop.cropcard.CropVenomilia;
-import me.halfcooler.ic2r.core.crop.cropcard.CropWeed;
-import me.halfcooler.ic2r.core.crop.cropcard.CropWheat;
-import me.halfcooler.ic2r.core.crop.cropcard.GenericCropCard;
+import me.halfcooler.ic2r.core.crop.cropcard.*;
 import me.halfcooler.ic2r.core.proxy.EnvProxy;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockTags;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
-
-import java.util.AbstractCollection;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Map.Entry;
-
+import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -58,8 +23,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class Ic2rCrops extends Crops
 {

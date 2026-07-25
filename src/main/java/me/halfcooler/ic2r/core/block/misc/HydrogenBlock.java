@@ -35,14 +35,12 @@ public class HydrogenBlock extends LiquidBlock
 					BlockPos neighborPos = pos.offset(dx, dy, dz);
 					if (world.getBlockState(neighborPos).is(Blocks.FIRE))
 					{
-						// Remove fluid first so the source block is gone before the blast.
 						world.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
 						if (!world.isClientSide && world instanceof ServerLevel serverLevel)
 						{
 							double x = pos.getX() + 0.5;
 							double y = pos.getY() + 0.5;
 							double z = pos.getZ() + 0.5;
-							// Custom damage type so advancements can detect hydrogen blasts specifically.
 							serverLevel.explode(
 								null,
 								Ic2rDamageSource.hydrogenExplosion(serverLevel),
@@ -70,8 +68,6 @@ public class HydrogenBlock extends LiquidBlock
 	@Override
 	public void onPlace(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState oldState, boolean movedByPiston)
 	{
-		// Must schedule fluid ticks (LiquidBlock#onPlace); without this, flowing hydrogen never
-		// ticks and the gas column stops after a single cell above the source.
 		super.onPlace(state, world, pos, oldState, movedByPiston);
 		if (state.getValue(LiquidBlock.LEVEL) == 0)
 		{
@@ -82,7 +78,6 @@ public class HydrogenBlock extends LiquidBlock
 	@Override
 	public void neighborChanged(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos, boolean movedByPiston)
 	{
-		// Same as onPlace: re-schedule fluid flow ticks for source and flowing cells.
 		super.neighborChanged(state, world, pos, neighborBlock, neighborPos, movedByPiston);
 		if (state.getValue(LiquidBlock.LEVEL) == 0)
 		{

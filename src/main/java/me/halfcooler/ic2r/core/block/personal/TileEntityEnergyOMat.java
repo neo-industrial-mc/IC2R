@@ -16,22 +16,15 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlot;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotCharge;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLinked;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
+import me.halfcooler.ic2r.core.util.GameProfileNbt;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import me.halfcooler.ic2r.core.util.GameProfileNbt;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -40,6 +33,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 public class TileEntityEnergyOMat
 	extends TileEntityInventory implements IPersonalBlock, IHasGui, IEnergySink, IEnergySource, INetworkClientTileEntityEventListener, IUpgradableBlock, ServerTicker
@@ -62,7 +60,8 @@ public class TileEntityEnergyOMat
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("ownerGameProfile"))
 		{

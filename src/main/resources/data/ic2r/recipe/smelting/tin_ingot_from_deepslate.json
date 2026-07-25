@@ -5,7 +5,9 @@
   "ingredient": {
     "item": "ic2r:deepslate_tin_ore"
   },
-  "result": { "id": "ic2r:tin_ingot" },
+  "result": {
+    "id": "ic2r:tin_ingot"
+  },
   "experience": 0.5,
   "cookingtime": 200
 }

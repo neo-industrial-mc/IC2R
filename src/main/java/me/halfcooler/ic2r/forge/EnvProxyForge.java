@@ -2,8 +2,8 @@ package me.halfcooler.ic2r.forge;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.MapCodec;
-import me.halfcooler.ic2r.api.crops.Crops;
 import me.halfcooler.ic2r.api.crops.CropCard;
+import me.halfcooler.ic2r.api.crops.Crops;
 import me.halfcooler.ic2r.api.energy.ProfileEvent;
 import me.halfcooler.ic2r.api.event.ExplosionEvent;
 import me.halfcooler.ic2r.api.event.RetextureEvent;
@@ -12,48 +12,31 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rItemGroupType;
 import me.halfcooler.ic2r.core.Ic2rPotion;
 import me.halfcooler.ic2r.core.fluid.EnvFluidHandler;
-import me.halfcooler.ic2r.core.item.BlockItemEnergyStorage;
-import me.halfcooler.ic2r.core.item.ElectricItemManager;
-import me.halfcooler.ic2r.core.item.ItemClassicCell;
-import me.halfcooler.ic2r.core.item.ItemCropSeed;
-import me.halfcooler.ic2r.core.item.EnvItemHandler;
+import me.halfcooler.ic2r.core.item.*;
 import me.halfcooler.ic2r.core.item.armor.ItemArmorFluidTank;
+import me.halfcooler.ic2r.core.network.GrowingBuffer;
+import me.halfcooler.ic2r.core.proxy.EnvProxy;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
-import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.util.StackUtil;
-import me.halfcooler.ic2r.core.proxy.EnvProxy;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -63,11 +46,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
@@ -89,12 +68,17 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public final class EnvProxyForge implements EnvProxy
 {
@@ -191,7 +175,6 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public void registerStatusEffect(ResourceLocation id, MobEffect effect)
 	{
-		// Must be called before MOB_EFFECT RegisterEvent (mod constructor / static init).
 		statusEffectRegistry.register(id.getPath(), () -> effect);
 	}
 
@@ -203,8 +186,6 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public SoundEvent registerSoundEvent(String id)
 	{
-		// W1.7: SoundEvents are fully Deferred/Holder via Ic2rSoundEvents.REGISTRY.
-		// Immediate ForgeRegistries registration is no longer used for this category.
 		throw new UnsupportedOperationException(
 			"Sound events must be registered via Ic2rSoundEvents DeferredRegister (W1.7). id=" + id
 		);
@@ -214,7 +195,6 @@ public final class EnvProxyForge implements EnvProxy
 	public GameEvent registerGameEvent(String id, int range)
 	{
 		ResourceLocation identifier = IC2R.getIdentifier(id);
-		// GameEvent is a record of notification radius only; name comes from registry key.
 		return Registry.register(BuiltInRegistries.GAME_EVENT, identifier, new GameEvent(range));
 	}
 
@@ -250,7 +230,6 @@ public final class EnvProxyForge implements EnvProxy
 	@Override
 	public <T extends FoliagePlacer> FoliagePlacerType<T> registerFoliagePlacer(ResourceLocation id, MapCodec<T> codec)
 	{
-		// 1.21+: FoliagePlacerType constructor takes MapCodec, not Codec
 		FoliagePlacerType<T> type = new FoliagePlacerType<>(codec);
 		foliagePlacerRegistry.register(id.getPath(), () -> type);
 		return type;
@@ -320,8 +299,6 @@ public final class EnvProxyForge implements EnvProxy
 					}
 				}
 
-				// AE2-facade style: empty cell + special cells + one entry per still fluid
-				// (dedicated item when registered, otherwise facade_cell with fluid NBT).
 				if (groupType == Ic2rItemGroupType.FLUID_CELLS)
 				{
 					output.accept(new ItemStack(Ic2rItems.FACADE_CELL));

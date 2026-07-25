@@ -7,17 +7,12 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlot;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableItemStack;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotDischarge;
 import me.halfcooler.ic2r.core.block.kineticgenerator.container.ContainerElectricKineticGenerator;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.util.Collections;
-import java.util.EnumSet;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +22,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.EnumSet;
 
 @NotClassic
 public class TileEntityElectricKineticGenerator extends TileEntityAbstractKineticGenerator implements IHasGui, ServerTicker
@@ -49,7 +47,8 @@ public class TileEntityElectricKineticGenerator extends TileEntityAbstractKineti
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.updateDirections();
 	}

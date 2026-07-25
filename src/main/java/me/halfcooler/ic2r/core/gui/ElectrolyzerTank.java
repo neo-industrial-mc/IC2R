@@ -4,13 +4,12 @@ import me.halfcooler.ic2r.api.recipe.IElectrolyzerRecipeManager;
 import me.halfcooler.ic2r.core.block.machine.gui.GuiElectrolyzer;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityElectrolyzer;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
-
-import java.util.List;
-
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
 
 public class ElectrolyzerTank extends AbstractFluidSlot
 {
@@ -30,7 +29,7 @@ public class ElectrolyzerTank extends AbstractFluidSlot
 		return this.output != null;
 	}
 
-		public void tick()
+	public void tick()
 	{
 		this.output = null;
 		if (this.electrolyzer.hasRecipe())

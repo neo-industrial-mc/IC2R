@@ -4,11 +4,10 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.item.ContainerHandHeldInventory;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.util.Tuple;
-
-import java.util.List;
-
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 public class ContainerToolScanner extends ContainerHandHeldInventory<HandHeldScanner>
 {

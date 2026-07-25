@@ -18,7 +18,9 @@ import net.minecraft.world.inventory.Slot;
  */
 public final class CodeGuiSampleMenu extends ContainerFullInv<SimpleContainer>
 {
-	/** Demo content slot count (not wired to a tile inventory). */
+	/**
+	 * Demo content slot count (not wired to a tile inventory).
+	 */
 	public static final int DEMO_SLOTS = 1;
 	public static final int GUI_HEIGHT = 166;
 
@@ -34,7 +36,6 @@ public final class CodeGuiSampleMenu extends ContainerFullInv<SimpleContainer>
 	{
 		super(Ic2rScreenHandlers.CODE_GUI_SAMPLE, syncId, playerInventory, new SimpleContainer(DEMO_SLOTS), GUI_HEIGHT);
 
-		// Hard-coded slot layout (replaces guidef <slot> / <playerInventory>).
 		this.addSlot(new Slot(this.base, 0, 80, 35));
 	}
 }

@@ -2,11 +2,10 @@ package me.halfcooler.ic2r.core.block.machine.container;
 
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityStandardMachine;
 import me.halfcooler.ic2r.core.slot.SlotInvSlot;
-
-import java.util.List;
-
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+
+import java.util.List;
 
 public class ContainerStandardMachine<T extends TileEntityStandardMachine<?, ?, ?>> extends ContainerElectricMachine<T>
 {

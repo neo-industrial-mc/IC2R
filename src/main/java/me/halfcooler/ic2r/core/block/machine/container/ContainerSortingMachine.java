@@ -5,12 +5,11 @@ import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.slot.SlotHologramSlot;
 import me.halfcooler.ic2r.core.slot.SlotInvSlot;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.List;
-
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 public class ContainerSortingMachine extends ContainerElectricMachine<TileEntitySortingMachine>
 {

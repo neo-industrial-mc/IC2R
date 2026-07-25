@@ -21,7 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class StandardMachineSyncRoundTripTest
 {
-	/** @Spec NS-005: standard-machine SyncKey wire names are snake_case */
+	/**
+	 * @Spec NS-005: standard-machine SyncKey wire names are snake_case
+	 */
 	@Test
 	void standardMachineKeys_wireNames_areSnakeCase()
 	{
@@ -32,18 +34,21 @@ class StandardMachineSyncRoundTripTest
 		assertFalse(SyncKey.isValidWireName(TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD));
 	}
 
-	/** Dual-write: legacy reflection names remain distinct from modern wire names where needed */
+	/**
+	 * Dual-write: legacy reflection names remain distinct from modern wire names where needed
+	 */
 	@Test
 	void dualWrite_legacyFieldNames_preservedForReflectionPath()
 	{
 		assertEquals("guiProgress", TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD);
 		assertEquals("active", TileEntityStandardMachine.LEGACY_ACTIVE_FIELD);
-		// progress renames camel→snake; active already legal as wire name
 		assertEquals(TileEntityStandardMachine.LEGACY_ACTIVE_FIELD, TileEntityStandardMachine.KEY_ACTIVE.wireName());
 		assertNotEquals(TileEntityStandardMachine.LEGACY_GUI_PROGRESS_FIELD, TileEntityStandardMachine.KEY_GUI_PROGRESS.wireName());
 	}
 
-	/** @Spec NS-005: gui_progress + active encode → decode restores values (standard-machine semantics) */
+	/**
+	 * @Spec NS-005: gui_progress + active encode → decode restores values (standard-machine semantics)
+	 */
 	@Test
 	void standardMachineSync_encodeAllDecodeAll_restoresProgressAndActive() throws IOException
 	{
@@ -80,7 +85,9 @@ class StandardMachineSyncRoundTripTest
 		assertEquals(0.42f, guiProgress2.get(), 0f);
 	}
 
-	/** @Spec NS-005: idle / zero-progress boundary */
+	/**
+	 * @Spec NS-005: idle / zero-progress boundary
+	 */
 	@Test
 	void standardMachineSync_inactiveZeroProgress_roundTrip() throws IOException
 	{
@@ -108,7 +115,9 @@ class StandardMachineSyncRoundTripTest
 		assertEquals(0f, guiProgress2.get(), 0f);
 	}
 
-	/** @Spec NS-005: full progress while active (completion edge) */
+	/**
+	 * @Spec NS-005: full progress while active (completion edge)
+	 */
 	@Test
 	void standardMachineSync_fullProgressActive_roundTrip() throws IOException
 	{
@@ -155,7 +164,9 @@ class StandardMachineSyncRoundTripTest
 		assertEquals(TileEntityStandardMachine.KEY_GUI_PROGRESS, sync.get("gui_progress").key());
 	}
 
-	/** G1.1: legacy TeUpdate names map to the same Sync fields as modern wire names */
+	/**
+	 * G1.1: legacy TeUpdate names map to the same Sync fields as modern wire names
+	 */
 	@Test
 	void lookup_resolvesWireNameThenLegacyAlias()
 	{

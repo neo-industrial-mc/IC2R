@@ -12,10 +12,14 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface PlatformEnergyBridge
 {
-	/** Whether the neighbor can accept external energy from {@code side} of {@code be}. */
+	/**
+	 * Whether the neighbor can accept external energy from {@code side} of {@code be}.
+	 */
 	boolean canReceive(BlockEntity be, @Nullable Direction side);
 
-	/** Whether the neighbor can provide external energy toward {@code side} of {@code be}. */
+	/**
+	 * Whether the neighbor can provide external energy toward {@code side} of {@code be}.
+	 */
 	boolean canExtract(BlockEntity be, @Nullable Direction side);
 
 	/**

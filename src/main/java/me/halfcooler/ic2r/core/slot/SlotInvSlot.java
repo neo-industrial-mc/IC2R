@@ -77,7 +77,6 @@ public class SlotInvSlot extends Slot
 	{
 		super.onTake(player, stack);
 		this.invSlot.onPickupFromSlot();
-		// Coal chunk → diamond compressor: grant when the player takes the diamond out.
 		if (stack.is(Items.DIAMOND)
 			&& this.invSlot instanceof InvSlotOutput
 			&& this.invSlot.base != null

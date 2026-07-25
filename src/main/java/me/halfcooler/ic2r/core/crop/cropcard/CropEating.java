@@ -11,10 +11,6 @@ import me.halfcooler.ic2r.core.proxy.EnvProxy;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.util.BiomeUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvents;
@@ -30,6 +26,9 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
+
+import java.util.Collections;
+import java.util.List;
 
 public class CropEating extends Ic2rCropCard
 {

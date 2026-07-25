@@ -4,21 +4,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.*;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Collections;
 import java.util.List;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.ByteArrayTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongArrayTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.NumericTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
 
 public class RecipeInputItemStack extends RecipeInputBase
 {
@@ -45,7 +36,6 @@ public class RecipeInputItemStack extends RecipeInputBase
 		CompoundTag subjectNbt = StackUtil.getTag(subject);
 		if (subjectNbt == null)
 		{
-			// Subject has no NBT — check that all required keys map to default values (0 for numbers, etc.)
 			for (String key : requiredNbt.getAllKeys())
 			{
 				if (!isDefaultTag(requiredNbt.get(key))) return false;
@@ -54,7 +44,6 @@ public class RecipeInputItemStack extends RecipeInputBase
 			return true;
 		}
 
-		// Check required ⊆ subject (partial match)
 		for (String key : requiredNbt.getAllKeys())
 		{
 			if (!subjectNbt.contains(key)) return false;

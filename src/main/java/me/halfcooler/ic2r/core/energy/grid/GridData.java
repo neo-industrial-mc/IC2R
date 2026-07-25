@@ -2,12 +2,7 @@ package me.halfcooler.ic2r.core.energy.grid;
 
 import org.apache.commons.lang3.mutable.MutableDouble;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Per-grid solver state shared by energy calculators (IC path cache and optional GT addon).

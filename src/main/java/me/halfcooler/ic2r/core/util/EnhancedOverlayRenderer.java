@@ -12,8 +12,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -24,12 +24,15 @@ import org.joml.Matrix4f;
  */
 public final class EnhancedOverlayRenderer
 {
-	/** Slight lift along the face normal to avoid z-fighting. */
+	/**
+	 * Slight lift along the face normal to avoid z-fighting.
+	 */
 	private static final float FACE_EPS = 0.002F;
-	/** Block outline expand amount (matches vanilla selection). */
+	/**
+	 * Block outline expand amount (matches vanilla selection).
+	 */
 	private static final double OUTLINE_EPS = 0.002D;
 
-	// Semi-transparent black, same idea as GT's default block overlay colour.
 	private static final float R = 0.0F;
 	private static final float G = 0.0F;
 	private static final float B = 0.0F;
@@ -65,7 +68,6 @@ public final class EnhancedOverlayRenderer
 		poseStack.pushPose();
 		poseStack.translate(pos.getX() - camera.x, pos.getY() - camera.y, pos.getZ() - camera.z);
 
-		// Coloured block outline (replaces vanilla black selection box).
 		VoxelShape shape = state.getShape(world, pos);
 		if (!shape.isEmpty())
 		{
@@ -73,7 +75,6 @@ public final class EnhancedOverlayRenderer
 			LevelRenderer.renderLineBox(poseStack, lines, bounds, R, G, B, A);
 		}
 
-		// Face grid + optional facing mark, in block-local coordinates.
 		PoseStack.Pose pose = poseStack.last();
 		Matrix4f matrix = pose.pose();
 		Matrix3f normal = pose.normal();
@@ -90,7 +91,6 @@ public final class EnhancedOverlayRenderer
 
 	private static void drawFaceGrid(VertexConsumer consumer, Matrix4f matrix, Matrix3f normal, Direction side)
 	{
-		// Four lines at 0.25 / 0.75 on the face UV plane (matches RotationUtil thresholds).
 		lineOnFace(consumer, matrix, normal, side, 0.0F, 0.25F, 1.0F, 0.25F);
 		lineOnFace(consumer, matrix, normal, side, 0.0F, 0.75F, 1.0F, 0.75F);
 		lineOnFace(consumer, matrix, normal, side, 0.25F, 0.0F, 0.25F, 1.0F);
@@ -105,14 +105,12 @@ public final class EnhancedOverlayRenderer
 	{
 		if (facing == sideHit)
 		{
-			// Center square
 			drawX(consumer, matrix, normal, sideHit, 0.25F, 0.25F, 0.75F, 0.75F);
 			return;
 		}
 
 		if (facing == sideHit.getOpposite())
 		{
-			// All four corners
 			drawX(consumer, matrix, normal, sideHit, 0.0F, 0.0F, 0.25F, 0.25F);
 			drawX(consumer, matrix, normal, sideHit, 0.75F, 0.0F, 1.0F, 0.25F);
 			drawX(consumer, matrix, normal, sideHit, 0.0F, 0.75F, 0.25F, 1.0F);
@@ -120,7 +118,6 @@ public final class EnhancedOverlayRenderer
 			return;
 		}
 
-		// Edge region for an adjacent facing — UV axes match rotateByHit hit coords.
 		float[] edge = edgeUvForFacing(sideHit, facing);
 		if (edge != null)
 		{
@@ -133,8 +130,6 @@ public final class EnhancedOverlayRenderer
 	 */
 	private static float[] edgeUvForFacing(Direction sideHit, Direction facing)
 	{
-		// UV axes: DOWN/UP → U=x V=z; NORTH/SOUTH → U=x V=y; WEST/EAST → U=z V=y
-		// Edge mid strips: low/high U or V in [0,0.25] or [0.75,1] with the other axis in (0.25,0.75)
 		return switch (sideHit)
 		{
 			case DOWN, UP -> switch (facing)

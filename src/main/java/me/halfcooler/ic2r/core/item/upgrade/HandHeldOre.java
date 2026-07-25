@@ -1,6 +1,5 @@
 package me.halfcooler.ic2r.core.item.upgrade;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.gui.GuiDefaultBackground;
 import me.halfcooler.ic2r.core.gui.MouseButton;
@@ -10,14 +9,13 @@ import me.halfcooler.ic2r.core.item.ContainerHandHeldInventory;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.slot.SlotHologramSlot;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HandHeldOre extends HandHeldUpgradeOption
 {

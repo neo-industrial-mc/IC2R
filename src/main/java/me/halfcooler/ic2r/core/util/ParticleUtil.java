@@ -4,8 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.level.Level;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 public class ParticleUtil
 {

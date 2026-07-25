@@ -1,10 +1,9 @@
 package me.halfcooler.ic2r.core.block.comp;
 
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
+import net.minecraft.core.Direction;
 
 import java.util.Set;
-
-import net.minecraft.core.Direction;
 
 public class Kinetic extends TileEntityComponent
 {

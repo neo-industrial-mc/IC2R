@@ -23,11 +23,6 @@ public final class CannerGameTests
 	{
 	}
 
-	// The accept test must not fail when the input tank holds less fluid than the recipe
-	// requires, e.g. distilled water from a solar distiller that only partially filled the tank.
-	// The coolant recipe needs 1000 mB; with only 500 mB the slot must still accept lapis dust
-	// (the accept test asks "could this ever be processed"), not throw from computing a negative
-	// remaining fluid amount.
 	@GameTest(template = EMPTY)
 	public static void cannerEnrichAcceptsLapisWithPartiallyFilledTank(GameTestHelper helper)
 	{

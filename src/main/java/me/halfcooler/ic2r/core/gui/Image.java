@@ -1,8 +1,8 @@
 package me.halfcooler.ic2r.core.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public class Image extends GuiElement<Image>

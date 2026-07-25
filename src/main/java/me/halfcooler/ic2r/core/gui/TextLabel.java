@@ -1,15 +1,14 @@
 package me.halfcooler.ic2r.core.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.gui.dynamic.TextProvider;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.IntSupplier;
-
-import net.minecraft.client.Minecraft;
 
 public class TextLabel extends GuiElement<TextLabel>
 {

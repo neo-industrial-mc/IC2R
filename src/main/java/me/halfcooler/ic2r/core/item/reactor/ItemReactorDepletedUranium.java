@@ -4,7 +4,6 @@ import me.halfcooler.ic2r.api.reactor.IReactor;
 import me.halfcooler.ic2r.core.profile.NotExperimental;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 
 @NotExperimental
 public class ItemReactorDepletedUranium extends AbstractDamageableReactorComponent

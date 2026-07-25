@@ -63,6 +63,7 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 	{
 		return getTag(nbt, "energy").getBoolean("active");
 	}
+
 	protected static void writeEnergyTag(CompoundTag nbt, boolean active)
 	{
 		CompoundTag tag = getTag(nbt, "energy");
@@ -82,10 +83,12 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 		tag.putByte("type", setting.getForNBT());
 		nbt.put("nbtSettings", tag);
 	}
+
 	public static boolean isEnergyMatchEnabled(ItemStack stack)
 	{
 		return readTag(StackUtil.getOrCreateNbtData(stack));
 	}
+
 	public static void openEnergyConfig(Player player, InteractionHand hand, ItemStack stack)
 	{
 		new HandHeldValueConfig(new HandHeldAdvancedUpgrade(player, hand, stack), "energy")
@@ -114,7 +117,6 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 		{
 			CompoundTag nbt = StackUtil.getTag(this.containerStack);
 			assert nbt != null;
-			// Drop legacy meta settings if present
 			nbt.remove("metaSettings");
 			writeNbtMatchTag(nbt, this.nbtMatch);
 			writeEnergyTag(nbt, this.energy);
@@ -195,7 +197,7 @@ public class HandHeldAdvancedUpgrade extends HandHeldInventory implements IHolog
 			dev = true;
 			event = event.substring(0, event.lastIndexOf("Dev"));
 		}
-		
+
 		boolean server = IC2R.sideProxy.isSimulating();
 
 		switch (event)

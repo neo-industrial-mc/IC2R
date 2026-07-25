@@ -1,15 +1,14 @@
 package me.halfcooler.ic2r.core;
 
 import me.halfcooler.ic2r.core.util.LogCategory;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * World-save registry migration for NeoForge 1.21+.
@@ -28,21 +27,31 @@ import net.minecraft.resources.ResourceLocation;
  */
 public final class RemapService
 {
-	/** Pre-20.1.40 registry namespace. */
+	/**
+	 * Pre-20.1.40 registry namespace.
+	 */
 	public static final String LEGACY_NAMESPACE = "ic2";
 
-	/** Current mod registry namespace. */
+	/**
+	 * Current mod registry namespace.
+	 */
 	public static final String CURRENT_NAMESPACE = "ic2r";
 
-	/** Earlier internal item rename (still under current namespace in some saves). */
+	/**
+	 * Earlier internal item rename (still under current namespace in some saves).
+	 */
 	public static final String LEGACY_EMPTY_CELL_PATH = "empty_cell";
 
 	public static final String FACADE_CELL_PATH = "facade_cell";
 
-	/** Removed item; stacks remap to vanilla diamond. */
+	/**
+	 * Removed item; stacks remap to vanilla diamond.
+	 */
 	public static final String LEGACY_INDUSTRIAL_DIAMOND_PATH = "industrial_diamond";
 
-	/** Renamed item: mining filter card → mining filter upgrade. */
+	/**
+	 * Renamed item: mining filter card → mining filter upgrade.
+	 */
 	public static final String LEGACY_MINING_FILTER_CARD_PATH = "mining_filter_card";
 
 	public static final String MINING_FILTER_UPGRADE_PATH = "mining_filter_upgrade";
@@ -121,7 +130,6 @@ public final class RemapService
 			out.add(new Alias(ResourceLocation.fromNamespaceAndPath(CURRENT_NAMESPACE, LEGACY_EMPTY_CELL_PATH), facade));
 			out.add(new Alias(ResourceLocation.fromNamespaceAndPath(LEGACY_NAMESPACE, LEGACY_EMPTY_CELL_PATH), facade));
 		}
-		// Industrial diamond was removed; old stacks become vanilla diamond.
 		if (!hasIndustrialDiamond)
 		{
 			out.add(new Alias(
@@ -133,7 +141,6 @@ public final class RemapService
 				VANILLA_DIAMOND
 			));
 		}
-		// mining_filter_card renamed to mining_filter_upgrade
 		if (hasMiningFilterUpgrade && !hasMiningFilterCard)
 		{
 			ResourceLocation upgrade = ResourceLocation.fromNamespaceAndPath(CURRENT_NAMESPACE, MINING_FILTER_UPGRADE_PATH);
@@ -190,12 +197,10 @@ public final class RemapService
 
 	private static boolean tryAddAlias(Registry<?> registry, Alias alias)
 	{
-		// containsKey does not follow aliases; only skip if the legacy id is a real entry.
 		if (registry.containsKey(alias.from()))
 		{
 			return false;
 		}
-		// Target must exist (or resolve through an existing alias chain).
 		if (registry.get(alias.to()) == null && !registry.containsKey(alias.to()))
 		{
 			return false;
@@ -204,10 +209,8 @@ public final class RemapService
 		{
 			registry.addAlias(alias.from(), alias.to());
 			return true;
-		}
-		catch (IllegalStateException ex)
+		} catch (IllegalStateException ex)
 		{
-			// Duplicate / loop: another mod or prior call already mapped this key.
 			IC2R.log.debug(
 				LogCategory.Resource,
 				"Legacy registry alias skipped %s → %s: %s",

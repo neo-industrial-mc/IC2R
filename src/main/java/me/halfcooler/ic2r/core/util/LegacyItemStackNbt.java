@@ -21,25 +21,39 @@ import net.minecraft.world.item.ItemStack;
  */
 public final class LegacyItemStackNbt
 {
-	/** Pre-componentization count key (byte or int). */
+	/**
+	 * Pre-componentization count key (byte or int).
+	 */
 	public static final String LEGACY_COUNT = "Count";
 
-	/** Modern ItemStack codec count key. */
+	/**
+	 * Modern ItemStack codec count key.
+	 */
 	public static final String COUNT = "count";
 
-	/** Pre-componentization free-form NBT compound. */
+	/**
+	 * Pre-componentization free-form NBT compound.
+	 */
 	public static final String LEGACY_TAG = "tag";
 
-	/** Modern data-component map key on the stack. */
+	/**
+	 * Modern data-component map key on the stack.
+	 */
 	public static final String COMPONENTS = "components";
 
-	/** Free-form NBT surviving as {@code minecraft:custom_data}. */
+	/**
+	 * Free-form NBT surviving as {@code minecraft:custom_data}.
+	 */
 	public static final String CUSTOM_DATA = "minecraft:custom_data";
 
-	/** Pre-componentization damage (root or inside {@code tag}). */
+	/**
+	 * Pre-componentization damage (root or inside {@code tag}).
+	 */
 	public static final String LEGACY_DAMAGE = "Damage";
 
-	/** Modern damage component. */
+	/**
+	 * Modern damage component.
+	 */
 	public static final String DAMAGE_COMPONENT = "minecraft:damage";
 
 	private LegacyItemStackNbt()
@@ -96,8 +110,7 @@ public final class LegacyItemStackNbt
 				out.putInt(COUNT, numeric.getAsInt());
 			}
 			out.remove(LEGACY_COUNT);
-		}
-		else if (out.contains(LEGACY_COUNT))
+		} else if (out.contains(LEGACY_COUNT))
 		{
 			out.remove(LEGACY_COUNT);
 		}
@@ -111,7 +124,6 @@ public final class LegacyItemStackNbt
 			CompoundTag legacyTag = out.getCompound(LEGACY_TAG);
 			out.remove(LEGACY_TAG);
 
-			// Lift Damage out of free-form tag into the damage component (vanilla DFU shape).
 			if (legacyTag.contains(LEGACY_DAMAGE, Tag.TAG_ANY_NUMERIC) && !components.contains(DAMAGE_COMPONENT))
 			{
 				components.putInt(DAMAGE_COMPONENT, legacyTag.getInt(LEGACY_DAMAGE));
@@ -123,8 +135,7 @@ public final class LegacyItemStackNbt
 				if (components.contains(CUSTOM_DATA, Tag.TAG_COMPOUND))
 				{
 					components.getCompound(CUSTOM_DATA).merge(legacyTag);
-				}
-				else
+				} else
 				{
 					components.put(CUSTOM_DATA, legacyTag);
 				}

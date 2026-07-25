@@ -7,9 +7,8 @@ import me.halfcooler.ic2r.core.recipe.v2.JsonRecipeCodecs;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeIo;
 import me.halfcooler.ic2r.core.ref.Ic2rRecipeSerializers;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -17,11 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,12 +69,10 @@ public class GradualRecipe implements CraftingRecipe
 			if (gridItem == null && stack.getItem() == this.item)
 			{
 				gridItem = stack;
-			}
-			else if (StackUtil.checkItemEquality(stack, this.chargeMaterial))
+			} else if (StackUtil.checkItemEquality(stack, this.chargeMaterial))
 			{
 				chargeMats++;
-			}
-			else
+			} else
 			{
 				return ItemStack.EMPTY;
 			}
@@ -90,7 +83,6 @@ public class GradualRecipe implements CraftingRecipe
 			return ItemStack.EMPTY;
 		}
 
-		// Only craft when repair would actually change durability
 		int currentUse = this.item.getUse(gridItem);
 		if (currentUse <= 0)
 		{
@@ -103,8 +95,7 @@ public class GradualRecipe implements CraftingRecipe
 		if (damage > this.item.getMaxUse())
 		{
 			damage = this.item.getMaxUse();
-		}
-		else if (damage < 0)
+		} else if (damage < 0)
 		{
 			damage = 0;
 		}
@@ -141,7 +132,6 @@ public class GradualRecipe implements CraftingRecipe
 	@Override
 	public boolean isSpecial()
 	{
-		// Dynamic output (depends on input durability); hide from recipe book
 		return true;
 	}
 

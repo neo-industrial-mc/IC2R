@@ -4,12 +4,11 @@ import me.halfcooler.ic2r.api.crops.CropProperties;
 import me.halfcooler.ic2r.api.crops.ICropTile;
 import me.halfcooler.ic2r.api.crops.ICropType;
 import me.halfcooler.ic2r.core.crop.CropBase;
-
-import java.util.Collection;
-
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+
+import java.util.Collection;
 
 public class CropBaseMetalCommon extends CropBase
 {

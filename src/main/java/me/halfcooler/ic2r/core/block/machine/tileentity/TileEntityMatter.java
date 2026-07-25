@@ -11,12 +11,7 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.comp.Fluids;
 import me.halfcooler.ic2r.core.block.comp.Redstone;
-import me.halfcooler.ic2r.core.block.invslot.InvSlot;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquid;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquidByList;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotOutput;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotProcessable;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
+import me.halfcooler.ic2r.core.block.invslot.*;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerMatter;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
@@ -29,12 +24,6 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -43,6 +32,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 @NotClassic
 public class TileEntityMatter extends TileEntityElectricMachine implements IHasGui, IUpgradableBlock, IExplosionPowerOverride
@@ -134,7 +128,8 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.scrap = nbt.getInt("scrap");
 		this.lastEnergy = nbt.getDouble("lastEnergy");
@@ -167,7 +162,6 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 		needsInvUpdate |= this.upgradeSlot.tickNoMark();
 		if (!this.redstone.hasRedstoneInput() && !(this.energy.getEnergy() <= 0.0))
 		{
-			// Working = accepted EU this tick (buffer rose vs last tick). Stored charge alone is idle.
 			boolean isWorking = this.energy.getEnergy() > this.lastEnergy;
 
 			if (this.scrap > 0)
@@ -194,7 +188,6 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 			{
 				boolean generated = this.attemptGeneration();
 				needsInvUpdate = generated;
-				// Full buffer may not accept more EU, but producing UU is still work.
 				if (generated)
 				{
 					isWorking = true;
@@ -207,7 +200,6 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 				this.setActive(true);
 			} else
 			{
-				// Idle with residual EU (no intake, not generating) — silence loops.
 				this.setState(0);
 				this.setActive(false);
 			}
@@ -219,7 +211,6 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 			}
 		} else
 		{
-			// Idle: no energy or redstone-stopped — silence main and scrap loops.
 			this.setState(0);
 			this.setActive(false);
 		}
@@ -262,7 +253,6 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 		}
 
 		this.fluidTank.fillMbUnchecked(Ic2rFluidStack.create(Ic2rFluids.UU_MATTER.still(), 1), false);
-		// Drain up to capacity; if only a near-full remainder is present, drain all of it.
 		this.energy.useEnergy(this.energy.getCapacity(), false);
 		return true;
 	}
@@ -324,8 +314,6 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 	{
 		this.upgradeSlot.onChanged();
 		this.energy.setSinkTier(applyModifier(getDefaultTier(), this.upgradeSlot.extraTier));
-		// Capacity is EU per mB UU-Matter, not continuous EU/t. Keep sink-tier voltage and allow
-		// high amperage so GT packet transfer can charge the buffer quickly.
 		this.energy.configureEnergyBuffer(64);
 	}
 
@@ -374,15 +362,12 @@ public class TileEntityMatter extends TileEntityElectricMachine implements IHasG
 	@Override
 	protected boolean shouldSoundActive()
 	{
-		// Drive sound from the synchronized work state, not blockstate ACTIVE
-		// (opening the GUI can rebroadcast stale blockstate and would revive loops).
 		return this.state != 0;
 	}
 
 	@Override
 	protected boolean shouldSubSoundActive()
 	{
-		// Scrap loop only while working with scrap amplifier available.
 		return this.state == 2;
 	}
 

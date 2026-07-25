@@ -1,16 +1,11 @@
 package me.halfcooler.ic2r.core.block.machine.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerCanner;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityCanner;
-import me.halfcooler.ic2r.core.gui.CustomButton;
-import me.halfcooler.ic2r.core.gui.CycleHandler;
-import me.halfcooler.ic2r.core.gui.EnergyGauge;
-import me.halfcooler.ic2r.core.gui.INumericValueHandler;
-import me.halfcooler.ic2r.core.gui.RecipeButton;
-import me.halfcooler.ic2r.core.gui.TankGauge;
+import me.halfcooler.ic2r.core.gui.*;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;

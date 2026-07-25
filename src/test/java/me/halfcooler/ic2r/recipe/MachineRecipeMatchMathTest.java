@@ -1,7 +1,6 @@
 package me.halfcooler.ic2r.recipe;
 
 import me.halfcooler.ic2r.core.recipe.MachineRecipeMatchMath;
-
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
@@ -9,11 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Pure-logic recipe match gates + basic-machine datapack smoke (W2.3 / G1.6 / G2.2 / RC-*).
@@ -26,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class MachineRecipeMatchMathTest
 {
-	// --- RC-001 spirit: amount / acceptance gates (item match itself needs registries) ---
 
 	@Test
 	void hasSufficientCount_requires_positive_and_at_least_recipe_amount()
@@ -39,7 +33,9 @@ class MachineRecipeMatchMathTest
 		assertFalse(MachineRecipeMatchMath.hasSufficientCount(-1, 1));
 	}
 
-	/** Mirrors BasicMachineRecipeManager.getOutputFor amount + remainder gate. */
+	/**
+	 * Mirrors BasicMachineRecipeManager.getOutputFor amount + remainder gate.
+	 */
 	@Test
 	void canApplyInput_remainder_requires_exact_count()
 	{
@@ -62,7 +58,6 @@ class MachineRecipeMatchMathTest
 		assertEquals(4, MachineRecipeMatchMath.countAfterConsume(4, 0));
 	}
 
-	// --- first-wins scan order (SM-010 / RC match order) ---
 
 	@Test
 	void firstMatchIndex_returns_earliest_true()
@@ -84,7 +79,6 @@ class MachineRecipeMatchMathTest
 		assertNull(MachineRecipeMatchMath.firstMatch(null, s -> true));
 	}
 
-	// --- RC-006 (partial): datapack JSON exists and declares type id ---
 
 	@Test
 	void macerator_datapack_json_declares_pilot_type() throws Exception
@@ -99,7 +93,9 @@ class MachineRecipeMatchMathTest
 		assertEquals("macerator", MachineRecipeMatchMath.MACERATOR_RECIPE_PATH);
 	}
 
-	/** G2.2 / RC-006: second basic type (extractor) shares JSON→type id chain with macerator. */
+	/**
+	 * G2.2 / RC-006: second basic type (extractor) shares JSON→type id chain with macerator.
+	 */
 	@Test
 	void extractor_datapack_json_declares_type() throws Exception
 	{
@@ -113,7 +109,9 @@ class MachineRecipeMatchMathTest
 		assertEquals("extractor", MachineRecipeMatchMath.EXTRACTOR_RECIPE_PATH);
 	}
 
-	/** G2.2 / RC-006: compressor JSON type smoke (third basic type, same bridge). */
+	/**
+	 * G2.2 / RC-006: compressor JSON type smoke (third basic type, same bridge).
+	 */
 	@Test
 	void compressor_datapack_json_declares_type() throws Exception
 	{
@@ -127,9 +125,10 @@ class MachineRecipeMatchMathTest
 		assertEquals("compressor", MachineRecipeMatchMath.COMPRESSOR_RECIPE_PATH);
 	}
 
-	// ========== G1.6 deepen: RC-001 … RC-005 pure gates ==========
 
-	/** @Spec RC-001 item 精确匹配：只接受相同 id token */
+	/**
+	 * @Spec RC-001 item 精确匹配：只接受相同 id token
+	 */
 	@Test
 	void matchesExactItem_only_accepts_same_id()
 	{
@@ -141,24 +140,25 @@ class MachineRecipeMatchMathTest
 		assertFalse(MachineRecipeMatchMath.matchesExactItem("minecraft:iron_ingot", ""));
 	}
 
-	/** @Spec RC-001 + 数量门闩：不足拒绝、刚好/过量（无 remainder）接受；错物品拒绝 */
+	/**
+	 * @Spec RC-001 + 数量门闩：不足拒绝、刚好/过量（无 remainder）接受；错物品拒绝
+	 */
 	@Test
 	void acceptsMatchedInput_insufficient_exact_excess_and_wrong_item()
 	{
-		// wrong item — amount irrelevant
 		assertFalse(MachineRecipeMatchMath.acceptsMatchedInput(false, 8, 2, false));
 
-		// amount: insufficient / exact / excess (no remainder)
 		assertFalse(MachineRecipeMatchMath.acceptsMatchedInput(true, 1, 2, false));
 		assertTrue(MachineRecipeMatchMath.acceptsMatchedInput(true, 2, 2, false));
 		assertTrue(MachineRecipeMatchMath.acceptsMatchedInput(true, 5, 2, false));
 
-		// remainder: excess rejected, exact accepted
 		assertFalse(MachineRecipeMatchMath.acceptsMatchedInput(true, 3, 2, true));
 		assertTrue(MachineRecipeMatchMath.acceptsMatchedInput(true, 2, 2, true));
 	}
 
-	/** @Spec RC-001 NBT/组件：required ⊆ subject 且值相等 */
+	/**
+	 * @Spec RC-001 NBT/组件：required ⊆ subject 且值相等
+	 */
 	@Test
 	void matchesRequiredKeys_partial_nbt_subset()
 	{
@@ -172,7 +172,9 @@ class MachineRecipeMatchMathTest
 		assertFalse(MachineRecipeMatchMath.matchesRequiredKeys(required, null));
 	}
 
-	/** @Spec RC-002 tag 匹配 / RC-003 ore 等价：任一候选 id 命中即接受，非成员拒绝 */
+	/**
+	 * @Spec RC-002 tag 匹配 / RC-003 ore 等价：任一候选 id 命中即接受，非成员拒绝
+	 */
 	@Test
 	void matchesAnyCandidate_tag_or_ore_members()
 	{
@@ -187,38 +189,42 @@ class MachineRecipeMatchMathTest
 		assertFalse(MachineRecipeMatchMath.matchesAnyCandidate("minecraft:iron_ore", List.of()));
 	}
 
-	/** @Spec RC-004 白名单：非空白名单时仅名单内接受（外拒 = isRecyclerRejected true） */
+	/**
+	 * @Spec RC-004 白名单：非空白名单时仅名单内接受（外拒 = isRecyclerRejected true）
+	 */
 	@Test
 	void isRecyclerRejected_whitelist_mode_accepts_only_listed()
 	{
-		// whitelist mode (empty=false): reject unless inWhitelist
-		assertFalse(MachineRecipeMatchMath.isRecyclerRejected(false, true, true));  // listed → accept
-		assertTrue(MachineRecipeMatchMath.isRecyclerRejected(false, false, false)); // outside → reject
-		assertTrue(MachineRecipeMatchMath.isRecyclerRejected(false, true, false));  // blacklist ignored
+		assertFalse(MachineRecipeMatchMath.isRecyclerRejected(false, true, true));
+		assertTrue(MachineRecipeMatchMath.isRecyclerRejected(false, false, false));
+		assertTrue(MachineRecipeMatchMath.isRecyclerRejected(false, true, false));
 	}
 
-	/** @Spec RC-005 黑名单：白名单空时名单内永不匹配（reject）；名单外可回收 */
+	/**
+	 * @Spec RC-005 黑名单：白名单空时名单内永不匹配（reject）；名单外可回收
+	 */
 	@Test
 	void isRecyclerRejected_blacklist_mode_when_whitelist_empty()
 	{
-		assertTrue(MachineRecipeMatchMath.isRecyclerRejected(true, true, false));   // blacklisted
-		assertFalse(MachineRecipeMatchMath.isRecyclerRejected(true, false, false)); // not listed → accept
-		assertFalse(MachineRecipeMatchMath.isRecyclerRejected(true, false, true));  // whitelist flag ignored
+		assertTrue(MachineRecipeMatchMath.isRecyclerRejected(true, true, false));
+		assertFalse(MachineRecipeMatchMath.isRecyclerRejected(true, false, false));
+		assertFalse(MachineRecipeMatchMath.isRecyclerRejected(true, false, true));
 	}
 
-	/** @Spec SM-010 / RC 数量+顺序：first-wins 跳过数量不足的先序配方，命中下一道 */
+	/**
+	 * @Spec SM-010 / RC 数量+顺序：first-wins 跳过数量不足的先序配方，命中下一道
+	 */
 	@Test
 	void firstMatch_skips_amount_fail_then_picks_next()
 	{
-		// Simulated recipes: (id, amount). Subject: iron_ingot x2
 		record Recipe(String id, int amount)
 		{
 		}
 
 		List<Recipe> recipes = List.of(
-			new Recipe("minecraft:iron_ingot", 4), // matches item, amount fail
-			new Recipe("minecraft:gold_ingot", 1), // wrong item
-			new Recipe("minecraft:iron_ingot", 2)  // match + amount ok
+			new Recipe("minecraft:iron_ingot", 4),
+			new Recipe("minecraft:gold_ingot", 1),
+			new Recipe("minecraft:iron_ingot", 2)
 		);
 
 		Recipe hit = MachineRecipeMatchMath.firstMatch(
@@ -235,7 +241,6 @@ class MachineRecipeMatchMathTest
 		assertEquals(2, hit.amount());
 		assertEquals("minecraft:iron_ingot", hit.id());
 
-		// all amount-insufficient → null
 		assertNull(MachineRecipeMatchMath.firstMatch(
 			List.of(new Recipe("minecraft:iron_ingot", 8)),
 			r -> MachineRecipeMatchMath.acceptsMatchedInput(true, 2, r.amount(), false)
@@ -250,23 +255,19 @@ class MachineRecipeMatchMathTest
 	@Test
 	void findMatchingIndex_first_wins_with_amount_and_remainder()
 	{
-		// candidates: wrong item; sand needs 4; sand needs 1 (later — must not win when 4 matches)
 		String[] ids = {
 			"minecraft:cobblestone",
 			"minecraft:sand",
 			"minecraft:sand"
 		};
-		int[] amounts = {1, 4, 1};
+		int[] amounts = { 1, 4, 1 };
 
-		// enough sand for amount-4 recipe → index 1
 		assertEquals(1, MachineRecipeMatchMath.findMatchingIndex(
 			"minecraft:sand", 4, false, ids, amounts
 		));
-		// only 2 sand → skip amount-4, hit amount-1 at index 2
 		assertEquals(2, MachineRecipeMatchMath.findMatchingIndex(
 			"minecraft:sand", 2, false, ids, amounts
 		));
-		// empty / unknown → -1
 		assertEquals(-1, MachineRecipeMatchMath.findMatchingIndex(
 			"minecraft:dirt", 8, false, ids, amounts
 		));
@@ -274,35 +275,32 @@ class MachineRecipeMatchMathTest
 			null, 4, false, ids, amounts
 		));
 
-		// remainder: stack must equal recipe amount
 		assertEquals(1, MachineRecipeMatchMath.findMatchingIndex(
 			"minecraft:sand", 4, true, ids, amounts
 		));
-		// 5 sand + remainder → neither sand recipe (4≠5, and after skip 1≠5) if we only had those;
-		// with amount-1 still failing exact 5 → -1 for remainder path on both sand entries
 		assertEquals(-1, MachineRecipeMatchMath.findMatchingIndex(
 			"minecraft:sand", 5, true, ids, amounts
 		));
-		// exact 1 → hits index 2 (index 1 needs exact 4)
 		assertEquals(2, MachineRecipeMatchMath.findMatchingIndex(
 			"minecraft:sand", 1, true, ids, amounts
 		));
 
-		// length mismatch / null arrays
 		assertEquals(-1, MachineRecipeMatchMath.findMatchingIndex(
-			"minecraft:sand", 1, false, ids, new int[] {1}
+			"minecraft:sand", 1, false, ids, new int[] { 1 }
 		));
 		assertEquals(-1, MachineRecipeMatchMath.findMatchingIndex(
 			"minecraft:sand", 1, false, null, amounts
 		));
 	}
 
-	/** G2.2: findMatching + acceptsMatchedInput combo for extractor single-item spirit (amount 1). */
+	/**
+	 * G2.2: findMatching + acceptsMatchedInput combo for extractor single-item spirit (amount 1).
+	 */
 	@Test
 	void findMatchingIndex_extractor_style_single_acceptsMatchedInput()
 	{
-		String[] ids = {"ic2r:resin", "ic2r:rubber_log"};
-		int[] amounts = {1, 1};
+		String[] ids = { "ic2r:resin", "ic2r:rubber_log" };
+		int[] amounts = { 1, 1 };
 
 		assertEquals(0, MachineRecipeMatchMath.findMatchingIndex(
 			"ic2r:resin", 3, false, ids, amounts

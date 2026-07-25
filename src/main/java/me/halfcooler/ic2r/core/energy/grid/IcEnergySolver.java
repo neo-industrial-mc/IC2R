@@ -2,20 +2,12 @@ package me.halfcooler.ic2r.core.energy.grid;
 
 import me.halfcooler.ic2r.api.energy.EnergyNet;
 import me.halfcooler.ic2r.api.energy.NodeStats;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyConductor;
-import me.halfcooler.ic2r.api.energy.tile.IEnergySink;
-import me.halfcooler.ic2r.api.energy.tile.IEnergySource;
-import me.halfcooler.ic2r.api.energy.tile.IMultiEnergySource;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
+import me.halfcooler.ic2r.api.energy.tile.*;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rDamageSource;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.io.PrintStream;
-import java.util.*;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -24,6 +16,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.mutable.MutableDouble;
+
+import java.io.PrintStream;
+import java.util.*;
 
 /**
  * Modern IC energy-net solver (A40.3).
@@ -36,7 +31,6 @@ import org.apache.commons.lang3.mutable.MutableDouble;
  */
 public class IcEnergySolver implements IEnergyCalculator
 {
-	// ---- Path infrastructure (shared with legacy EnergyCalculatorUnified / GT) ----
 
 	static Collection<EnergyPath> getPaths(Node node, GridData data)
 	{
@@ -60,8 +54,7 @@ public class IcEnergySolver implements IEnergyCalculator
 				if (node.getType() == NodeType.Sink)
 				{
 					if (path.target == node) ret.add(path);
-				}
-				else if (path.conductors.contains(node))
+				} else if (path.conductors.contains(node))
 				{
 					ret.add(path);
 				}
@@ -126,8 +119,7 @@ public class IcEnergySolver implements IEnergyCalculator
 							reconstructPathWithLinks(srcNode, node, parentMap, incomingLinkMap), loss));
 						if (paths.size() == sinkCount) break;
 					}
-				}
-				else if (node.getType() == NodeType.Conductor || node == srcNode)
+				} else if (node.getType() == NodeType.Conductor || node == srcNode)
 				{
 					double loss = lossMap.get(node);
 					List<OptLink> optLinks = optGraph.nodeToLinks.get(node);
@@ -162,8 +154,7 @@ public class IcEnergySolver implements IEnergyCalculator
 										}
 									}
 								}
-							}
-							else
+							} else
 							{
 								double newLoss = loss + optLink.loss;
 								Double prevLoss = lossMap.get(neighbor);
@@ -195,7 +186,6 @@ public class IcEnergySolver implements IEnergyCalculator
 			data.active = true;
 	}
 
-	// ---- Graph optimization (shared) ----
 
 	private static OptimizedGraph buildOptimizedGraph(Collection<Node> nodes)
 	{
@@ -227,8 +217,11 @@ public class IcEnergySolver implements IEnergyCalculator
 				if (node.getType() != NodeType.Conductor) continue;
 
 				List<OptLink> links = entry.getValue();
-				if (links.isEmpty()) { it.remove(); changed = true; }
-				else if (links.size() == 1)
+				if (links.isEmpty())
+				{
+					it.remove();
+					changed = true;
+				} else if (links.size() == 1)
 				{
 					OptLink link = links.get(0);
 					Node neighbor = link.getNeighbor(node);
@@ -236,8 +229,7 @@ public class IcEnergySolver implements IEnergyCalculator
 					if (neighborLinks != null) neighborLinks.remove(link);
 					it.remove();
 					changed = true;
-				}
-				else if (links.size() == 2)
+				} else if (links.size() == 2)
 				{
 					OptLink link1 = links.get(0), link2 = links.get(1);
 					Node neighbor1 = link1.getNeighbor(node), neighbor2 = link2.getNeighbor(node);
@@ -288,7 +280,6 @@ public class IcEnergySolver implements IEnergyCalculator
 		return ret;
 	}
 
-	// ---- Modern IC distribution (EnergyTransferMath as single source of truth) ----
 
 	private static boolean runCalculation(Grid grid, GridData data)
 	{
@@ -310,8 +301,7 @@ public class IcEnergySolver implements IEnergyCalculator
 				&& tile.getAmount() > 0.0)
 			{
 				activeSources.add(node);
-			}
-			else if (node.getType() == NodeType.Sink)
+			} else if (node.getType() == NodeType.Sink)
 			{
 				double amount = ((IEnergySink) tile.getMainTile()).getDemandedEnergy();
 				if (amount > 0.0) activeSinks.put(node, new MutableDouble(amount));
@@ -360,8 +350,7 @@ public class IcEnergySolver implements IEnergyCalculator
 		if (packetCount == 1)
 		{
 			totalOffer = deliverAlongPaths(totalOffer, paths, shufflePaths ? null : null, data, calcId);
-		}
-		else
+		} else
 		{
 			double power = ElectricalNodes.getPacketPower(source, 0);
 			int remainingPackets = packetCount;
@@ -411,7 +400,6 @@ public class IcEnergySolver implements IEnergyCalculator
 
 			double effectiveAmount = Math.max(0.0, amount - rejected + path.loss);
 
-			// Track per-path stats for cable effects and node stats
 			if (path.lastCalcId != calcId)
 			{
 				path.lastCalcId = calcId;
@@ -436,7 +424,6 @@ public class IcEnergySolver implements IEnergyCalculator
 		return offer;
 	}
 
-	// ---- Cable effects (delegated to EnergyTransferMath) ----
 
 	private static void applyCableEffects(Collection<EnergyPath> eventPaths, Level world)
 	{
@@ -468,7 +455,6 @@ public class IcEnergySolver implements IEnergyCalculator
 				}
 			}
 
-			// Shock nearby entities
 			if (amount > path.minInsulationEnergyAbsorption)
 			{
 				List<LivingEntity> nearbyEntities = world.getEntitiesOfClass(LivingEntity.class,
@@ -494,8 +480,8 @@ public class IcEnergySolver implements IEnergyCalculator
 								MutableDouble prev = localShockEnergyMap.get(entity);
 								if ((prev == null || !(prev.doubleValue() >= shockEnergy))
 									&& entity.getBoundingBox().intersects(
-										new AABB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1,
-											pos.getX() + 2, pos.getY() + 2, pos.getZ() + 2)))
+									new AABB(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1,
+										pos.getX() + 2, pos.getY() + 2, pos.getZ() + 2)))
 								{
 									if (prev == null) localShockEnergyMap.put(entity, new MutableDouble(shockEnergy));
 									else prev.setValue(shockEnergy);
@@ -506,11 +492,14 @@ public class IcEnergySolver implements IEnergyCalculator
 
 					for (Map.Entry<LivingEntity, MutableDouble> entry : localShockEnergyMap.entrySet())
 						shockEnergyMap.merge(entry.getKey(), entry.getValue(),
-							(a, b) -> { a.add(b.doubleValue()); return a; });
+							(a, b) ->
+							{
+								a.add(b.doubleValue());
+								return a;
+							});
 				}
 			}
 
-			// Sink over-voltage
 			Tile sinkTile = path.target.getTile();
 			IEnergySink sink = (IEnergySink) sinkTile.getMainTile();
 			if (EnergyNetExplosions.isOverVoltage(sink, amount))
@@ -540,7 +529,6 @@ public class IcEnergySolver implements IEnergyCalculator
 		}
 	}
 
-	// ---- IEnergyCalculator implementation ----
 
 	@Override
 	public void handleGridChange(Grid grid)
@@ -561,8 +549,8 @@ public class IcEnergySolver implements IEnergyCalculator
 			if (!tile.isDisabled()
 				&& (amount = source.getOfferedEnergy()) > 0.0
 				&& (!(source instanceof IMultiEnergySource multi)
-					|| !multi.sendMultipleEnergyPackets()
-					|| (packets = multi.getMultipleEnergyPacketAmount()) > 0))
+				|| !multi.sendMultipleEnergyPackets()
+				|| (packets = multi.getMultipleEnergyPacketAmount()) > 0))
 			{
 				int tier = source.getSourceTier();
 				if (tier < 0)
@@ -571,15 +559,13 @@ public class IcEnergySolver implements IEnergyCalculator
 						IC2R.log.warn(LogCategory.EnergyNet, "Tile %s reported invalid tier (%d).",
 							Util.toString(source, enet.getWorld(), EnergyNet.instance.getPos(source)), tier);
 					tile.setSourceData(0.0, 0);
-				}
-				else
+				} else
 				{
 					foundAny = true;
 					amount = Math.min(amount, ElectricalNodes.getMaxOfferPower(source, packets));
 					tile.setSourceData(amount, packets);
 				}
-			}
-			else
+			} else
 			{
 				tile.setSourceData(0.0, 0);
 			}
@@ -593,11 +579,13 @@ public class IcEnergySolver implements IEnergyCalculator
 	public boolean runSyncStep(Grid grid)
 	{
 		runCalculation(grid, GridData.get(grid));
-		return false; // transfer stays on server thread
+		return false;
 	}
 
 	@Override
-	public void runAsyncStep(Grid grid) {}
+	public void runAsyncStep(Grid grid)
+	{
+	}
 
 	@Override
 	public void applyDeferredEffects(EnergyNetLocal enet)
@@ -635,7 +623,11 @@ public class IcEnergySolver implements IEnergyCalculator
 
 			if (node.getType() == NodeType.Source) out += sum;
 			else if (node.getType() == NodeType.Sink) in += sum;
-			else { in += sum; out += sum; }
+			else
+			{
+				in += sum;
+				out += sum;
+			}
 		}
 		return new NodeStats(in, out, EnergyNet.instance.getTierFromPower(max));
 	}
@@ -664,17 +656,16 @@ public class IcEnergySolver implements IEnergyCalculator
 				chat.printf("%s %s -> %s", prefix,
 					node.getType() == NodeType.Source ? path.target : path.source,
 					node.getType() == NodeType.Source ? "" : path.target);
-			}
-			else if (n == 8) chat.printf("%d more %n", paths.size() - 8);
+			} else if (n == 8) chat.printf("%d more %n", paths.size() - 8);
 
 			n++;
 			if (path.lastCalcId != calcId || path.energySupplied <= 0.0)
 			{
 				if (printPathEnergy) chat.println(" (idle)");
-			}
-			else
+			} else
 			{
-				if (printPathEnergy) chat.printf(" (%.2f EU, max packet %.2f EU)%n", path.energySupplied, path.maxPacketConducted);
+				if (printPathEnergy)
+					chat.printf(" (%.2f EU, max packet %.2f EU)%n", path.energySupplied, path.maxPacketConducted);
 				sum += path.energySupplied;
 				max = Math.max(path.maxPacketConducted, max);
 			}
@@ -682,12 +673,16 @@ public class IcEnergySolver implements IEnergyCalculator
 		chat.printf("%s last tick: %.2f EU, max packet %.2f EU%n", prefix, sum, max);
 	}
 
-	// ---- Inner types (shared with legacy) ----
 
 	private record OptLink(Node nodeA, Node nodeB, double loss, List<Node> skippedNodes)
 	{
-		Node getNeighbor(Node node) { return nodeA == node ? nodeB : nodeA; }
+		Node getNeighbor(Node node)
+		{
+			return nodeA == node ? nodeB : nodeA;
+		}
 	}
 
-	private record OptimizedGraph(Map<Node, List<OptLink>> nodeToLinks) {}
+	private record OptimizedGraph(Map<Node, List<OptLink>> nodeToLinks)
+	{
+	}
 }

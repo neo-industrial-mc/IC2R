@@ -1,23 +1,18 @@
 package me.halfcooler.ic2r.core.uu;
 
-import me.halfcooler.ic2r.api.recipe.IBasicMachineRecipeManager;
-import me.halfcooler.ic2r.api.recipe.IMachineRecipeManager;
-import me.halfcooler.ic2r.api.recipe.IRecipeInput;
-import me.halfcooler.ic2r.api.recipe.MachineRecipe;
-import me.halfcooler.ic2r.api.recipe.Recipes;
+import me.halfcooler.ic2r.api.recipe.*;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.platform.services.PlatformServices;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
-
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 /**
  * Pulls IC2 machine recipes into the UU graph.

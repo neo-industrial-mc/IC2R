@@ -5,6 +5,7 @@ import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.invslot.InvSlot;
+import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
 import me.halfcooler.ic2r.core.gui.dynamic.GuiParser;
@@ -12,20 +13,12 @@ import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.util.DelegatingInventory;
+import me.halfcooler.ic2r.core.util.GameProfileNbt;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.WeakHashMap;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import me.halfcooler.ic2r.core.util.GameProfileNbt;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -41,6 +34,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 public class TileEntityPersonalChest extends TileEntityInventory implements IPersonalBlock, IHasGui, ClientTicker
 {
@@ -88,7 +86,8 @@ public class TileEntityPersonalChest extends TileEntityInventory implements IPer
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("ownerGameProfile"))
 		{

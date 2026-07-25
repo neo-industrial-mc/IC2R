@@ -1,19 +1,14 @@
 package me.halfcooler.ic2r.core.block.machine;
 
-import me.halfcooler.ic2r.api.recipe.ICannerEnrichRecipeManager;
-import me.halfcooler.ic2r.api.recipe.IRecipeInput;
-import me.halfcooler.ic2r.api.recipe.MachineRecipe;
-import me.halfcooler.ic2r.api.recipe.MachineRecipeResult;
-import me.halfcooler.ic2r.api.recipe.RecipeOutput;
+import me.halfcooler.ic2r.api.recipe.*;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 public class CannerEnrichRecipeManager implements ICannerEnrichRecipeManager
 {
@@ -89,8 +84,6 @@ public class CannerEnrichRecipeManager implements ICannerEnrichRecipeManager
 		} else
 		{
 			remainingFluid = input.fluid().copy();
-			// An accept test matches recipes needing more fluid than the tank holds; clamp so the
-			// remaining amount can't go negative.
 			remainingFluid.decreaseMb(Math.min(recipe.getInput().fluid().getAmountMb(), remainingFluid.getAmountMb()));
 			if (remainingFluid.isEmpty())
 			{

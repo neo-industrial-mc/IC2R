@@ -1,19 +1,15 @@
 package me.halfcooler.ic2r.core.ref.items;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
 import me.halfcooler.ic2r.core.item.ItemTinCan;
-import me.halfcooler.ic2r.core.item.tfbp.Chilling;
-import me.halfcooler.ic2r.core.item.tfbp.Cultivation;
-import me.halfcooler.ic2r.core.item.tfbp.Desertification;
-import me.halfcooler.ic2r.core.item.tfbp.Flatification;
-import me.halfcooler.ic2r.core.item.tfbp.Irrigation;
-import me.halfcooler.ic2r.core.item.tfbp.Mushroom;
-import me.halfcooler.ic2r.core.item.tfbp.Tfbp;
+import me.halfcooler.ic2r.core.item.tfbp.*;
 import me.halfcooler.ic2r.core.item.upgrade.ItemUpgradeModule;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
 
-/** Domain item registrations: Machine upgrades and TFBP */
+/**
+ * Domain item registrations: Machine upgrades and TFBP
+ */
 public final class Ic2rItemsUpgrades
 {
 	private Ic2rItemsUpgrades()

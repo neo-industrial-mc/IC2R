@@ -1,30 +1,9 @@
 package me.halfcooler.ic2r.core.gui.dynamic;
 
-import me.halfcooler.ic2r.core.gui.EnergyGauge;
-import me.halfcooler.ic2r.core.gui.Gauge;
-import me.halfcooler.ic2r.core.gui.GuiElement;
-import me.halfcooler.ic2r.core.gui.IEnableHandler;
-import me.halfcooler.ic2r.core.gui.SlotGrid;
-import me.halfcooler.ic2r.core.gui.TextLabel;
+import me.halfcooler.ic2r.core.gui.*;
 import me.halfcooler.ic2r.core.util.ConfigUtil;
 import me.halfcooler.ic2r.core.util.Tuple;
 import me.halfcooler.ic2r.core.util.XmlUtil;
-
-import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +12,16 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.util.*;
 
 public class GuiParser
 {
@@ -43,8 +32,6 @@ public class GuiParser
 
 		try
 		{
-			// Module resource lookups don't cross mod boundaries, so addon GUI definitions are
-			// only visible through a class from the addon's own module.
 			is = baseClass.getResourceAsStream(fileLoc);
 			if (is == null)
 			{

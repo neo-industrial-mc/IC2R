@@ -5,12 +5,11 @@ import me.halfcooler.ic2r.api.recipe.IRecipeInput;
 import me.halfcooler.ic2r.api.recipe.MachineRecipe;
 import me.halfcooler.ic2r.api.recipe.MachineRecipeResult;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 public class MatterAmplifierRecipeManager implements IMachineRecipeManager<IRecipeInput, Integer, ItemStack>
 {

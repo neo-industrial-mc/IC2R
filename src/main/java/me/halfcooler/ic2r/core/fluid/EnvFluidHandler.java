@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.core.fluid;
 
-import java.util.Collection;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -15,6 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 public interface EnvFluidHandler
 {

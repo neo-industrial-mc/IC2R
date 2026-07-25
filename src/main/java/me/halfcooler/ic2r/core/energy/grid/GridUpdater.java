@@ -4,12 +4,7 @@ import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.util.LogCategory;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class GridUpdater implements Runnable
@@ -119,8 +114,8 @@ class GridUpdater implements Runnable
 					if (remaining <= 0L)
 					{
 						IC2R.log.error(LogCategory.EnergyNet, "GridUpdater.awaitCompletion() timed out after %dms! " +
-							"pendingCalculations=%d, isChangeStep=%b, changes=%d. " +
-							"Forcing state reset to prevent server hang. This may indicate a deadlock or infinite loop in energy net calculation.",
+								"pendingCalculations=%d, isChangeStep=%b, changes=%d. " +
+								"Forcing state reset to prevent server hang. This may indicate a deadlock or infinite loop in energy net calculation.",
 							elapsed, this.pendingCalculations.get(), this.isChangeStep, this.changes.size());
 						this.forceClear();
 						break;
@@ -163,8 +158,6 @@ class GridUpdater implements Runnable
 
 	private void prepareUpdate()
 	{
-		// prepareSync may reject ADDITION when Level.isLoaded is still false around chunk load.
-		// startChangeCalc already removed these from gridAdditionsMap — re-queue so they are not lost.
 		List<GridChange> retryAdditions = null;
 		var it = this.changes.iterator();
 		while (it.hasNext())

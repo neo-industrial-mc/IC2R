@@ -7,10 +7,6 @@ import me.halfcooler.ic2r.core.crop.TileEntityCrop;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.List;
-
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -22,6 +18,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ItemCropSeed extends Item implements ICropSeed
 {

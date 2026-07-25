@@ -2,11 +2,7 @@ package me.halfcooler.ic2r.core.block.machine.gui;
 
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerMetalFormer;
-import me.halfcooler.ic2r.core.gui.CustomGauge;
-import me.halfcooler.ic2r.core.gui.EnergyGauge;
-import me.halfcooler.ic2r.core.gui.Gauge;
-import me.halfcooler.ic2r.core.gui.RecipeButton;
-import me.halfcooler.ic2r.core.gui.VanillaButton;
+import me.halfcooler.ic2r.core.gui.*;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

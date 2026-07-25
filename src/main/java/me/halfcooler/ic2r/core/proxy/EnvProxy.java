@@ -2,19 +2,11 @@ package me.halfcooler.ic2r.core.proxy;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.MapCodec;
+import io.netty.buffer.ByteBuf;
 import me.halfcooler.ic2r.core.Ic2rItemGroupType;
 import me.halfcooler.ic2r.core.fluid.EnvFluidHandler;
 import me.halfcooler.ic2r.core.item.EnvItemHandler;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
-import io.netty.buffer.ByteBuf;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -36,11 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
@@ -59,9 +47,15 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
+
 public interface EnvProxy
 {
-	// Client / server: PlatformServices.lifecycle().isClient() / .getServer()
 
 	<T extends BlockEntity> BlockEntityType<T> registerBlockEntity(ResourceLocation var1, BiFunction<BlockPos, BlockState, T> var2, Block... var3);
 

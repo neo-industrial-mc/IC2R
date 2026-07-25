@@ -1,17 +1,16 @@
 package me.halfcooler.ic2r.core.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
 import me.halfcooler.ic2r.core.proxy.SideProxyClient;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.List;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
+
+import java.util.List;
 
 public class TankGauge extends GuiElement<TankGauge>
 {

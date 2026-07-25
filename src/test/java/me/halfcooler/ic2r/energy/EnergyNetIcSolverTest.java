@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class EnergyNetIcSolverTest
 {
-	// ---- EN-IC-002: Multi-path topology selection (deepened beyond icPreferNewPath) ----
 
 	/**
 	 * @Spec EN-IC-002
@@ -37,7 +36,7 @@ class EnergyNetIcSolverTest
 	@Test
 	void pathSelection_lowestLossWins_acrossMultipleCandidates()
 	{
-		double[] candidateLosses = {5.0, 2.0, 7.0};
+		double[] candidateLosses = { 5.0, 2.0, 7.0 };
 		double bestLoss = Double.POSITIVE_INFINITY;
 		for (double loss : candidateLosses)
 		{
@@ -48,7 +47,6 @@ class EnergyNetIcSolverTest
 		}
 		assertEquals(2.0, bestLoss);
 
-		// Equal loss: first-discovered is kept (no replacement)
 		double kept = 3.0;
 		assertFalse(EnergyTransferMath.icPreferNewPath(kept, 3.0));
 		assertFalse(EnergyTransferMath.icPreferNewPath(kept, 4.0));
@@ -64,8 +62,8 @@ class EnergyNetIcSolverTest
 	@Test
 	void pathSelection_parallelChains_lowerCumulativeLossPreferred()
 	{
-		double pathALoss = 1.0 + 2.0;    // source→condA(1)→sink(2)
-		double pathBLoss = 0.5 + 0.5;    // source→condB(0.5)→sink(0.5)
+		double pathALoss = 1.0 + 2.0;
+		double pathBLoss = 0.5 + 0.5;
 
 		double bestLoss = Double.POSITIVE_INFINITY;
 		if (EnergyTransferMath.icPreferNewPath(bestLoss, pathALoss)) bestLoss = pathALoss;
@@ -73,7 +71,6 @@ class EnergyNetIcSolverTest
 
 		assertEquals(1.0, bestLoss);
 		double offer = 100.0;
-		// Path A: 100-3=97; Path B: 100-1=99
 		assertEquals(97.0, EnergyTransferMath.icInjectAmount(offer, pathALoss));
 		assertEquals(99.0, EnergyTransferMath.icInjectAmount(offer, pathBLoss));
 		assertTrue(EnergyTransferMath.icInjectAmount(offer, pathBLoss)
@@ -89,7 +86,7 @@ class EnergyNetIcSolverTest
 	@Test
 	void pathSelection_allPathsDead_noDelivery()
 	{
-		double[] deadLosses = {200.0, 150.0, 300.0};
+		double[] deadLosses = { 200.0, 150.0, 300.0 };
 		double offer = 100.0;
 
 		double bestLoss = Double.POSITIVE_INFINITY;
@@ -137,7 +134,6 @@ class EnergyNetIcSolverTest
 		assertEquals(expectedMin, bestLoss);
 	}
 
-	// ---- EN-IC-004 / EN-IC-005: Multi-sink distribution deepened ----
 
 	/**
 	 * @Spec EN-IC-004
@@ -151,16 +147,11 @@ class EnergyNetIcSolverTest
 	void multiSink_heterogeneousLosses_totalDeliveredBounded()
 	{
 		double offer = 200.0;
-		double[] losses = {0.0, 5.0, 20.0, 50.0};
-		double[] demands = {60.0, 80.0, 100.0, 200.0};
+		double[] losses = { 0.0, 5.0, 20.0, 50.0 };
+		double[] demands = { 60.0, 80.0, 100.0, 200.0 };
 		double[] delivered = EnergyTransferMath.icDistributeSequential(offer, losses, demands);
 
-		// Step-by-step:
-		// Sink[0]: inject 200, demand 60 → 60, source consumed 60 (0 loss)
-		// Sink[1]: remaining 140, inject 135, demand 80 → 80, source consumed 85
-		// Sink[2]: remaining 55, inject 35, demand 100 → 35, source consumed 55
-		// Sink[3]: remaining 0 → 0
-		assertArrayEquals(new double[]{60.0, 80.0, 35.0, 0.0}, delivered, 1e-9);
+		assertArrayEquals(new double[] { 60.0, 80.0, 35.0, 0.0 }, delivered, 1e-9);
 
 		double sum = 0.0;
 		for (double d : delivered) sum += d;
@@ -179,16 +170,15 @@ class EnergyNetIcSolverTest
 	{
 		double[] delivered = EnergyTransferMath.icDistributeSequential(
 			50.0,
-			new double[]{0.0, 0.0},
-			new double[]{100.0, 100.0});
-		assertArrayEquals(new double[]{50.0, 0.0}, delivered, 1e-9);
+			new double[] { 0.0, 0.0 },
+			new double[] { 100.0, 100.0 });
+		assertArrayEquals(new double[] { 50.0, 0.0 }, delivered, 1e-9);
 
-		// Reorder: first sink only needs 30, rest goes to second
 		double[] delivered2 = EnergyTransferMath.icDistributeSequential(
 			50.0,
-			new double[]{0.0, 0.0},
-			new double[]{30.0, 100.0});
-		assertArrayEquals(new double[]{30.0, 20.0}, delivered2, 1e-9);
+			new double[] { 0.0, 0.0 },
+			new double[] { 30.0, 100.0 });
+		assertArrayEquals(new double[] { 30.0, 20.0 }, delivered2, 1e-9);
 	}
 
 	/**
@@ -203,15 +193,10 @@ class EnergyNetIcSolverTest
 	void multiSink_lossGradient_earlySinksDrainSourceFasterPerDeliveredEu()
 	{
 		double offer = 500.0;
-		double[] losses = {0.0, 5.0, 10.0, 20.0, 50.0};
-		double[] demands = {100.0, 100.0, 100.0, 100.0, 100.0};
+		double[] losses = { 0.0, 5.0, 10.0, 20.0, 50.0 };
+		double[] demands = { 100.0, 100.0, 100.0, 100.0, 100.0 };
 		double[] delivered = EnergyTransferMath.icDistributeSequential(offer, losses, demands);
 
-		// Sink[0]: inject 500, want 100 → takes 100, source pays 100 → remaining 400
-		// Sink[1]: inject 395, want 100 → takes 100, source pays 105 → remaining 295
-		// Sink[2]: inject 285, want 100 → takes 100, source pays 110 → remaining 185
-		// Sink[3]: inject 165, want 100 → takes 100, source pays 120 → remaining 65
-		// Sink[4]: inject 15, want 100 → takes 15, source pays 65 → remaining 0
 		assertEquals(100.0, delivered[0], 1e-9);
 		assertEquals(100.0, delivered[1], 1e-9);
 		assertEquals(100.0, delivered[2], 1e-9);
@@ -223,7 +208,6 @@ class EnergyNetIcSolverTest
 		assertTrue(sum <= offer);
 	}
 
-	// ---- EN-GT-010: IC vs GT cross-mode comparison ----
 
 	/**
 	 * @Spec EN-GT-010
@@ -237,34 +221,31 @@ class EnergyNetIcSolverTest
 	void icVsGt_sameBuffer_differentOfferGranularity()
 	{
 		double bufferEu = 100.0;
-		int voltage = VoltageTier.LV.getVoltage(); // 32
+		int voltage = VoltageTier.LV.getVoltage();
 		double pathLoss = 10.0;
 		double sinkDemand = 200.0;
 
-		// --- IC path ---
 		double icDelivered = Math.min(
 			EnergyTransferMath.icInjectAmount(bufferEu, pathLoss),
 			sinkDemand);
 		assertEquals(90.0, icDelivered);
 
-		// --- GT path ---
 		int gtOfferAmps = EnergyTransferMath.gtOfferAmps(bufferEu, voltage);
-		assertEquals(3, gtOfferAmps);           // floor(100/32)
+		assertEquals(3, gtOfferAmps);
 		double gtAvailable = (double) gtOfferAmps * voltage;
 		assertEquals(96.0, gtAvailable);
 
-		int tinLoss = CableSpec.forType(CableType.tin).getLossPerMeterPerAmp(); // =1
-		int[] tenTinBlocks = {tinLoss, tinLoss, tinLoss, tinLoss, tinLoss,
-			tinLoss, tinLoss, tinLoss, tinLoss, tinLoss};
+		int tinLoss = CableSpec.forType(CableType.tin).getLossPerMeterPerAmp();
+		int[] tenTinBlocks = { tinLoss, tinLoss, tinLoss, tinLoss, tinLoss,
+			tinLoss, tinLoss, tinLoss, tinLoss, tinLoss };
 		int survivingEu = EnergyTransferMath.gtPacketEuAfterPathLoss(voltage, tenTinBlocks);
-		assertEquals(22, survivingEu);          // 32 - 10
+		assertEquals(22, survivingEu);
 
 		int deliverableAmps = EnergyTransferMath.gtDeliverableAmps(gtOfferAmps, survivingEu);
 		assertEquals(3, deliverableAmps);
 		double gtDelivered = (double) deliverableAmps * survivingEu;
 		assertEquals(66.0, gtDelivered);
 
-		// Both are correct per their respective invariants: divergence is expected
 		assertNotEquals(icDelivered, gtDelivered, 1e-9);
 		assertTrue(icDelivered > gtDelivered,
 			"IC continuous-EU should deliver more than GT per-amp-loss for same topology");
@@ -284,11 +265,9 @@ class EnergyNetIcSolverTest
 		int voltage = VoltageTier.LV.getVoltage();
 		double pathLoss = 0.0;
 
-		// IC: delivers whatever is in buffer
 		double icDelivered = EnergyTransferMath.icInjectAmount(bufferEu, pathLoss);
 		assertEquals(20.0, icDelivered);
 
-		// GT: partial buffer → no amp output (EN-GT-009)
 		int gtOfferAmps = EnergyTransferMath.gtOfferAmps(bufferEu, voltage);
 		assertEquals(0, gtOfferAmps);
 		assertEquals(0, EnergyTransferMath.gtOfferAmps(31.9, voltage));
@@ -310,17 +289,15 @@ class EnergyNetIcSolverTest
 		double pathLoss = 30.0;
 		double demand = 500.0;
 
-		// IC: one subtraction
 		double icDelivered = Math.min(
 			EnergyTransferMath.icInjectAmount(bufferEu, pathLoss), demand);
 		assertEquals(170.0, icDelivered);
 
-		// GT: 6 amps × 30 loss each → 2 EU/amp survives
 		int gtOfferAmps = EnergyTransferMath.gtOfferAmps(bufferEu, voltage);
 		assertEquals(6, gtOfferAmps);
 
 		int[] thirtyLoss = new int[30];
-		for (int i = 0; i < 30; i++) thirtyLoss[i] = 1; // tin: 1 EU/m/A
+		for (int i = 0; i < 30; i++) thirtyLoss[i] = 1;
 		int survivingEu = EnergyTransferMath.gtPacketEuAfterPathLoss(voltage, thirtyLoss);
 		assertEquals(2, survivingEu);
 
@@ -329,7 +306,6 @@ class EnergyNetIcSolverTest
 		double gtDelivered = (double) deliverableAmps * survivingEu;
 		assertEquals(12.0, gtDelivered);
 
-		// IC delivers ~14× more than GT — correct given loss semantics
 		assertTrue(icDelivered > gtDelivered * 10,
 			"IC loss-once vs GT loss-per-amp should produce dramatic divergence");
 	}
@@ -345,13 +321,11 @@ class EnergyNetIcSolverTest
 	void icVsGt_zeroLoss_convergesModuloQuantization()
 	{
 		double bufferEu = 128.0;
-		int voltage = VoltageTier.LV.getVoltage(); // 32
+		int voltage = VoltageTier.LV.getVoltage();
 
-		// IC: 128 EU, 0 loss → 128 EU
 		double icDelivered = EnergyTransferMath.icInjectAmount(bufferEu, 0.0);
 		assertEquals(128.0, icDelivered);
 
-		// GT: floor(128/32) = 4 amps × 32 = 128 EU
 		int gtOfferAmps = EnergyTransferMath.gtOfferAmps(bufferEu, voltage);
 		assertEquals(4, gtOfferAmps);
 
@@ -360,7 +334,7 @@ class EnergyNetIcSolverTest
 
 		int survivingEu = EnergyTransferMath.gtPacketEuAfterPathLoss(voltage,
 			glassLoss, glassLoss, glassLoss, glassLoss, glassLoss);
-		assertEquals(32, survivingEu); // unchanged
+		assertEquals(32, survivingEu);
 
 		int deliverableAmps = EnergyTransferMath.gtDeliverableAmps(gtOfferAmps, survivingEu);
 		assertEquals(4, deliverableAmps);
@@ -380,7 +354,7 @@ class EnergyNetIcSolverTest
 	@Test
 	void icVsGt_fractionalBuffer_gtTruncates_icPreserves()
 	{
-		double bufferEu = 100.0; // 3.125 amps @ 32V; GT floors to 3
+		double bufferEu = 100.0;
 		int voltage = VoltageTier.LV.getVoltage();
 
 		double icDelivered = EnergyTransferMath.icInjectAmount(bufferEu, 0.0);
@@ -392,6 +366,6 @@ class EnergyNetIcSolverTest
 		assertEquals(96.0, gtDelivered);
 
 		assertTrue(icDelivered > gtDelivered);
-		assertEquals(4.0, icDelivered - gtDelivered, 1e-9); // IC preserves 4 EU fractional remainder
+		assertEquals(4.0, icDelivered - gtDelivered, 1e-9);
 	}
 }

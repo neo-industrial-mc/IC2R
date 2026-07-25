@@ -6,13 +6,12 @@ import me.halfcooler.ic2r.api.recipe.MachineRecipeResult;
 import me.halfcooler.ic2r.api.util.FluidContainerOutputMode;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.Collection;
-import java.util.Collections;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
+
+import java.util.Collection;
+import java.util.Collections;
 
 public class EmptyFluidContainerRecipeManager implements IEmptyFluidContainerRecipeManager
 {

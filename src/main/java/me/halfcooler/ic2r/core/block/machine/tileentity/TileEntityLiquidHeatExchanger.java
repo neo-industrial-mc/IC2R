@@ -9,14 +9,7 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.LiquidHeatExchangerManager;
 import me.halfcooler.ic2r.core.block.comp.Fluids;
-import me.halfcooler.ic2r.core.block.invslot.InvSlot;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumable;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableItemStack;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquid;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquidByManager;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquidByTank;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotOutput;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
+import me.halfcooler.ic2r.core.block.invslot.*;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerLiquidHeatExchanger;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityHeatSourceInventory;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
@@ -26,16 +19,15 @@ import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
-
-import java.util.EnumSet;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 public class TileEntityLiquidHeatExchanger extends TileEntityHeatSourceInventory implements IHasGui, IUpgradableBlock
 {

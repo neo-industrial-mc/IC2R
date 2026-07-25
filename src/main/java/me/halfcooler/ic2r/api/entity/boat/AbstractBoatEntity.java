@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.api.entity.boat;
 
-import java.lang.reflect.Field;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.sounds.SoundEvent;
@@ -19,6 +17,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Field;
 
 public abstract class AbstractBoatEntity extends Boat
 {

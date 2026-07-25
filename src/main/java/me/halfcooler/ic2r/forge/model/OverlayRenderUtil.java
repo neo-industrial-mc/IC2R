@@ -1,12 +1,11 @@
 package me.halfcooler.ic2r.forge.model;
 
 import me.halfcooler.ic2r.core.item.tool.ItemObscurator;
-
-import java.util.Arrays;
-
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+
+import java.util.Arrays;
 
 final class OverlayRenderUtil
 {
@@ -117,12 +116,18 @@ final class OverlayRenderUtil
 
 		switch (face)
 		{
-			case DOWN -> fillFaceQuad(data, neg, neg, neg, pos, neg, neg, pos, neg, pos, neg, neg, pos, 0f, 0f, 1f, 0f, 1f, 1f, 0f, 1f);
-			case UP -> fillFaceQuad(data, neg, pos, neg, neg, pos, pos, pos, pos, pos, pos, pos, neg, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f);
-			case NORTH -> fillFaceQuad(data, neg, neg, neg, neg, pos, neg, pos, pos, neg, pos, neg, neg, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f);
-			case SOUTH -> fillFaceQuad(data, neg, neg, pos, pos, neg, pos, pos, pos, pos, neg, pos, pos, 0f, 0f, 1f, 0f, 1f, 1f, 0f, 1f);
-			case WEST -> fillFaceQuad(data, neg, neg, neg, neg, neg, pos, neg, pos, pos, neg, pos, neg, 0f, 0f, 1f, 0f, 1f, 1f, 0f, 1f);
-			case EAST -> fillFaceQuad(data, pos, neg, neg, pos, pos, neg, pos, pos, pos, pos, neg, pos, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f);
+			case DOWN ->
+				fillFaceQuad(data, neg, neg, neg, pos, neg, neg, pos, neg, pos, neg, neg, pos, 0f, 0f, 1f, 0f, 1f, 1f, 0f, 1f);
+			case UP ->
+				fillFaceQuad(data, neg, pos, neg, neg, pos, pos, pos, pos, pos, pos, pos, neg, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f);
+			case NORTH ->
+				fillFaceQuad(data, neg, neg, neg, neg, pos, neg, pos, pos, neg, pos, neg, neg, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f);
+			case SOUTH ->
+				fillFaceQuad(data, neg, neg, pos, pos, neg, pos, pos, pos, pos, neg, pos, pos, 0f, 0f, 1f, 0f, 1f, 1f, 0f, 1f);
+			case WEST ->
+				fillFaceQuad(data, neg, neg, neg, neg, neg, pos, neg, pos, pos, neg, pos, neg, 0f, 0f, 1f, 0f, 1f, 1f, 0f, 1f);
+			case EAST ->
+				fillFaceQuad(data, pos, neg, neg, pos, pos, neg, pos, pos, pos, pos, neg, pos, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 0f);
 		}
 
 		for (int i = 0; i < 32; i += 8)

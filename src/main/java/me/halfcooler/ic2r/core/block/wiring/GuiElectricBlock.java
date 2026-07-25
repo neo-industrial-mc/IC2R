@@ -1,10 +1,10 @@
 package me.halfcooler.ic2r.core.block.wiring;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
-import me.halfcooler.ic2r.core.gui.EnergyGauge;
 import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
+import me.halfcooler.ic2r.core.gui.EnergyGauge;
 import me.halfcooler.ic2r.core.gui.VanillaButton;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -32,8 +32,7 @@ public class GuiElectricBlock extends Ic2rGui<ContainerElectricBlock>
 		if (ElectricalDisplay.isGtDisplay())
 		{
 			this.drawString(guiGraphics, 82, rightTextHeight, ElectricalDisplay.formatVoltage(this.menu.base.energy.getWorkingVoltage()).getString(), color);
-		}
-		else
+		} else
 		{
 			this.drawString(guiGraphics, 82, rightTextHeight, Component.translatable("ic2r.EUStorage.gui.info.level").getString(), color);
 		}
@@ -50,8 +49,7 @@ public class GuiElectricBlock extends Ic2rGui<ContainerElectricBlock>
 			).getString();
 			this.drawString(guiGraphics, 82, rightTextHeight + 35, output, color);
 			this.drawString(guiGraphics, 82, rightTextHeight + 45, power, color);
-		}
-		else
+		} else
 		{
 			String output = Component.translatable("ic2r.EUStorage.gui.info.output", this.menu.base.getOutput()).getString();
 			this.drawString(guiGraphics, 82, rightTextHeight + 35, output, color);

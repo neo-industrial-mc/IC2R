@@ -12,6 +12,8 @@ public enum UpgradableProperty
 	FluidConsuming,
 	FluidProducing,
 	RemotelyAccessible,
-	/** Advanced miner: accepts mining filter upgrade modules. */
+	/**
+	 * Advanced miner: accepts mining filter upgrade modules.
+	 */
 	MiningFilter
 }

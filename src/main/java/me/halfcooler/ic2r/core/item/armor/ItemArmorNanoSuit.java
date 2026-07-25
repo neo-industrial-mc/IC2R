@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.core.item.armor;
 
-import net.minecraft.core.Holder;
-
 import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.api.item.HudMode;
 import me.halfcooler.ic2r.api.item.IItemHudProvider;
@@ -10,18 +8,15 @@ import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.KeyboardClient;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +33,6 @@ public class ItemArmorNanoSuit extends ItemArmorElectric implements IItemHudProv
 
 	static void getNightVisionOrNot(@NotNull ItemStack stack, Player player, byte toggleTimer, boolean isNightVisionEnabled)
 	{
-		// 1.21: CUSTOM_DATA mutations must go through editTag/setTag — getOrCreateNbtData returns a copy.
 		if (IC2R.sideProxy.isSimulating() && toggleTimer > 0)
 		{
 			byte newTimer = (byte) (toggleTimer - 1);

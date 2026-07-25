@@ -14,7 +14,9 @@ public final class PumpUtilForge implements PumpUtil.PumpFluidAccess
 {
 	private static final PumpUtilForge INSTANCE = new PumpUtilForge();
 
-	private PumpUtilForge() {}
+	private PumpUtilForge()
+	{
+	}
 
 	public static void install()
 	{
@@ -25,7 +27,6 @@ public final class PumpUtilForge implements PumpUtil.PumpFluidAccess
 	@Nullable
 	public Integer getForgeFluidDecay(BlockState state, Level world, BlockPos pos)
 	{
-		// No NeoForge IFluidBlock equivalent; caller uses LiquidBlock path.
 		return null;
 	}
 }

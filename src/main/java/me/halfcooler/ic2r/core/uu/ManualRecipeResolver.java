@@ -1,13 +1,12 @@
 package me.halfcooler.ic2r.core.uu;
 
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 public class ManualRecipeResolver implements IRecipeResolver
 {

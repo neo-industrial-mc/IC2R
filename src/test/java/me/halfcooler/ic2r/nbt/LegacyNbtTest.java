@@ -1,14 +1,10 @@
 package me.halfcooler.ic2r.nbt;
 
 import me.halfcooler.ic2r.core.util.LegacyNbt;
-
 import net.minecraft.nbt.CompoundTag;
-
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Pure unit tests for {@link LegacyNbt} primary-then-legacy key resolution.

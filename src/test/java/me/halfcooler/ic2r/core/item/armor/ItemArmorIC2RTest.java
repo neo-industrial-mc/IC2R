@@ -1,9 +1,9 @@
 package me.halfcooler.ic2r.core.item.armor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import net.minecraft.world.entity.EquipmentSlot;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ItemArmorIC2RTest
 {

@@ -3,14 +3,13 @@ package me.halfcooler.ic2r.core.block.comp;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
-
-import java.io.DataInput;
-import java.io.IOException;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
+
+import java.io.DataInput;
+import java.io.IOException;
 
 public abstract class TileEntityComponent
 {

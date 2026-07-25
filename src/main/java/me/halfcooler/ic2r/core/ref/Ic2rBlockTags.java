@@ -19,7 +19,9 @@ import net.minecraft.world.level.block.Block;
 public final class Ic2rBlockTags
 {
 	public static final TagKey<Block> EMPTY = mod("empty");
-	/** Blocks correctly mined with the IC2R wrench (1.12 HarvestTool.Wrench). */
+	/**
+	 * Blocks correctly mined with the IC2R wrench (1.12 HarvestTool.Wrench).
+	 */
 	public static final TagKey<Block> MINEABLE_WITH_WRENCH = mod("mineable/wrench");
 
 	public static final TagKey<Block> ORES = common("ores");

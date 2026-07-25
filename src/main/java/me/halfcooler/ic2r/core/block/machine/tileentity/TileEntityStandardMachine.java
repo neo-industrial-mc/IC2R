@@ -19,11 +19,6 @@ import me.halfcooler.ic2r.core.network.sync.SyncCodecs;
 import me.halfcooler.ic2r.core.network.sync.SyncKey;
 import me.halfcooler.ic2r.core.sound.Sound;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.Collection;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
@@ -32,6 +27,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public abstract class TileEntityStandardMachine<RI, RO, I>
 	extends TileEntityElectricMachine
@@ -60,7 +59,9 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	 * On-wire name stays camelCase for protocol compatibility; values R/W via Sync (G1.1).
 	 */
 	public static final String LEGACY_GUI_PROGRESS_FIELD = "guiProgress";
-	/** Legacy TeUpdate / {@code getNetworkedFields()} field name for active (same as modern wire). */
+	/**
+	 * Legacy TeUpdate / {@code getNetworkedFields()} field name for active (same as modern wire).
+	 */
 	public static final String LEGACY_ACTIVE_FIELD = "active";
 
 	/**
@@ -136,7 +137,8 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.progress = readProgressNbt(nbt);
 	}
@@ -200,12 +202,13 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 		Consumer<Float> guiProgressSetter
 	)
 	{
-		// LEGACY_ACTIVE_FIELD equals wire "active" — alias is a no-op; declared for clarity.
 		sync.add(KEY_ACTIVE, activeGetter, activeSetter, LEGACY_ACTIVE_FIELD);
 		sync.add(KEY_GUI_PROGRESS, guiProgressGetter, guiProgressSetter, LEGACY_GUI_PROGRESS_FIELD);
 	}
 
-	/** Apply GUI progress from modern sync decode (no side effects). */
+	/**
+	 * Apply GUI progress from modern sync decode (no side effects).
+	 */
 	protected void setGuiProgressSynced(float value)
 	{
 		this.guiProgress = value;
@@ -308,7 +311,6 @@ public abstract class TileEntityStandardMachine<RI, RO, I>
 
 	private boolean canOperate()
 	{
-		// Energy gate: consume only when recipe path is open (same as pure CycleMath + useEnergy).
 		if (!StandardMachineCycleMath.canOperate(this.recipeResult != null, this.energy.getEnergy(), this.energyConsume))
 		{
 			return false;

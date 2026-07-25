@@ -1,37 +1,23 @@
 package me.halfcooler.ic2r.core.ref.blocks;
 
-import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntityCreativeGenerator;
-import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntityGenerator;
-import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntityGeoGenerator;
-import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntityKineticGenerator;
-import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntityRTGenerator;
-import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntitySemifluidGenerator;
-import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntitySolarGenerator;
-import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntityStirlingGenerator;
-import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntityWaterGenerator;
-import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntityWindGenerator;
+import me.halfcooler.ic2r.core.block.generator.tileentity.*;
 import me.halfcooler.ic2r.core.block.heatgenerator.tileentity.TileEntityElectricHeatGenerator;
 import me.halfcooler.ic2r.core.block.heatgenerator.tileentity.TileEntityFluidHeatGenerator;
 import me.halfcooler.ic2r.core.block.heatgenerator.tileentity.TileEntityRTHeatGenerator;
 import me.halfcooler.ic2r.core.block.heatgenerator.tileentity.TileEntitySolidHeatGenerator;
-import me.halfcooler.ic2r.core.block.kineticgenerator.tileentity.TileEntityElectricKineticGenerator;
-import me.halfcooler.ic2r.core.block.kineticgenerator.tileentity.TileEntityManualKineticGenerator;
-import me.halfcooler.ic2r.core.block.kineticgenerator.tileentity.TileEntitySteamKineticGenerator;
-import me.halfcooler.ic2r.core.block.kineticgenerator.tileentity.TileEntityStirlingKineticGenerator;
-import me.halfcooler.ic2r.core.block.kineticgenerator.tileentity.TileEntityWaterKineticGenerator;
-import me.halfcooler.ic2r.core.block.kineticgenerator.tileentity.TileEntityWindKineticGenerator;
+import me.halfcooler.ic2r.core.block.kineticgenerator.tileentity.*;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
 import me.halfcooler.ic2r.core.util.Util;
-
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-
-import net.minecraft.world.level.material.MapColor;
 import me.halfcooler.ic2r.forge.EnvProxyForge;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/** Domain block registrations: EU / heat / kinetic generators */
+/**
+ * Domain block registrations: EU / heat / kinetic generators
+ */
 public final class Ic2rBlocksGenerators
 {
 	private Ic2rBlocksGenerators()

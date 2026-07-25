@@ -2,7 +2,6 @@ package me.halfcooler.ic2r.core.item.reactor;
 
 import me.halfcooler.ic2r.api.reactor.IReactor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 
 public class ItemReactorVent extends ItemReactorHeatStorage
 {

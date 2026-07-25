@@ -16,10 +16,6 @@ import me.halfcooler.ic2r.core.network.GuiSynced;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
-
-import java.util.Collections;
-import java.util.EnumSet;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,6 +26,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.EnumSet;
 
 @NotClassic
 public class TileEntityFluidRegulator extends TileEntityElectricMachine implements IHasGui, INetworkClientTileEntityEventListener
@@ -58,7 +57,8 @@ public class TileEntityFluidRegulator extends TileEntityElectricMachine implemen
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.outputmb = nbt.getInt("outputmb");
 		this.mode = nbt.getInt("mode");

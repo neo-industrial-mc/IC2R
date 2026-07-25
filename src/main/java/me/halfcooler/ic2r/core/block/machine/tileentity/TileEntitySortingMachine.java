@@ -13,12 +13,9 @@ import me.halfcooler.ic2r.core.item.EnvItemHandler;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.EnumSet;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,8 +24,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 @NotClassic
 public class TileEntitySortingMachine extends TileEntityElectricMachine implements IHasGui, INetworkClientTileEntityEventListener, IUpgradableBlock
@@ -49,7 +48,8 @@ public class TileEntitySortingMachine extends TileEntityElectricMachine implemen
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		ListTag filtersTag = nbt.getList("filters", 10);
 

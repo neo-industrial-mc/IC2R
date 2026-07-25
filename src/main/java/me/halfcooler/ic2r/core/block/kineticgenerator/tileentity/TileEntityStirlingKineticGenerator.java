@@ -8,25 +8,15 @@ import me.halfcooler.ic2r.api.upgrade.UpgradableProperty;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.comp.Fluids;
-import me.halfcooler.ic2r.core.block.invslot.InvSlot;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquid;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquidByManager;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquidByTank;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotOutput;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
+import me.halfcooler.ic2r.core.block.invslot.*;
 import me.halfcooler.ic2r.core.block.kineticgenerator.container.ContainerStirlingKineticGenerator;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.Util;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.util.EnumSet;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -35,6 +25,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 @NotClassic
 public class TileEntityStirlingKineticGenerator extends TileEntityAbstractKineticGenerator implements IUpgradableBlock, IHasGui, ServerTicker
@@ -76,7 +69,8 @@ public class TileEntityStirlingKineticGenerator extends TileEntityAbstractKineti
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.inputTank.fromNbt(nbt.getCompound("inputTank"));
 		this.outputTank.fromNbt(nbt.getCompound("outputTank"));

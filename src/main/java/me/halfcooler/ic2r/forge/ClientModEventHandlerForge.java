@@ -14,11 +14,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.sound.SoundEngineLoadEvent;
 
 public final class ClientModEventHandlerForge
@@ -141,7 +137,9 @@ public final class ClientModEventHandlerForge
 		}
 	}
 
-	/** SoundEngineLoadEvent is IModBusEvent — must be on mod bus, not NeoForge.EVENT_BUS. */
+	/**
+	 * SoundEngineLoadEvent is IModBusEvent — must be on mod bus, not NeoForge.EVENT_BUS.
+	 */
 	@SubscribeEvent
 	public void onSoundSetup(SoundEngineLoadEvent event)
 	{

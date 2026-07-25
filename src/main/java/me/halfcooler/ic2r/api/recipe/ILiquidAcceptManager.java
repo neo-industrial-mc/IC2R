@@ -1,8 +1,8 @@
 package me.halfcooler.ic2r.api.recipe;
 
-import java.util.Set;
-
 import net.minecraft.world.level.material.Fluid;
+
+import java.util.Set;
 
 public interface ILiquidAcceptManager
 {

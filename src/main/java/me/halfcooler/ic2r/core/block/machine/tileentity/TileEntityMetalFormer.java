@@ -10,11 +10,6 @@ import me.halfcooler.ic2r.core.block.machine.container.ContainerMetalFormer;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
-
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,6 +17,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
 
 @NotClassic
 public class TileEntityMetalFormer
@@ -38,7 +37,8 @@ public class TileEntityMetalFormer
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.setMode(nbt.getInt("mode"));
 	}

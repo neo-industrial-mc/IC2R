@@ -1,10 +1,5 @@
 package me.halfcooler.ic2r.core.ref;
 
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +10,11 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public final class Ic2rArmorMaterials
 {
@@ -38,7 +38,6 @@ public final class Ic2rArmorMaterials
 		register("solar_helmet", new int[] { 0, 0, 0, 3 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_IRON);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> STATIC_BOOTS =
 		register("static_boots", new int[] { 3, 0, 0, 0 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_LEATHER);
-	// Legacy special armor absorbed 5% normal damage per piece; one point is the closest vanilla fit.
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> HAZMAT =
 		register("hazmat", new int[] { 1, 1, 1, 1 }, 0, 0.0F, Ingredient::of, SoundEvents.ARMOR_EQUIP_LEATHER);
 	public static final DeferredHolder<ArmorMaterial, ArmorMaterial> CF_PACK =
@@ -69,16 +68,13 @@ public final class Ic2rArmorMaterials
 		Holder<SoundEvent> equipSound
 	)
 	{
-		return REGISTRY.register(name, () -> {
+		return REGISTRY.register(name, () ->
+		{
 			Map<ArmorItem.Type, Integer> defense = new EnumMap<>(ArmorItem.Type.class);
-			// ArmorItem.Type order: HELMET, CHESTPLATE, LEGGINGS, BOOTS, BODY
-			// Legacy array: [boots, legs, chest, helmet] by EquipmentSlot index
 			defense.put(ArmorItem.Type.BOOTS, protectionAmounts[0]);
 			defense.put(ArmorItem.Type.LEGGINGS, protectionAmounts[1]);
 			defense.put(ArmorItem.Type.CHESTPLATE, protectionAmounts[2]);
 			defense.put(ArmorItem.Type.HELMET, protectionAmounts[3]);
-			// Texture path: assets/ic2r/textures/models/armor/ic2_<name>_layer_{1|2}.png
-			// (legacy IC2 asset names keep the "ic2_" prefix on disk)
 			return new ArmorMaterial(
 				defense,
 				enchantAbility,

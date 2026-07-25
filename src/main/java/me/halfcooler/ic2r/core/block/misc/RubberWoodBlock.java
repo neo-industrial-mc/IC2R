@@ -15,12 +15,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class RubberWoodBlock extends Block
 {
-    public static final com.mojang.serialization.MapCodec<RubberWoodBlock> CODEC = simpleCodec(RubberWoodBlock::new);
+	public static final com.mojang.serialization.MapCodec<RubberWoodBlock> CODEC = simpleCodec(RubberWoodBlock::new);
 
-    @Override
-    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec() {
-        return CODEC;
-    }
+	@Override
+	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
+	{
+		return CODEC;
+	}
 
 	public RubberWoodBlock(Properties settings)
 	{

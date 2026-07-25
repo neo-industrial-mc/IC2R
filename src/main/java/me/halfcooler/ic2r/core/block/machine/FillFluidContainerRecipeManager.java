@@ -7,12 +7,11 @@ import me.halfcooler.ic2r.api.util.FluidContainerOutputMode;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Collection;
 import java.util.Collections;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 public class FillFluidContainerRecipeManager implements IFillFluidContainerRecipeManager
 {

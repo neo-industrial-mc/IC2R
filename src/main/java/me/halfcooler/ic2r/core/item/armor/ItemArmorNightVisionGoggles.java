@@ -5,24 +5,23 @@ import me.halfcooler.ic2r.api.item.IElectricItem;
 import me.halfcooler.ic2r.api.item.IItemHudInfo;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.item.ElectricItemTooltipHandler;
-import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.ref.Ic2rArmorMaterials;
+import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.KeyboardClient;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ItemArmorNightVisionGoggles extends ItemArmorUtility implements IElectricItem, IItemHudInfo
 {
@@ -79,7 +78,6 @@ public class ItemArmorNightVisionGoggles extends ItemArmorUtility implements IEl
 					active = !active;
 					if (IC2R.sideProxy.isSimulating())
 					{
-						// 1.21: persist toggle state via editTag (getOrCreateNbtData returns a copy)
 						boolean enabled = active;
 						StackUtil.editTag(stack, nbt -> nbt.putBoolean("active", enabled));
 						if (active)

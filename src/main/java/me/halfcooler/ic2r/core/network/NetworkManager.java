@@ -1,10 +1,7 @@
 package me.halfcooler.ic2r.core.network;
 
-import me.halfcooler.ic2r.api.network.ClientModifiable;
-import me.halfcooler.ic2r.api.network.INetworkClientTileEntityEventListener;
-import me.halfcooler.ic2r.api.network.INetworkDataProvider;
-import me.halfcooler.ic2r.api.network.INetworkItemEventListener;
-import me.halfcooler.ic2r.api.network.INetworkManager;
+import io.netty.buffer.ByteBuf;
+import me.halfcooler.ic2r.api.network.*;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.IHasGui;
@@ -18,21 +15,11 @@ import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.ReflectionUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-import io.netty.buffer.ByteBuf;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.zip.DeflaterOutputStream;
-
+import me.halfcooler.ic2r.forge.Ic2rRawPayload;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import me.halfcooler.ic2r.forge.Ic2rRawPayload;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerListener;
@@ -42,6 +29,14 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.zip.DeflaterOutputStream;
 
 public class NetworkManager implements INetworkManager
 {
@@ -91,7 +86,6 @@ public class NetworkManager implements INetworkManager
 			DataEncoder.encode(out, fieldName.substring(pos + 1));
 		} else
 		{
-			// Keep legacy string field name on the wire (DataEncoder + name protocol).
 			out.writeString(fieldName);
 			DataEncoder.encode(out, readFieldValueForNetwork(object, fieldName));
 		}
@@ -764,6 +758,7 @@ public class NetworkManager implements INetworkManager
 	public void initiateKeyUpdate(int keyState)
 	{
 	}
+
 	public final void initiateExplosionEffect(Level world, Vec3 pos, Ic2rExplosion.Type type)
 	{
 		assert !this.isClient();

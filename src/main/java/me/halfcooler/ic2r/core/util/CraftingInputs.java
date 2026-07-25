@@ -1,11 +1,11 @@
 package me.halfcooler.ic2r.core.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Helpers for converting legacy {@link CraftingContainer} views into 1.21 {@link CraftingInput}.

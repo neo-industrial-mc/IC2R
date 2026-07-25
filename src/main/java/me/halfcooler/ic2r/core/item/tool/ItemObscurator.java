@@ -13,10 +13,6 @@ import me.halfcooler.ic2r.core.proxy.SideProxyClient;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 import me.halfcooler.ic2r.core.util.Vector3;
-
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -34,6 +30,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ItemObscurator extends BaseElectricItem implements PriorityUsableItem, IPlayerItemDataListener
 {

@@ -5,12 +5,6 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityMagnetizer;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -33,12 +27,18 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 public class Ic2rFenceBlock extends FenceBlock
 {
-    @Override
-    public com.mojang.serialization.@NotNull MapCodec<FenceBlock> codec() {
-        return FenceBlock.CODEC;
-    }
+	@Override
+	public com.mojang.serialization.@NotNull MapCodec<FenceBlock> codec()
+	{
+		return FenceBlock.CODEC;
+	}
 
 	public static final Map<Direction, BooleanProperty> connectProperties = getConnectProperties();
 	private static final Map<Player, Long> lastBoostTick = new WeakHashMap<>();
@@ -144,12 +144,10 @@ public class Ic2rFenceBlock extends FenceBlock
 			{
 				isPole = false;
 				connects = true;
-			}
-			else if (this.connectsTo(neighborState, neighborState.isFaceSturdy(world, neighborPos, facing.getOpposite()), facing.getOpposite()))
+			} else if (this.connectsTo(neighborState, neighborState.isFaceSturdy(world, neighborPos, facing.getOpposite()), facing.getOpposite()))
 			{
 				connects = true;
-			}
-			else if (isPole && getMagnetizer(world, neighborPos, facing, neighborState, false) != null)
+			} else if (isPole && getMagnetizer(world, neighborPos, facing, neighborState, false) != null)
 			{
 				magnetizerConnected = true;
 				connects = true;
@@ -167,7 +165,7 @@ public class Ic2rFenceBlock extends FenceBlock
 				BlockPos neighborPos = pos.relative(facing);
 				BlockState neighborState = world.getBlockState(neighborPos);
 				boolean connects = this.isFence(neighborState)
-						|| this.connectsTo(neighborState, neighborState.isFaceSturdy(world, neighborPos, facing.getOpposite()), facing.getOpposite());
+					|| this.connectsTo(neighborState, neighborState.isFaceSturdy(world, neighborPos, facing.getOpposite()), facing.getOpposite());
 				ret = ret.setValue(connectProperties.get(facing), connects);
 			}
 		}
@@ -224,15 +222,13 @@ public class Ic2rFenceBlock extends FenceBlock
 			{
 				player.setDeltaMovement(velocity.multiply(1.0, 0.9, 1.0));
 			}
-		}
-		else if (descending)
+		} else if (descending)
 		{
 			if (!slow)
 			{
 				player.setDeltaMovement(velocity.multiply(1.0, 0.8, 1.0));
 			}
-		}
-		else
+		} else
 		{
 			player.setDeltaMovement(velocity.add(0.0, 0.075, 0.0));
 			velocity = player.getDeltaMovement();

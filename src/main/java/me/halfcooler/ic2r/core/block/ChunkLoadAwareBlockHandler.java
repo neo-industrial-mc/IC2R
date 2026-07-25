@@ -1,12 +1,5 @@
 package me.halfcooler.ic2r.core.block;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.ChunkPos;
@@ -16,6 +9,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.chunk.PalettedContainer;
+
+import java.util.*;
 
 public final class ChunkLoadAwareBlockHandler
 {
@@ -61,7 +56,6 @@ public final class ChunkLoadAwareBlockHandler
 		}
 
 		ensureInit();
-		// Defer until the chunk is fully in the loaded set (see class javadoc).
 		pendingLoads.computeIfAbsent(world, w -> new HashSet<>()).add(chunk.getPos());
 	}
 
@@ -81,7 +75,6 @@ public final class ChunkLoadAwareBlockHandler
 			pending.remove(chunk.getPos());
 		}
 
-		// Unload immediately so EnergyNet does not keep ghost conductors.
 		processChunk(chunk, false);
 	}
 
@@ -175,8 +168,7 @@ public final class ChunkLoadAwareBlockHandler
 							if (isLoad)
 							{
 								lastBlock.onLoad(state, world, pos);
-							}
-							else
+							} else
 							{
 								lastBlock.onUnload(state, world, pos);
 							}

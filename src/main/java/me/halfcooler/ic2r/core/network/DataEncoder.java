@@ -15,19 +15,9 @@ import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Tuple;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
@@ -43,7 +33,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.core.registries.BuiltInRegistries;
+
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public final class DataEncoder
 {
@@ -237,7 +230,6 @@ public final class DataEncoder
 				}
 				break;
 			case Enchantment:
-				// 1.21: enchantments are datapack-registry; encode a stable placeholder location.
 				encode(os, ResourceLocation.withDefaultNamespace("protection"), false);
 				break;
 			case Enum:
@@ -544,7 +536,6 @@ public final class DataEncoder
 
 				return new IElectrolyzerRecipeManager.ElectrolyzerRecipe(inputAmount, EUaTick, ticksNeeded, outputs);
 			case Enchantment:
-				// Cannot resolve datapack enchantments without RegistryAccess here.
 				decode(is, DataEncoder.EncodedType.ResourceLocation);
 				return null;
 			case Enum:

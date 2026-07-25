@@ -8,20 +8,14 @@ import me.halfcooler.ic2r.core.fluid.StandardFluidItem;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
-
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -38,6 +32,11 @@ import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class ItemClassicCell extends Ic2rBucketItem implements Ic2rFluidItem
 {
@@ -164,7 +163,6 @@ public class ItemClassicCell extends Ic2rBucketItem implements Ic2rFluidItem
 		{
 			return cell;
 		}
-		// Universal path: return facade_cell; NBT is filled by tryDrainFluid/fillMb for empty facade.
 		return Ic2rItems.FACADE_CELL;
 	}
 

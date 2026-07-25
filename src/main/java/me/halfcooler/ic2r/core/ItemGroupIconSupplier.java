@@ -1,12 +1,11 @@
 package me.halfcooler.ic2r.core;
 
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
-
-import java.util.function.Supplier;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+
+import java.util.function.Supplier;
 
 final class ItemGroupIconSupplier implements Supplier<ItemStack>
 {
@@ -58,7 +57,8 @@ final class ItemGroupIconSupplier implements Supplier<ItemStack>
 			case GENERATORS_AND_WIRING -> new ItemStack(Ic2rItems.GENERATOR);
 			case TOOLS_AND_UTILITIES -> new ItemStack(Ic2rItems.WRENCH);
 			case FLUID_CELLS -> new ItemStack(Ic2rItems.FACADE_CELL);
-			case COMBAT -> {
+			case COMBAT ->
+			{
 				ItemStack icon = new ItemStack(Ic2rItems.NANO_SABER);
 				icon.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, Component.nullToEmpty("ic2r:tab_icon"));
 				yield icon;

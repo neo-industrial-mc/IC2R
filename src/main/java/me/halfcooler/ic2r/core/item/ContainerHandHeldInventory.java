@@ -1,9 +1,8 @@
 package me.halfcooler.ic2r.core.item;
 
-import me.halfcooler.ic2r.core.util.StackUtil;
-
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.item.tool.HandHeldInventory;
+import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.network.protocol.game.ClientboundSetCarriedItemPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;

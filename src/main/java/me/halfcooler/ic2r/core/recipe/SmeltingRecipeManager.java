@@ -1,22 +1,17 @@
 package me.halfcooler.ic2r.core.recipe;
 
-import me.halfcooler.ic2r.api.recipe.IMachineRecipeManager;
-import me.halfcooler.ic2r.api.recipe.IRecipeInput;
-import me.halfcooler.ic2r.api.recipe.MachineRecipe;
-import me.halfcooler.ic2r.api.recipe.MachineRecipeResult;
-import me.halfcooler.ic2r.api.recipe.Recipes;
+import me.halfcooler.ic2r.api.recipe.*;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.Collection;
-import java.util.Collections;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
+
+import java.util.Collection;
+import java.util.Collections;
 
 public class SmeltingRecipeManager implements IMachineRecipeManager<ItemStack, ItemStack, ItemStack>
 {

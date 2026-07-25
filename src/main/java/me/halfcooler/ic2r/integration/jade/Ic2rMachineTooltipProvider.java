@@ -6,15 +6,10 @@ import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityElectricBlock;
 import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.IServerDataProvider;
-import snownee.jade.api.ITooltip;
-import snownee.jade.api.TooltipPosition;
+import snownee.jade.api.*;
 import snownee.jade.api.config.IPluginConfig;
 
 /**
@@ -113,23 +108,19 @@ public enum Ic2rMachineTooltipProvider implements IBlockComponentProvider, IServ
 
 				if (data.getBoolean(KEY_STORAGE) && hasSink && hasSource)
 				{
-					// Storage block: show continuous output rating.
 					int euPerTick = voltage.getVoltage() * sourceAmps;
 					if (ElectricalDisplay.isGtDisplay())
 					{
 						tooltip.add(Component.translatable("ic2r.electric.tooltip.output", ElectricalDisplay.formatPowerCompact(euPerTick, voltage, sourceAmps)));
-					}
-					else
+					} else
 					{
 						tooltip.add(Component.translatable("ic2r.item.tooltip.Output", euPerTick));
 					}
 				} else if (hasSource && !hasSink && recipePower > 0)
 				{
-					// Pure generator / source.
 					tooltip.add(ElectricalDisplay.formatPower(recipePower, voltage, (double) recipePower / Math.max(1, voltage.getVoltage())));
 				} else if (hasSink && recipePower > 0)
 				{
-					// Recipe machine (or other consumer with known demand).
 					tooltip.add(Component.translatable("ic2r.jade.eu_per_tick", recipePower));
 				}
 			}

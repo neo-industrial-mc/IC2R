@@ -9,6 +9,8 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlot;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableClass;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableKineticRotor;
 import me.halfcooler.ic2r.core.block.kineticgenerator.container.ContainerWindKineticGenerator;
+import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.event.WorldData;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
@@ -16,15 +18,9 @@ import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
-
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -35,6 +31,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @NotClassic
 public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGenerator implements IRotorProvider, IHasGui, ServerTicker, ClientTicker
@@ -56,7 +54,8 @@ public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGen
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.rotationSpeed = nbt.getFloat("rotationSpeed");
 	}
@@ -72,8 +71,6 @@ public class TileEntityWindKineticGenerator extends TileEntityAbstractKineticGen
 	protected void onLoaded()
 	{
 		super.onLoaded();
-		// Re-sync animation fields so clients that load the TE after a world re-entry
-		// (or chunk re-watch) receive the current speed even if it does not change again.
 		if (this.getLevel() != null && !this.getLevel().isClientSide)
 		{
 			IC2R.network.get(true).updateTileEntityField(this, "rotationSpeed");

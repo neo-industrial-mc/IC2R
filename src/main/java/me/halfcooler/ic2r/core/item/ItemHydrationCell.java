@@ -1,9 +1,8 @@
 package me.halfcooler.ic2r.core.item;
 
-import me.halfcooler.ic2r.core.util.StackUtil;
-
 import me.halfcooler.ic2r.core.crop.TileEntityCrop;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
+import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -95,8 +94,7 @@ public class ItemHydrationCell extends Item
 		if (uses <= 0)
 		{
 			StackUtil.removeTag(stack);
-		}
-		else
+		} else
 		{
 			StackUtil.editTag(stack, nbt -> nbt.putInt("uses", uses));
 		}

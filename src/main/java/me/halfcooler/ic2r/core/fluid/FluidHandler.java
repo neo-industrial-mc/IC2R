@@ -2,9 +2,6 @@ package me.halfcooler.ic2r.core.fluid;
 
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.platform.services.PlatformServices;
-
-import java.util.Collection;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,6 +16,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 public final class FluidHandler
 {
@@ -102,7 +101,9 @@ public final class FluidHandler
 		return Math.min(end, 96.0F);
 	}
 
-	/** RGB channels in {@code [0,1]} from an ARGB tint (alpha ignored). */
+	/**
+	 * RGB channels in {@code [0,1]} from an ARGB tint (alpha ignored).
+	 */
 	public static float[] fogRgb(int argb)
 	{
 		return new float[] {

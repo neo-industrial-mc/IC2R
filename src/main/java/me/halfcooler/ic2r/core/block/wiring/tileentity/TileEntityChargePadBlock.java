@@ -1,27 +1,20 @@
 package me.halfcooler.ic2r.core.block.wiring.tileentity;
 
-import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 import me.halfcooler.ic2r.api.energy.profile.VoltageTier;
 import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
 import me.halfcooler.ic2r.core.block.wiring.ContainerChargepadBlock;
 import me.halfcooler.ic2r.core.energy.EnergyNetMode;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.Util;
-
-import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
-
-import java.util.EnumSet;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -31,6 +24,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
+
+import java.util.EnumSet;
+import java.util.List;
 
 public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock implements ClientTicker
 {
@@ -48,7 +46,8 @@ public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock i
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.energy.setDirections(EnumSet.complementOf(EnumSet.of(this.getFacing(), Direction.UP)), EnumSet.of(this.getFacing()));
 	}
@@ -159,7 +158,6 @@ public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock i
 			}
 		}
 
-		// items covers hotbar + main inventory (main hand is selected hotbar slot)
 		for (int i = 0; i < player.getInventory().items.size(); i++)
 		{
 			stack = player.getInventory().items.get(i);
@@ -228,7 +226,6 @@ public abstract class TileEntityChargePadBlock extends TileEntityElectricBlock i
 		}
 
 		int tier = this.energy.getSourceTier();
-		// tier gate: only items with voltage tier ≤ pad tier accept charge
 		double freeAmount = ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, tier, true, true);
 		if (freeAmount <= 0.0)
 		{

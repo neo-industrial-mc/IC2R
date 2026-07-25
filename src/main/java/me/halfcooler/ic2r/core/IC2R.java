@@ -12,6 +12,7 @@ import me.halfcooler.ic2r.core.util.SideGateway;
 import me.halfcooler.ic2r.forge.EnvProxyForge;
 import me.halfcooler.ic2r.forge.ForgePlatformServices;
 import me.halfcooler.ic2r.platform.services.PlatformServices;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -19,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
-import net.minecraft.advancements.AdvancementHolder;
 
 public class IC2R
 {
@@ -47,7 +47,6 @@ public class IC2R
 	static
 	{
 		envProxy = createEnvProxy();
-		// W3.3: ensure SPI is available before sideProxy / SideGateway (may run before FmlMod ctor)
 		ForgePlatformServices.install();
 		sideProxy = createSideProxy();
 		log = new Log(LogManager.getLogger("ic2r"));

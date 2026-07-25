@@ -1,11 +1,8 @@
 package me.halfcooler.ic2r.core.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.entity.LaserBulletEntity;
@@ -16,6 +13,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class LaserBulletEntityRenderer extends EntityRenderer<LaserBulletEntity>
 {
@@ -82,7 +82,7 @@ public class LaserBulletEntityRenderer extends EntityRenderer<LaserBulletEntity>
 			.setOverlay(OverlayTexture.NO_OVERLAY)
 			.setLight(light)
 			.setNormal((float) normalX, (float) normalY, (float) normalZ)
-			;
+		;
 	}
 
 	public @NotNull ResourceLocation getTextureLocation(@NotNull LaserBulletEntity entity)

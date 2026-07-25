@@ -184,7 +184,9 @@ public class IC2RConfig
 				public final ModConfigSpec.DoubleValue solar;
 				public final ModConfigSpec.DoubleValue wind;
 				public final ModConfigSpec.DoubleValue nuclear;
-				/** Multiplier on base 32 EU/t for each semi-fluid fuel (0 disables registration). */
+				/**
+				 * Multiplier on base 32 EU/t for each semi-fluid fuel (0 disables registration).
+				 */
 				public final ModConfigSpec.DoubleValue semiFluidBiogas;
 				public final ModConfigSpec.DoubleValue semiFluidBiomass;
 				public final ModConfigSpec.DoubleValue semiFluidHydrogen;
@@ -217,7 +219,9 @@ public class IC2RConfig
 
 			public static class HeatGenerator
 			{
-				/** Multiplier on fluid heat generator fuels (0 disables that fuel). */
+				/**
+				 * Multiplier on fluid heat generator fuels (0 disables that fuel).
+				 */
 				public final ModConfigSpec.DoubleValue semiFluidBiogas;
 				public final ModConfigSpec.DoubleValue solid;
 				public final ModConfigSpec.DoubleValue radioisotope;
@@ -435,7 +439,6 @@ public class IC2RConfig
 			enableEnetExplosions = b.define("enableEnetExplosions", true);
 			b.comment("Same for cable meltdown.");
 			enableEnetCableMeltdown = b.define("enableEnetCableMeltdown", true);
-			// GT energy net mode is enabled by loading the optional IC++ GT Addons mod (ic2r_gt_addon).
 			b.pop();
 		}
 	}

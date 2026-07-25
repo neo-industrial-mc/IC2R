@@ -20,7 +20,6 @@ public final class CodeGuiSampleScreen extends GuiDefaultBackground<CodeGuiSampl
 	{
 		super(menu, playerInventory, title, CodeGuiSampleMenu.GUI_HEIGHT);
 
-		// Hard-coded widgets (replaces guidef <text> / gauges / buttons).
 		this.addElement(TextLabel.create(this, 8, 6, "Code GUI sample (W2.4)", 0x404040, false));
 	}
 }

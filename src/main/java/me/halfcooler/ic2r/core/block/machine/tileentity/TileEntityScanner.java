@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
-import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
-
 import me.halfcooler.ic2r.api.network.INetworkClientTileEntityEventListener;
 import me.halfcooler.ic2r.api.recipe.IPatternStorage;
 import me.halfcooler.ic2r.core.ContainerBase;
@@ -16,6 +14,7 @@ import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 import me.halfcooler.ic2r.core.uu.UuGraph;
@@ -182,7 +181,8 @@ public class TileEntityScanner extends TileEntityElectricMachine implements IHas
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.progress = nbt.getInt("progress");
 		CompoundTag contentTag = nbt.getCompound("currentStack");

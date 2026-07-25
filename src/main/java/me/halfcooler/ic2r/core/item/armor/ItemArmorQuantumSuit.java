@@ -10,13 +10,14 @@ import me.halfcooler.ic2r.core.init.IC2RClientConfig;
 import me.halfcooler.ic2r.core.item.ItemTinCan;
 import me.halfcooler.ic2r.core.item.armor.jetpack.IJetpack;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
-
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.KeyboardClient;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffect;
@@ -26,23 +27,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.IdentityHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import net.minecraft.core.Holder;
+import java.util.*;
 
 public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack, IHazmatLike, IItemHudProvider
 {
@@ -62,7 +52,6 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 		{
 			return cost;
 		}
-		// Radiation is registered after this class may load; match by effect instance.
 		if (Ic2rPotion.radiation != null && potion.value() == Ic2rPotion.radiation)
 		{
 			return 10000;
@@ -74,7 +63,6 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 	{
 		if (Ic2rPotion.radiation != null && potion.value() == Ic2rPotion.radiation)
 		{
-			// IC2R radiation uses high amplifier values for damage scaling, not vanilla potion levels.
 			return baseCost + effect.getAmplifier() * 100;
 		}
 
@@ -299,7 +287,6 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric implements IJetpack,
 				}
 			}
 
-			// 1.21: getOrCreateNbtData returns a copy — all writes must use editTag/setTag.
 			boolean Nightvision = nbtData.getBoolean("night_vision");
 			short hudmode = nbtData.getShort("hud_mode");
 			if (IC2R.keyboard.isAltKeyDown(player) && IC2R.keyboard.isModeSwitchKeyDown(player) && toggleTimer == 0)

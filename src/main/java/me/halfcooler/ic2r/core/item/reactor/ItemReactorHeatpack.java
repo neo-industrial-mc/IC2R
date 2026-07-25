@@ -5,7 +5,6 @@ import me.halfcooler.ic2r.api.reactor.IReactorComponent;
 import me.halfcooler.ic2r.core.profile.NotExperimental;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 
 @NotExperimental
 public class ItemReactorHeatpack extends AbstractReactorComponent

@@ -5,17 +5,11 @@ import me.halfcooler.ic2r.api.energy.tile.IEnergyEmitter;
 import me.halfcooler.ic2r.api.reactor.IReactorChamber;
 import me.halfcooler.ic2r.core.block.comp.Fluids;
 import me.halfcooler.ic2r.core.block.comp.Redstone;
+import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
@@ -29,6 +23,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements Container, IReactorChamber, IEnergyEmitter, ClientTicker
 {
@@ -81,7 +78,6 @@ public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements 
 	protected InteractionResult onActivated(Player player, InteractionHand hand, Direction side, Vec3 hit)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
-		// Same package can call protected onActivated (matches TileEntityReactorAccessHatch)
 		return reactor != null ? reactor.onActivated(player, hand, side, hit) : InteractionResult.PASS;
 	}
 
@@ -107,7 +103,8 @@ public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements 
 		}
 	}
 
-	public int getContainerSize() {
+	public int getContainerSize()
+	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
 		return reactor != null ? reactor.getContainerSize() : 0;
 	}

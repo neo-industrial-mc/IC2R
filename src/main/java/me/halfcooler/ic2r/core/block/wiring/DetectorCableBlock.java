@@ -1,7 +1,6 @@
 package me.halfcooler.ic2r.core.block.wiring;
 
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class DetectorCableBlock extends AbstractDetectorCableBlock
 {

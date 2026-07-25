@@ -3,11 +3,10 @@ package me.halfcooler.ic2r.core.energy.grid;
 import me.halfcooler.ic2r.api.energy.EnergyNet;
 import me.halfcooler.ic2r.api.energy.tile.IEnergyConductor;
 import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
-
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+
+import java.util.List;
 
 /**
  * Cached source→sink path used by energy calculators. Public for optional external solvers

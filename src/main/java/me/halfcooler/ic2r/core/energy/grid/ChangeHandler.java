@@ -2,28 +2,16 @@ package me.halfcooler.ic2r.core.energy.grid;
 
 import me.halfcooler.ic2r.api.energy.EnergyNet;
 import me.halfcooler.ic2r.api.energy.IEnergyNetEventReceiver;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyAcceptor;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyEmitter;
-import me.halfcooler.ic2r.api.energy.tile.IEnergySource;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
-import me.halfcooler.ic2r.api.energy.tile.IMetaDelegate;
+import me.halfcooler.ic2r.api.energy.tile.*;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import java.util.*;
 
 class ChangeHandler
 {
@@ -143,8 +131,6 @@ class ChangeHandler
 
 					if (!found)
 					{
-						// Stale registration after chunk unload/reload (common with non-TE cables).
-						// Replace instead of permanently rejecting the new tile.
 						if (EnergyNetSettings.logGridUpdateIssues)
 						{
 							IC2R.log

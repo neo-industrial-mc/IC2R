@@ -6,17 +6,12 @@ import me.halfcooler.ic2r.core.item.armor.jetpack.JetpackAttachmentRecipe;
 import me.halfcooler.ic2r.core.recipe.AdvRecipe;
 import me.halfcooler.ic2r.core.recipe.AdvShapelessRecipe;
 import me.halfcooler.ic2r.core.recipe.GradualRecipe;
-import me.halfcooler.ic2r.core.recipe.v2.BasicMachineRecipeSerializer;
-import me.halfcooler.ic2r.core.recipe.v2.CannerBottleRecipeSerializer;
-import me.halfcooler.ic2r.core.recipe.v2.CannerEnrichRecipeSerializer;
-import me.halfcooler.ic2r.core.recipe.v2.IntegerOutputRecipeSerializer;
-import me.halfcooler.ic2r.core.recipe.v2.WeightedMachineRecipeSerializer;
-
-import java.util.function.Function;
-
+import me.halfcooler.ic2r.core.recipe.v2.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+
+import java.util.function.Function;
 
 public final class Ic2rRecipeSerializers
 {

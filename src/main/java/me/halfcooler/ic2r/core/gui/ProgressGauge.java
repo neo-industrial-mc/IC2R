@@ -1,10 +1,10 @@
 package me.halfcooler.ic2r.core.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.block.comp.Process;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.util.Util;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class ProgressGauge extends GuiElement<ProgressGauge>
 {

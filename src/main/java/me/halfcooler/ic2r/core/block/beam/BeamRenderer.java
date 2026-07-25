@@ -1,17 +1,17 @@
 package me.halfcooler.ic2r.core.block.beam;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class BeamRenderer extends EntityRenderer<ParticleEntity>
 {
@@ -72,7 +72,7 @@ public class BeamRenderer extends EntityRenderer<ParticleEntity>
 				.setOverlay(OverlayTexture.NO_OVERLAY)
 				.setLight(light)
 				.setNormal(entry, 0.0F, 1.0F, 0.0F)
-				;
+			;
 		}
 
 		matrices.popPose();

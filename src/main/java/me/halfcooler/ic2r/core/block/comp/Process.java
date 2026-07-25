@@ -15,11 +15,10 @@ import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityElectricMachin
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.recipe.SmeltingRecipeManager;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.Collection;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Collection;
 
 public class Process extends TileEntityComponent
 {

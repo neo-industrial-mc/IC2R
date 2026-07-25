@@ -6,18 +6,10 @@ import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.item.BaseElectricItem;
 import me.halfcooler.ic2r.core.item.IHandHeldInventory;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
-import me.halfcooler.ic2r.core.util.ItemComparableItemStack;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
+import me.halfcooler.ic2r.core.util.ItemComparableItemStack;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Tuple;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.network.chat.Component;
@@ -25,12 +17,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class ItemScanner extends BaseElectricItem implements IBoxable, IHandHeldInventory
 {

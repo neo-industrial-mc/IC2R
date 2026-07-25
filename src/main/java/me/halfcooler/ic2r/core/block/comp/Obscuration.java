@@ -4,13 +4,12 @@ import me.halfcooler.ic2r.core.block.state.BlockStateUtil;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.item.tool.ItemObscurator;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.Arrays;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Arrays;
 
 public class Obscuration extends TileEntityComponent
 {
@@ -122,34 +121,34 @@ public class Obscuration extends TileEntityComponent
 	}
 
 	public record ObscurationData(BlockState state, String variant, Direction side, int[] colorMultipliers)
-		{
+	{
 
-			@Override
-			public boolean equals(Object obj)
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (obj == this)
 			{
-				if (obj == this)
-				{
-					return true;
-				} else
-				{
-					return obj instanceof ObscurationData(
-						BlockState state1, String variant1, Direction side1, int[] multipliers
-					) && state1.equals(this.state)
-						&& variant1.equals(this.variant)
-						&& side1 == this.side
-						&& Arrays.equals(multipliers, this.colorMultipliers);
-				}
-			}
-	
-			@Override
-			public int hashCode()
+				return true;
+			} else
 			{
-				return (this.state.hashCode() * 7 + this.side.ordinal()) * 23;
-			}
-	
-			public ObscurationData intern()
-			{
-				return this;
+				return obj instanceof ObscurationData(
+					BlockState state1, String variant1, Direction side1, int[] multipliers
+				) && state1.equals(this.state)
+					&& variant1.equals(this.variant)
+					&& side1 == this.side
+					&& Arrays.equals(multipliers, this.colorMultipliers);
 			}
 		}
+
+		@Override
+		public int hashCode()
+		{
+			return (this.state.hashCode() * 7 + this.side.ordinal()) * 23;
+		}
+
+		public ObscurationData intern()
+		{
+			return this;
+		}
+	}
 }

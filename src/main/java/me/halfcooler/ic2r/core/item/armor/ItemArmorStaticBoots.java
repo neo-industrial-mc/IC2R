@@ -4,13 +4,11 @@ import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.ref.Ic2rArmorMaterials;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,8 +23,6 @@ public class ItemArmorStaticBoots extends ItemArmorUtility
 	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level world, @NotNull Entity entity, int slot, boolean selected)
 	{
 		super.inventoryTick(stack, world, entity, slot, selected);
-		// NeoForge inventoryTick uses global inventory indices (FEET armor = 36),
-		// not EquipmentSlot.getIndex() (FEET = 0). Identify worn armor by stack identity.
 		if (!(entity instanceof Player player) || player.getItemBySlot(this.getEquipmentSlot()) != stack
 			|| !IC2R.sideProxy.isSimulating())
 		{
@@ -39,7 +35,6 @@ public class ItemArmorStaticBoots extends ItemArmorUtility
 			return;
 		}
 
-		// 1.21: getOrCreateNbtData returns a copy — persist position via editTag.
 		CompoundTag compound = StackUtil.getOrCreateNbtData(stack);
 		boolean isNotWalking = player.isPassenger() || player.isInWater();
 		int lastX = compound.contains("x") && !isNotWalking ? compound.getInt("x") : player.blockPosition().getX();

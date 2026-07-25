@@ -21,11 +21,6 @@ import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.PumpUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.EnumSet;
-import java.util.Objects;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,6 +31,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.EnumSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class TileEntityPump extends TileEntityElectricMachine implements IHasGui, IUpgradableBlock, IGuiValueProvider
 {
@@ -90,7 +89,8 @@ public class TileEntityPump extends TileEntityElectricMachine implements IHasGui
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.progress = nbt.getShort("progress");
 	}
@@ -108,10 +108,6 @@ public class TileEntityPump extends TileEntityElectricMachine implements IHasGui
 		super.updateEntityServer();
 		this.cachedFluidSource = null;
 		boolean needsInvUpdate = false;
-		// Require only the per-tick cost while working (same as standard machines).
-		// Requiring energyConsume * operationLength every tick is wrong: progress already paid
-		// for earlier ticks, and under the GT packet model (e.g. LV = 32 EU) a 40 EU buffer
-		// often sits at ~19 EU mid-cycle — enough for another tick but below the full 20 EU gate.
 		if (this.canOperate())
 		{
 			if (this.progress < this.operationLength)
@@ -126,7 +122,6 @@ public class TileEntityPump extends TileEntityElectricMachine implements IHasGui
 				}
 			} else
 			{
-				// Operation energy was already spent while advancing progress.
 				this.progress = 0;
 				this.operate(false);
 				this.activate(false);

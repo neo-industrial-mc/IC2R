@@ -6,15 +6,10 @@ import me.halfcooler.ic2r.api.recipe.Recipes;
 import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.util.LogCategory;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import net.minecraft.world.level.material.Fluid;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class LiquidHeatExchangerManager implements ILiquidHeatExchangerManager
 {

@@ -2,11 +2,9 @@ package me.halfcooler.ic2r.core.item.reactor;
 
 import me.halfcooler.ic2r.api.reactor.IReactor;
 import me.halfcooler.ic2r.api.reactor.IReactorComponent;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
-
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 
 public class ItemReactorHeatSwitch extends ItemReactorHeatStorage
 {

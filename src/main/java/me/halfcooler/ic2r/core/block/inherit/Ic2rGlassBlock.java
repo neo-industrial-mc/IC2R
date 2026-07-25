@@ -10,12 +10,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class Ic2rGlassBlock extends TransparentBlock
 {
-    public static final com.mojang.serialization.MapCodec<Ic2rGlassBlock> CODEC = simpleCodec(Ic2rGlassBlock::new);
+	public static final com.mojang.serialization.MapCodec<Ic2rGlassBlock> CODEC = simpleCodec(Ic2rGlassBlock::new);
 
-    @Override
-    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.TransparentBlock> codec() {
-        return CODEC;
-    }
+	@Override
+	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.TransparentBlock> codec()
+	{
+		return CODEC;
+	}
 
 	public Ic2rGlassBlock(Properties settings)
 	{

@@ -4,15 +4,15 @@ import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
 import me.halfcooler.ic2r.core.crop.Ic2rCropType;
 import me.halfcooler.ic2r.core.crop.TileEntityCrop;
 import me.halfcooler.ic2r.core.util.Util;
-
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-
 import me.halfcooler.ic2r.forge.EnvProxyForge;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/** Domain block registrations: crop sticks and crop blocks */
+/**
+ * Domain block registrations: crop sticks and crop blocks
+ */
 public final class Ic2rBlocksCrops
 {
 	private Ic2rBlocksCrops()

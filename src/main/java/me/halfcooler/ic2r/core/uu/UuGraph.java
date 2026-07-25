@@ -3,22 +3,13 @@ package me.halfcooler.ic2r.core.uu;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.Map.Entry;
-import java.util.concurrent.Future;
-
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.Future;
 
 public class UuGraph
 {

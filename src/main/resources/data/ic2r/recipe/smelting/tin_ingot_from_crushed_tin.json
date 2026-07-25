@@ -5,7 +5,9 @@
   "ingredient": {
     "item": "ic2r:crushed_tin"
   },
-  "result": { "id": "ic2r:tin_ingot" },
+  "result": {
+    "id": "ic2r:tin_ingot"
+  },
   "experience": 0.0,
   "cookingtime": 200
 }

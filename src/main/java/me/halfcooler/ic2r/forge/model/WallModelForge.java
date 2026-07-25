@@ -4,12 +4,6 @@ import me.halfcooler.ic2r.core.block.comp.Obscuration;
 import me.halfcooler.ic2r.core.block.misc.WallBlock;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityWall;
 import me.halfcooler.ic2r.core.item.tool.ItemObscurator;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -31,6 +25,11 @@ import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
 
 public final class WallModelForge implements Ic2rModel
 {

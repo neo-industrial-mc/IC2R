@@ -5,8 +5,8 @@ import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
@@ -16,7 +16,6 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,12 +27,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class RubberLogBlock extends RotatedPillarBlock
 {
-    public static final com.mojang.serialization.MapCodec<RubberLogBlock> CODEC = simpleCodec(RubberLogBlock::new);
+	public static final com.mojang.serialization.MapCodec<RubberLogBlock> CODEC = simpleCodec(RubberLogBlock::new);
 
-    @Override
-    public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.RotatedPillarBlock> codec() {
-        return CODEC;
-    }
+	@Override
+	public com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.RotatedPillarBlock> codec()
+	{
+		return CODEC;
+	}
 
 	public static final EnumProperty<RubberLogBlock.RubberWoodState> stateProperty = EnumProperty.create("state", RubberLogBlock.RubberWoodState.class);
 

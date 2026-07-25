@@ -120,8 +120,6 @@ public abstract class TileEntityExplosive extends TileEntityInventory implements
 			return true;
 		}
 
-		// Mark before removeBlock so any drop/loot path during removal sees exploded=true
-		// and does not yield the block as an item instead of arming it.
 		this.exploded = true;
 		entity.setCausingEntity(igniter);
 		this.onIgnite(igniter);

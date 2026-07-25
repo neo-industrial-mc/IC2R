@@ -8,23 +8,21 @@ import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.comp.FluidReactorLookup;
 import me.halfcooler.ic2r.core.block.comp.Fluids;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
 public class TileEntityReactorFluidPort extends TileEntityInventory implements IHasGui, IUpgradableBlock, IReactorChamber, ServerTicker

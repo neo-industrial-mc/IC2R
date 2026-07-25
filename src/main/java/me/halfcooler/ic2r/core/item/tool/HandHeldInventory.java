@@ -6,11 +6,6 @@ import me.halfcooler.ic2r.core.slot.SlotHologramSlot;
 import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
@@ -22,6 +17,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class HandHeldInventory implements IHasGui
 {
@@ -65,7 +64,8 @@ public abstract class HandHeldInventory implements IHasGui
 		PLAYERS_IN_GUI.add(player);
 	}
 
-	public int getContainerSize() {
+	public int getContainerSize()
+	{
 		return this.inventory.length;
 	}
 

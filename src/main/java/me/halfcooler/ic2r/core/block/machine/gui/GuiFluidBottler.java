@@ -1,10 +1,10 @@
 package me.halfcooler.ic2r.core.block.machine.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerFluidBottler;
 import me.halfcooler.ic2r.core.gui.EnergyGauge;
 import me.halfcooler.ic2r.core.gui.TankGauge;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;

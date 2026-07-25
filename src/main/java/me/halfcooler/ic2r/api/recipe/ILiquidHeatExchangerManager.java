@@ -1,8 +1,8 @@
 package me.halfcooler.ic2r.api.recipe;
 
-import java.util.Map;
-
 import net.minecraft.world.level.material.Fluid;
+
+import java.util.Map;
 
 public interface ILiquidHeatExchangerManager extends ILiquidAcceptManager
 {
@@ -15,6 +15,6 @@ public interface ILiquidHeatExchangerManager extends ILiquidAcceptManager
 	ILiquidAcceptManager getSingleDirectionLiquidManager();
 
 	record HeatExchangeProperty(Fluid outputFluid, int huPerMB)
-		{
-		}
+	{
+	}
 }

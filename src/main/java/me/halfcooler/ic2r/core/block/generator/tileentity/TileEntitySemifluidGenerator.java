@@ -24,7 +24,9 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 @NotClassic
 public class TileEntitySemifluidGenerator extends TileEntityBaseGenerator
 {
-	/** Base EU/t while any registered fuel is burning (scaled by per-fuel config multiplier). */
+	/**
+	 * Base EU/t while any registered fuel is burning (scaled by per-fuel config multiplier).
+	 */
 	public static final int BASE_PRODUCTION_EU = 32;
 
 	public final InvSlotConsumableLiquid fluidSlot;
@@ -45,7 +47,6 @@ public class TileEntitySemifluidGenerator extends TileEntityBaseGenerator
 	{
 		Recipes.semiFluidGenerator = new SemiFluidFuelManager();
 		var gen = IC2RConfig.balance.energy.generator;
-		// amount = mB drained per fuel cycle (= burn ticks); power = EU/t (base 32 × config)
 		registerFuel(Ic2rFluids.BIOGAS.still(), 20, gen.semiFluidBiogas);
 		registerFuel(Ic2rFluids.BIOMASS.still(), 40, gen.semiFluidBiomass);
 		registerFuel(Ic2rFluids.HYDROGEN.still(), 4, gen.semiFluidHydrogen);

@@ -6,13 +6,12 @@ import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.util.Util;
+import net.minecraft.network.chat.Component;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import net.minecraft.network.chat.Component;
 
 public class EnergyGauge extends Gauge<EnergyGauge>
 {

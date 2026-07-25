@@ -89,7 +89,7 @@ public final class ElectricalNodes
 		int voltage = (int) EnergyNet.instance.getPowerFromTier(tier);
 		return voltage > 0 ? (int) Math.floor(demanded / voltage) : 0;
 	}
-	
+
 	public static double getPacketPower(IEnergyTile tile, int packetIndex)
 	{
 		if (tile instanceof IEnergySource source)

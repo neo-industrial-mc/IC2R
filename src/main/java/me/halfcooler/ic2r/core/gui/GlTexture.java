@@ -4,7 +4,14 @@ import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.util.LogCategory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import org.lwjgl.opengl.GL11;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.IOException;
@@ -14,14 +21,6 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import javax.imageio.ImageIO;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
-import org.lwjgl.opengl.GL11;
 
 public class GlTexture implements Closeable
 {

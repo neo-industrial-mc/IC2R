@@ -1,15 +1,14 @@
 package me.halfcooler.ic2r.core.item;
 
 import com.mojang.authlib.GameProfile;
-
-import java.util.List;
-import java.util.function.Predicate;
-
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 public interface EnvItemHandler
 {

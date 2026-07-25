@@ -1,12 +1,9 @@
 package me.halfcooler.ic2r.fluid;
 
 import me.halfcooler.ic2r.core.fluid.FluidTransferMath;
-
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Pure logic tests for {@code Ic2rFluidTank} → {@code IFluidHandler} transfer rules (G2.5 / FL-*).
@@ -18,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class FluidHandlerMathTest
 {
-	// --- FL-001 / FL-002: empty resource early-exit (handler surface) ---
 
 	/**
 	 * Handler fill/drain with empty or non-positive offer/request returns 0 without state change.
@@ -37,7 +33,6 @@ class FluidHandlerMathTest
 		assertEquals(0, tank.drainByStack(0, true, false));
 	}
 
-	// --- FL-002: isFluidValid / canFill gate ---
 
 	/**
 	 * isFluidValid mirrors external canFill only (not free space).
@@ -52,7 +47,7 @@ class FluidHandlerMathTest
 
 		open.canFill = false;
 		assertFalse(open.isFluidValid(false));
-		assertFalse(open.isFluidValid(true)); // empty offer always invalid
+		assertFalse(open.isFluidValid(true));
 
 		VirtualTank full = VirtualTank.withStored(1000, 1000);
 		full.canFill = true;
@@ -61,7 +56,6 @@ class FluidHandlerMathTest
 		assertEquals(1000, full.stored);
 	}
 
-	// --- fill residual + simulate ---
 
 	/**
 	 * Partial fill leaves residual offer; SIMULATE must not commit stored.
@@ -83,7 +77,6 @@ class FluidHandlerMathTest
 		assertEquals(0, tank.fill(1, false));
 	}
 
-	// --- drain gates + stack match ---
 
 	/**
 	 * Amount drain gated by canDrain; stack drain requires fluid match.
@@ -103,15 +96,12 @@ class FluidHandlerMathTest
 		assertEquals(200, tank.drainAmount(200, false));
 		assertEquals(600, tank.stored);
 
-		// wrong fluid on stack drain
 		assertEquals(0, tank.drainByStack(100, false, false));
 		assertEquals(600, tank.stored);
-		// match
 		assertEquals(100, tank.drainByStack(100, true, false));
 		assertEquals(500, tank.stored);
 	}
 
-	// --- FL-003 style pipe sequence ---
 
 	/**
 	 * Pipe-style sequence: fill input → (machine keeps fluid) → drain extract.
@@ -129,7 +119,6 @@ class FluidHandlerMathTest
 		assertEquals(1000, tank.stored);
 		assertFalse(tank.empty);
 
-		// second fill same fluid partial into free space
 		filled = tank.fill(7500, false);
 		assertEquals(7000, filled);
 		assertEquals(8000, tank.stored);
@@ -152,7 +141,7 @@ class FluidHandlerMathTest
 	{
 		VirtualTank input = VirtualTank.withStored(1000, 500);
 		input.canFill = true;
-		input.canDrain = false; // Access.I / extract sides empty at component layer
+		input.canDrain = false;
 
 		assertEquals(200, input.fill(200, false));
 		assertEquals(700, input.stored);
@@ -176,7 +165,6 @@ class FluidHandlerMathTest
 		assertEquals(250, output.stored);
 	}
 
-	// -------------------------------------------------------------------------
 
 	/**
 	 * Count-only mirror of {@code Ic2rFluidTankHandler} + {@code Ic2rFluidTank} external path.
@@ -208,7 +196,9 @@ class FluidHandlerMathTest
 			return new VirtualTank(capacity, stored);
 		}
 
-		/** Mirrors {@code isFluidValid}: offerEmpty + canFill only. */
+		/**
+		 * Mirrors {@code isFluidValid}: offerEmpty + canFill only.
+		 */
 		boolean isFluidValid(boolean offerEmpty)
 		{
 			return FluidTransferMath.fillAccessAllowed(offerEmpty, true, this.canFill);

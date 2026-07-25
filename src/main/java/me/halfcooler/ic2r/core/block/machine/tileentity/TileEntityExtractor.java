@@ -6,15 +6,14 @@ import me.halfcooler.ic2r.api.upgrade.UpgradableProperty;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotProcessableGeneric;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
-
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
 
 public class TileEntityExtractor extends TileEntityStandardMachine<IRecipeInput, Collection<ItemStack>, ItemStack>
 {

@@ -11,15 +11,15 @@ public interface ICannerBottleRecipeManager extends IMachineRecipeManager<ICanne
 	RecipeOutput getOutputFor(ItemStack var1, ItemStack var2, boolean var3, boolean var4);
 
 	record Input(IRecipeInput container, IRecipeInput fill)
-		{
+	{
 
-			public boolean matches(ItemStack container, ItemStack fill)
-			{
-				return this.container.matches(container) && this.fill.matches(fill);
-			}
+		public boolean matches(ItemStack container, ItemStack fill)
+		{
+			return this.container.matches(container) && this.fill.matches(fill);
 		}
+	}
 
 	record RawInput(ItemStack container, ItemStack fill)
-		{
-		}
+	{
+	}
 }

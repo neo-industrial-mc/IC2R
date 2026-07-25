@@ -1,8 +1,8 @@
 package me.halfcooler.ic2r.core.network;
 
-import me.halfcooler.ic2r.api.network.IGrowingBuffer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import me.halfcooler.ic2r.api.network.IGrowingBuffer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

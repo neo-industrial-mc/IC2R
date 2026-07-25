@@ -23,7 +23,7 @@ public record SyncKey<T>(String wireName, SyncCodec<T> codec)
 	{
 		return new SyncKey<>(wireName, codec);
 	}
-	
+
 	public static boolean isValidWireName(String name)
 	{
 		return name != null && SNAKE_CASE.matcher(name).matches();

@@ -6,14 +6,7 @@ import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
 import me.halfcooler.ic2r.core.block.wiring.DetectorFoamCableBlock;
 import me.halfcooler.ic2r.core.block.wiring.FoamCableBlock;
 import me.halfcooler.ic2r.core.block.wiring.SplitterFoamCableBlock;
-import me.halfcooler.ic2r.core.ref.blocks.Ic2rBlocksBuilding;
-import me.halfcooler.ic2r.core.ref.blocks.Ic2rBlocksCrops;
-import me.halfcooler.ic2r.core.ref.blocks.Ic2rBlocksGenerators;
-import me.halfcooler.ic2r.core.ref.blocks.Ic2rBlocksMachines;
-import me.halfcooler.ic2r.core.ref.blocks.Ic2rBlocksReactor;
-import me.halfcooler.ic2r.core.ref.blocks.Ic2rBlocksResources;
-import me.halfcooler.ic2r.core.ref.blocks.Ic2rBlocksStorage;
-import me.halfcooler.ic2r.core.ref.blocks.Ic2rBlocksWiring;
+import me.halfcooler.ic2r.core.ref.blocks.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.BlockGetter;
@@ -22,6 +15,7 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredHolder;
+
 /**
  * Block registration facade. Domain implementations live under {@code ref.blocks}.
  * External code should keep using {@code Ic2rBlocks.XXX} field access.

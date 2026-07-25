@@ -1,10 +1,10 @@
 package me.halfcooler.ic2r.api.recipe;
 
-import java.util.List;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
+
+import java.util.List;
 
 @NonExtendable
 public interface IRecipeInput

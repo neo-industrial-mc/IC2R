@@ -2,17 +2,13 @@ package me.halfcooler.ic2r.registry;
 
 import me.halfcooler.ic2r.core.RemapService;
 import me.halfcooler.ic2r.core.RemapService.Alias;
+import net.minecraft.resources.ResourceLocation;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.resources.ResourceLocation;
-
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Pure planning tests for {@link RemapService} (no live registry mutation).
@@ -123,7 +119,6 @@ class RemapServiceTest
 			ResourceLocation.fromNamespaceAndPath("ic2", "mining_filter_card"),
 			upgrade
 		)));
-		// also industrial diamond aliases
 		assertTrue(aliases.contains(INDUSTRIAL_DIAMOND_IC2R));
 		assertTrue(aliases.contains(INDUSTRIAL_DIAMOND_IC2));
 		assertEquals(4, aliases.size());

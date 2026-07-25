@@ -1,14 +1,10 @@
 package me.halfcooler.ic2r.nbt;
 
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityStandardMachine;
-
 import net.minecraft.nbt.CompoundTag;
-
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * W1.5 standard-machine NBT pilot.
@@ -20,7 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class StandardMachineNbtMigrationTest
 {
-	/** @Spec NS-003: standard machine writes only snake_case-legal {@code progress} */
+	/**
+	 * @Spec NS-003: standard machine writes only snake_case-legal {@code progress}
+	 */
 	@Test
 	void progress_write_usesSnakeCaseKeyOnly()
 	{
@@ -31,12 +29,13 @@ class StandardMachineNbtMigrationTest
 
 		assertTrue(out.contains(TileEntityStandardMachine.NBT_PROGRESS));
 		assertEquals((short) 42, out.getShort(TileEntityStandardMachine.NBT_PROGRESS));
-		// No camelCase twin for world-save progress (guiProgress is network-only)
 		assertFalse(out.contains("guiProgress"));
 		assertFalse(out.contains("gui_progress"));
 	}
 
-	/** @Spec NS-003: new-key round-trip preserves progress ticks */
+	/**
+	 * @Spec NS-003: new-key round-trip preserves progress ticks
+	 */
 	@Test
 	void progress_newKey_roundTrip()
 	{

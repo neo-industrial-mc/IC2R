@@ -25,7 +25,6 @@ public class HandHeldContainmentbox extends HandHeldInventory
 			return false;
 		}
 
-		// Nuclear materials and fuel rods; nested in NBT so they do not inventoryTick-radiate the player.
 		return stack.getItem() instanceof ItemNuclearResource || stack.getItem() instanceof ItemReactorUranium;
 	}
 

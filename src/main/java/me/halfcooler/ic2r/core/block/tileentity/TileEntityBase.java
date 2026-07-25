@@ -30,8 +30,6 @@ public class TileEntityBase extends TileEntityInventory implements ServerTicker,
 	protected void updateEntityServer()
 	{
 		super.updateEntityServer();
-		// Looping sound playback is driven client-side; on a dedicated server IC2R.soundManager is a no-op
-		// so loopingSound is null and this restart logic never ran. updateEntityClient now handles persistence.
 	}
 
 	@Override
@@ -436,6 +434,7 @@ public class TileEntityBase extends TileEntityInventory implements ServerTicker,
 		this.stopSound = null;
 		this.interruptSound = null;
 	}
+
 	protected boolean isLoopingSoundIdling()
 	{
 		return this.loopingSound != null && !this.loopingSound.isPlaying();

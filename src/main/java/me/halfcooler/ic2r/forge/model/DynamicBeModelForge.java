@@ -7,21 +7,13 @@ import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityFeConverter;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.*;
-import java.util.function.Function;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -36,6 +28,9 @@ import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.*;
+import java.util.function.Function;
+
 final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> implements Ic2rModel, IDynamicBakedModel
 {
 	private static final ModelProperty<List<List<BakedQuad>>> MESH_DATA = new ModelProperty<>();
@@ -44,11 +39,15 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 	private final ResourceLocation euModelId;
 	private final ResourceLocation feModelId;
 	private final ResourceLocation particleTextureId;
-	/** Per-port full-cube meshes (same texture on all faces); index = face ordinal. */
+	/**
+	 * Per-port full-cube meshes (same texture on all faces); index = face ordinal.
+	 */
 	private List<List<BakedQuad>> nonePortMesh;
 	private List<List<BakedQuad>> euPortMesh;
 	private List<List<BakedQuad>> fePortMesh;
-	/** Explicit particle sprite so break FX never falls back to missing texture. */
+	/**
+	 * Explicit particle sprite so break FX never falls back to missing texture.
+	 */
 	private TextureAtlasSprite particleSprite;
 
 	DynamicBeModelForge(ResourceLocation id)
@@ -200,8 +199,7 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 				if (model == null)
 				{
 					IC2R.log.warn(LogCategory.Resource, "Missing model %s", id);
-				}
-				else
+				} else
 				{
 					model.resolveParents(resolver);
 				}
@@ -237,8 +235,7 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 			this.euPortMesh = this.generateMesh(euModel, 0, false);
 			this.fePortMesh = this.generateMesh(feModel, 0, false);
 			this.particleSprite = spriteGetter.apply(new Material(TextureAtlas.LOCATION_BLOCKS, this.particleTextureId));
-		}
-		else if (this.baseModel != null)
+		} else if (this.baseModel != null)
 		{
 			this.particleSprite = this.baseModel.getParticleIcon();
 		}
@@ -256,8 +253,7 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 			&& this.nonePortMesh != null && this.euPortMesh != null && this.fePortMesh != null)
 		{
 			mesh = this.composeFeConverterMesh(converter.getFaceModesPacked());
-		}
-		else
+		} else
 		{
 			boolean active = this.block.canActive() && be instanceof Ic2rTileEntity te && te.getActive();
 			mesh = this.getMesh(state, active);
@@ -330,8 +326,7 @@ final class DynamicBeModelForge extends DynamicBeModel<List<List<BakedQuad>>> im
 			if (state != null && this.baseModel != null)
 			{
 				mesh = this.getMesh(state, false);
-			}
-			else
+			} else
 			{
 				return Collections.emptyList();
 			}

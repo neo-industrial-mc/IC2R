@@ -34,16 +34,24 @@ import java.util.List;
  */
 public class TileEntityFeConverter extends Ic2rTileEntity implements ServerTicker
 {
-	/** EU buffer size. */
+	/**
+	 * EU buffer size.
+	 */
 	public static final double CAPACITY_EU = 10_000.0;
-	/** Max EU converted / pushed per tick (FE = EU × {@link EnergyBridgeMath#DEFAULT_FE_PER_EU}). */
+	/**
+	 * Max EU converted / pushed per tick (FE = EU × {@link EnergyBridgeMath#DEFAULT_FE_PER_EU}).
+	 */
 	public static final double MAX_TRANSFER_EU_PER_TICK = 2_048.0;
-	/** Accept up to EV packets so any cable tier can feed the converter. */
+	/**
+	 * Accept up to EV packets so any cable tier can feed the converter.
+	 */
 	public static final int SINK_TIER = 4;
 
 	public static final SyncKey<Integer> FACE_MODES = SyncKey.of("face_modes", SyncCodecs.INT);
 
-	/** 2 bits per {@link Direction} ordinal: 0=none, 1=eu, 2=fe. */
+	/**
+	 * 2 bits per {@link Direction} ordinal: 0=none, 1=eu, 2=fe.
+	 */
 	private int faceModesPacked;
 	private final Energy energy;
 	private final EuToFeEnergyStorage feStorage;
@@ -56,11 +64,12 @@ public class TileEntityFeConverter extends Ic2rTileEntity implements ServerTicke
 		this.feStorage = new EuToFeEnergyStorage(this.energy);
 	}
 
-	/** FE capability entry used by NeoForge registration (extract-only). */
+	/**
+	 * FE capability entry used by NeoForge registration (extract-only).
+	 */
 	@Nullable
 	public IEnergyStorage getFeStorage(@Nullable Direction side)
 	{
-		// Exposed on every side so FE pipes can pull; receive is always false.
 		return this.feStorage;
 	}
 
@@ -69,7 +78,9 @@ public class TileEntityFeConverter extends Ic2rTileEntity implements ServerTicke
 		return this.energy;
 	}
 
-	/** Packed face modes for model rendering (2 bits × 6 faces). */
+	/**
+	 * Packed face modes for model rendering (2 bits × 6 faces).
+	 */
 	public int getFaceModesPacked()
 	{
 		return this.faceModesPacked;
@@ -156,7 +167,6 @@ public class TileEntityFeConverter extends Ic2rTileEntity implements ServerTicke
 	protected void updateEntityServer()
 	{
 		super.updateEntityServer();
-		// Neighbours may gain/lose FE capability without a block update (e.g. TE load order).
 		this.updateFaceModes(false);
 		boolean transferred = this.pushFeToNeighbors();
 		if (this.getActive() != transferred)
@@ -198,7 +208,6 @@ public class TileEntityFeConverter extends Ic2rTileEntity implements ServerTicke
 	{
 		BlockPos neighborPos = this.worldPosition.relative(dir);
 
-		// Prefer EU network connection (cables / IC machines on EnergyNet).
 		IEnergyTile euTile = EnergyNet.instance.getTile(level, neighborPos);
 		if (euTile == null)
 		{
@@ -209,7 +218,6 @@ public class TileEntityFeConverter extends Ic2rTileEntity implements ServerTicke
 			return PortMode.EU;
 		}
 
-		// FE sink on the face that touches us.
 		BlockEntity neighbor = level.getBlockEntity(neighborPos);
 		if (neighbor != null && !(neighbor instanceof TileEntityFeConverter)
 			&& PlatformServices.energy().canReceive(neighbor, dir.getOpposite()))
@@ -240,7 +248,6 @@ public class TileEntityFeConverter extends Ic2rTileEntity implements ServerTicke
 		}
 
 		boolean any = false;
-		// Prefer wrench facing first, then other sides, so facing still matters under load.
 		Direction facing = this.getFacing();
 		if (this.pushFeToSide(level, facing, euAvailable))
 		{
@@ -270,7 +277,6 @@ public class TileEntityFeConverter extends Ic2rTileEntity implements ServerTicke
 
 	private boolean pushFeToSide(Level level, Direction dir, double euAvailable)
 	{
-		// Only push toward faces that look like FE outputs (or unknown yet on first ticks).
 		PortMode mode = this.getPortMode(dir);
 		if (mode == PortMode.EU)
 		{
@@ -308,7 +314,9 @@ public class TileEntityFeConverter extends Ic2rTileEntity implements ServerTicke
 		return false;
 	}
 
-	/** Visual / logical port state for one face. */
+	/**
+	 * Visual / logical port state for one face.
+	 */
 	public enum PortMode
 	{
 		NONE(0),

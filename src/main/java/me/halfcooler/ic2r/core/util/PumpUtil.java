@@ -1,10 +1,5 @@
 package me.halfcooler.ic2r.core.util;
 
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -12,6 +7,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Set;
 
 public class PumpUtil
 {
@@ -346,13 +346,11 @@ public class PumpUtil
 			if (level < 15)
 			{
 				world.setBlock(pos, state.setValue(LiquidBlock.LEVEL, level + 1), 3);
-			}
-			else
+			} else
 			{
 				world.removeBlock(pos, false);
 			}
-		}
-		else
+		} else
 		{
 			world.removeBlock(pos, false);
 		}

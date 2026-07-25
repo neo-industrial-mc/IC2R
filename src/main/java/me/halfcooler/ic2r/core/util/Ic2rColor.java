@@ -1,10 +1,10 @@
 package me.halfcooler.ic2r.core.util;
 
+import net.minecraft.world.item.DyeColor;
+
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.minecraft.world.item.DyeColor;
 
 public enum Ic2rColor
 {

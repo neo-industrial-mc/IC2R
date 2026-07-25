@@ -6,11 +6,10 @@ import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.wiring.AbstractCableBlock;
 import me.halfcooler.ic2r.core.energy.EnergyNetMode;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
+import net.minecraft.network.chat.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import net.minecraft.network.chat.Component;
 
 /**
  * Player-facing electrical text. Classic IC2R shows power tier / EU/t only;
@@ -111,8 +110,7 @@ public final class ElectricalDisplay
 			Ic2rTooltip.add(tooltip, Component.translatable("ic2r.electric.tooltip.cable.max_voltage", formatTierWithValue(spec.getMaxVoltage())));
 			Ic2rTooltip.add(tooltip, Component.translatable("ic2r.electric.tooltip.cable.max_amperage", spec.getMaxAmperage()));
 			Ic2rTooltip.add(tooltip, Component.translatable("ic2r.electric.tooltip.cable.loss", loss));
-		}
-		else
+		} else
 		{
 			Ic2rTooltip.add(tooltip, Component.translatable("item.ic2r.cable.tooltip0", block.type.capacity));
 			Ic2rTooltip.add(tooltip, Component.translatable("item.ic2r.cable.tooltip1", block.getLoss()));

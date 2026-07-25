@@ -13,18 +13,9 @@ import me.halfcooler.ic2r.core.init.IC2RClientConfig;
 import me.halfcooler.ic2r.core.recipe.v2.JsonRecipeCodecs;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeIo;
 import me.halfcooler.ic2r.core.ref.Ic2rRecipeSerializers;
-
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -36,6 +27,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class AdvRecipe implements Ic2rCraftingRecipe
 {
@@ -50,7 +44,9 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 	public final int inputHeight;
 	public final boolean hidden;
 	public final boolean consuming;
-	/** Internal id only; vanilla wraps recipes in RecipeHolder. */
+	/**
+	 * Internal id only; vanilla wraps recipes in RecipeHolder.
+	 */
 	private final ResourceLocation id;
 
 	private AdvRecipe(ResourceLocation id, int width, int height, boolean mirror, int mask, IRecipeInput[] input, ItemStack result, boolean isConsuming, boolean isHidden)
@@ -307,7 +303,9 @@ public class AdvRecipe implements Ic2rCraftingRecipe
 		return this.hidden ? NonNullList.create() : this.getDisplayIngredients();
 	}
 
-	/** Returns the complete shaped input layout for external recipe viewers such as JEI. */
+	/**
+	 * Returns the complete shaped input layout for external recipe viewers such as JEI.
+	 */
 	public @NotNull NonNullList<Ingredient> getDisplayIngredients()
 	{
 		NonNullList<Ingredient> list = NonNullList.create();

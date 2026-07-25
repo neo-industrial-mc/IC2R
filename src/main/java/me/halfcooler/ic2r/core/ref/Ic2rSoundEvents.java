@@ -1,6 +1,7 @@
 package me.halfcooler.ic2r.core.ref;
 
 import net.minecraft.sounds.SoundEvent;
+
 import java.util.function.Supplier;
 
 public final class Ic2rSoundEvents
@@ -72,7 +73,9 @@ public final class Ic2rSoundEvents
 	{
 	}
 
-	/** Forces class initialization. Sound event fields are wired by Ic2rSoundEventsForge. */
+	/**
+	 * Forces class initialization. Sound event fields are wired by Ic2rSoundEventsForge.
+	 */
 	public static void init()
 	{
 	}

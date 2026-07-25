@@ -19,9 +19,6 @@ public abstract class HandHeldUpgradeOption extends HandHeldInventory
 	{
 		super(upgradeGUI.getPlayer(), upgradeGUI.getHand(), upgradeGUI.getContainerStack(), 9);
 		this.name = name;
-		// Switching from the main advanced-upgrade GUI into this sub-GUI closes the parent
-		// container. Without addMaintainedPlayer, HandHeldInventory.onScreenClosed strips the
-		// stack uid; the new sub-GUI then fails stillValid / save (GUI vanishes + warn log).
 		Player player = upgradeGUI.getPlayer();
 		if (!player.level().isClientSide
 			&& player.containerMenu instanceof DynamicHandHeldContainer

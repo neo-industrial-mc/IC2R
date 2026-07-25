@@ -2,10 +2,9 @@ package me.halfcooler.ic2r.api.recipe;
 
 import me.halfcooler.ic2r.api.util.FluidContainerOutputMode;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Collection;
-
-import net.minecraft.world.item.ItemStack;
 
 public interface IFillFluidContainerRecipeManager extends IMachineRecipeManager<Void, Collection<ItemStack>, IFillFluidContainerRecipeManager.Input>
 {
@@ -14,6 +13,6 @@ public interface IFillFluidContainerRecipeManager extends IMachineRecipeManager<
 	);
 
 	record Input(ItemStack container, Ic2rFluidStack fluid)
-		{
-		}
+	{
+	}
 }

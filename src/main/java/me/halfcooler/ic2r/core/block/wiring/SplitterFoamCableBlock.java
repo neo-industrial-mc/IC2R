@@ -4,7 +4,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class SplitterFoamCableBlock extends AbstractSplitterCableBlock
 {
-    public static final com.mojang.serialization.MapCodec<SplitterFoamCableBlock> CODEC = simpleCodec(SplitterFoamCableBlock::new);
+	public static final com.mojang.serialization.MapCodec<SplitterFoamCableBlock> CODEC = simpleCodec(SplitterFoamCableBlock::new);
 
 	protected SplitterFoamCableBlock(Properties settings)
 	{

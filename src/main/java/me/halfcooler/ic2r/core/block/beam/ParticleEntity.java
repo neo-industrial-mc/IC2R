@@ -2,12 +2,12 @@ package me.halfcooler.ic2r.core.block.beam;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.network.syncher.SynchedEntityData;
 
 public class ParticleEntity extends Entity
 {

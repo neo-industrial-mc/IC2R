@@ -5,30 +5,28 @@ import me.halfcooler.ic2r.api.energy.profile.IElectricalNode;
 import me.halfcooler.ic2r.api.energy.profile.VoltageTier;
 import me.halfcooler.ic2r.api.energy.tile.IEnergyAcceptor;
 import me.halfcooler.ic2r.api.energy.tile.IEnergySource;
-import me.halfcooler.ic2r.core.energy.EnergyNetMode;
-import me.halfcooler.ic2r.core.energy.profile.ElectricalProfile;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IHasGui;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
+import me.halfcooler.ic2r.core.energy.EnergyNetMode;
+import me.halfcooler.ic2r.core.energy.profile.ElectricalProfile;
 import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.network.GuiSynced;
 import me.halfcooler.ic2r.core.util.LegacyNbt;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 public abstract class TileEntityConversionGenerator extends TileEntityInventory implements IHasGui, IEnergySource, IElectricalNode, ServerTicker
 {
@@ -37,7 +35,9 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	 * Same logical name as {@link me.halfcooler.ic2r.core.block.comp.Energy#NBT_ENERGY_BUFFER}.
 	 */
 	public static final String NBT_ENERGY_BUFFER = "energy_buffer";
-	/** Legacy camelCase key; still readable via {@link LegacyNbt}. */
+	/**
+	 * Legacy camelCase key; still readable via {@link LegacyNbt}.
+	 */
 	public static final String LEGACY_NBT_ENERGY_BUFFER = "energyBuffer";
 
 	private static final NumberFormat FORMAT = new DecimalFormat("#.#");
@@ -56,7 +56,8 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.energyBuffer = readEnergyBufferNbt(nbt);
 	}
@@ -68,13 +69,17 @@ public abstract class TileEntityConversionGenerator extends TileEntityInventory 
 		writeEnergyBufferNbt(nbt, this.energyBuffer);
 	}
 
-	/** Pure NBT write (snake_case only). Unit-test entry (NS-003). */
+	/**
+	 * Pure NBT write (snake_case only). Unit-test entry (NS-003).
+	 */
 	public static void writeEnergyBufferNbt(CompoundTag nbt, double energy)
 	{
 		nbt.putDouble(NBT_ENERGY_BUFFER, energy);
 	}
 
-	/** Pure NBT read: prefer {@link #NBT_ENERGY_BUFFER}, else legacy {@link #LEGACY_NBT_ENERGY_BUFFER}. */
+	/**
+	 * Pure NBT read: prefer {@link #NBT_ENERGY_BUFFER}, else legacy {@link #LEGACY_NBT_ENERGY_BUFFER}.
+	 */
 	public static double readEnergyBufferNbt(CompoundTag nbt)
 	{
 		return LegacyNbt.getDouble(nbt, NBT_ENERGY_BUFFER, LEGACY_NBT_ENERGY_BUFFER);

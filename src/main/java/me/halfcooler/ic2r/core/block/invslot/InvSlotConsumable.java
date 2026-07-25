@@ -26,7 +26,6 @@ public abstract class InvSlotConsumable extends InvSlot
 	@Override
 	public boolean canOutput()
 	{
-		// Leftover eject: Access.I slots may extract items that no longer accept() (G2.4 pure gate).
 		return InvSlotTransferMath.consumableCanOutput(
 			super.canOutput(),
 			this.access == InvSlot.Access.NONE,

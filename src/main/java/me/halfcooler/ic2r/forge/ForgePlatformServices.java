@@ -14,14 +14,18 @@ import me.halfcooler.ic2r.platform.services.PlatformServices;
  */
 public final class ForgePlatformServices
 {
-	/** True while constructing adapters so nested {@link #install} from class-init is a no-op. */
+	/**
+	 * True while constructing adapters so nested {@link #install} from class-init is a no-op.
+	 */
 	private static volatile boolean installing;
 
 	private ForgePlatformServices()
 	{
 	}
 
-	/** Idempotent (and re-entrant-safe) install from the Forge mod entry / {@code IC2R} static. */
+	/**
+	 * Idempotent (and re-entrant-safe) install from the Forge mod entry / {@code IC2R} static.
+	 */
 	public static void install()
 	{
 		if (PlatformServices.isInstalled() || installing)
@@ -34,7 +38,6 @@ public final class ForgePlatformServices
 		{
 			Ic2rFluidTank.setHandlerFactory(Ic2rFluidTankHandler::new);
 			InvSlot.setHandlerFactory(me.halfcooler.ic2r.forge.block.invslot.InvSlotItemHandler::new);
-			// EventHooks.onBucketUse was removed in NeoForge 1.21; no global bucket-use cancel hook.
 			Ic2rBucketItem.setBucketUseHook((player, level, stack, hit) -> null);
 			PumpUtilForge.install();
 			ShearableAccessForge.install();
@@ -46,8 +49,7 @@ public final class ForgePlatformServices
 				new PlatformConfigForge(),
 				new PlatformLifecycleForge()
 			);
-		}
-		finally
+		} finally
 		{
 			installing = false;
 		}

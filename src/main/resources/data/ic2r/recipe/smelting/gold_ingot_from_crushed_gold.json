@@ -5,7 +5,9 @@
   "ingredient": {
     "item": "ic2r:crushed_gold"
   },
-  "result": { "id": "minecraft:gold_ingot" },
+  "result": {
+    "id": "minecraft:gold_ingot"
+  },
   "experience": 0.0,
   "cookingtime": 200
 }

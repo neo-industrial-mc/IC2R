@@ -109,6 +109,7 @@ public final class StandardMachineCycleMath
 	{
 		return recipeReady && energyStored >= energyConsume;
 	}
+
 	public static CycleTickResult tick(
 		short progress,
 		int operationLength,
@@ -129,7 +130,6 @@ public final class StandardMachineCycleMath
 			return new CycleTickResult(nextProgress, remaining, true, completed, true);
 		}
 
-		// Cannot operate: energy interrupt keeps progress if recipe still ready; else clear.
 		short nextProgress = recipeReady ? progress : 0;
 		return new CycleTickResult(nextProgress, energyStored, false, false, false);
 	}
@@ -147,11 +147,11 @@ public final class StandardMachineCycleMath
 	/**
 	 * Immutable result of {@link #tick}.
 	 *
-	 * @param progress          progress after the tick (0..operationLength-1, or 0 after complete)
-	 * @param energyStored      buffer after optional consume
-	 * @param energyConsumed    true if {@code energyConsume} was deducted
+	 * @param progress           progress after the tick (0..operationLength-1, or 0 after complete)
+	 * @param energyStored       buffer after optional consume
+	 * @param energyConsumed     true if {@code energyConsume} was deducted
 	 * @param operationCompleted true if progress bar filled this tick (operate would run)
-	 * @param shouldBeActive    mirrors TE wanting active while canOperate
+	 * @param shouldBeActive     mirrors TE wanting active while canOperate
 	 */
 	public record CycleTickResult(
 		short progress,

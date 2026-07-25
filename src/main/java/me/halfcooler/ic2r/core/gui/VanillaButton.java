@@ -1,10 +1,10 @@
 package me.halfcooler.ic2r.core.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.halfcooler.ic2r.core.Ic2rGui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.resources.ResourceLocation;
-import me.halfcooler.ic2r.core.Ic2rGui;
 
 /**
  * Vanilla-styled GUI button.
@@ -48,7 +48,6 @@ public class VanillaButton extends Button<VanillaButton>
 		boolean highlighted = enabled && this.isActive(mouseX, mouseY);
 		ResourceLocation sprite = SPRITES.get(enabled, highlighted);
 
-		// Element coords are relative to the container origin; blitSprite uses screen space.
 		int absX = this.gui.getX() + this.x;
 		int absY = this.gui.getY() + this.y;
 

@@ -1,7 +1,7 @@
 package me.halfcooler.ic2r.core.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class BasicButton extends Button<BasicButton>
 {

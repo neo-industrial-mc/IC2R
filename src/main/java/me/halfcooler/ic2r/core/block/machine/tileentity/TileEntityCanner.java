@@ -18,14 +18,6 @@ import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -35,6 +27,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.*;
+
 public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, Object> implements INetworkClientTileEntityEventListener
 {
 	public static final int eventSwapTanks = Mode.values.length + 1;
@@ -43,7 +37,9 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 	public final InvSlotConsumableCanner canInputSlot;
 	protected final Fluids fluids;
 	private TileEntityCanner.Mode mode = TileEntityCanner.Mode.BottleSolid;
-	/** Last mode for which side-effects (slot op type / sounds) were applied. Used so GUI field resyncs do not stop work sounds. */
+	/**
+	 * Last mode for which side-effects (slot op type / sounds) were applied. Used so GUI field resyncs do not stop work sounds.
+	 */
 	private TileEntityCanner.Mode appliedMode;
 
 	public TileEntityCanner(BlockPos pos, BlockState state)
@@ -54,12 +50,12 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 		this.fluids = this.addComponent(new Fluids(this));
 		this.inputTank = this.fluids.addTankInsert("inputTank", 8000);
 		this.outputTank = this.fluids.addTankExtract("outputTank", 8000);
-		// Default mode is BottleSolid; InvSlotConsumableLiquid defaults to Drain.
 		this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.None);
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.setMode(TileEntityCanner.Mode.values[nbt.getInt("mode")]);
 	}
@@ -270,9 +266,6 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 
 	public void setMode(TileEntityCanner.Mode mode)
 	{
-		// GUI open resyncs "mode" every tick via ContainerBase.broadcastChanges → onNetworkUpdate.
-		// Reflection already wrote this.mode before that callback, so compare against appliedMode
-		// rather than the previous this.mode value.
 		boolean modeChanged = this.appliedMode != mode;
 		this.mode = mode;
 		this.appliedMode = mode;
@@ -291,8 +284,6 @@ public class TileEntityCanner extends TileEntityStandardMachine<Object, Object, 
 				this.canInputSlot.setOpType(InvSlotConsumableLiquid.OpType.Both);
 		}
 
-		// Looping/interrupt sounds depend on mode (operate vs reverse vs none). Only rebuild when
-		// the mode actually changes — never on repeated GUI field sync of the same mode.
 		if (modeChanged && IC2R.sideProxy.isRendering())
 		{
 			this.refreshModeDependentSounds();

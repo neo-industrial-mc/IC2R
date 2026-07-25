@@ -3,15 +3,10 @@ package me.halfcooler.ic2r.integration.jade;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.IServerDataProvider;
-import snownee.jade.api.ITooltip;
-import snownee.jade.api.TooltipPosition;
+import snownee.jade.api.*;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.BoxStyle;
 import snownee.jade.api.ui.IElementHelper;
@@ -43,7 +38,6 @@ public enum Ic2rEnergyProvider implements IBlockComponentProvider, IServerDataPr
 	@Override
 	public int getDefaultPriority()
 	{
-		// Above body text so the bar sits with other storage UIs.
 		return TooltipPosition.BODY + 50;
 	}
 

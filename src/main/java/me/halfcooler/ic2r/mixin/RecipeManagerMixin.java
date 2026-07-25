@@ -20,7 +20,7 @@ public class RecipeManagerMixin
 	{
 		IC2R.log.debug(LogCategory.Recipe, "[IC2R Recipe Debug] Loading recipe: %s", p_44046_);
 	}
-	
+
 	@Inject(method = "fromJson(Lnet/minecraft/resources/ResourceLocation;Lcom/google/gson/JsonObject;Lnet/neoforged/neoforge/common/crafting/conditions/ICondition$IContext;)Lnet/minecraft/world/item/crafting/Recipe;", at = @At("HEAD"))
 	private static void logRecipeId(ResourceLocation p_44046_, JsonObject p_44047_, ICondition.IContext context, CallbackInfoReturnable<Recipe<?>> cir)
 	{

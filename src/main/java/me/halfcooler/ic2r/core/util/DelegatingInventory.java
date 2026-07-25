@@ -1,12 +1,12 @@
 package me.halfcooler.ic2r.core.util;
 
-import java.util.Set;
-
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 public class DelegatingInventory implements Container
 {
@@ -22,7 +22,8 @@ public class DelegatingInventory implements Container
 		this.parent.clearContent();
 	}
 
-	public int getContainerSize() {
+	public int getContainerSize()
+	{
 		return this.parent.getContainerSize();
 	}
 

@@ -37,7 +37,6 @@ public class InvSlotScannable extends InvSlotConsumable
 			return isValidStack(stack);
 		}
 
-		// Client side: accept everything, server will validate via isValidStack
 		return true;
 	}
 

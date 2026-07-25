@@ -1,15 +1,14 @@
 package me.halfcooler.ic2r.core.item;
 
-import me.halfcooler.ic2r.api.item.ElectricItem;
-
-import java.util.List;
-
 import me.halfcooler.ic2r.api.energy.profile.VoltageTier;
+import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 public class ElectricItemTooltipHandler
 {

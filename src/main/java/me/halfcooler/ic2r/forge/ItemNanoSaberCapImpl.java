@@ -3,35 +3,42 @@ package me.halfcooler.ic2r.forge;
 import me.halfcooler.ic2r.api.item.INanoSaberState;
 import net.minecraft.world.item.ItemStack;
 
-final class ItemNanoSaberCapImpl implements INanoSaberState {
+final class ItemNanoSaberCapImpl implements INanoSaberState
+{
 
-    private final NanoSaberStateImpl state;
+	private final NanoSaberStateImpl state;
 
-    ItemNanoSaberCapImpl(ItemStack stack) {
-        this.state = new NanoSaberStateImpl(stack);
-    }
+	ItemNanoSaberCapImpl(ItemStack stack)
+	{
+		this.state = new NanoSaberStateImpl(stack);
+	}
 
-    INanoSaberState asState() {
-        return this.state;
-    }
+	INanoSaberState asState()
+	{
+		return this.state;
+	}
 
-    @Override
-    public boolean isActive() {
-        return this.state.isActive();
-    }
+	@Override
+	public boolean isActive()
+	{
+		return this.state.isActive();
+	}
 
-    @Override
-    public void setActive(boolean active) {
-        this.state.setActive(active);
-    }
+	@Override
+	public void setActive(boolean active)
+	{
+		this.state.setActive(active);
+	}
 
-    @Override
-    public int getEnergyTick() {
-        return this.state.getEnergyTick();
-    }
+	@Override
+	public int getEnergyTick()
+	{
+		return this.state.getEnergyTick();
+	}
 
-    @Override
-    public void setEnergyTick(int energyTick) {
-        this.state.setEnergyTick(energyTick);
-    }
+	@Override
+	public void setEnergyTick(int energyTick)
+	{
+		this.state.setEnergyTick(energyTick);
+	}
 }

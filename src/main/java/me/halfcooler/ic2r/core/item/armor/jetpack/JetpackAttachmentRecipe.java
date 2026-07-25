@@ -5,26 +5,20 @@ import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rRecipeSerializers;
 import me.halfcooler.ic2r.core.util.ConfigUtil;
-
-import java.text.ParseException;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Set;
-
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.text.ParseException;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Set;
 
 public class JetpackAttachmentRecipe extends CustomRecipe
 {

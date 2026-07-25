@@ -5,13 +5,12 @@ import me.halfcooler.ic2r.api.crops.ICropTile;
 import me.halfcooler.ic2r.api.crops.ICropType;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.crop.CropBase;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CropBaseSapling extends CropBase
 {
@@ -71,7 +70,6 @@ public class CropBaseSapling extends CropBase
 		if (IC2R.random.nextInt(100) >= 75)
 		{
 			drops.add(this.cropSapling.copy());
-			// Cherry: if a sapling dropped, 25% chance for 4 pink petals.
 			if (this.getId().equalsIgnoreCase("cherry_sapling") && IC2R.random.nextInt(100) >= 75)
 			{
 				drops.add(new ItemStack(Items.PINK_PETALS, 4));

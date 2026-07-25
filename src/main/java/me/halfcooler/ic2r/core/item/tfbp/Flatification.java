@@ -2,16 +2,15 @@ package me.halfcooler.ic2r.core.item.tfbp;
 
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityTerra;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
-
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Set;
 
 public class Flatification extends TerraformerBase
 {

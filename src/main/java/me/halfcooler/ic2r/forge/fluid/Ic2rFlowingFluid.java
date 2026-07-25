@@ -9,8 +9,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
@@ -72,7 +72,6 @@ public abstract class Ic2rFlowingFluid extends BaseFlowingFluid
 					level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
 					return;
 				}
-				// Keep a uniform “flowed one block” look in the whole rising column.
 				if (state.getAmount() != GAS_FLOW_AMOUNT || state.getValue(FALLING))
 				{
 					state = getFlowing(GAS_FLOW_AMOUNT, false);
@@ -102,7 +101,6 @@ public abstract class Ic2rFlowingFluid extends BaseFlowingFluid
 		}
 
 		BlockPos above = pos.above();
-		// Build height is exclusive; gas stops at the highest placeable Y.
 		if (above.getY() >= level.getMaxBuildHeight())
 		{
 			return;
@@ -115,7 +113,6 @@ public abstract class Ic2rFlowingFluid extends BaseFlowingFluid
 
 		if (canSpreadTo(level, pos, selfState, Direction.UP, above, aboveState, aboveFluid, rising.getType()))
 		{
-			// Source stays; only place a uniform flowing cell above.
 			spreadTo(level, above, aboveState, Direction.UP, rising);
 		}
 	}

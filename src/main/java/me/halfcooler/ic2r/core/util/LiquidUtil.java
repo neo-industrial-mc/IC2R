@@ -4,17 +4,13 @@ import me.halfcooler.ic2r.api.util.FluidContainerOutputMode;
 import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +23,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.apache.commons.lang3.mutable.MutableObject;
-import net.minecraft.util.RandomSource;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class LiquidUtil
 {
@@ -869,10 +868,10 @@ public class LiquidUtil
 	}
 
 	private record ContainerTankTransferResult(boolean changed, ItemStack remaining, ItemStack output)
-		{
-			static final ContainerTankTransferResult UNCHANGED = new ContainerTankTransferResult(false, StackUtil.emptyStack, StackUtil.emptyStack);
+	{
+		static final ContainerTankTransferResult UNCHANGED = new ContainerTankTransferResult(false, StackUtil.emptyStack, StackUtil.emptyStack);
 
-		}
+	}
 
 	public static class LiquidData
 	{

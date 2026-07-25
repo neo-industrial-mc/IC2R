@@ -123,7 +123,7 @@ public final class Ic2rDamageSource
 
 	/**
 	 * @deprecated Prefer {@link #of(Level, ResourceKey)} or the named factories.
-	 *             Kept for CropEating and similar dynamic lookups.
+	 * Kept for CropEating and similar dynamic lookups.
 	 */
 	@Deprecated
 	public static DamageSource create(Level level, String name)

@@ -109,7 +109,6 @@ public record Ic2rFluidTankHandler(Ic2rFluidTank tank) implements IFluidHandler
 			return Ic2rFluidStack.EMPTY;
 		}
 
-		// FluidStack tags were replaced by data components; domain layer does not keep fluid NBT.
 		return FluidHandler.createFluidStackMb(
 			resource.getFluid(),
 			resource.getAmount(),
@@ -124,7 +123,6 @@ public record Ic2rFluidTankHandler(Ic2rFluidTank tank) implements IFluidHandler
 			return FluidStack.EMPTY;
 		}
 
-		// NeoForge 1.21 FluidStack no longer takes CompoundTag; domain NBT is unused.
 		return new FluidStack(fs.getFluid(), fs.getAmountMb());
 	}
 }

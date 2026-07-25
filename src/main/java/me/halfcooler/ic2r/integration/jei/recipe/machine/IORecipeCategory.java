@@ -2,9 +2,6 @@ package me.halfcooler.ic2r.integration.jei.recipe.machine;
 
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
 import me.halfcooler.ic2r.integration.jeirei.SlotPosition;
-
-import java.util.List;
-
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -14,6 +11,8 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public abstract class IORecipeCategory<T extends IJeiRecipeWrapper> implements IRecipeCategory<T>
 {

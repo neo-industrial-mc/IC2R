@@ -32,7 +32,7 @@ public class EntityTrackingSoundInstance extends EntityBoundSoundInstance implem
 		this.sourceItem = item;
 	}
 
-		public void tick()
+	public void tick()
 	{
 		super.tick();
 		if (this.sourceItem != null && this.entity instanceof LivingEntity livingEntity)

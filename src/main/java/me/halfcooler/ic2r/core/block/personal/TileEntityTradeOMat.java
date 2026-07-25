@@ -9,24 +9,20 @@ import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.invslot.InvSlot;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLinked;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotOutput;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.event.WorldData;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
+import me.halfcooler.ic2r.core.util.GameProfileNbt;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import me.halfcooler.ic2r.core.util.GameProfileNbt;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -39,6 +35,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class TileEntityTradeOMat
 	extends TileEntityInventory implements IPersonalBlock, IHasGui, INetworkTileEntityEventListener, INetworkClientTileEntityEventListener, ServerTicker
@@ -66,7 +64,8 @@ public class TileEntityTradeOMat
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("ownerGameProfile"))
 		{

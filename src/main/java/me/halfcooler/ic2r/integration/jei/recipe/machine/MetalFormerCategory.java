@@ -1,11 +1,11 @@
 package me.halfcooler.ic2r.integration.jei.recipe.machine;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.RecipeType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 
 public class MetalFormerCategory extends DynamicCategory

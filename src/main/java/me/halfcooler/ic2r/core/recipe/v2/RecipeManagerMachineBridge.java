@@ -5,14 +5,13 @@ import me.halfcooler.ic2r.api.recipe.MachineRecipe;
 import me.halfcooler.ic2r.core.recipe.BasicMachineRecipeManager;
 import me.halfcooler.ic2r.core.recipe.MachineRecipeMatchMath;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.Collection;
-import java.util.List;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Vanilla {@link RecipeManager} ↔ IC2R basic machine managers (W2.3 pilot; G2.2 multi-type evidence).

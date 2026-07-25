@@ -1,8 +1,8 @@
 package me.halfcooler.ic2r.core.gui;
 
 import me.halfcooler.ic2r.core.ContainerBase;
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;

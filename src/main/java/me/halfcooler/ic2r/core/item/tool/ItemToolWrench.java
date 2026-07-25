@@ -4,25 +4,19 @@ import me.halfcooler.ic2r.api.item.BlockBreakableItem;
 import me.halfcooler.ic2r.api.item.IBoxable;
 import me.halfcooler.ic2r.api.item.IEnhancedOverlayProvider;
 import me.halfcooler.ic2r.api.tile.IWrenchAble;
-import me.halfcooler.ic2r.core.IHitSoundOverride;
 import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.IHitSoundOverride;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.item.PriorityUsableItem;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockTags;
 import me.halfcooler.ic2r.core.ref.Ic2rItemTags;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
-import me.halfcooler.ic2r.core.util.Ic2rTooltip;
-import me.halfcooler.ic2r.core.util.LogCategory;
-import me.halfcooler.ic2r.core.util.RotationUtil;
-import me.halfcooler.ic2r.core.util.StackUtil;
-import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.List;
-
+import me.halfcooler.ic2r.core.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,9 +34,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Manual wrench, ported from 1.12 {@code ItemToolWrenchNew}:
@@ -54,10 +49,14 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable, BlockBreakableItem, IEnhancedOverlayProvider, IHitSoundOverride
 {
-	/** Durability cost when mining/removing a machine (matches 1.12 ItemTool mining). */
+	/**
+	 * Durability cost when mining/removing a machine (matches 1.12 ItemTool mining).
+	 */
 	private static final int MINE_DAMAGE = 1;
 
-	/** Mining efficiency for wrenchable machines (HarvestLevel.Iron in 1.12 ItemToolWrenchNew). */
+	/**
+	 * Mining efficiency for wrenchable machines (HarvestLevel.Iron in 1.12 ItemToolWrenchNew).
+	 */
 	public static final float WRENCH_DESTROY_SPEED = 6.0F;
 
 	public ItemToolWrench(Properties settings)
@@ -65,9 +64,10 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		super(settings);
 	}
 
-	// === Shared helpers (manual + electric wrench) ===
 
-	/** Whether this block is a machine the wrench is meant to harvest / overlay. */
+	/**
+	 * Whether this block is a machine the wrench is meant to harvest / overlay.
+	 */
 	public static boolean isWrenchTarget(BlockState state)
 	{
 		return state.is(Ic2rBlockTags.MINEABLE_WITH_WRENCH) || state.getBlock() instanceof IWrenchAble;
@@ -88,8 +88,8 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	 * Right-click: always attempt {@link IWrenchAble#setFacing} from the hit region.
 	 *
 	 * @return {@link InteractionResult#FAIL} if not an IWrenchAble / air;
-	 *         {@link InteractionResult#PASS} on client after sound;
-	 *         {@link InteractionResult#SUCCESS} on server
+	 * {@link InteractionResult#PASS} on client after sound;
+	 * {@link InteractionResult#SUCCESS} on server
 	 */
 	public static InteractionResult trySetFacingFromHit(UseOnContext context, Player player)
 	{
@@ -107,7 +107,6 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		}
 
 		Direction newFacing = facingFromHit(context.getClickedFace(), pos, context.getClickLocation());
-		// Match 1.12 ItemToolWrenchNew: always attempt setFacing from the hit region.
 		wrenchAble.setFacing(world, pos, newFacing, player);
 
 		if (world.isClientSide)
@@ -190,7 +189,6 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return te != null ? BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(te.getType()).toString() : "none";
 	}
 
-	// === Left-click (mining) behavior — 1.12 ItemToolWrenchNew tool harvest ===
 
 	@Override
 	public InteractionResult onBlockStartBreak(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction)
@@ -241,7 +239,6 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 		return super.getDestroySpeed(stack, state);
 	}
 
-	// === Right-click: set facing only, no durability (ItemToolWrenchNew) ===
 
 	public boolean canTakeDamage()
 	{
@@ -311,7 +308,6 @@ public class ItemToolWrench extends Item implements PriorityUsableItem, IBoxable
 	@Override
 	public SoundEvent getHitSoundForBlock(LocalPlayer player, Level world, BlockPos pos, ItemStack stack)
 	{
-		// 1.12 returned "" to silence the default hit; 1.20 has no silence path — leave default.
 		return null;
 	}
 

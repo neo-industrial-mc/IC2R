@@ -1,17 +1,11 @@
 package me.halfcooler.ic2r.core.block.comp;
 
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+
+import java.util.*;
 
 public class Redstone extends TileEntityComponent
 {
@@ -239,18 +233,18 @@ public class Redstone extends TileEntityComponent
 	}
 
 	private record LinkHandler(Redstone origin, Redstone receiver) implements IRedstoneChangeHandler, IRedstoneModifier
-		{
+	{
 
-			@Override
-			public void onRedstoneChange(int newLevel)
-			{
-				this.receiver.update();
-			}
-	
-			@Override
-			public int getRedstoneInput(int redstoneInput)
-			{
-				return Math.max(redstoneInput, this.origin.redstoneInput);
-			}
+		@Override
+		public void onRedstoneChange(int newLevel)
+		{
+			this.receiver.update();
 		}
+
+		@Override
+		public int getRedstoneInput(int redstoneInput)
+		{
+			return Math.max(redstoneInput, this.origin.redstoneInput);
+		}
+	}
 }

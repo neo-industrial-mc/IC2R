@@ -5,7 +5,9 @@
   "ingredient": {
     "item": "ic2r:purified_uranium"
   },
-  "result": { "id": "ic2r:uranium_ingot" },
+  "result": {
+    "id": "ic2r:uranium_ingot"
+  },
   "experience": 0.0,
   "cookingtime": 200
 }

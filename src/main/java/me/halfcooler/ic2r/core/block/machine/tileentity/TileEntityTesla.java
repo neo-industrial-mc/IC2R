@@ -1,18 +1,13 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
-import org.joml.Vector3f;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rDamageSource;
 import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.comp.Redstone;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.item.armor.ItemArmorHazmat;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
@@ -23,6 +18,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.joml.Vector3f;
+
+import java.util.List;
 
 public class TileEntityTesla extends Ic2rTileEntity implements ServerTicker
 {

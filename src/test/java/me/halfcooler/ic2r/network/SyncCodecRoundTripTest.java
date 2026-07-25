@@ -21,7 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SyncCodecRoundTripTest
 {
-	/** @Spec NS-005 codec: boolean / int / double value round-trip */
+	/**
+	 * @Spec NS-005 codec: boolean / int / double value round-trip
+	 */
 	@Test
 	void primitiveCodecs_encodeDecode_equal() throws IOException
 	{
@@ -37,7 +39,9 @@ class SyncCodecRoundTripTest
 		assertRoundTrip(SyncCodecs.STRING, "gui_progress");
 	}
 
-	/** @Spec NS-005: SyncKey wire names are snake_case only */
+	/**
+	 * @Spec NS-005: SyncKey wire names are snake_case only
+	 */
 	@Test
 	void syncKey_rejectsNonSnakeCaseWireNames()
 	{
@@ -49,10 +53,12 @@ class SyncCodecRoundTripTest
 		assertFalse(SyncKey.isValidWireName("1bad"));
 
 		assertThrows(IllegalArgumentException.class, () -> SyncKey.of("guiProgress", SyncCodecs.INT));
-		SyncKey.of("gui_progress", SyncCodecs.INT); // valid
+		SyncKey.of("gui_progress", SyncCodecs.INT);
 	}
 
-	/** @Spec NS-005: registry encodeAll → decodeAll restores field values */
+	/**
+	 * @Spec NS-005: registry encodeAll → decodeAll restores field values
+	 */
 	@Test
 	void blockEntitySync_encodeAllDecodeAll_restoresValues() throws IOException
 	{
@@ -84,7 +90,9 @@ class SyncCodecRoundTripTest
 		assertEquals(128.5, energy2.get());
 	}
 
-	/** Single named field payload: wireName + value */
+	/**
+	 * Single named field payload: wireName + value
+	 */
 	@Test
 	void syncedField_encodeNamed_roundTrip() throws IOException
 	{
@@ -143,12 +151,11 @@ class SyncCodecRoundTripTest
 			SyncKey.of("gui_progress", SyncCodecs.INT),
 			progress::get,
 			progress::set,
-			"guiProgress" // legacy TeUpdate name
+			"guiProgress"
 		);
 		assertFalse(sync.isEmpty());
 		assertEquals(1, sync.size());
 
-		// modern wire + legacy alias resolve to the same field
 		assertEquals(sync.get("gui_progress"), sync.lookup("gui_progress"));
 		assertEquals(sync.get("gui_progress"), sync.lookup("guiProgress"));
 		assertNull(sync.lookup("unknown_field"));
@@ -163,7 +170,6 @@ class SyncCodecRoundTripTest
 		assertEquals(99, progress.get());
 		assertFalse(sync.trySetValue("missing", 1));
 
-		// encode then decode with missing key → IOException
 		GrowingBuffer buffer = new GrowingBuffer(32);
 		sync.encodeAll(buffer);
 		buffer.flip();

@@ -7,9 +7,6 @@ import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.platform.services.PlatformServices;
-
-import java.util.Arrays;
-
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -28,6 +25,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSoundOverride
 {
@@ -85,8 +84,8 @@ public class ItemDrill extends ItemElectricTool implements IMiningDrill, IHitSou
 		{
 			if (player.isEyeInFluid(FluidTags.WATER)
 				&& EnchantmentHelper.getEnchantmentLevel(
-					player.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.AQUA_AFFINITY),
-					player) <= 0)
+				player.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.AQUA_AFFINITY),
+				player) <= 0)
 			{
 				speed *= 3.0F;
 			}

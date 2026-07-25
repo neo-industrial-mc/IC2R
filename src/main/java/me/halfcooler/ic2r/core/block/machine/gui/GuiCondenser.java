@@ -2,11 +2,7 @@ package me.halfcooler.ic2r.core.block.machine.gui;
 
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerCondenser;
-import me.halfcooler.ic2r.core.gui.EnergyGauge;
-import me.halfcooler.ic2r.core.gui.Gauge;
-import me.halfcooler.ic2r.core.gui.LinkedGauge;
-import me.halfcooler.ic2r.core.gui.SlotGrid;
-import me.halfcooler.ic2r.core.gui.TankGauge;
+import me.halfcooler.ic2r.core.gui.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;

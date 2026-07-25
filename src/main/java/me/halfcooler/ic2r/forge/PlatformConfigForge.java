@@ -1,10 +1,9 @@
 package me.halfcooler.ic2r.forge;
 
 import me.halfcooler.ic2r.platform.services.PlatformConfig;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
-
-import net.neoforged.fml.loading.FMLPaths;
 
 /**
  * Forge implementation of {@link PlatformConfig}.

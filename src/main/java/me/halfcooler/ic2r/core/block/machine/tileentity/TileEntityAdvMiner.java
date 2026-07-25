@@ -26,15 +26,10 @@ import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,8 +41,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 @NotClassic
 public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHasGui, INetworkClientTileEntityEventListener, IUpgradableBlock
@@ -89,7 +88,8 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("mineTargetX"))
 		{
@@ -98,7 +98,6 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 
 		this.blacklist = nbt.getBoolean("blacklist");
 		this.silkTouch = nbt.getBoolean("silkTouch");
-		// Pre-upgrade-slot mining filter card lived in InvSlots.card (152,8). Migrate into upgrade slots.
 		this.migrateLegacyCardSlot(nbt, registries);
 	}
 
@@ -116,7 +115,6 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 		{
 			return;
 		}
-		// Detached InvSlot: parse only, do not register on this TE.
 		InvSlot legacy = new InvSlot(1);
 		legacy.readFromNbt(invSlotsTag.getCompound("card"), registries);
 		ItemStack card = legacy.get();
@@ -132,7 +130,6 @@ public class TileEntityAdvMiner extends TileEntityElectricMachine implements IHa
 				return;
 			}
 		}
-		// No free upgrade slot: stack would otherwise be lost with the removed card slot.
 		IC2R.log.warn(
 			LogCategory.General,
 			"Advanced miner at %s: legacy mining filter card could not migrate (upgrade slots full)",

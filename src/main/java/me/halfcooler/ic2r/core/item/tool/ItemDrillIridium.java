@@ -76,8 +76,6 @@ public class ItemDrillIridium extends ItemDrill
 
 	private static HolderLookup.RegistryLookup<Enchantment> enchantments(ItemStack stack)
 	{
-		// Prefer stack's level if present via components is not available; use client/server player world when using.
-		// For creative-tab stack construction without a level, fall back to empty enchantments.
 		return null;
 	}
 
@@ -90,7 +88,7 @@ public class ItemDrillIridium extends ItemDrill
 
 	@Override
 	protected ItemStack getItemStack(double charge)
-	{ 
+	{
 		return super.getItemStack(charge);
 	}
 

@@ -1,15 +1,14 @@
 package me.halfcooler.ic2r.core.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
-
-import java.util.List;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
+
+import java.util.List;
 
 public abstract class AbstractFluidSlot extends GuiElement<TankFluidSlot>
 {

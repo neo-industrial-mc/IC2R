@@ -3,14 +3,13 @@ package me.halfcooler.ic2r.core.item.crafting;
 import me.halfcooler.ic2r.api.item.IBlockCuttingBlade;
 import me.halfcooler.ic2r.core.item.type.BlockCuttingBladeType;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
-
-import java.util.List;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class BlockCuttingBlade extends Item implements IBlockCuttingBlade
 {

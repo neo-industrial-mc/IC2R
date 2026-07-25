@@ -3,13 +3,7 @@ package me.halfcooler.ic2r.core.network.sync;
 import me.halfcooler.ic2r.api.network.IGrowingBuffer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -24,7 +18,9 @@ import java.util.function.Supplier;
 public final class BlockEntitySync
 {
 	private final Map<String, SyncedField<?>> byWireName = new LinkedHashMap<>();
-	/** Legacy TeUpdate / {@code getNetworkedFields()} names → same field as modern wire. */
+	/**
+	 * Legacy TeUpdate / {@code getNetworkedFields()} names → same field as modern wire.
+	 */
 	private final Map<String, SyncedField<?>> byLegacyName = new HashMap<>();
 	private final List<SyncedField<?>> fields = new ArrayList<>();
 
@@ -90,7 +86,9 @@ public final class BlockEntitySync
 		return Collections.unmodifiableList(this.fields);
 	}
 
-	/** Lookup by modern snake_case wire name only. */
+	/**
+	 * Lookup by modern snake_case wire name only.
+	 */
 	public SyncedField<?> get(String wireName)
 	{
 		return this.byWireName.get(wireName);

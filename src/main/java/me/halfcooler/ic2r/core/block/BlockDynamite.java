@@ -10,11 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -32,17 +28,19 @@ import org.jetbrains.annotations.Nullable;
 
 public class BlockDynamite extends Block
 {
-    public static final com.mojang.serialization.MapCodec<BlockDynamite> CODEC = simpleCodec(BlockDynamite::new);
+	public static final com.mojang.serialization.MapCodec<BlockDynamite> CODEC = simpleCodec(BlockDynamite::new);
 
-    @Override
-    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec() {
-        return CODEC;
-    }
+	@Override
+	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
+	{
+		return CODEC;
+	}
 
 
-    public BlockDynamite(net.minecraft.world.level.block.state.BlockBehaviour.Properties properties) {
-        super(properties);
-    }
+	public BlockDynamite(net.minecraft.world.level.block.state.BlockBehaviour.Properties properties)
+	{
+		super(properties);
+	}
 
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	public static final BooleanProperty LINKED = BooleanProperty.create("linked");
@@ -169,7 +167,6 @@ public class BlockDynamite extends Block
 	@Override
 	public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion)
 	{
-		// Chain reaction: arm with a short fuse instead of vanishing.
 		if (!level.isClientSide && !level.getBlockState(pos).isAir())
 		{
 			LivingEntity igniter = explosion.getIndirectSourceEntity();
@@ -179,7 +176,6 @@ public class BlockDynamite extends Block
 
 	public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, net.minecraft.world.level.material.FluidState fluid)
 	{
-		// Classic IC2R: breaking a placed stick always arms it (creative included).
 		this.explode(level, pos, player, false);
 		return true;
 	}
@@ -194,10 +190,8 @@ public class BlockDynamite extends Block
 		if (level.hasNeighborSignal(pos))
 		{
 			this.explode(level, pos, null, false);
-		}
-		else if (!this.canSurvive(state, level, pos) && level.getBlockState(pos).is(this))
+		} else if (!this.canSurvive(state, level, pos) && level.getBlockState(pos).is(this))
 		{
-			// Path when shape updates did not already clear the stick (classic: drop the item).
 			level.removeBlock(pos, false);
 			Block.popResource(level, pos, new ItemStack(Ic2rItems.DYNAMITE));
 		}
@@ -236,7 +230,6 @@ public class BlockDynamite extends Block
 	@Override
 	public boolean canDropFromExplosion(BlockState state, BlockGetter level, BlockPos pos, Explosion explosion)
 	{
-		// Primed by explosion chain reaction; never drop the stick as an item.
 		return false;
 	}
 

@@ -1,22 +1,21 @@
 package me.halfcooler.ic2r.core.block.machine.container;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntCollection;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityBatchCrafter;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.slot.SlotHologramSlot;
 import me.halfcooler.ic2r.core.slot.SlotInvSlot;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Tuple;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntCollection;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ContainerBatchCrafter extends ContainerElectricMachine<TileEntityBatchCrafter>
 {

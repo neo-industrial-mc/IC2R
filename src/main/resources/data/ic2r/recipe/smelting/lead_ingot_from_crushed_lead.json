@@ -5,7 +5,9 @@
   "ingredient": {
     "item": "ic2r:crushed_lead"
   },
-  "result": { "id": "ic2r:lead_ingot" },
+  "result": {
+    "id": "ic2r:lead_ingot"
+  },
   "experience": 0.0,
   "cookingtime": 200
 }

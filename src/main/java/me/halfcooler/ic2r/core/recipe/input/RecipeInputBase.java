@@ -3,12 +3,11 @@ package me.halfcooler.ic2r.core.recipe.input;
 import com.google.gson.JsonElement;
 import me.halfcooler.ic2r.api.recipe.IRecipeInput;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import net.minecraft.world.item.ItemStack;
 
 public abstract class RecipeInputBase implements IRecipeInput
 {

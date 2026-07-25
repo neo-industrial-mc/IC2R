@@ -3,7 +3,9 @@
   "ingredient": {
     "item": "ic2r:raw_tin"
   },
-  "result": { "id": "ic2r:tin_ingot" },
+  "result": {
+    "id": "ic2r:tin_ingot"
+  },
   "experience": 0.5,
   "cookingtime": 200
 }

@@ -6,14 +6,6 @@ import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
@@ -23,6 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.*;
+
 public class InvSlot implements Iterable<ItemStack>
 {
 	public final IInventorySlotHolder<?> base;
@@ -31,7 +25,9 @@ public class InvSlot implements Iterable<ItemStack>
 	protected final InvSlot.Access access;
 	private final ItemStack[] contents;
 	private int stackSizeLimit;
-	/** Lazy Forge IItemHandler adapter (W2.1); storage stays in {@link #contents}. */
+	/**
+	 * Lazy Forge IItemHandler adapter (W2.1); storage stays in {@link #contents}.
+	 */
 	private Object itemHandler;
 	private static java.util.function.Function<InvSlot, Object> handlerFactory;
 
@@ -93,7 +89,6 @@ public class InvSlot implements Iterable<ItemStack>
 					);
 			} else
 			{
-				// Normalize 1.20.1 Count/tag/Damage → 1.21 count/components (DFU never walks InvSlots).
 				ItemStack stack = LegacyItemStackNbt.parseOptional(registries, contentTag);
 				if (StackUtil.isEmpty(stack))
 				{

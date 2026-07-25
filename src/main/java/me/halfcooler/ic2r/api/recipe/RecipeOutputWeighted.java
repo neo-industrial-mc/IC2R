@@ -1,13 +1,12 @@
 package me.halfcooler.ic2r.api.recipe;
 
 import me.halfcooler.ic2r.core.IC2R;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
 
 public class RecipeOutputWeighted
 {

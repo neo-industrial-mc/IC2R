@@ -1,17 +1,12 @@
 package me.halfcooler.ic2r.core.gui.dynamic;
 
+import net.minecraft.network.chat.Component;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.Supplier;
-
-import net.minecraft.network.chat.Component;
 
 public class TextProvider
 {

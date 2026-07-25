@@ -1,16 +1,8 @@
 package me.halfcooler.ic2r.forge.model;
 
-import me.halfcooler.ic2r.core.util.StackUtil;
-
 import com.mojang.blaze3d.platform.NativeImage;
 import me.halfcooler.ic2r.core.item.tool.ItemObscurator;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-import java.util.function.Function;
-
+import me.halfcooler.ic2r.core.util.StackUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
@@ -33,6 +25,12 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.function.Function;
 
 public final class MaskOverlayItemModel implements Ic2rModel, BakedModel
 {
@@ -417,7 +415,8 @@ public final class MaskOverlayItemModel implements Ic2rModel, BakedModel
 	{
 	}
 
-	private record OverlaidModel(BakedModel baseModel, List<BakedQuad> baseQuads, List<BakedQuad> overlayQuads) implements BakedModel
+	private record OverlaidModel(BakedModel baseModel, List<BakedQuad> baseQuads,
+	                             List<BakedQuad> overlayQuads) implements BakedModel
 	{
 		@Override
 		public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource random, @NotNull ModelData extraData, @Nullable RenderType renderType)

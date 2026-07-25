@@ -84,7 +84,8 @@ public abstract class TileEntityHeatSourceInventory extends TileEntityInventory 
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.HeatBuffer = nbt.getInt("HeatBuffer");
 	}

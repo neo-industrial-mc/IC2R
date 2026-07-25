@@ -142,7 +142,6 @@ public class JetpackLogic
 				hoverMode = !hoverMode;
 				if (!world.isClientSide())
 				{
-					// 1.21: persist toggle state via editTag (getOrCreateNbtData returns a copy)
 					boolean enabled = hoverMode;
 					StackUtil.editTag(stack, nbt -> nbt.putBoolean("hover_mode", enabled));
 					if (hoverMode)
@@ -203,10 +202,8 @@ public class JetpackLogic
 				{
 					jetpackSound.play();
 				}
-			}
-			else if (jetpackSound != null && !jetpackSound.isPlaying())
+			} else if (jetpackSound != null && !jetpackSound.isPlaying())
 			{
-				// Resume only if the engine dropped the instance; avoid re-play every tick.
 				jetpackSound.play();
 			}
 		} else
@@ -225,8 +222,6 @@ public class JetpackLogic
 			return;
 		}
 
-		// Jetpack sound is a single client-global instance for the local player only.
-		// Remote player ticks must not stop or clear it (multiplayer orphan / stuck-loop bug).
 		Player local = IC2R.sideProxy.getPlayerInstance();
 		if (player != null && local != null && player != local)
 		{
@@ -239,8 +234,7 @@ public class JetpackLogic
 			if (owner != null)
 			{
 				IC2R.soundManager.removeSound(owner, jetpackSound);
-			}
-			else
+			} else
 			{
 				jetpackSound.stop();
 			}

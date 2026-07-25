@@ -1,15 +1,14 @@
 package me.halfcooler.ic2r.core.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.proxy.SideProxyClient;
-
-import java.util.function.Supplier;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.function.Supplier;
 
 public abstract class Button<T extends Button<T>> extends GuiElement<T>
 {

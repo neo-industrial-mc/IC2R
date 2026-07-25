@@ -3,16 +3,15 @@ package me.halfcooler.ic2r.core.item;
 import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.api.item.IElectricItem;
 import me.halfcooler.ic2r.api.item.IItemHudInfo;
-
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class BaseElectricItem extends Item implements IElectricItem, IItemHudInfo
 {

@@ -3,10 +3,9 @@ package me.halfcooler.ic2r.core.block.machine.container;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityCropHarvester;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.slot.SlotInvSlot;
+import net.minecraft.world.entity.player.Inventory;
 
 import java.util.List;
-
-import net.minecraft.world.entity.player.Inventory;
 
 public class ContainerCropHarvester extends ContainerElectricMachine<TileEntityCropHarvester>
 {

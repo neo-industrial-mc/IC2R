@@ -2,12 +2,11 @@ package me.halfcooler.ic2r.core.recipe.input;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.Arrays;
 import java.util.List;
-
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 public class RecipeInputIngredient extends RecipeInputBase
 {

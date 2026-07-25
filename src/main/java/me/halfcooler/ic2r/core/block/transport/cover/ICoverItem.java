@@ -1,10 +1,9 @@
 package me.halfcooler.ic2r.core.block.transport.cover;
 
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Set;
-
-import net.minecraft.world.item.ItemStack;
 
 public interface ICoverItem
 {

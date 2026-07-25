@@ -51,7 +51,6 @@ public class ItemRemote extends Item
 		BlockState state = level.getBlockState(pos);
 		if (!state.is(Ic2rBlocks.DYNAMITE.get()))
 		{
-			// Consume the click so use() does not fire and detonate by accident.
 			return InteractionResult.SUCCESS;
 		}
 
@@ -66,16 +65,14 @@ public class ItemRemote extends Item
 		{
 			addRemote(pos, stack);
 			level.setBlock(pos, state.setValue(BlockDynamite.LINKED, true), 3);
-		}
-		else
+		} else
 		{
 			int index = hasRemote(pos, stack);
 			if (index > -1)
 			{
 				level.setBlock(pos, state.setValue(BlockDynamite.LINKED, false), 3);
 				removeRemote(index, stack);
-			}
-			else
+			} else
 			{
 				IC2R.sideProxy.messagePlayer(player, "ic2r.remote.cannot_unlink");
 			}
@@ -145,8 +142,7 @@ public class ItemRemote extends Item
 				}
 
 				coords.remove(i);
-			}
-			else
+			} else
 			{
 				i++;
 			}
@@ -155,8 +151,7 @@ public class ItemRemote extends Item
 		if (coords.isEmpty())
 		{
 			compound.remove(COORDS_KEY);
-		}
-		else
+		} else
 		{
 			compound.put(COORDS_KEY, coords);
 		}
@@ -204,8 +199,7 @@ public class ItemRemote extends Item
 		if (newCoords.isEmpty())
 		{
 			compound.remove(COORDS_KEY);
-		}
-		else
+		} else
 		{
 			compound.put(COORDS_KEY, newCoords);
 		}

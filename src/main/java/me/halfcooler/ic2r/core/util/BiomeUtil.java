@@ -2,10 +2,6 @@ package me.halfcooler.ic2r.core.util;
 
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.proxy.EnvProxy;
-
-import java.lang.reflect.Field;
-import java.util.Objects;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -16,13 +12,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkSource;
+import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.chunk.PalettedContainer;
-import net.minecraft.world.level.chunk.PalettedContainerRO;
+
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 public final class BiomeUtil
 {

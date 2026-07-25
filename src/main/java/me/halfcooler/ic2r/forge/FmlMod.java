@@ -10,16 +10,14 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 import me.halfcooler.ic2r.forge.ref.Ic2rSoundEventsForge;
 import me.halfcooler.ic2r.integration.ae2.Ic2rAe2Plugin;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -27,161 +25,198 @@ import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.neoforge.registries.RegisterEvent;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import net.neoforged.fml.ModContainer;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.RegisterEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Mod("ic2r")
-public final class FmlMod {
+public final class FmlMod
+{
 
-    private static final AtomicInteger loadState = new AtomicInteger();
+	private static final AtomicInteger loadState = new AtomicInteger();
 
-    public static FmlMod instance;
+	public static FmlMod instance;
 
 	private List<Runnable> toRunAfterRegistryInit = new ArrayList<>();
 
-    public FmlMod(IEventBus modEventBus, ModContainer modContainer) {
-        instance = this;
-        ForgePlatformServices.install();
-        Ic2rBlocks.init();
-        EnvProxyForge.queueCoreStatusEffects();
-        Ic2rArmorMaterials.REGISTRY.register(modEventBus);
-        EnvProxyForge.BLOCKS.register(modEventBus);
-        modEventBus.register(this);
-        EnvProxyForge.blockEntityRegistry.register(modEventBus);
-        EnvProxyForge.creativeTabRegistry.register(modEventBus);
-        EnvProxyForge.entityRegistry.register(modEventBus);
-        EnvProxyForge.screenHandlerRegistry.register(modEventBus);
-        EnvProxyForge.statusEffectRegistry.register(modEventBus);
-        EnvProxyForge.foliagePlacerRegistry.register(modEventBus);
-        EnvProxyForge.recipeTypeRegistry.register(modEventBus);
-        EnvProxyForge.recipeSerializerRegistry.register(modEventBus);
-        EnvFluidHandlerForge.fluidRegistry.register(modEventBus);
-        EnvFluidHandlerForge.fluidTypeRegistry.register(modEventBus);
-        Ic2rLootModifier.lootModifiersRegistry.register(modEventBus);
-        Ic2rSoundEventsForge.register(modEventBus);
-        if (FMLEnvironment.dist.isClient()) {
-            modEventBus.register(new ClientModEventHandlerForge());
-            modContainer.registerConfig(ModConfig.Type.CLIENT, IC2RClientConfig.SPEC, "ic2r/ic2r-client.toml");
-            modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-        }
-        Ic2rFluids.init();
-        modContainer.registerConfig(ModConfig.Type.COMMON, IC2RConfig.SPEC, "ic2r/ic2r-common.toml");
-        modEventBus.addListener(Ic2rCapabilities::register);
-        modEventBus.addListener(this::registerPayloads);
-    }
+	public FmlMod(IEventBus modEventBus, ModContainer modContainer)
+	{
+		instance = this;
+		ForgePlatformServices.install();
+		Ic2rBlocks.init();
+		EnvProxyForge.queueCoreStatusEffects();
+		Ic2rArmorMaterials.REGISTRY.register(modEventBus);
+		EnvProxyForge.BLOCKS.register(modEventBus);
+		modEventBus.register(this);
+		EnvProxyForge.blockEntityRegistry.register(modEventBus);
+		EnvProxyForge.creativeTabRegistry.register(modEventBus);
+		EnvProxyForge.entityRegistry.register(modEventBus);
+		EnvProxyForge.screenHandlerRegistry.register(modEventBus);
+		EnvProxyForge.statusEffectRegistry.register(modEventBus);
+		EnvProxyForge.foliagePlacerRegistry.register(modEventBus);
+		EnvProxyForge.recipeTypeRegistry.register(modEventBus);
+		EnvProxyForge.recipeSerializerRegistry.register(modEventBus);
+		EnvFluidHandlerForge.fluidRegistry.register(modEventBus);
+		EnvFluidHandlerForge.fluidTypeRegistry.register(modEventBus);
+		Ic2rLootModifier.lootModifiersRegistry.register(modEventBus);
+		Ic2rSoundEventsForge.register(modEventBus);
+		if (FMLEnvironment.dist.isClient())
+		{
+			modEventBus.register(new ClientModEventHandlerForge());
+			modContainer.registerConfig(ModConfig.Type.CLIENT, IC2RClientConfig.SPEC, "ic2r/ic2r-client.toml");
+			modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+		}
+		Ic2rFluids.init();
+		modContainer.registerConfig(ModConfig.Type.COMMON, IC2RConfig.SPEC, "ic2r/ic2r-common.toml");
+		modEventBus.addListener(Ic2rCapabilities::register);
+		modEventBus.addListener(this::registerPayloads);
+	}
 
-    private void registerPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar("1").optional();
-        registrar.playBidirectional(Ic2rRawPayload.TYPE, Ic2rRawPayload.STREAM_CODEC, ForgeNetworkHandler::handle);
-    }
+	private void registerPayloads(RegisterPayloadHandlersEvent event)
+	{
+		PayloadRegistrar registrar = event.registrar("1").optional();
+		registrar.playBidirectional(Ic2rRawPayload.TYPE, Ic2rRawPayload.STREAM_CODEC, ForgeNetworkHandler::handle);
+	}
 
-    @SubscribeEvent
-    public void load(FMLCommonSetupEvent event) {
-        NeoForge.EVENT_BUS.register(new EventHandlerForge());
-        NeoForge.EVENT_BUS.register(new Ic2rAe2Plugin.ForgeEventHandler());
-        if (FMLEnvironment.dist.isClient()) {
-            NeoForge.EVENT_BUS.register(new ClientEventHandlerForge());
-        }
-        if (!loadState.compareAndSet(1, 2)) {
-            throw new IllegalStateException();
-        }
-        EventHandler.onInit();
-    }
+	@SubscribeEvent
+	public void load(FMLCommonSetupEvent event)
+	{
+		NeoForge.EVENT_BUS.register(new EventHandlerForge());
+		NeoForge.EVENT_BUS.register(new Ic2rAe2Plugin.ForgeEventHandler());
+		if (FMLEnvironment.dist.isClient())
+		{
+			NeoForge.EVENT_BUS.register(new ClientEventHandlerForge());
+		}
+		if (!loadState.compareAndSet(1, 2))
+		{
+			throw new IllegalStateException();
+		}
+		EventHandler.onInit();
+	}
 
-    @SubscribeEvent
-    public void init(FMLLoadCompleteEvent event) {
-        if (!loadState.compareAndSet(2, 3)) {
-            throw new IllegalStateException();
-        }
-        Ic2rSoundEventsForge.wireCoreFields();
-        EventHandler.onInitLate();
-    }
+	@SubscribeEvent
+	public void init(FMLLoadCompleteEvent event)
+	{
+		if (!loadState.compareAndSet(2, 3))
+		{
+			throw new IllegalStateException();
+		}
+		Ic2rSoundEventsForge.wireCoreFields();
+		EventHandler.onInitLate();
+	}
 
-    @SubscribeEvent
-    public void registerFluidTypes(RegisterEvent event) {
-        if (event.getRegistryKey() == NeoForgeRegistries.Keys.FLUID_TYPES) {
-            EnvFluidHandlerForge.registerPendingFluidTypes();
-        }
-    }
+	@SubscribeEvent
+	public void registerFluidTypes(RegisterEvent event)
+	{
+		if (event.getRegistryKey() == NeoForgeRegistries.Keys.FLUID_TYPES)
+		{
+			EnvFluidHandlerForge.registerPendingFluidTypes();
+		}
+	}
 
-    @SubscribeEvent
-    public void registerLootNbtProviders(RegisterEvent event) {
-        if (event.getRegistryKey() == Registries.LOOT_NBT_PROVIDER_TYPE) {
-            Ic2rLootNbtProviderTypes.init();
-        }
-    }
+	@SubscribeEvent
+	public void registerLootNbtProviders(RegisterEvent event)
+	{
+		if (event.getRegistryKey() == Registries.LOOT_NBT_PROVIDER_TYPE)
+		{
+			Ic2rLootNbtProviderTypes.init();
+		}
+	}
 
-    @SubscribeEvent
-    public void registerFluids(RegisterEvent event) {
-        if (event.getRegistryKey() == Registries.FLUID) {
-            EnvFluidHandlerForge.registerPendingFluids();
-        }
-    }
+	@SubscribeEvent
+	public void registerFluids(RegisterEvent event)
+	{
+		if (event.getRegistryKey() == Registries.FLUID)
+		{
+			EnvFluidHandlerForge.registerPendingFluids();
+		}
+	}
 
-    @SubscribeEvent
-    public void registerItems(RegisterEvent event) {
-        if (event.getRegistryKey() == Registries.ITEM) {
-            EnvProxyForge.registerPendingItems();
-        }
-    }
+	@SubscribeEvent
+	public void registerItems(RegisterEvent event)
+	{
+		if (event.getRegistryKey() == Registries.ITEM)
+		{
+			EnvProxyForge.registerPendingItems();
+		}
+	}
 
-    @SubscribeEvent
-    public void registerBlocks(RegisterEvent event) {
-        if (event.getRegistryKey() == Registries.BLOCK) {
-            if (!loadState.compareAndSet(0, 1)) {
-                throw new IllegalStateException();
-            }
-            EventHandler.onInitEarly();
-        }
-    }
+	@SubscribeEvent
+	public void registerBlocks(RegisterEvent event)
+	{
+		if (event.getRegistryKey() == Registries.BLOCK)
+		{
+			if (!loadState.compareAndSet(0, 1))
+			{
+				throw new IllegalStateException();
+			}
+			EventHandler.onInitEarly();
+		}
+	}
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void registerLegacyRegistryAliases(RegisterEvent event) {
-        RemapService.apply(event.getRegistry());
-    }
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void registerLegacyRegistryAliases(RegisterEvent event)
+	{
+		RemapService.apply(event.getRegistry());
+	}
 
-    @SubscribeEvent
-    public void registerGameEvents(RegisterEvent event) {
-        if (event.getRegistryKey() == Registries.SOUND_EVENT) {
-            EventHandler.onInitGameEvents();
-        }
-    }
+	@SubscribeEvent
+	public void registerGameEvents(RegisterEvent event)
+	{
+		if (event.getRegistryKey() == Registries.SOUND_EVENT)
+		{
+			EventHandler.onInitGameEvents();
+		}
+	}
 
-    @SubscribeEvent
-    public void registerLate(RegisterEvent event) {
-        if (event.getRegistryKey() == NeoForgeRegistries.Keys.FLUID_TYPES) {
-            if (this.toRunAfterRegistryInit != null) {
-                for (Runnable runnable : this.toRunAfterRegistryInit) {
-                    runnable.run();
-                }
-                this.toRunAfterRegistryInit = null;
-            }
-        }
-    }
+	@SubscribeEvent
+	public void registerLate(RegisterEvent event)
+	{
+		if (event.getRegistryKey() == NeoForgeRegistries.Keys.FLUID_TYPES)
+		{
+			if (this.toRunAfterRegistryInit != null)
+			{
+				for (Runnable runnable : this.toRunAfterRegistryInit)
+				{
+					runnable.run();
+				}
+				this.toRunAfterRegistryInit = null;
+			}
+		}
+	}
 
-    void runAfterRegistryInit(Runnable runnable) {
-        if (loadState.get() > 1) {
-            runnable.run();
-        } else {
-            this.toRunAfterRegistryInit.add(runnable);
-        }
-    }
+	void runAfterRegistryInit(Runnable runnable)
+	{
+		if (loadState.get() > 1)
+		{
+			runnable.run();
+		} else
+		{
+			this.toRunAfterRegistryInit.add(runnable);
+		}
+	}
 
-    @SubscribeEvent
-    public void registerFeatures(RegisterEvent event) {
-        if (event.getRegistryKey() == Registries.CONFIGURED_FEATURE) {
-            for (EnvProxyForge.ConfiguredFeatureRegistration<?, ?> reg : EnvProxyForge.configuredFeatureRegistrations) {
-                ConfiguredFeature<?, ?> cf = createConfiguredFeature(reg);
-                event.register(Registries.CONFIGURED_FEATURE, reg.id(), () -> cf);
-            }
-        }
-    }
+	@SubscribeEvent
+	public void registerFeatures(RegisterEvent event)
+	{
+		if (event.getRegistryKey() == Registries.CONFIGURED_FEATURE)
+		{
+			for (EnvProxyForge.ConfiguredFeatureRegistration<?, ?> reg : EnvProxyForge.configuredFeatureRegistrations)
+			{
+				ConfiguredFeature<?, ?> cf = createConfiguredFeature(reg);
+				event.register(Registries.CONFIGURED_FEATURE, reg.id(), () -> cf);
+			}
+		}
+	}
 
-    private static <FC extends FeatureConfiguration, F extends Feature<FC>> ConfiguredFeature<FC, ?> createConfiguredFeature(EnvProxyForge.ConfiguredFeatureRegistration<FC, F> reg) {
-        return new ConfiguredFeature<>(reg.feature(), reg.config());
-    }
+	private static <FC extends FeatureConfiguration, F extends Feature<FC>> ConfiguredFeature<FC, ?> createConfiguredFeature(EnvProxyForge.ConfiguredFeatureRegistration<FC, F> reg)
+	{
+		return new ConfiguredFeature<>(reg.feature(), reg.config());
+	}
 }

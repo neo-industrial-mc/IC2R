@@ -2,7 +2,6 @@ package me.halfcooler.ic2r.core.item.tool;
 
 import me.halfcooler.ic2r.api.item.ElectricItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 
 public class ItemScannerAdv extends ItemScanner
 {

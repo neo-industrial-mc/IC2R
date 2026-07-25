@@ -1,11 +1,11 @@
 package me.halfcooler.ic2r.api.recipe;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 @Deprecated
 public final class RecipeOutput

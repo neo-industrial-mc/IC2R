@@ -3,12 +3,11 @@ package me.halfcooler.ic2r.core.energy.grid;
 import me.halfcooler.ic2r.api.energy.EnergyNet;
 import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
 import me.halfcooler.ic2r.core.util.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 
 public class NodeLink
 {

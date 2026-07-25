@@ -1,25 +1,15 @@
 package me.halfcooler.ic2r.core.ref.items;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
 import me.halfcooler.ic2r.core.item.ItemBlockIc2r;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorCondensator;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorDepletedUranium;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorHeatStorage;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorHeatSwitch;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorHeatpack;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorIridiumReflector;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorLithiumCell;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorMOX;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorPlating;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorReflector;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorUranium;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorVent;
-import me.halfcooler.ic2r.core.item.reactor.ItemReactorVentSpread;
+import me.halfcooler.ic2r.core.item.reactor.*;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
 
-/** Domain item registrations: Nuclear reactor components */
+/**
+ * Domain item registrations: Nuclear reactor components
+ */
 public final class Ic2rItemsReactor
 {
 	private Ic2rItemsReactor()

@@ -2,10 +2,9 @@ package me.halfcooler.ic2r.integration.jei.recipe.machine;
 
 import me.halfcooler.ic2r.api.recipe.ICannerBottleRecipeManager;
 import me.halfcooler.ic2r.api.recipe.MachineRecipe;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
-
-import net.minecraft.world.item.ItemStack;
 
 public class CannerBottleRecipeWrapper implements IJeiRecipeWrapper
 {

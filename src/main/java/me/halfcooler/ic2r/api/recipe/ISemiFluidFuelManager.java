@@ -1,8 +1,8 @@
 package me.halfcooler.ic2r.api.recipe;
 
-import java.util.Map;
-
 import net.minecraft.world.level.material.Fluid;
+
+import java.util.Map;
 
 public interface ISemiFluidFuelManager extends ILiquidAcceptManager
 {
@@ -13,6 +13,6 @@ public interface ISemiFluidFuelManager extends ILiquidAcceptManager
 	Map<Fluid, ISemiFluidFuelManager.BurnProperty> getBurnProperties();
 
 	record BurnProperty(int amount, double power)
-		{
-		}
+	{
+	}
 }

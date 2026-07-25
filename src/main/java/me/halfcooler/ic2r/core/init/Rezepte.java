@@ -1,10 +1,6 @@
 package me.halfcooler.ic2r.core.init;
 
-import me.halfcooler.ic2r.api.recipe.IBasicMachineRecipeManager;
-import me.halfcooler.ic2r.api.recipe.ICannerBottleRecipeManager;
-import me.halfcooler.ic2r.api.recipe.ICannerEnrichRecipeManager;
-import me.halfcooler.ic2r.api.recipe.IRecipeInput;
-import me.halfcooler.ic2r.api.recipe.Recipes;
+import me.halfcooler.ic2r.api.recipe.*;
 import me.halfcooler.ic2r.core.block.machine.CannerBottleRecipeManager;
 import me.halfcooler.ic2r.core.block.machine.CannerEnrichRecipeManager;
 import me.halfcooler.ic2r.core.block.machine.EmptyFluidContainerRecipeManager;
@@ -17,11 +13,10 @@ import me.halfcooler.ic2r.core.recipe.v2.RecipeHolder;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeManagerGetter;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeManagerMachineBridge;
 import me.halfcooler.ic2r.core.ref.Ic2rRecipeTypes;
-
-import java.util.Collection;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+
+import java.util.Collection;
 
 public class Rezepte
 {
@@ -46,7 +41,6 @@ public class Rezepte
 		{
 			MatterAmplifierRecipeManager manager = new MatterAmplifierRecipeManager();
 
-			// 1.21 RecipeManager wraps recipes in vanilla RecipeHolder; unwrap .value()
 			for (var vanillaHolder : recipeManager.getAllRecipesFor(Ic2rRecipeTypes.MATTER_FABRICATOR))
 			{
 				RecipeHolder<IRecipeInput, Integer> holder = vanillaHolder.value();

@@ -4,10 +4,9 @@ import me.halfcooler.ic2r.api.recipe.IMachineRecipeManager;
 import me.halfcooler.ic2r.api.recipe.IRecipeInput;
 import me.halfcooler.ic2r.api.recipe.Recipes;
 import me.halfcooler.ic2r.core.block.IInventorySlotHolder;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Collection;
-
-import net.minecraft.world.item.ItemStack;
 
 public class InvSlotProcessableGeneric extends InvSlotProcessable<IRecipeInput, Collection<ItemStack>, ItemStack>
 {

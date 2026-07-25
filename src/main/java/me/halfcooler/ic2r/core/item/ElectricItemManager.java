@@ -7,15 +7,14 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.slot.ArmorSlot;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 public class ElectricItemManager implements IElectricItemManager
 {
@@ -69,12 +68,10 @@ public class ElectricItemManager implements IElectricItemManager
 				if (newCharge > 0.0)
 				{
 					tNBT.putDouble("charge", newCharge);
-				}
-				else
+				} else
 				{
 					tNBT.remove("charge");
 				}
-				// 1.21: getOrCreateNbtData returns a copy — must write back
 				StackUtil.setTag(stack, tNBT);
 
 				if (stack.getItem() instanceof IElectricItem)
@@ -82,16 +79,14 @@ public class ElectricItemManager implements IElectricItemManager
 					item = (IElectricItem) stack.getItem();
 					int maxDamage = DamageHandler.getMaxDamage(stack);
 					DamageHandler.setDamage(stack, mapChargeLevelToDamage(newCharge, item.getMaxCharge(stack), maxDamage), true);
-				}
-				else
+				} else
 				{
 					DamageHandler.setDamage(stack, 0, true);
 				}
 			}
 
 			return amount;
-		}
-		else
+		} else
 		{
 			return 0.0;
 		}
@@ -126,13 +121,10 @@ public class ElectricItemManager implements IElectricItemManager
 			if (newCharge > 0.0)
 			{
 				tNBT.putDouble("charge", newCharge);
-			}
-			else
+			} else
 			{
 				tNBT.remove("charge");
 			}
-			// 1.21: getOrCreateNbtData returns a copy — must write back
-			// setTag(null/empty) removes CUSTOM_DATA; never CustomData.of(null)
 			StackUtil.setTag(stack, tNBT);
 
 			if (stack.getItem() instanceof IElectricItem)
@@ -140,8 +132,7 @@ public class ElectricItemManager implements IElectricItemManager
 				item = (IElectricItem) stack.getItem();
 				int maxDamage = DamageHandler.getMaxDamage(stack);
 				DamageHandler.setDamage(stack, mapChargeLevelToDamage(newCharge, item.getMaxCharge(stack), maxDamage), true);
-			}
-			else
+			} else
 			{
 				DamageHandler.setDamage(stack, 0, true);
 			}

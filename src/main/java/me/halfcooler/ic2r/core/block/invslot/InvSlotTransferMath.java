@@ -72,11 +72,11 @@ public final class InvSlotTransferMath
 	/**
 	 * How many items can be inserted into a slot.
 	 *
-	 * @param existingCount     current count in the slot (0 if empty)
-	 * @param incomingCount     size of the stack being inserted
-	 * @param slotLimit         InvSlot stack-size limit
-	 * @param maxStackSize      item max stack size
-	 * @param stacksCompatible  true if slot empty or items may merge
+	 * @param existingCount    current count in the slot (0 if empty)
+	 * @param incomingCount    size of the stack being inserted
+	 * @param slotLimit        InvSlot stack-size limit
+	 * @param maxStackSize     item max stack size
+	 * @param stacksCompatible true if slot empty or items may merge
 	 * @return amount that would be accepted (0 to incomingCount)
 	 */
 	public static int insertableCount(int existingCount, int incomingCount, int slotLimit, int maxStackSize, boolean stacksCompatible)

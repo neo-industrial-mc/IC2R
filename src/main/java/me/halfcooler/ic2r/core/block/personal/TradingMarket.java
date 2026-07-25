@@ -3,15 +3,14 @@ package me.halfcooler.ic2r.core.block.personal;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
 
 public class TradingMarket
 {

@@ -14,6 +14,7 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquidByList;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotOutput;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotProcessableGeneric;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
 import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
@@ -23,13 +24,6 @@ import me.halfcooler.ic2r.core.network.GuiSynced;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -40,11 +34,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
+
 @NotClassic
 public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgradableBlock, IHasGui, IGuiValueProvider, ServerTicker
 {
 	public static int maxHeat = 50000;
-	/** Oxygen doubles progress per tick (100% acceleration → half wall-clock time). */
+	/**
+	 * Oxygen doubles progress per tick (100% acceleration → half wall-clock time).
+	 */
 	public static final int OXYGEN_PROGRESS_MULTIPLIER = 2;
 
 	public final InvSlotProcessableGeneric inputSlot = new InvSlotProcessableGeneric(this, "input", 1, Recipes.blast_furnace);
@@ -93,10 +93,8 @@ public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgr
 			{
 				this.progress += progressStep;
 				this.fluidTank.drainMbUnchecked(fluidNeeded, false);
-			}
-			else if (fluidPerProgress <= this.fluidTank.getFluidAmount())
+			} else if (fluidPerProgress <= this.fluidTank.getFluidAmount())
 			{
-				// Not enough for a full oxygen step; still advance by 1 if any fluid remains.
 				this.progress++;
 				this.fluidTank.drainMbUnchecked(fluidPerProgress, false);
 			}
@@ -162,7 +160,8 @@ public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgr
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.heat = nbt.getInt("heat");
 		this.progress = nbt.getInt("progress");
@@ -214,20 +213,26 @@ public class TileEntityBlastFurnace extends TileEntityInventory implements IUpgr
 		return this.heat >= maxHeat;
 	}
 
-	/** True when the process gas tank currently holds oxygen (enables 2× progress). */
+	/**
+	 * True when the process gas tank currently holds oxygen (enables 2× progress).
+	 */
 	public boolean isUsingOxygen()
 	{
 		return !this.fluidTank.isEmpty()
 			&& this.fluidTank.getFluidStack().getFluid() == Ic2rFluids.OXYGEN.still();
 	}
 
-	/** Elapsed recipe progress in ticks (for Jade / overlays). */
+	/**
+	 * Elapsed recipe progress in ticks (for Jade / overlays).
+	 */
 	public int getProgress()
 	{
 		return this.progress;
 	}
 
-	/** Total recipe duration in ticks from recipe metadata {@code duration}. */
+	/**
+	 * Total recipe duration in ticks from recipe metadata {@code duration}.
+	 */
 	public int getProgressNeeded()
 	{
 		return Math.max(1, this.progressNeeded);

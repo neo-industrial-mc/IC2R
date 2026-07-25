@@ -1,14 +1,5 @@
 package me.halfcooler.ic2r.core.ref.items;
 
-import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
 import me.halfcooler.ic2r.core.item.ItemCoke;
 import me.halfcooler.ic2r.core.item.ItemCrystalMemory;
 import me.halfcooler.ic2r.core.item.ItemNuclearResource;
@@ -17,8 +8,19 @@ import me.halfcooler.ic2r.core.item.crafting.BlockCuttingBlade;
 import me.halfcooler.ic2r.core.item.type.BlockCuttingBladeType;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.NotNull;
 
-/** Domain item registrations: Resources and crafting materials */
+import java.util.List;
+
+/**
+ * Domain item registrations: Resources and crafting materials
+ */
 public final class Ic2rItemsMaterials
 {
 	private Ic2rItemsMaterials()

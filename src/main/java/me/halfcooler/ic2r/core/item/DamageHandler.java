@@ -55,7 +55,6 @@ public class DamageHandler
 			return true;
 		} else
 		{
-			// 1.21: ItemStack.hurt(int, RandomSource, ServerPlayer) removed; simulate damage without entity.
 			if (!stack.isDamageableItem())
 			{
 				return false;

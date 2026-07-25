@@ -4,20 +4,12 @@ import com.google.common.base.Predicate;
 import me.halfcooler.ic2r.api.network.ClientModifiable;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IC2R;
-import me.halfcooler.ic2r.core.gui.EnumCycleHandler;
-import me.halfcooler.ic2r.core.gui.GuiDefaultBackground;
-import me.halfcooler.ic2r.core.gui.IEnableHandler;
-import me.halfcooler.ic2r.core.gui.MouseButton;
-import me.halfcooler.ic2r.core.gui.SlotGrid;
-import me.halfcooler.ic2r.core.gui.TextBox;
-import me.halfcooler.ic2r.core.gui.TextLabel;
-import me.halfcooler.ic2r.core.gui.VanillaButton;
+import me.halfcooler.ic2r.core.gui.*;
 import me.halfcooler.ic2r.core.gui.dynamic.TextProvider;
 import me.halfcooler.ic2r.core.item.ContainerHandHeldInventory;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.slot.SlotHologramSlot;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -76,7 +68,6 @@ public class HandHeldValueConfig extends HandHeldUpgradeOption
 				private final String name;
 
 				{
-					// Prefer short unit label (e.g. "EU") over the main toggle title ("EU Match")
 					this.name = Component.translatable("ic2r.upgrade.advancedGUI." + container.base.name + ".unit").getString();
 				}
 

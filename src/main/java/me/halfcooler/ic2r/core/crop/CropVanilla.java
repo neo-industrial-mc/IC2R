@@ -2,12 +2,11 @@ package me.halfcooler.ic2r.core.crop;
 
 import me.halfcooler.ic2r.api.crops.ICropTile;
 import me.halfcooler.ic2r.api.crops.ICropType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 public abstract class CropVanilla extends Ic2rCropCard
 {

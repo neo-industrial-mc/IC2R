@@ -1,15 +1,14 @@
 package me.halfcooler.ic2r.core.gui;
 
 import com.mojang.blaze3d.platform.Window;
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.proxy.SideProxyClient;
 import me.halfcooler.ic2r.core.util.Util;
+import net.minecraft.client.gui.GuiGraphics;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.lwjgl.opengl.GL11;
 
 public abstract class AbstractScrollingList<T extends AbstractScrollingList<T, I>, I extends AbstractScrollingList.IListItem> extends GuiElement<T>
 {

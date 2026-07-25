@@ -1,68 +1,24 @@
 package me.halfcooler.ic2r.core.ref.blocks;
 
-import me.halfcooler.ic2r.core.block.steam.TileEntityCokeKiln;
-import me.halfcooler.ic2r.core.block.steam.TileEntityCokeKilnGrate;
-import me.halfcooler.ic2r.core.block.steam.TileEntityCokeKilnHatch;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityAdvMiner;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityBatchCrafter;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityBlastFurnace;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityBlockCutter;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityCanner;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityCentrifuge;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityChunkLoader;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityCompressor;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityCondenser;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityCropHarvester;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityCropmatron;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityElectricFurnace;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityElectrolyzer;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityExtractor;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityFermenter;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityFluidBottler;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityFluidDistributor;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityFluidRegulator;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityInduction;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityIndustrialWorkbench;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityIronFurnace;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityItemBuffer;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityMacerator;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityMagnetizer;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityMatter;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityMetalFormer;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityMiner;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityOreWashing;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityPatternStorage;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityPump;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityRecycler;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityReplicator;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityScanner;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntitySolarDistiller;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntitySolidCanner;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntitySortingMachine;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntitySteamGenerator;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntitySteamRepressurizer;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityTank;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityTeleporter;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityTerra;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityTesla;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityWeightedFluidDistributor;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityWeightedItemDistributor;
+import me.halfcooler.ic2r.core.block.machine.tileentity.*;
 import me.halfcooler.ic2r.core.block.personal.TileEntityEnergyOMat;
 import me.halfcooler.ic2r.core.block.personal.TileEntityPersonalChest;
 import me.halfcooler.ic2r.core.block.personal.TileEntityTradeOMat;
+import me.halfcooler.ic2r.core.block.steam.TileEntityCokeKiln;
+import me.halfcooler.ic2r.core.block.steam.TileEntityCokeKilnGrate;
+import me.halfcooler.ic2r.core.block.steam.TileEntityCokeKilnHatch;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
 import me.halfcooler.ic2r.core.util.Util;
-
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-
-import net.minecraft.world.level.material.MapColor;
 import me.halfcooler.ic2r.forge.EnvProxyForge;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/** Domain block registrations: processing, fluid, logistics, personal, and utility machines */
+/**
+ * Domain block registrations: processing, fluid, logistics, personal, and utility machines
+ */
 public final class Ic2rBlocksMachines
 {
 	private Ic2rBlocksMachines()

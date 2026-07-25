@@ -2,14 +2,12 @@ package me.halfcooler.ic2r.core.util;
 
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.proxy.SideProxyClient;
-
-import java.util.EnumSet;
-import java.util.Set;
-
-
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 public class KeyboardClient extends Keyboard
 {

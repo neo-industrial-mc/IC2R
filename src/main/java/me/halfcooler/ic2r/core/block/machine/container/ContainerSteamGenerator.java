@@ -3,10 +3,9 @@ package me.halfcooler.ic2r.core.block.machine.container;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntitySteamGenerator;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
+import net.minecraft.world.entity.player.Inventory;
 
 import java.util.List;
-
-import net.minecraft.world.entity.player.Inventory;
 
 public class ContainerSteamGenerator extends ContainerBase<TileEntitySteamGenerator>
 {

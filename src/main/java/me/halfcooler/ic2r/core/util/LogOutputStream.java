@@ -1,5 +1,8 @@
 package me.halfcooler.ic2r.core.util;
 
+import org.apache.logging.log4j.Level;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -7,9 +10,6 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
-
-import org.apache.logging.log4j.Level;
-import org.jetbrains.annotations.NotNull;
 
 class LogOutputStream extends OutputStream
 {

@@ -2,18 +2,9 @@ package me.halfcooler.ic2r.core.util;
 
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rPlayer;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -33,7 +24,10 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.core.registries.BuiltInRegistries;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public final class Util
 {
@@ -288,7 +282,6 @@ public final class Util
 			throw new NullPointerException("null name");
 		} else
 		{
-			// TODO
 			return getBlock(ResourceLocation.parse(name));
 		}
 	}
@@ -335,7 +328,6 @@ public final class Util
 			throw new NullPointerException("null name");
 		} else
 		{
-			// Error occurred once, name has a namespace.
 			return getItem(ResourceLocation.parse(name));
 		}
 	}

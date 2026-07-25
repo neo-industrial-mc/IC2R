@@ -71,7 +71,9 @@ public final class PlatformServices
 		return require(lifecycle, PlatformLifecycle.class, () -> PlatformServices.lifecycle = load(PlatformLifecycle.class));
 	}
 
-	/** True if {@link #install} has been called. */
+	/**
+	 * True if {@link #install} has been called.
+	 */
 	public static boolean isInstalled()
 	{
 		return energy != null

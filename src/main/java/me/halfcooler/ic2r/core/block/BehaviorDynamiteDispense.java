@@ -2,9 +2,9 @@ package me.halfcooler.ic2r.core.block;
 
 import me.halfcooler.ic2r.core.entity.DynamiteEntity;
 import me.halfcooler.ic2r.core.entity.StickyDynamiteEntity;
-import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

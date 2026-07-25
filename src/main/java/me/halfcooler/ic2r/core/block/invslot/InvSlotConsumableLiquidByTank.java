@@ -3,10 +3,9 @@ package me.halfcooler.ic2r.core.block.invslot;
 import me.halfcooler.ic2r.core.block.IInventorySlotHolder;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.Collections;
-
-import net.minecraft.world.level.material.Fluid;
 
 public class InvSlotConsumableLiquidByTank extends InvSlotConsumableLiquid
 {

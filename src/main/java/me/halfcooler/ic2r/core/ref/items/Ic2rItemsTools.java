@@ -1,13 +1,5 @@
 package me.halfcooler.ic2r.core.ref.items;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.DiggerItem;
-import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tiers;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.entity.boat.CarbonBoatEntity;
 import me.halfcooler.ic2r.core.entity.boat.ElectricBoatEntity;
@@ -17,37 +9,18 @@ import me.halfcooler.ic2r.core.item.ItemBatteryChargeHotbar;
 import me.halfcooler.ic2r.core.item.ItemBatterySU;
 import me.halfcooler.ic2r.core.item.boat.BoatItem;
 import me.halfcooler.ic2r.core.item.resources.ItemWindRotor;
-import me.halfcooler.ic2r.core.item.tool.Ic2rAxe;
-import me.halfcooler.ic2r.core.item.tool.Ic2rHoe;
-import me.halfcooler.ic2r.core.item.tool.Ic2rPickaxe;
-import me.halfcooler.ic2r.core.item.tool.ItemContainmentbox;
-import me.halfcooler.ic2r.core.item.tool.ItemDebug;
-import me.halfcooler.ic2r.core.item.tool.ItemDrill;
-import me.halfcooler.ic2r.core.item.tool.ItemDrillIridium;
-import me.halfcooler.ic2r.core.item.tool.ItemElectricToolChainsaw;
-import me.halfcooler.ic2r.core.item.tool.ItemFrequencyTransmitter;
-import me.halfcooler.ic2r.core.item.tool.ItemObscurator;
-import me.halfcooler.ic2r.core.item.tool.ItemRemote;
-import me.halfcooler.ic2r.core.item.tool.ItemScanner;
-import me.halfcooler.ic2r.core.item.tool.ItemScannerAdv;
-import me.halfcooler.ic2r.core.item.tool.ItemToolCrafting;
-import me.halfcooler.ic2r.core.item.tool.ItemToolCrowbar;
-import me.halfcooler.ic2r.core.item.tool.ItemToolCutter;
-import me.halfcooler.ic2r.core.item.tool.ItemToolMeter;
-import me.halfcooler.ic2r.core.item.tool.ItemToolMiningLaser;
-import me.halfcooler.ic2r.core.item.tool.ItemToolPainter;
-import me.halfcooler.ic2r.core.item.tool.ItemToolWrench;
-import me.halfcooler.ic2r.core.item.tool.ItemToolWrenchElectric;
-import me.halfcooler.ic2r.core.item.tool.ItemToolbox;
-import me.halfcooler.ic2r.core.item.tool.ItemTreetap;
-import me.halfcooler.ic2r.core.item.tool.ItemTreetapElectric;
-import me.halfcooler.ic2r.core.item.tool.ItemWindMeter;
+import me.halfcooler.ic2r.core.item.tool.*;
 import me.halfcooler.ic2r.core.ref.Ic2rEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rToolMaterials;
 import me.halfcooler.ic2r.core.util.Ic2rColor;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item.Properties;
 
-/** Domain item registrations: Tools, painters, boats, batteries, rotors */
+/**
+ * Domain item registrations: Tools, painters, boats, batteries, rotors
+ */
 public final class Ic2rItemsTools
 {
 	private Ic2rItemsTools()

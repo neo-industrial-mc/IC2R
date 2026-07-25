@@ -1,8 +1,8 @@
 package me.halfcooler.ic2r.core.block.personal;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rGui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;

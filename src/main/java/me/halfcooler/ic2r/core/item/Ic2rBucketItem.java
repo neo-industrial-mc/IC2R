@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.core.item;
 
-import java.util.List;
-
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,12 +21,7 @@ import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BucketPickup;
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.LiquidBlockContainer;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -39,6 +32,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public abstract class Ic2rBucketItem extends BucketItem
 {
@@ -266,7 +261,9 @@ public abstract class Ic2rBucketItem extends BucketItem
 		world.gameEvent(player, GameEvent.FLUID_PLACE, pos);
 	}
 
-	/** Forge-event hook set by forge/ init; no-op unless forge layer wires {@code EventHooks#onBucketUse}. */
+	/**
+	 * Forge-event hook set by forge/ init; no-op unless forge layer wires {@code EventHooks#onBucketUse}.
+	 */
 	@Nullable
 	private static BucketUseHook bucketUseHook;
 

@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
-import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
-
 import com.google.common.base.Predicate;
 import me.halfcooler.ic2r.api.network.ClientModifiable;
 import me.halfcooler.ic2r.api.network.INetworkClientTileEntityEventListener;
@@ -22,16 +20,9 @@ import me.halfcooler.ic2r.core.network.sync.SyncCodecs;
 import me.halfcooler.ic2r.core.network.sync.SyncKey;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Tuple;
-
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -46,6 +37,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @NotClassic
 public class TileEntityBatchCrafter
@@ -170,7 +168,8 @@ public class TileEntityBatchCrafter
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.progress = readProgressNbt(nbt);
 		ListTag grid = nbt.getList("grid", 10);
@@ -489,13 +488,17 @@ public class TileEntityBatchCrafter
 		return this.guiProgress;
 	}
 
-	/** Pure NBT write for batch-crafter progress (snake_case-legal key {@link #NBT_PROGRESS} only). */
+	/**
+	 * Pure NBT write for batch-crafter progress (snake_case-legal key {@link #NBT_PROGRESS} only).
+	 */
 	public static void writeProgressNbt(CompoundTag nbt, short progress)
 	{
 		nbt.putShort(NBT_PROGRESS, progress);
 	}
 
-	/** Pure NBT read for batch-crafter progress (already snake_case-legal; no camelCase legacy). */
+	/**
+	 * Pure NBT read for batch-crafter progress (already snake_case-legal; no camelCase legacy).
+	 */
 	public static short readProgressNbt(CompoundTag nbt)
 	{
 		return nbt.getShort(NBT_PROGRESS);
@@ -526,7 +529,9 @@ public class TileEntityBatchCrafter
 		sync.add(KEY_GUI_PROGRESS, guiProgressGetter, guiProgressSetter, LEGACY_GUI_PROGRESS_FIELD);
 	}
 
-	/** Apply GUI progress from modern sync decode (no side effects). */
+	/**
+	 * Apply GUI progress from modern sync decode (no side effects).
+	 */
 	protected void setGuiProgressSynced(float value)
 	{
 		this.guiProgress = value;

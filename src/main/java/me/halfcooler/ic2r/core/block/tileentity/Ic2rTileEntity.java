@@ -7,26 +7,17 @@ import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.comp.Components;
 import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.comp.TileEntityComponent;
+import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.event.TickHandler;
 import me.halfcooler.ic2r.core.gui.dynamic.IGuiConditionProvider;
 import me.halfcooler.ic2r.core.network.sync.BlockEntitySync;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
-import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -47,8 +38,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 public abstract class Ic2rTileEntity extends BlockEntity implements INetworkDataProvider, INetworkUpdateListener, IGuiConditionProvider
 {
@@ -190,7 +182,8 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 
 	public static final String LEGACY_NBT_TE_COMPONENTS = "components";
 
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.active = nbt.getBoolean("active");
 		if (this.components != null)
@@ -621,12 +614,10 @@ public abstract class Ic2rTileEntity extends BlockEntity implements INetworkData
 				{
 					Ic2rTooltip.add(tooltip, ElectricalDisplay.formatPower(energy));
 				}
-			}
-			else if (hasSource)
+			} else if (hasSource)
 			{
 				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.item.tooltip.power_tier", energy.getSourceTier()));
-			}
-			else
+			} else
 			{
 				Ic2rTooltip.add(tooltip, Component.translatable("ic2r.item.tooltip.power_tier", energy.getSinkTier()));
 			}

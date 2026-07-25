@@ -8,6 +8,7 @@ import me.halfcooler.ic2r.core.util.Vector3;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,7 +20,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.network.syncher.SynchedEntityData;
 
 public class DynamiteEntity extends Entity implements ItemSupplier
 {
@@ -166,8 +166,7 @@ public class DynamiteEntity extends Entity implements ItemSupplier
 				motion.z * (0.75F - this.random.nextFloat())
 			);
 			this.inGround = true;
-		}
-		else
+		} else
 		{
 			this.setPos(this.getX() + motion.x, this.getY() + motion.y, this.getZ() + motion.z);
 			this.inGround = false;

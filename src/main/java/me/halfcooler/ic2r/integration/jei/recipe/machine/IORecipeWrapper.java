@@ -2,13 +2,12 @@ package me.halfcooler.ic2r.integration.jei.recipe.machine;
 
 import me.halfcooler.ic2r.api.recipe.IRecipeInput;
 import me.halfcooler.ic2r.api.recipe.MachineRecipe;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import net.minecraft.world.item.ItemStack;
 
 public class IORecipeWrapper implements IJeiRecipeWrapper
 {

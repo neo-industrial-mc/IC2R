@@ -4,9 +4,6 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityTeleporter;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,6 +18,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ItemFrequencyTransmitter extends Item
 {

@@ -2,32 +2,12 @@ package me.halfcooler.ic2r.core.energy.grid;
 
 import me.halfcooler.ic2r.api.energy.EnergyNet;
 import me.halfcooler.ic2r.api.energy.NodeStats;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyConductor;
-import me.halfcooler.ic2r.api.energy.tile.IEnergySink;
-import me.halfcooler.ic2r.api.energy.tile.IEnergySource;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
-import me.halfcooler.ic2r.api.energy.tile.IMultiEnergySource;
+import me.halfcooler.ic2r.api.energy.tile.*;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rDamageSource;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.io.PrintStream;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -36,6 +16,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.mutable.MutableDouble;
+
+import java.io.PrintStream;
+import java.util.*;
+import java.util.Map.Entry;
 
 @Deprecated
 public class EnergyCalculatorUnified implements IEnergyCalculator
@@ -615,7 +599,6 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 			return 0.0;
 		}
 
-		// delivered = amount - rejected; source pays delivered + path.loss (see EnergyTransferMath.icSourceConsumed)
 		double effectiveAmount = Math.max(0.0, amount - rejected + path.loss);
 		if (path.lastCalcId != calcId)
 		{
@@ -669,7 +652,6 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 							cablesToRemove.add(tile);
 						} else if (EnergyTransferMath.icInsulationBreakdown(amount, insulationLimit, conductorLimit))
 						{
-							// else-if: strip only when not already melting the conductor
 							cablesToStrip.add(tile);
 						}
 					}
@@ -813,8 +795,6 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 		if (!foundAny)
 		{
-			// No source offers this tick → grids are not calculated. Advance calc ids so
-			// getNodeStats only counts current-tick path energy (not sticky last transfer).
 			GridData.advanceCalcIds(enet);
 		}
 
@@ -826,16 +806,12 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 	{
 		GridData data = GridData.get(grid);
 		runCalculation(grid, data);
-		// Transfer (inject/draw) and deferred path bookkeeping must stay on the server
-		// thread. Returning true would schedule runAsyncStep, which races with
-		// applyDeferredEffects on deferredEventPaths and can surface null paths (NPE).
 		return false;
 	}
 
 	@Override
 	public void runAsyncStep(Grid grid)
 	{
-		// Intentionally empty: see runSyncStep(Grid).
 	}
 
 	@Override
@@ -874,9 +850,6 @@ public class EnergyCalculatorUnified implements IEnergyCalculator
 
 				for (EnergyPath path : paths)
 				{
-					// Only the current calculation pass. energySupplied is only reset when a
-					// path is used again, so including older lastCalcId values freezes the
-					// last non-zero EU/t on meters after transfer stops.
 					if (path.lastCalcId == calcId && path.energySupplied > 0.0)
 					{
 						sum += path.energySupplied;

@@ -2,9 +2,6 @@ package me.halfcooler.ic2r.core.gametest;
 
 import me.halfcooler.ic2r.api.recipe.Recipes;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
-
-import java.util.List;
-
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
@@ -15,6 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+
+import java.util.List;
 
 @GameTestHolder("ic2r")
 @PrefixGameTestTemplate(false)

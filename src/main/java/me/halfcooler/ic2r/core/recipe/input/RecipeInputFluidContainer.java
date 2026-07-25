@@ -5,16 +5,15 @@ import com.google.gson.JsonObject;
 import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.mutable.MutableObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecipeInputFluidContainer extends RecipeInputBase
 {

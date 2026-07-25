@@ -1,29 +1,18 @@
 package me.halfcooler.ic2r.core.ref.items;
 
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.Rarity;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorAdvBatpack;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorBatpack;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorCFPack;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorEnergypack;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorHazmat;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorIC2R;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorJetpack;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorJetpackElectric;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorLappack;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorNanoSuit;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorNightVisionGoggles;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorQuantumSuit;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorSolarHelmet;
-import me.halfcooler.ic2r.core.item.armor.ItemArmorStaticBoots;
+import me.halfcooler.ic2r.core.item.armor.*;
 import me.halfcooler.ic2r.core.item.tool.ItemNanoSaber;
 import me.halfcooler.ic2r.core.item.tool.ItemSprayer;
 import me.halfcooler.ic2r.core.ref.Ic2rArmorMaterials;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.Rarity;
 
-/** Domain item registrations: Armor and wearable equipment */
+/**
+ * Domain item registrations: Armor and wearable equipment
+ */
 public final class Ic2rItemsArmor
 {
 	private Ic2rItemsArmor()

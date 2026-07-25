@@ -1,18 +1,20 @@
 package me.halfcooler.ic2r.core.ref.items;
 
-import net.minecraft.world.item.DoubleHighBlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.SignItem;
 import me.halfcooler.ic2r.core.item.BlockItemEnergyStorage;
 import me.halfcooler.ic2r.core.item.ItemBlockIc2r;
 import me.halfcooler.ic2r.core.item.ItemCable;
 import me.halfcooler.ic2r.core.item.block.ItemDynamite;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
+import net.minecraft.world.item.DoubleHighBlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.SignItem;
 
-/** Domain item registrations: Block items (ores, machines, cables, generators, etc.) */
+/**
+ * Domain item registrations: Block items (ores, machines, cables, generators, etc.)
+ */
 public final class Ic2rItemsBlockItems
 {
 	private Ic2rItemsBlockItems()

@@ -1,11 +1,11 @@
 package me.halfcooler.ic2r.core.block.machine.gui;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerChunkLoader;
 import me.halfcooler.ic2r.core.gui.EnergyGauge;
-import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.DynamicTexture;

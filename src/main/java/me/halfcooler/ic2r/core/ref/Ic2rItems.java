@@ -4,23 +4,15 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rItemGroupType;
 import me.halfcooler.ic2r.core.block.BehaviorDynamiteDispense;
 import me.halfcooler.ic2r.core.item.BehaviorScrapboxDispense;
-import me.halfcooler.ic2r.core.ref.items.Ic2rItemsArmor;
-import me.halfcooler.ic2r.core.ref.items.Ic2rItemsBlockItems;
-import me.halfcooler.ic2r.core.ref.items.Ic2rItemsCells;
-import me.halfcooler.ic2r.core.ref.items.Ic2rItemsFarming;
-import me.halfcooler.ic2r.core.ref.items.Ic2rItemsMaterials;
-import me.halfcooler.ic2r.core.ref.items.Ic2rItemsReactor;
-import me.halfcooler.ic2r.core.ref.items.Ic2rItemsTools;
-import me.halfcooler.ic2r.core.ref.items.Ic2rItemsUpgrades;
+import me.halfcooler.ic2r.core.ref.items.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.DispenserBlock;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.function.Supplier;
-
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.DispenserBlock;
 
 /**
  * Item registration facade. Domain implementations live under {@code ref.items}.

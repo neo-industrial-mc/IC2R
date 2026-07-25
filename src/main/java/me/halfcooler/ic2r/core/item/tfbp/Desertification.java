@@ -3,11 +3,11 @@ package me.halfcooler.ic2r.core.item.tfbp;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityTerra;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.util.RandomSource;
 
 public class Desertification extends TerraformerBase
 {

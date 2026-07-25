@@ -1,10 +1,10 @@
 package me.halfcooler.ic2r.api.tile;
 
+import net.minecraft.world.level.block.Block;
+
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Set;
-
-import net.minecraft.world.level.block.Block;
 
 public final class ExplosionWhitelist
 {

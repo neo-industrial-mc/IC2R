@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
-import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 import me.halfcooler.ic2r.api.network.INetworkTileEntityEventListener;
 import me.halfcooler.ic2r.api.tile.IEnergyStorage;
 import me.halfcooler.ic2r.core.IC2R;
@@ -11,12 +9,6 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -42,6 +34,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class TileEntityTeleporter extends TileEntityBase implements INetworkTileEntityEventListener
 {
@@ -60,7 +59,8 @@ public class TileEntityTeleporter extends TileEntityBase implements INetworkTile
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("targetX"))
 		{

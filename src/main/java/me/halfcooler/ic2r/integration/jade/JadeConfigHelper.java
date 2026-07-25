@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.integration.jade;
 
-import java.util.Locale;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.config.IPluginConfig;
@@ -9,6 +7,8 @@ import snownee.jade.api.config.IWailaConfig;
 import snownee.jade.api.ui.IDisplayHelper;
 import snownee.jade.api.ui.IElementHelper;
 import snownee.jade.api.ui.ProgressStyle;
+
+import java.util.Locale;
 
 public final class JadeConfigHelper
 {
@@ -58,7 +58,6 @@ public final class JadeConfigHelper
 
 	public static JadeProgressTextMode progressTextMode()
 	{
-		// Default: elapsed / total recipe time + percent in parentheses.
 		return getEnum(Ic2rJadePluginConfigs.PROGRESS_TEXT_MODE, JadeProgressTextMode.BOTH);
 	}
 
@@ -92,7 +91,6 @@ public final class JadeConfigHelper
 			long parsed = Long.parseLong(s, 16);
 			if (s.length() <= 6)
 			{
-				// RRGGBB → force full alpha
 				parsed |= 0xFF000000L;
 			}
 			return (int) parsed;
@@ -114,7 +112,6 @@ public final class JadeConfigHelper
 
 	public static int energyColor()
 	{
-		// Jade default energy bar colors: 0xFFAA0000 / 0xFF660000
 		return parseColor(plugin().getString(Ic2rJadePluginConfigs.ENERGY_COLOR), 0xFFAA0000);
 	}
 
@@ -179,7 +176,6 @@ public final class JadeConfigHelper
 
 		if (timeBased)
 		{
-			// Recipe machines: elapsed time / operation length, optional percent.
 			String elapsed = formatSeconds(current);
 			String total = formatSeconds(max);
 			return switch (mode)
@@ -190,7 +186,6 @@ public final class JadeConfigHelper
 			};
 		}
 
-		// Non-time progress (e.g. replicator UU amount).
 		return switch (mode)
 		{
 			case FRACTION -> Component.translatable("ic2r.jade.progress.fraction", current, max);
@@ -199,7 +194,9 @@ public final class JadeConfigHelper
 		};
 	}
 
-	/** Formats game ticks as seconds for progress labels. */
+	/**
+	 * Formats game ticks as seconds for progress labels.
+	 */
 	static String formatSeconds(long ticks)
 	{
 		double seconds = Math.max(0L, ticks) / 20.0;
@@ -213,6 +210,7 @@ public final class JadeConfigHelper
 		}
 		return String.format(Locale.ROOT, "%.2f", seconds);
 	}
+
 	private static <T extends Enum<T>> T getEnum(ResourceLocation key, T fallback)
 	{
 		try
@@ -221,7 +219,6 @@ public final class JadeConfigHelper
 			return value != null ? value : fallback;
 		} catch (RuntimeException ignored)
 		{
-			// Config not registered yet or wrong type during early load.
 			return fallback;
 		}
 	}

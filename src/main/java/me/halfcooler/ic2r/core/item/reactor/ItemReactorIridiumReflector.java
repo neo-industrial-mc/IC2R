@@ -4,7 +4,6 @@ import me.halfcooler.ic2r.api.reactor.IReactor;
 import me.halfcooler.ic2r.api.reactor.IReactorComponent;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 
 @NotClassic
 public class ItemReactorIridiumReflector extends AbstractReactorComponent

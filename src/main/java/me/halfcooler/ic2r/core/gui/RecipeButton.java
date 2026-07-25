@@ -1,12 +1,11 @@
 package me.halfcooler.ic2r.core.gui;
 
 import com.google.common.base.Function;
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
-
-import net.minecraft.network.chat.Component;
 
 public class RecipeButton extends Button<RecipeButton>
 {

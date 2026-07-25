@@ -6,20 +6,10 @@ import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerIndustrialWorkbench;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityIndustrialWorkbench;
 import me.halfcooler.ic2r.core.block.personal.IPersonalBlock;
-import me.halfcooler.ic2r.core.gui.Area;
-import me.halfcooler.ic2r.core.gui.CustomButton;
-import me.halfcooler.ic2r.core.gui.GuiElement;
-import me.halfcooler.ic2r.core.gui.IClickHandler;
-import me.halfcooler.ic2r.core.gui.Image;
-import me.halfcooler.ic2r.core.gui.MouseButton;
-import me.halfcooler.ic2r.core.gui.VanillaButton;
+import me.halfcooler.ic2r.core.gui.*;
 import me.halfcooler.ic2r.core.proxy.SideProxyClient;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -29,6 +19,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class GuiIndustrialWorkbench extends Ic2rGui<ContainerIndustrialWorkbench>
 {

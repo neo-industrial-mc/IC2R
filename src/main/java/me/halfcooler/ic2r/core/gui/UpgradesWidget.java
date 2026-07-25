@@ -1,18 +1,17 @@
 package me.halfcooler.ic2r.core.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.api.upgrade.IUpgradableBlock;
 import me.halfcooler.ic2r.api.upgrade.IUpgradeItem;
 import me.halfcooler.ic2r.api.upgrade.UpgradableProperty;
 import me.halfcooler.ic2r.api.upgrade.UpgradeRegistry;
 import me.halfcooler.ic2r.core.Ic2rGui;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 public class UpgradesWidget extends GuiElement<UpgradesWidget>
 {

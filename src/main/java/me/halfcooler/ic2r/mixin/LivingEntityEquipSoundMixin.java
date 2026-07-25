@@ -26,7 +26,7 @@ public abstract class LivingEntityEquipSoundMixin
 		{
 			return;
 		}
-		
+
 		if (!ItemStack.isSameItem(oldItem, newItem))
 		{
 			return;
@@ -36,7 +36,7 @@ public abstract class LivingEntityEquipSoundMixin
 		{
 			return;
 		}
-		
+
 		ci.cancel();
 	}
 

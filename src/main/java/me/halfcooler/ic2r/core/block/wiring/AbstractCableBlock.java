@@ -1,12 +1,9 @@
 package me.halfcooler.ic2r.core.block.wiring;
 
+import it.unimi.dsi.fastutil.ints.Int2ReferenceMap;
+import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import me.halfcooler.ic2r.api.energy.EnergyNet;
-import me.halfcooler.ic2r.api.energy.tile.IColoredEnergyTile;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyAcceptor;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyConductor;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyEmitter;
-import me.halfcooler.ic2r.api.energy.tile.IEnergySink;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
+import me.halfcooler.ic2r.api.energy.tile.*;
 import me.halfcooler.ic2r.api.info.ILocatable;
 import me.halfcooler.ic2r.core.block.ChunkLoadAwareBlock;
 import me.halfcooler.ic2r.core.block.comp.Energy;
@@ -15,33 +12,26 @@ import me.halfcooler.ic2r.core.block.reactor.tileentity.TileEntityNuclearReactor
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.item.tool.ItemToolCutter;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
-import it.unimi.dsi.fastutil.ints.Int2ReferenceMap;
-import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
-
-import java.util.EnumMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -50,10 +40,13 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadAwareBlock, SimpleWaterloggedBlock
 {
@@ -83,6 +76,7 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	{
 		return this.insulation;
 	}
+
 	private final boolean hasColor;
 
 	protected AbstractCableBlock(Properties settings, CableType type, int insulation)
@@ -137,6 +131,7 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	public abstract boolean isFoam();
 
 	public abstract boolean isHardFoam(BlockState var1);
+
 	public void initializeState(BlockState defaultState)
 	{
 		if (this.isFoam())
@@ -592,7 +587,6 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 	{
 		if (!world.isClientSide)
 		{
-			// Replace any stale conductor left from a partial unload/reload.
 			this.addToEnet(state, world, pos, false);
 		}
 		if (this.isFoam() && state.getValue(foamProperty).isSoft())
@@ -622,12 +616,9 @@ public abstract class AbstractCableBlock extends PipeBlock implements ChunkLoadA
 		{
 			if (checkConflicting)
 			{
-				// Already registered (e.g. place after a same-tick load) — keep it.
 				return;
 			}
 
-			// Chunk reload path: drop the previous Conductor so the new instance can join.
-			// Without this, ChangeHandler reports a position conflict and silently rejects the add.
 			EnergyNet.instance.removeTile(existing);
 		}
 

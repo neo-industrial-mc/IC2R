@@ -2,13 +2,6 @@ package me.halfcooler.ic2r.core.sound;
 
 import me.halfcooler.ic2r.core.IHitSoundOverride;
 import me.halfcooler.ic2r.core.proxy.SideProxyClient;
-
-import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -20,12 +13,18 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ClipContext.Block;
 import net.minecraft.world.level.ClipContext.Fluid;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SoundManagerClient extends SoundManager
 {
@@ -60,8 +59,6 @@ public class SoundManagerClient extends SoundManager
 					}
 				} else
 				{
-					// For break sounds, the block is already destroyed so the raycast misses.
-					// Use a distance check instead to confirm it's within player reach.
 					if (player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) <= 36.0)
 					{
 						replaceSound = hitSoundOverride.getBreakSoundForBlock(player, world, pos, stack);
@@ -186,7 +183,7 @@ public class SoundManagerClient extends SoundManager
 		});
 	}
 
-		public void tick()
+	public void tick()
 	{
 		super.tick();
 		this.objectToSoundMap.forEach((object, soundClientList) -> soundClientList.forEach(SoundClient::tick));

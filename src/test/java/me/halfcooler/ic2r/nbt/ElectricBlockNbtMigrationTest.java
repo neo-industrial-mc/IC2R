@@ -1,14 +1,10 @@
 package me.halfcooler.ic2r.nbt;
 
 import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityElectricBlock;
-
 import net.minecraft.nbt.CompoundTag;
-
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * G1.5 ElectricBlock NBT: {@code redstone_mode} write + legacy {@code redstoneMode} read.

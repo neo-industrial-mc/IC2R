@@ -1,10 +1,10 @@
 package me.halfcooler.ic2r.api.upgrade;
 
+import net.minecraft.world.item.ItemStack;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import net.minecraft.world.item.ItemStack;
 
 public class UpgradeRegistry
 {

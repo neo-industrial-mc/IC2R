@@ -1,8 +1,8 @@
 package me.halfcooler.ic2r.integration.jei.recipe.machine;
 
-import java.util.List;
-
 import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 public interface IJeiRecipeWrapper
 {

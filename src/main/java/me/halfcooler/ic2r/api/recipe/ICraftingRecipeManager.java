@@ -9,11 +9,11 @@ public interface ICraftingRecipeManager
 	void addShapelessRecipe(ItemStack var1, Object... var2);
 
 	record AttributeContainer(boolean hidden, boolean consuming, boolean fixedSize)
+	{
+		public AttributeContainer(boolean hidden, boolean consuming)
 		{
-			public AttributeContainer(boolean hidden, boolean consuming)
-			{
-				this(hidden, consuming, false);
-			}
-
+			this(hidden, consuming, false);
 		}
+
+	}
 }

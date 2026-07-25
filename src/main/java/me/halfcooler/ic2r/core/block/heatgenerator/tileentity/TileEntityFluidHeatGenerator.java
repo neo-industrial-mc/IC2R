@@ -90,7 +90,8 @@ public class TileEntityFluidHeatGenerator extends TileEntityHeatSourceInventory 
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.fluidTank.fromNbt(nbt.getCompound("fluidTank"));
 	}

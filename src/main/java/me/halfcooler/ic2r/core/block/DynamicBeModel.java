@@ -3,29 +3,24 @@ package me.halfcooler.ic2r.core.block;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
 import me.halfcooler.ic2r.core.util.LogCategory;
-
-import java.util.*;
-import java.util.concurrent.locks.StampedLock;
-import java.util.function.Function;
-
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.concurrent.locks.StampedLock;
+import java.util.function.Function;
 
 public abstract class DynamicBeModel<T> implements UnbakedModel, BakedModel
 {
@@ -147,11 +142,8 @@ public abstract class DynamicBeModel<T> implements UnbakedModel, BakedModel
 			if (model == null)
 			{
 				IC2R.log.warn(LogCategory.Resource, "Missing model %s", id);
-			}
-			else
+			} else
 			{
-				// Nested cube models must resolve parents (e.g. block/cube_all) before bake,
-				// otherwise bakery produces an empty mesh + missing particle texture.
 				model.resolveParents(resolver);
 			}
 		}

@@ -1,10 +1,9 @@
 package me.halfcooler.ic2r.core.energy.grid;
 
 import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
+import net.minecraft.core.BlockPos;
 
 import java.util.List;
-
-import net.minecraft.core.BlockPos;
 
 class GridChange
 {

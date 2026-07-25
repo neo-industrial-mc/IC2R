@@ -2,11 +2,10 @@ package me.halfcooler.ic2r.core.block.invslot;
 
 import me.halfcooler.ic2r.core.block.IInventorySlotHolder;
 import me.halfcooler.ic2r.core.util.ItemComparableItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import net.minecraft.world.item.ItemStack;
 
 public class InvSlotConsumableItemStack extends InvSlotConsumable
 {

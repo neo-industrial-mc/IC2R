@@ -1,6 +1,5 @@
 package me.halfcooler.ic2r.integration.jei.recipe.machine;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.block.invslot.InvSlot;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityStandardMachine;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
@@ -12,22 +11,22 @@ import me.halfcooler.ic2r.core.gui.dynamic.GuiEnvironment;
 import me.halfcooler.ic2r.core.gui.dynamic.GuiParser;
 import me.halfcooler.ic2r.core.util.Tuple;
 import me.halfcooler.ic2r.integration.jeirei.SlotPosition;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
-import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.drawable.IDrawableAnimated.StartDirection;
+import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class DynamicCategory extends IORecipeCategory<IORecipeWrapper>
 {

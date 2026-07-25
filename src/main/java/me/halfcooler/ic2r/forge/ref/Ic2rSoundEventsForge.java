@@ -2,21 +2,21 @@ package me.halfcooler.ic2r.forge.ref;
 
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.Registries;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.function.Supplier;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 public final class Ic2rSoundEventsForge
 {
 	public static final DeferredRegister<SoundEvent> REGISTRY =
 		DeferredRegister.create(Registries.SOUND_EVENT, "ic2r");
 
-	// Mirror of all 52 sound events
 	public static final DeferredHolder<SoundEvent, SoundEvent> ITEM_TREETAP_USE = reg("item.treetap.use");
 	public static final DeferredHolder<SoundEvent, SoundEvent> ITEM_WRENCH_USE = reg("item.wrench.use");
 	public static final DeferredHolder<SoundEvent, SoundEvent> ITEM_CUTTER_USE = reg("item.cutter.use");
@@ -80,14 +80,16 @@ public final class Ic2rSoundEventsForge
 	public static final DeferredHolder<SoundEvent, SoundEvent> MACHINE_TERRAFORMER_LOOP = reg("machine.terraformer.loop");
 	public static final DeferredHolder<SoundEvent, SoundEvent> BLOCK_NUKE_EXPLODE = reg("block.nuke.explode");
 
-	private Ic2rSoundEventsForge() {}
+	private Ic2rSoundEventsForge()
+	{
+	}
 
 	public static void register(IEventBus modEventBus)
 	{
 		REGISTRY.register(modEventBus);
 	}
 
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({ "unchecked" })
 	public static void wireCoreFields()
 	{
 		try
@@ -103,8 +105,7 @@ public final class Ic2rSoundEventsForge
 				try
 				{
 					coreField = Ic2rSoundEvents.class.getDeclaredField(name);
-				}
-				catch (NoSuchFieldException e)
+				} catch (NoSuchFieldException e)
 				{
 					continue;
 				}
@@ -113,8 +114,7 @@ public final class Ic2rSoundEventsForge
 				coreField.setAccessible(true);
 				coreField.set(null, (Supplier<SoundEvent>) ro);
 			}
-		}
-		catch (ReflectiveOperationException e)
+		} catch (ReflectiveOperationException e)
 		{
 			throw new RuntimeException("Failed to wire Ic2rSoundEvents core fields", e);
 		}

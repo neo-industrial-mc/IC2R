@@ -9,20 +9,11 @@ import me.halfcooler.ic2r.core.recipe.input.RecipeInputIngredient;
 import me.halfcooler.ic2r.core.recipe.input.RecipeInputItemStack;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 public abstract class MachineRecipeHelper<RI, RO> implements IMachineRecipeManager<RI, RO, ItemStack>
 {

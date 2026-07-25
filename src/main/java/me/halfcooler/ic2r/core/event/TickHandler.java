@@ -2,11 +2,10 @@ package me.halfcooler.ic2r.core.event;
 
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.ChunkLoadAwareBlockHandler;
+import net.minecraft.world.level.Level;
 
 import java.util.Map;
 import java.util.WeakHashMap;
-
-import net.minecraft.world.level.Level;
 
 public class TickHandler
 {
@@ -18,7 +17,6 @@ public class TickHandler
 	{
 		if (!world.isClientSide)
 		{
-			// Flush deferred cable/chunk-aware block loads before EnergyNet runs.
 			ChunkLoadAwareBlockHandler.onWorldTick(world);
 
 			WorldData worldData = WorldData.get(world, false);
@@ -92,6 +90,7 @@ public class TickHandler
 			debugTraces.put(update, new Throwable());
 		}
 	}
+
 	public static void removeContinuousWorldTick(Level world, IWorldTickCallback update)
 	{
 		WorldData worldData = WorldData.get(world);
@@ -104,6 +103,7 @@ public class TickHandler
 			worldData.continuousUpdatesToRemove.add(update);
 		}
 	}
+
 	private static void processUpdates(Level world, WorldData worldData)
 	{
 		world.getProfiler().push("single-update");

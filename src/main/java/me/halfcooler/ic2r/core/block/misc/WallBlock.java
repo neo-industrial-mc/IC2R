@@ -4,10 +4,6 @@ import me.halfcooler.ic2r.api.tile.RetexturableBlock;
 import me.halfcooler.ic2r.api.tile.StainableBlock;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityWall;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
-
-import java.util.EnumMap;
-import java.util.Map;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -15,19 +11,22 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class WallBlock extends Block implements StainableBlock, RetexturableBlock
 {
-    public static final com.mojang.serialization.MapCodec<WallBlock> CODEC = com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec(instance -> instance.group(
-            DyeColor.CODEC.fieldOf("color").forGetter(o -> o.color),
-            propertiesCodec()
-        ).apply(instance, (color, properties) -> new WallBlock(properties, color)));
+	public static final com.mojang.serialization.MapCodec<WallBlock> CODEC = com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec(instance -> instance.group(
+		DyeColor.CODEC.fieldOf("color").forGetter(o -> o.color),
+		propertiesCodec()
+	).apply(instance, (color, properties) -> new WallBlock(properties, color)));
 
-    @Override
-    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec() {
-        return CODEC;
-    }
+	@Override
+	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
+	{
+		return CODEC;
+	}
 
 	public static final DyeColor DEFAULT_COLOR = DyeColor.LIGHT_GRAY;
 	private static final Map<DyeColor, WallBlock> types = new EnumMap<>(DyeColor.class);

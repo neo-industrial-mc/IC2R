@@ -2,13 +2,9 @@ package me.halfcooler.ic2r.inv;
 
 import me.halfcooler.ic2r.core.block.invslot.InvSlot;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotTransferMath;
-
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Pure logic tests for InvSlot → IItemHandler transfer rules (W2.1 / G2.1).
@@ -21,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class InvSlotHandlerMathTest
 {
-	// --- Access / gating (InvSlot.Access ↔ handler insert/extract) ---
 
 	@Test
 	void access_flags_match_inv_slot_enum()
@@ -59,7 +54,6 @@ class InvSlotHandlerMathTest
 	@Test
 	void input_only_slot_blocks_extract_like_macerator_input()
 	{
-		// InvSlotConsumable default Access.I — hoppers must not pull valid inputs
 		boolean canInput = InvSlot.Access.I.isInput();
 		boolean canOutput = InvSlot.Access.I.isOutput();
 		assertTrue(InvSlotTransferMath.allowsInsert(canInput, true, false));
@@ -69,7 +63,6 @@ class InvSlotHandlerMathTest
 	@Test
 	void output_only_slot_blocks_insert_like_macerator_output()
 	{
-		// InvSlotOutput Access.O + accepts()==false
 		boolean canInput = InvSlot.Access.O.isInput();
 		boolean canOutput = InvSlot.Access.O.isOutput();
 		assertFalse(InvSlotTransferMath.allowsInsert(canInput, false, false));
@@ -85,7 +78,6 @@ class InvSlotHandlerMathTest
 		assertFalse(InvSlotTransferMath.allowsExtract(canOutput, false));
 	}
 
-	// --- insert / extract residual consistency with slot counts ---
 
 	@Test
 	void insertable_into_empty_slot_respects_limits()
@@ -102,7 +94,7 @@ class InvSlotHandlerMathTest
 		int existing = 50;
 		int incoming = 20;
 		int inserted = InvSlotTransferMath.insertableCount(existing, incoming, 64, 64, true);
-		assertEquals(14, inserted); // space 14
+		assertEquals(14, inserted);
 		assertEquals(6, InvSlotTransferMath.remainingAfterInsert(incoming, inserted));
 		assertEquals(64, existing + inserted);
 	}
@@ -134,31 +126,24 @@ class InvSlotHandlerMathTest
 		assertEquals(16, InvSlotTransferMath.extractableCount(40, 30, 16));
 	}
 
-	// --- combined multi-slot index layout (standard machine construction order) ---
 
 	@Test
 	void combined_index_layout_matches_macerator_construction_order()
 	{
-		// TileEntityElectricMachine.discharge(1) → StandardMachine.output(1) → upgrade(4)
-		// → Macerator.input(1). Registration order = combined ITEM_HANDLER null-facing order.
 		int[] sizes = maceratorSlotSizes();
 		assertEquals(7, InvSlotTransferMath.totalSlots(sizes));
 
-		// discharge @ 0
 		assertEquals(0, InvSlotTransferMath.unpackGroup(InvSlotTransferMath.locateCombinedIndex(0, sizes)));
 		assertEquals(0, InvSlotTransferMath.unpackLocal(InvSlotTransferMath.locateCombinedIndex(0, sizes)));
 
-		// output @ 1
 		assertEquals(1, InvSlotTransferMath.unpackGroup(InvSlotTransferMath.locateCombinedIndex(1, sizes)));
 		assertEquals(0, InvSlotTransferMath.unpackLocal(InvSlotTransferMath.locateCombinedIndex(1, sizes)));
 
-		// upgrade @ 2..5
 		assertEquals(2, InvSlotTransferMath.unpackGroup(InvSlotTransferMath.locateCombinedIndex(2, sizes)));
 		assertEquals(0, InvSlotTransferMath.unpackLocal(InvSlotTransferMath.locateCombinedIndex(2, sizes)));
 		assertEquals(2, InvSlotTransferMath.unpackGroup(InvSlotTransferMath.locateCombinedIndex(5, sizes)));
 		assertEquals(3, InvSlotTransferMath.unpackLocal(InvSlotTransferMath.locateCombinedIndex(5, sizes)));
 
-		// input @ 6
 		assertEquals(3, InvSlotTransferMath.unpackGroup(InvSlotTransferMath.locateCombinedIndex(6, sizes)));
 		assertEquals(0, InvSlotTransferMath.unpackLocal(InvSlotTransferMath.locateCombinedIndex(6, sizes)));
 
@@ -181,7 +166,6 @@ class InvSlotHandlerMathTest
 		assertEquals(4, InvSlotTransferMath.remainingAfterExtract(4, 0));
 	}
 
-	// --- G2.1: pipeline sequences / access matrix / simulate / virtual handler mirror ---
 
 	/**
 	 * Macerator-style Access per combined index (null-facing view).
@@ -196,23 +180,20 @@ class InvSlotHandlerMathTest
 		for (int i = 0; i < accessByCombined.length; i++)
 		{
 			InvSlot.Access access = accessByCombined[i];
-			boolean accepts = access == InvSlot.Access.I; // output accepts=false; others N/A for insert gate
+			boolean accepts = access == InvSlot.Access.I;
 			boolean canIn = access.isInput();
 			boolean canOut = access.isOutput();
 
 			if (i == 6)
 			{
-				// input
 				assertTrue(InvSlotTransferMath.allowsInsert(canIn, accepts, false));
 				assertFalse(InvSlotTransferMath.allowsExtract(canOut, false));
 			} else if (i == 1)
 			{
-				// output: Access.O + accepts false
 				assertFalse(InvSlotTransferMath.allowsInsert(canIn, false, false));
 				assertTrue(InvSlotTransferMath.allowsExtract(canOut, false));
 			} else
 			{
-				// discharge + upgrade: NONE
 				assertFalse(InvSlotTransferMath.allowsInsert(canIn, true, false));
 				assertFalse(InvSlotTransferMath.allowsExtract(canOut, false));
 			}
@@ -230,26 +211,21 @@ class InvSlotHandlerMathTest
 		VirtualSlot input = VirtualSlot.inputOnly(64, 64);
 		VirtualSlot output = VirtualSlot.outputOnly(64, 64);
 
-		// hopper/pipe inserts ore into input
 		assertEquals(0, input.insert(16, true, false));
 		assertEquals(16, input.count);
 
-		// cannot pull feedstock from input
 		assertEquals(0, input.extract(8, false));
 		assertEquals(16, input.count);
 
-		// cannot push into output via automation
 		assertEquals(10, output.insert(10, true, false));
 		assertEquals(0, output.count);
 
-		// machine internal process (domain path, not automation insert)
 		int consumed = 16;
 		input.count = InvSlotTransferMath.remainingAfterExtract(input.count, consumed);
-		output.count = 16; // product placed by InvSlotOutput#add
+		output.count = 16;
 		assertEquals(0, input.count);
 		assertEquals(16, output.count);
 
-		// pipe extracts product
 		assertEquals(16, output.extract(64, false));
 		assertEquals(0, output.count);
 	}
@@ -265,7 +241,6 @@ class InvSlotHandlerMathTest
 		assertEquals(20, io.count);
 
 		int remainingSim = io.insert(50, true, true);
-		// space 44 → remaining 6; count stays 20
 		assertEquals(6, remainingSim);
 		assertEquals(20, io.count);
 
@@ -273,11 +248,9 @@ class InvSlotHandlerMathTest
 		assertEquals(7, extractedSim);
 		assertEquals(20, io.count);
 
-		// commit extract
 		assertEquals(7, io.extract(7, false));
 		assertEquals(13, io.count);
 
-		// commit partial insert into remaining space
 		assertEquals(0, io.insert(5, true, false));
 		assertEquals(18, io.count);
 	}
@@ -297,7 +270,6 @@ class InvSlotHandlerMathTest
 			slots[i] = VirtualSlot.fromAccess(access[i], 64, 64);
 		}
 
-		// try insert 8 into every combined index; only input (6) accepts
 		for (int i = 0; i < slots.length; i++)
 		{
 			boolean accepts = i == 6;
@@ -313,11 +285,9 @@ class InvSlotHandlerMathTest
 			}
 		}
 
-		// process: clear input, fill output
 		slots[6].count = 0;
 		slots[1].count = 8;
 
-		// extract 8 from every index; only output yields
 		for (int i = 0; i < slots.length; i++)
 		{
 			int got = slots[i].extract(8, false);
@@ -331,7 +301,6 @@ class InvSlotHandlerMathTest
 			}
 		}
 
-		// upgrade band still empty
 		for (int i = 2; i <= 5; i++)
 		{
 			assertEquals(0, slots[i].count);
@@ -345,18 +314,15 @@ class InvSlotHandlerMathTest
 	@Test
 	void partial_insert_remainder_then_extract_round_trip()
 	{
-		VirtualSlot input = VirtualSlot.inputOnly(32, 64); // slotLimit 32
+		VirtualSlot input = VirtualSlot.inputOnly(32, 64);
 		VirtualSlot output = VirtualSlot.outputOnly(64, 64);
 
-		// offer 50 into limit-32 input → insert 32, remainder 18
 		assertEquals(18, input.insert(50, true, false));
 		assertEquals(32, input.count);
 
-		// simulate full extract from input would be blocked by Access.I
 		assertEquals(0, input.extract(32, true));
 		assertEquals(32, input.count);
 
-		// process one batch of 16
 		input.count = InvSlotTransferMath.remainingAfterExtract(input.count, 16);
 		output.count += 16;
 		assertEquals(16, input.count);
@@ -367,7 +333,6 @@ class InvSlotHandlerMathTest
 		assertEquals(0, output.count);
 	}
 
-	// --- G2.4: accept policies + consumable leftover canOutput ---
 
 	/**
 	 * Role accepts: default true, output always false, linked requires non-empty match.
@@ -384,19 +349,16 @@ class InvSlotHandlerMathTest
 		assertFalse(InvSlotTransferMath.linkedAccepts(false, false));
 		assertTrue(InvSlotTransferMath.linkedAccepts(false, true));
 
-		// I + default accepts → insert ok
 		assertTrue(InvSlotTransferMath.allowsInsert(
 			InvSlot.Access.I.isInput(),
 			InvSlotTransferMath.defaultAccepts(),
 			false
 		));
-		// O + output accepts → insert blocked even if canInput were true
 		assertFalse(InvSlotTransferMath.allowsInsert(
 			InvSlot.Access.O.isInput(),
 			InvSlotTransferMath.outputAccepts(),
 			false
 		));
-		// I + linked mismatch → blocked
 		assertFalse(InvSlotTransferMath.allowsInsert(
 			true,
 			InvSlotTransferMath.linkedAccepts(false, false),
@@ -411,20 +373,14 @@ class InvSlotHandlerMathTest
 	@Test
 	void consumable_canOutput_leftover_eject_matrix()
 	{
-		// Access.O / IO already output
 		assertTrue(InvSlotTransferMath.consumableCanOutput(true, false, false, true));
 
-		// Access.I, non-empty, accepts current → no eject
 		assertFalse(InvSlotTransferMath.consumableCanOutput(false, false, false, true));
-		// Access.I, non-empty, rejects current → eject allowed
 		assertTrue(InvSlotTransferMath.consumableCanOutput(false, false, false, false));
-		// empty slot → no eject
 		assertFalse(InvSlotTransferMath.consumableCanOutput(false, false, true, true));
 		assertFalse(InvSlotTransferMath.consumableCanOutput(false, false, true, false));
-		// Access.NONE never ejects via this path
 		assertFalse(InvSlotTransferMath.consumableCanOutput(false, true, false, false));
 
-		// extract gate composes with leftover canOutput
 		assertTrue(InvSlotTransferMath.allowsExtract(
 			InvSlotTransferMath.consumableCanOutput(false, false, false, false),
 			false
@@ -435,24 +391,25 @@ class InvSlotHandlerMathTest
 		));
 	}
 
-	// --- helpers ---
 
-	/** discharge(1) + output(1) + upgrade(4) + input(1). */
+	/**
+	 * discharge(1) + output(1) + upgrade(4) + input(1).
+	 */
 	private static int[] maceratorSlotSizes()
 	{
-		return new int[] {1, 1, 4, 1};
+		return new int[] { 1, 1, 4, 1 };
 	}
 
 	private static InvSlot.Access[] maceratorAccessByCombinedIndex()
 	{
 		return new InvSlot.Access[] {
-			InvSlot.Access.NONE, // discharge
-			InvSlot.Access.O, // output
+			InvSlot.Access.NONE,
+			InvSlot.Access.O,
 			InvSlot.Access.NONE,
 			InvSlot.Access.NONE,
 			InvSlot.Access.NONE,
-			InvSlot.Access.NONE, // upgrade ×4
-			InvSlot.Access.I // input
+			InvSlot.Access.NONE,
+			InvSlot.Access.I
 		};
 	}
 
@@ -496,7 +453,9 @@ class InvSlotHandlerMathTest
 			return new VirtualSlot(access.isInput(), access.isOutput(), slotLimit, maxStack);
 		}
 
-		/** @return remaining incoming count (like insertItem return stack size). */
+		/**
+		 * @return remaining incoming count (like insertItem return stack size).
+		 */
 		int insert(int incoming, boolean accepts, boolean simulate)
 		{
 			if (!InvSlotTransferMath.allowsInsert(this.canInput, accepts, incoming <= 0))
@@ -519,7 +478,9 @@ class InvSlotHandlerMathTest
 			return InvSlotTransferMath.remainingAfterInsert(incoming, insertable);
 		}
 
-		/** @return extracted amount (like extractItem stack size). */
+		/**
+		 * @return extracted amount (like extractItem stack size).
+		 */
 		int extract(int request, boolean simulate)
 		{
 			if (!InvSlotTransferMath.allowsExtract(this.canOutput, this.count <= 0))

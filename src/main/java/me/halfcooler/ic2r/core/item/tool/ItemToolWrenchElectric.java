@@ -9,9 +9,6 @@ import me.halfcooler.ic2r.core.IHitSoundOverride;
 import me.halfcooler.ic2r.core.item.PriorityUsableItem;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
-
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -32,6 +29,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 /**
  * Electric wrench — same left/right-click logic as {@link ItemToolWrench}:
  * <ul>
@@ -41,7 +40,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ItemToolWrenchElectric extends ItemElectricTool implements PriorityUsableItem, IBoxable, BlockBreakableItem, IEnhancedOverlayProvider, IHitSoundOverride
 {
-	/** Energy units charged against {@link #consumeEnergy} (×100 EU via override). */
+	/**
+	 * Energy units charged against {@link #consumeEnergy} (×100 EU via override).
+	 */
 	private static final double MINE_ENERGY_UNITS = 1.0;
 
 	public ItemToolWrenchElectric(Properties settings)
@@ -52,7 +53,6 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 		this.transferLimit = 250;
 	}
 
-	// === Right-click: set facing only, no energy (same as manual wrench) ===
 
 	@Override
 	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context)
@@ -63,11 +63,9 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 			return InteractionResult.PASS;
 		}
 
-		// Rotation does not require charge; mining does.
 		return ItemToolWrench.trySetFacingFromHit(context, player);
 	}
 
-	// === Left-click (mining) — same path as ItemToolWrench, energy instead of durability ===
 
 	@Override
 	public InteractionResult onBlockStartBreak(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction)
@@ -81,7 +79,6 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 		ItemStack stack = player.getMainHandItem();
 		if (!this.canTakeDamage(stack, MINE_ENERGY_UNITS))
 		{
-			// No charge: fall through to vanilla (slow, no correct-tool wrench drops).
 			return true;
 		}
 
@@ -138,7 +135,6 @@ public class ItemToolWrenchElectric extends ItemElectricTool implements Priority
 	@Override
 	public boolean providesEnhancedOverlay(Level world, BlockPos pos, Direction side, Player player, ItemStack stack)
 	{
-		// Still show the grid with empty charge so the player can plan the click.
 		return world.getBlockState(pos).getBlock() instanceof IWrenchAble;
 	}
 

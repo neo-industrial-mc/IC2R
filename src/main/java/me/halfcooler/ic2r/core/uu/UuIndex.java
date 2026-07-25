@@ -5,13 +5,12 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.init.IC2RUuMatterConfig;
 import me.halfcooler.ic2r.core.util.ConfigUtil;
 import me.halfcooler.ic2r.core.util.LogCategory;
+import net.minecraft.world.item.ItemStack;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import net.minecraft.world.item.ItemStack;
 
 /**
  * Entry point for UU values used by scanner / replicator / pattern storage.
@@ -80,11 +79,9 @@ public class UuIndex
 			return;
 		}
 
-		// Vanilla crafting & smelting
 		this.addResolver(new RecipeResolver());
 		this.addResolver(new VanillaSmeltingResolver());
 
-		// IC2 machine recipes (resolved lazily via RecipeManager when a Level exists)
 		this.addResolver(new MachineRecipeResolver(Recipes.macerator));
 		this.addResolver(new MachineRecipeResolver(Recipes.extractor));
 		this.addResolver(new MachineRecipeResolver(Recipes.compressor));
@@ -96,14 +93,10 @@ public class UuIndex
 		this.addResolver(new MachineRecipeResolver(Recipes.metalformerRolling));
 		this.addResolver(new MachineRecipeResolver(Recipes.oreWashing));
 
-		// Explicit non-JSON transforms (e.g. fuel rod depletion)
 		this.addResolver(new ManualRecipeResolver());
 
-		// Late: scrap from recyclable items already present in the graph
 		this.addResolver(new RecyclerResolver());
 
-		// Scrap box drops intentionally omitted: Recipes.scrapboxDrops is not initialized in this port,
-		// and scrap-box edges can collapse rare-item UU values unreasonably.
 
 		this.resolversRegistered = true;
 		IC2R.log.debug(LogCategory.Uu, "Registered %d UU recipe resolvers (+ %d late).", this.resolvers.size(), this.lateResolvers.size());
@@ -125,8 +118,7 @@ public class UuIndex
 		if (matterValues.isEmpty())
 		{
 			IC2R.log.warn(LogCategory.Uu, "No UU matter values configured in %s.", IC2RUuMatterConfig.RELATIVE_PATH);
-		}
-		else
+		} else
 		{
 			IC2R.log.debug(LogCategory.Uu, "Loading %d UU matter values from %s.", matterValues.size(), IC2RUuMatterConfig.RELATIVE_PATH);
 			for (Map.Entry<String, Double> entry : matterValues.entrySet())

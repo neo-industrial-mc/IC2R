@@ -9,6 +9,7 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquid;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquidByTank;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotOutput;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerFluidDistributor;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
@@ -17,16 +18,6 @@ import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,6 +26,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 @NotClassic
 public class TileEntityFluidDistributor extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener, ServerTicker

@@ -114,7 +114,8 @@ public class ItemMug extends Item implements ItemLike
 		}
 	}
 
-	public int getUseDuration(ItemStack stack, net.minecraft.world.entity.LivingEntity entity) {
+	public int getUseDuration(ItemStack stack, net.minecraft.world.entity.LivingEntity entity)
+	{
 		ItemMug.MugType type = this.getType(stack);
 		return type != null && type != ItemMug.MugType.empty ? 32 : 0;
 	}

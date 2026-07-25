@@ -11,17 +11,12 @@ import me.halfcooler.ic2r.core.ChunkLoaderLogic;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rDamageSource;
 import me.halfcooler.ic2r.core.apihelper.CoreAccessImpl;
-import me.halfcooler.ic2r.platform.services.PlatformServices;
 import me.halfcooler.ic2r.core.block.ChunkLoadAwareBlockHandler;
 import me.halfcooler.ic2r.core.block.comp.Components;
 import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntitySemifluidGenerator;
 import me.halfcooler.ic2r.core.block.heatgenerator.tileentity.TileEntityFluidHeatGenerator;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityElectrolyzer;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityFermenter;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityMatter;
 import me.halfcooler.ic2r.core.block.inherit.Ic2rFenceBlock;
-import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityRecycler;
+import me.halfcooler.ic2r.core.block.machine.tileentity.*;
 import me.halfcooler.ic2r.core.crop.Ic2rCrops;
 import me.halfcooler.ic2r.core.energy.grid.EnergyNetGlobal;
 import me.halfcooler.ic2r.core.init.BlocksItems;
@@ -32,35 +27,29 @@ import me.halfcooler.ic2r.core.item.ElectricItemManager;
 import me.halfcooler.ic2r.core.item.GatewayElectricItemManager;
 import me.halfcooler.ic2r.core.item.armor.ItemArmorElectric;
 import me.halfcooler.ic2r.core.item.armor.ItemArmorHazmat;
-import me.halfcooler.ic2r.core.item.armor.jetpack.JetpackAttachmentRecipe;
-import me.halfcooler.ic2r.core.item.armor.jetpack.JetpackHandler;
 import me.halfcooler.ic2r.core.item.armor.ItemArmorNanoSuit;
 import me.halfcooler.ic2r.core.item.armor.ItemArmorQuantumSuit;
+import me.halfcooler.ic2r.core.item.armor.jetpack.JetpackAttachmentRecipe;
+import me.halfcooler.ic2r.core.item.armor.jetpack.JetpackHandler;
 import me.halfcooler.ic2r.core.recipe.input.RecipeInputFactory;
-import me.halfcooler.ic2r.core.ref.Ic2rBlockTags;
-import me.halfcooler.ic2r.core.ref.Ic2rBoatTypes;
-import me.halfcooler.ic2r.core.ref.Ic2rEntities;
-import me.halfcooler.ic2r.core.ref.Ic2rGameEvents;
-import me.halfcooler.ic2r.core.ref.Ic2rItemTags;
-import me.halfcooler.ic2r.core.ref.Ic2rItems;
-import me.halfcooler.ic2r.core.ref.Ic2rRecipeSerializers;
-import me.halfcooler.ic2r.core.ref.Ic2rRecipeTypes;
+import me.halfcooler.ic2r.core.ref.*;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.uu.UuIndex;
 import me.halfcooler.ic2r.core.world.Ic2rWorldGen;
+import me.halfcooler.ic2r.platform.services.PlatformServices;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Skeleton;
@@ -78,7 +67,6 @@ public final class EventHandler
 {
 	public static void onInitGameEvents()
 	{
-		// SoundEvents are queued via DeferredRegister in FmlMod constructor (W1.7).
 		Ic2rGameEvents.init();
 	}
 
@@ -126,7 +114,6 @@ public final class EventHandler
 	public static void onInitLate()
 	{
 		long startTime = System.nanoTime();
-		// Register resolvers only; graph build needs a live RecipeManager (server start).
 		UuIndex.instance.init();
 		IC2R.sideProxy.onPostInit();
 		IC2R.sideProxy.requestTick(!PlatformServices.lifecycle().isClient(), ChunkLoadAwareBlockHandler::init);
@@ -151,7 +138,6 @@ public final class EventHandler
 	public static void onServerStart(MinecraftServer server)
 	{
 		IC2R.sideProxy.onServerAvailable(server);
-		// Recipes (and tags) are available here — build UU graph with crafting/smelting/machine edges.
 		try
 		{
 			UuIndex.instance.refresh(true);
@@ -172,12 +158,10 @@ public final class EventHandler
 
 	public static void onPlayerLogin(Player player)
 	{
-		// Energy-net mode chat tip lives in optional ic2r_gt_addon only.
 	}
 
 	public static void onWorldLoad(Level world)
 	{
-		// Bind cached DamageSources to this world's datapack registry (radiation, electricity, …).
 		Ic2rDamageSource.init(world.registryAccess());
 
 		if (!world.isClientSide)

@@ -9,17 +9,10 @@ import me.halfcooler.ic2r.core.block.comp.ComparatorEmitter;
 import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.comp.Redstone;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.event.TickHandler;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -39,6 +32,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 public class TileEntityLuminator extends Ic2rTileEntity implements ServerTicker
 {
@@ -93,7 +91,8 @@ public class TileEntityLuminator extends Ic2rTileEntity implements ServerTicker
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.invertRedstone = nbt.getBoolean("invert");
 	}

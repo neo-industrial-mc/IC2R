@@ -4,14 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Quaternionf;
 import com.mojang.math.Axis;
 import me.halfcooler.ic2r.api.entity.boat.AbstractBoatEntity;
 import me.halfcooler.ic2r.api.entity.boat.BoatType;
-
-import java.util.Map;
-
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -21,9 +16,13 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.vehicle.Boat.Type;
-import net.minecraft.util.FastColor;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+
+import java.util.Map;
 
 public class BoatEntityRenderer extends EntityRenderer<AbstractBoatEntity>
 {

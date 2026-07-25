@@ -2,16 +2,12 @@ package me.halfcooler.ic2r.recipe;
 
 import me.halfcooler.ic2r.core.recipe.v2.RecipeSerializerMath;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeSerializerMath.InputShape;
-
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Pure serializer/network/JSON shape gates (G2.4) — no Level / RecipeManager bootstrap.
@@ -61,7 +57,9 @@ class RecipeSerializerMathTest
 		assertEquals(InputShape.INGREDIENT, RecipeSerializerMath.classifyInputShape(false, false, false, false));
 	}
 
-	/** Datapack smoke: macerator JSON has the two keys BasicMachineRecipeSerializer expects. */
+	/**
+	 * Datapack smoke: macerator JSON has the two keys BasicMachineRecipeSerializer expects.
+	 */
 	@Test
 	void macerator_datapack_has_basic_machine_keys() throws Exception
 	{

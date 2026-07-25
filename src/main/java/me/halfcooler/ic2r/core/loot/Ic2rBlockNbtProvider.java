@@ -3,9 +3,7 @@ package me.halfcooler.ic2r.core.loot;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.MapCodec;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
-
-import java.util.Set;
-
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,7 +15,8 @@ import net.minecraft.world.level.storage.loot.providers.nbt.LootNbtProviderType;
 import net.minecraft.world.level.storage.loot.providers.nbt.NbtProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.core.component.DataComponents;
+
+import java.util.Set;
 
 public class Ic2rBlockNbtProvider implements NbtProvider
 {

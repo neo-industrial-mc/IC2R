@@ -5,14 +5,6 @@ import me.halfcooler.ic2r.core.block.personal.IPersonalBlock;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.item.EnvItemHandler;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
-
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
@@ -25,6 +17,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.function.Predicate;
 
 final class EnvItemHandlerForge implements EnvItemHandler
 {

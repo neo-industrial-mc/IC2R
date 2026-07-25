@@ -1,14 +1,10 @@
 package me.halfcooler.ic2r.forge;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.RemapService;
 import me.halfcooler.ic2r.core.util.LogCategory;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -21,8 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Migrates player advancement progress saved under pre-rebrand IDs.
@@ -50,11 +44,15 @@ public final class LegacyAdvancementProgressMigrator
 
 	private static final String DATA_VERSION_KEY = "DataVersion";
 
-	/** Path segment used under both namespaces for the main IC2R tree. */
+	/**
+	 * Path segment used under both namespaces for the main IC2R tree.
+	 */
 	public static final String TREE_PATH_PREFIX_LEGACY = "ic2/";
 	public static final String TREE_PATH_PREFIX_CURRENT = "ic2r/";
 
-	/** Advancement path (no namespace) for coal→diamond challenge. */
+	/**
+	 * Advancement path (no namespace) for coal→diamond challenge.
+	 */
 	public static final String COAL_DIAMOND_PATH = "ic2r/build_generator/build_compressor/build_coal_diamond";
 
 	public static final String CRITERION_INDUSTRIAL_DIAMOND_LEGACY = "ic2:industrial_diamond";
@@ -133,14 +131,12 @@ public final class LegacyAdvancementProgressMigrator
 			}
 			if (!entry.getValue().isJsonObject())
 			{
-				// Preserve unexpected non-object members as-is (should not appear in vanilla files).
 				continue;
 			}
 
 			ResourceLocation originalId = ResourceLocation.tryParse(key);
 			if (originalId == null)
 			{
-				// Unknown key shape — keep as-is under the original string key.
 				migrated.put(key, entry.getValue().getAsJsonObject());
 				continue;
 			}
@@ -163,8 +159,7 @@ public final class LegacyAdvancementProgressMigrator
 			if (existing == null)
 			{
 				migrated.put(outKey, progressOut);
-			}
-			else
+			} else
 			{
 				JsonObject merged = mergeProgress(existing, progressOut);
 				if (merged != existing)
@@ -213,7 +208,6 @@ public final class LegacyAdvancementProgressMigrator
 			{
 				criteriaChanged = true;
 			}
-			// Prefer first-seen timestamp if duplicate after remap.
 			if (!criteriaOut.has(remapped))
 			{
 				criteriaOut.add(remapped, c.getValue());
@@ -289,8 +283,7 @@ public final class LegacyAdvancementProgressMigrator
 					rewritten++;
 				}
 			}
-		}
-		catch (IOException ex)
+		} catch (IOException ex)
 		{
 			IC2R.log.warn(LogCategory.Resource, ex, "Failed to scan player advancements dir %s", advancementsDir);
 		}
@@ -327,8 +320,7 @@ public final class LegacyAdvancementProgressMigrator
 				return false;
 			}
 			root = parsed.getAsJsonObject();
-		}
-		catch (Exception ex)
+		} catch (Exception ex)
 		{
 			IC2R.log.warn(LogCategory.Resource, ex, "Could not parse player advancements %s", file);
 			return false;
@@ -343,8 +335,7 @@ public final class LegacyAdvancementProgressMigrator
 		try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8))
 		{
 			GSON.toJson(migrated.get(), writer);
-		}
-		catch (IOException ex)
+		} catch (IOException ex)
 		{
 			IC2R.log.warn(LogCategory.Resource, ex, "Could not write migrated advancements %s", file);
 			return false;

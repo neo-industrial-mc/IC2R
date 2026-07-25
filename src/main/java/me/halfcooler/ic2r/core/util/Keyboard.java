@@ -1,16 +1,9 @@
 package me.halfcooler.ic2r.core.util;
 
 import me.halfcooler.ic2r.api.util.IKeyboard;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-
-
 import net.minecraft.world.entity.player.Player;
+
+import java.util.*;
 
 public class Keyboard implements IKeyboard
 {

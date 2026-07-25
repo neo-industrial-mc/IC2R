@@ -16,22 +16,17 @@ import me.halfcooler.ic2r.core.energy.grid.EnergyNetGlobal;
 import me.halfcooler.ic2r.core.energy.grid.EnergyNetSettings;
 import me.halfcooler.ic2r.core.energy.grid.GridInfo;
 import me.halfcooler.ic2r.core.item.ItemCropSeed;
-import me.halfcooler.ic2r.core.uu.UuGraph;
-import me.halfcooler.ic2r.core.uu.UuIndex;
 import me.halfcooler.ic2r.core.util.ConfigUtil;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
+import me.halfcooler.ic2r.core.uu.UuGraph;
+import me.halfcooler.ic2r.core.uu.UuIndex;
 import me.halfcooler.ic2r.platform.services.PlatformServices;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map.Entry;
-
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -40,7 +35,11 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.registries.BuiltInRegistries;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map.Entry;
 
 public final class CommandIc2r
 {
@@ -48,7 +47,8 @@ public final class CommandIc2r
 	private static final SuggestionProvider<CommandSourceStack> DEBUG_ACTION_SUGGESTIONS = (ctx, builder) -> SharedSuggestionProvider.suggest(new String[] { "dumpUuValues", "resolveIngredient", "dumpTextures", "dumpLargeGrids", "enet" }, builder);
 	private static final SuggestionProvider<CommandSourceStack> ENET_OPTION_SUGGESTIONS = (ctx, builder) -> SharedSuggestionProvider.suggest(new String[] { "logIssues", "logUpdates" }, builder);
 	private static final SuggestionProvider<CommandSourceStack> BOOL_SUGGESTIONS = (ctx, builder) -> SharedSuggestionProvider.suggest(new String[] { "true", "false" }, builder);
-	private static final SuggestionProvider<CommandSourceStack> ITEM_SUGGESTIONS = (ctx, builder) -> {
+	private static final SuggestionProvider<CommandSourceStack> ITEM_SUGGESTIONS = (ctx, builder) ->
+	{
 		String remaining = builder.getRemaining().toLowerCase();
 
 		for (Item item : BuiltInRegistries.ITEM)
@@ -76,7 +76,8 @@ public final class CommandIc2r
 
 		return builder.buildFuture();
 	};
-	private static final SuggestionProvider<CommandSourceStack> TEXTURE_SIZE_SUGGESTIONS = (ctx, builder) -> {
+	private static final SuggestionProvider<CommandSourceStack> TEXTURE_SIZE_SUGGESTIONS = (ctx, builder) ->
+	{
 		for (int size = 512; size > 8; size >>= 1)
 		{
 			builder.suggest(Integer.toString(size));
@@ -176,7 +177,7 @@ public final class CommandIc2r
 		List<Entry<ItemStack, Double>> list = new ArrayList<>();
 		int infinite = 0;
 
-		for (var it = UuGraph.iterator(); it.hasNext();)
+		for (var it = UuGraph.iterator(); it.hasNext(); )
 		{
 			Entry<ItemStack, Double> entry = it.next();
 			if (entry.getValue() == null || entry.getValue() >= Double.POSITIVE_INFINITY)
@@ -261,7 +262,8 @@ public final class CommandIc2r
 	{
 		StringBuilder ret = new StringBuilder();
 
-		stack.getTags().forEach(tag -> {
+		stack.getTags().forEach(tag ->
+		{
 			if (!ret.isEmpty())
 			{
 				ret.append(", ");
@@ -275,13 +277,11 @@ public final class CommandIc2r
 
 	private static int cmdDebugDumpTextures(CommandSourceStack source, String name, int size)
 	{
-		// Physical dedicated server has no client texture atlas.
 		if (!PlatformServices.lifecycle().isClient())
 		{
 			msg(source, "Can't dump textures on the dedicated server.");
 		} else
 		{
-			// Client-only texture dumping relies on legacy OpenGL capture and has not been ported yet.
 			msg(source, "Texture dumping is not yet available on this version.");
 		}
 

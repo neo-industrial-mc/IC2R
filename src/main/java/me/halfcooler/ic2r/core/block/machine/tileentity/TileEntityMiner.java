@@ -6,14 +6,10 @@ import me.halfcooler.ic2r.api.network.INetworkClientTileEntityEventListener;
 import me.halfcooler.ic2r.api.upgrade.IUpgradableBlock;
 import me.halfcooler.ic2r.api.upgrade.UpgradableProperty;
 import me.halfcooler.ic2r.core.ContainerBase;
+import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.Ic2rPlayer;
-import me.halfcooler.ic2r.core.block.invslot.InvSlot;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumable;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableBlock;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableClass;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableId;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
+import me.halfcooler.ic2r.core.block.invslot.*;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerMiner;
 import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
@@ -21,26 +17,16 @@ import me.halfcooler.ic2r.core.init.OreValues;
 import me.halfcooler.ic2r.core.item.tool.ItemScanner;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.network.GuiSynced;
-import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
-import me.halfcooler.ic2r.core.ref.Ic2rBlockTags;
-import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
-import me.halfcooler.ic2r.core.ref.Ic2rItems;
-import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
+import me.halfcooler.ic2r.core.ref.*;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.EnumSet;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import me.halfcooler.ic2r.core.IC2R;
-
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -53,6 +39,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 public class TileEntityMiner extends TileEntityElectricMachine implements IHasGui, IUpgradableBlock, INetworkClientTileEntityEventListener
 {
@@ -115,7 +104,8 @@ public class TileEntityMiner extends TileEntityElectricMachine implements IHasGu
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.lastMode = TileEntityMiner.Mode.values()[nbt.getInt("lastMode")];
 		this.progress = nbt.getInt("progress");

@@ -3,7 +3,6 @@ plugins {
     id 'jacoco'
     id 'net.neoforged.moddev' version '2.0.141'
     id 'com.modrinth.minotaur' version '2.+'
-    // Applies maven-publish + signing; talks to Central Portal upload API (not Maven PUT).
     id 'com.vanniktech.maven.publish' version '0.37.0'
 }
 
@@ -80,8 +79,6 @@ neoForge {
         }
     }
 
-    // Put Minecraft / NeoForge on the test classpath so pure unit tests can
-    // reference CompoundTag and other game types (Forge FG did this by default).
     unitTest {
         enable()
         testedMod = mods."${mod_id}"
@@ -117,6 +114,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_name               : mod_name,
             mod_license            : mod_license,
             mod_version            : mod_version,
+            mod_credits            : mod_credits,
             mod_authors            : mod_authors,
             mod_description        : mod_description,
     ]

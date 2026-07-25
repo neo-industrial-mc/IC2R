@@ -1,11 +1,10 @@
 package me.halfcooler.ic2r.api.entity.boat;
 
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import net.minecraft.world.item.Item;
 
 import java.util.Set;
 import java.util.stream.Stream;
-
-import net.minecraft.world.item.Item;
 
 public record BoatType(String name, Item baseItem)
 {

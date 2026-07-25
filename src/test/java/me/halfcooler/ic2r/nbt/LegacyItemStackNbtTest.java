@@ -1,14 +1,10 @@
 package me.halfcooler.ic2r.nbt;
 
 import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
-
 import net.minecraft.nbt.CompoundTag;
-
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Pure NBT structure tests for 1.20.1 → 1.21 ItemStack field migration.
@@ -61,7 +57,6 @@ class LegacyItemStackNbtTest
 		assertTrue(components.contains("minecraft:custom_data", 10));
 		assertEquals(12345.0, components.getCompound("minecraft:custom_data").getDouble("charge"), 0.0);
 
-		// Input not mutated
 		assertTrue(legacy.contains("Count"));
 		assertTrue(legacy.contains("tag"));
 	}

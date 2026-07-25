@@ -3,12 +3,11 @@ package me.halfcooler.ic2r.core.crop.cropcard;
 import me.halfcooler.ic2r.api.crops.CropProperties;
 import me.halfcooler.ic2r.api.crops.ICropTile;
 import me.halfcooler.ic2r.api.crops.ICropType;
-
-import java.util.Collection;
-
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+
+import java.util.Collection;
 
 public class CropBaseMetalUncommon extends CropBaseMetalCommon
 {

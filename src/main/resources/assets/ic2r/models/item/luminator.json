@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
-    "textures": {
-        "layer0": "ic2r:block/machine/misc/luminator"
-    }
+  "textures": {
+    "layer0": "ic2r:block/machine/misc/luminator"
+  }
 }

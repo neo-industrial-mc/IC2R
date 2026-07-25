@@ -1,18 +1,15 @@
 package me.halfcooler.ic2r.core.block.storage.tank;
 
+import me.halfcooler.ic2r.api.network.INetworkClientTileEntityEventListener;
 import me.halfcooler.ic2r.api.upgrade.IUpgradableBlock;
 import me.halfcooler.ic2r.api.upgrade.UpgradableProperty;
-import me.halfcooler.ic2r.api.network.INetworkClientTileEntityEventListener;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.comp.Fluids;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
-import me.halfcooler.ic2r.core.fluid.FluidBeBridge;
-import me.halfcooler.ic2r.core.fluid.FluidHandler;
-import me.halfcooler.ic2r.core.fluid.FluidTankInfo;
-import me.halfcooler.ic2r.core.fluid.Ic2rFluidBlock;
-import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
+import me.halfcooler.ic2r.core.fluid.*;
 import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.network.GuiSynced;
@@ -20,18 +17,10 @@ import me.halfcooler.ic2r.core.proxy.SideProxyClient;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
-
-import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,6 +33,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 public abstract class TileEntityTank extends TileEntityInventory implements IHasGui, Ic2rFluidBlock, FluidBeBridge, INetworkClientTileEntityEventListener, IUpgradableBlock, ServerTicker
 {
@@ -133,7 +126,6 @@ public abstract class TileEntityTank extends TileEntityInventory implements IHas
 		return DynamicContainer.create(syncId, inventory, this);
 	}
 
-	// ---- Ic2rFluidBlock + FluidBeBridge ----
 
 	@Override
 	public Ic2rFluidBlock getFluidBlock()

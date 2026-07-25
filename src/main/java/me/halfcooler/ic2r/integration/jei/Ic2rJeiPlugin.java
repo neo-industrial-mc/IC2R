@@ -19,49 +19,25 @@ import me.halfcooler.ic2r.core.ref.Ic2rRecipeTypes;
 import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.util.LiquidUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
-import me.halfcooler.ic2r.integration.jei.recipe.machine.CannerBottleCategory;
-import me.halfcooler.ic2r.integration.jei.recipe.machine.CannerBottleLiquidCategory;
-import me.halfcooler.ic2r.integration.jei.recipe.machine.CannerBottleLiquidRecipeWrapper;
-import me.halfcooler.ic2r.integration.jei.recipe.machine.CannerBottleRecipeWrapper;
-import me.halfcooler.ic2r.integration.jei.recipe.machine.CannerEmptyLiquidCategory;
-import me.halfcooler.ic2r.integration.jei.recipe.machine.CannerEmptyLiquidRecipeWrapper;
-import me.halfcooler.ic2r.integration.jei.recipe.machine.CannerEnrichCategory;
-import me.halfcooler.ic2r.integration.jei.recipe.machine.CannerEnrichRecipeWrapper;
-import me.halfcooler.ic2r.integration.jei.recipe.machine.DynamicCategory;
-import me.halfcooler.ic2r.integration.jei.recipe.machine.IORecipeWrapper;
-import me.halfcooler.ic2r.integration.jei.recipe.machine.MetalFormerCategory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-
+import me.halfcooler.ic2r.integration.jei.recipe.machine.*;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.neoforge.NeoForgeTypes;
-import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.neoforge.NeoForgeTypes;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
-import mezz.jei.api.registration.IRecipeTransferRegistration;
-import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
+import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -75,9 +51,11 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.function.BiConsumer;
 
 @JeiPlugin
 public class Ic2rJeiPlugin implements IModPlugin
@@ -191,12 +169,11 @@ public class Ic2rJeiPlugin implements IModPlugin
 		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.INDUSTRIAL_WORKBENCH.get()), RecipeTypes.CRAFTING);
 		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.BATCH_CRAFTER.get()), RecipeTypes.CRAFTING);
 
-		// Furnace-class machines use vanilla smelting (and fuel for the iron furnace firebox).
 		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.IRON_FURNACE.get()), RecipeTypes.SMELTING, RecipeTypes.FUELING);
 		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.ELECTRIC_FURNACE.get()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(Ic2rBlocks.INDUCTION_FURNACE.get()), RecipeTypes.SMELTING);
 	}
-	
+
 	@Override
 	public void onRuntimeAvailable(@NotNull IJeiRuntime jeiRuntime)
 	{
@@ -241,7 +218,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 	{
 		Map<String, RecipeType<?>> aliases = new HashMap<>();
 
-		// Processing machines (guidef event names)
 		aliases.put("macerator", this.MACERATOR);
 		aliases.put("compressor", this.COMPRESSOR);
 		aliases.put("extractor", this.EXTRACTOR);
@@ -252,7 +228,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 		aliases.put("ore_washer", this.ORE_WASHER);
 		aliases.put("solid_canner", this.CANNER_BOTTLE);
 
-		// Metal former modes (GuiMetalFormer): 0 extrude, 1 roll, 2 cut
 		aliases.put("metal_former0", this.METAL_FORMER_EXTRUDING);
 		aliases.put("metal_former1", this.METAL_FORMER_ROLLING);
 		aliases.put("metal_former2", this.METAL_FORMER_CUTTING);
@@ -260,7 +235,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 		aliases.put("metal_former_rolling", this.METAL_FORMER_ROLLING);
 		aliases.put("metal_former_cutting", this.METAL_FORMER_CUTTING);
 
-		// Fluid/solid canner modes (GuiCanner): canner_<Mode.name()>
 		aliases.put("canner_BottleSolid", this.CANNER_BOTTLE);
 		aliases.put("canner_EmptyLiquid", this.CANNER_EMPTY_LIQUID);
 		aliases.put("canner_BottleLiquid", this.CANNER_BOTTLE_LIQUID);
@@ -270,7 +244,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 		aliases.put("canner_bottle_liquid", this.CANNER_BOTTLE_LIQUID);
 		aliases.put("canner_enrich", this.CANNER_ENRICH);
 
-		// Vanilla-style furnaces (guidef uses dotted 1.12-era category ids)
 		aliases.put("minecraft.smelting", RecipeTypes.SMELTING);
 		aliases.put("minecraft.fuel", RecipeTypes.FUELING);
 		aliases.put("minecraft:smelting", RecipeTypes.SMELTING);
@@ -279,7 +252,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 		aliases.put("smelting", RecipeTypes.SMELTING);
 		aliases.put("fuel", RecipeTypes.FUELING);
 
-		// Also accept modern "modid:path" uids for every IC2R type we own
 		putUidAliases(aliases, this.MACERATOR);
 		putUidAliases(aliases, this.COMPRESSOR);
 		putUidAliases(aliases, this.EXTRACTOR);
@@ -319,7 +291,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 			return direct;
 		}
 
-		// guidef sometimes uses dots: ic2.macerator / minecraft.smelting
 		String normalized = key.indexOf('.') >= 0 && key.indexOf(':') < 0 ? key.replace('.', ':') : key;
 		direct = aliases.get(normalized);
 		if (direct != null)
@@ -346,9 +317,7 @@ public class Ic2rJeiPlugin implements IModPlugin
 
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
 	{
-		// Industrial workbench: 3x3 grid + 2x9 buffer + forge-hammer / wire-cutter dedicated rows.
 		registration.addRecipeTransferHandler(new IndustrialWorkbenchTransferInfo());
-		// Batch crafter: recipe slots are inputs only (JEI maps by index to recipe INPUT views).
 		registration.addRecipeTransferHandler(new CraftingTransferInfo<>(ContainerBatchCrafter.class, Ic2rScreenHandlers.BATCH_CRAFTER, 37, 45, 0, 36));
 
 		registration.addRecipeTransferHandler(new IOTransferInfo<>(ContainerMetalFormer.class, Ic2rScreenHandlers.METAL_FORMER, this.METAL_FORMER_EXTRUDING, List.of(37), List.of(38), 0, 36));
@@ -421,55 +390,55 @@ public class Ic2rJeiPlugin implements IModPlugin
 		int inputEndInclusive,
 		int inventoryStart,
 		int inventoryCount) implements IRecipeTransferInfo<C, CraftingRecipe>
+	{
+
+		@Override
+		public @NotNull Class<? extends C> getContainerClass()
 		{
-
-			@Override
-			public @NotNull Class<? extends C> getContainerClass()
-			{
-				return this.containerClass;
-			}
-
-			@Override
-			public @NotNull Optional<MenuType<C>> getMenuType()
-			{
-				return Optional.of(this.menuType);
-			}
-
-			@Override
-			@SuppressWarnings("unchecked")
-			public @NotNull RecipeType<CraftingRecipe> getRecipeType()
-			{
-				return (RecipeType<CraftingRecipe>) (RecipeType<?>) RecipeTypes.CRAFTING;
-			}
-
-			@Override
-			public boolean canHandle(@NotNull C container, @NotNull CraftingRecipe recipe)
-			{
-				return true;
-			}
-
-			@Override
-			public @NotNull List<Slot> getRecipeSlots(@NotNull C container, @NotNull CraftingRecipe recipe)
-			{
-				List<Slot> slots = new ArrayList<>(this.inputEndInclusive - this.inputStart + 1);
-				for (int i = this.inputStart; i <= this.inputEndInclusive; i++)
-				{
-					slots.add(container.getSlot(i));
-				}
-				return slots;
-			}
-
-			@Override
-			public @NotNull List<Slot> getInventorySlots(@NotNull C container, @NotNull CraftingRecipe recipe)
-			{
-				List<Slot> slots = new ArrayList<>(this.inventoryCount);
-				for (int i = 0; i < this.inventoryCount; i++)
-				{
-					slots.add(container.getSlot(this.inventoryStart + i));
-				}
-				return slots;
-			}
+			return this.containerClass;
 		}
+
+		@Override
+		public @NotNull Optional<MenuType<C>> getMenuType()
+		{
+			return Optional.of(this.menuType);
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public @NotNull RecipeType<CraftingRecipe> getRecipeType()
+		{
+			return (RecipeType<CraftingRecipe>) (RecipeType<?>) RecipeTypes.CRAFTING;
+		}
+
+		@Override
+		public boolean canHandle(@NotNull C container, @NotNull CraftingRecipe recipe)
+		{
+			return true;
+		}
+
+		@Override
+		public @NotNull List<Slot> getRecipeSlots(@NotNull C container, @NotNull CraftingRecipe recipe)
+		{
+			List<Slot> slots = new ArrayList<>(this.inputEndInclusive - this.inputStart + 1);
+			for (int i = this.inputStart; i <= this.inputEndInclusive; i++)
+			{
+				slots.add(container.getSlot(i));
+			}
+			return slots;
+		}
+
+		@Override
+		public @NotNull List<Slot> getInventorySlots(@NotNull C container, @NotNull CraftingRecipe recipe)
+		{
+			List<Slot> slots = new ArrayList<>(this.inventoryCount);
+			for (int i = 0; i < this.inventoryCount; i++)
+			{
+				slots.add(container.getSlot(this.inventoryStart + i));
+			}
+			return slots;
+		}
+	}
 
 	/**
 	 * Industrial workbench transfer:
@@ -532,12 +501,10 @@ public class Ic2rJeiPlugin implements IModPlugin
 		public @NotNull List<Slot> getInventorySlots(@NotNull ContainerIndustrialWorkbench container, @NotNull CraftingRecipe recipe)
 		{
 			List<Slot> slots = new ArrayList<>(36 + 18 + 4);
-			// Player inventory
 			for (int i = 0; i < 36; i++)
 			{
 				slots.add(container.getSlot(i));
 			}
-			// 2x9 temporary storage buffer
 			for (int i = container.indexBufferStart; i < container.indexBufferEnd; i++)
 			{
 				slots.add(container.getSlot(i));
@@ -546,11 +513,9 @@ public class Ic2rJeiPlugin implements IModPlugin
 			ToolCombo combo = detectToolCombo(recipe);
 			if (combo == null)
 			{
-				// For normal crafting, dedicated tool rows can supply materials/tools.
 				addToolRowInventorySlots(container, slots, true, true);
 			} else if (combo.isHammer())
 			{
-				// Hammer row is recipe target; cutter row can still supply items.
 				addToolRowInventorySlots(container, slots, false, true);
 			} else
 			{
@@ -580,7 +545,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 			Slot inputSlot = container.getSlot(combo.isHammer() ? container.indexInputHammer : container.indexInputCutter);
 
 			List<Slot> slots = new ArrayList<>(11);
-			// Map JEI ingredient order: tool ingredient view → tool slot, material → input slot.
 			if (combo.toolIngredientIndex() == 0)
 			{
 				slots.add(toolSlot);
@@ -646,7 +610,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 				}
 			}
 
-			// Exactly one tool ingredient + one material.
 			if (hammerIndex >= 0 && cutterIndex < 0)
 			{
 				return new ToolCombo(true, hammerIndex);
@@ -679,58 +642,58 @@ public class Ic2rJeiPlugin implements IModPlugin
 		List<Integer> outputSlots,
 		int inventoryStart,
 		int inventoryCount) implements IRecipeTransferInfo<AbstractContainerMenu, R>
-		{
+	{
 
-			@Override
-			public @NotNull Class<? extends AbstractContainerMenu> getContainerClass()
-			{
-				return this.containerClass;
-			}
-	
-			@Override
-			public @NotNull Optional<MenuType<AbstractContainerMenu>> getMenuType()
-			{
-				return Optional.of((MenuType<AbstractContainerMenu>) this.menuType);
-			}
-	
-			@Override
-			public @NotNull RecipeType<R> getRecipeType()
-			{
-				return this.recipeType;
-			}
-	
-			@Override
-			public boolean canHandle(@NotNull AbstractContainerMenu container, @NotNull R recipe)
-			{
-				return true;
-			}
-	
-			@Override
-			public @NotNull List<Slot> getRecipeSlots(@NotNull AbstractContainerMenu container, @NotNull R recipe)
-			{
-				List<Slot> slots = new ArrayList<>(this.inputSlots.size() + this.outputSlots.size());
-				for (int idx : this.inputSlots)
-				{
-					slots.add(container.getSlot(idx));
-				}
-				for (int idx : this.outputSlots)
-				{
-					slots.add(container.getSlot(idx));
-				}
-				return slots;
-			}
-	
-			@Override
-			public @NotNull List<Slot> getInventorySlots(@NotNull AbstractContainerMenu container, @NotNull R recipe)
-			{
-				List<Slot> slots = new ArrayList<>(this.inventoryCount);
-				for (int i = this.inventoryStart; i < this.inventoryStart + this.inventoryCount; i++)
-				{
-					slots.add(container.getSlot(i));
-				}
-				return slots;
-			}
+		@Override
+		public @NotNull Class<? extends AbstractContainerMenu> getContainerClass()
+		{
+			return this.containerClass;
 		}
+
+		@Override
+		public @NotNull Optional<MenuType<AbstractContainerMenu>> getMenuType()
+		{
+			return Optional.of((MenuType<AbstractContainerMenu>) this.menuType);
+		}
+
+		@Override
+		public @NotNull RecipeType<R> getRecipeType()
+		{
+			return this.recipeType;
+		}
+
+		@Override
+		public boolean canHandle(@NotNull AbstractContainerMenu container, @NotNull R recipe)
+		{
+			return true;
+		}
+
+		@Override
+		public @NotNull List<Slot> getRecipeSlots(@NotNull AbstractContainerMenu container, @NotNull R recipe)
+		{
+			List<Slot> slots = new ArrayList<>(this.inputSlots.size() + this.outputSlots.size());
+			for (int idx : this.inputSlots)
+			{
+				slots.add(container.getSlot(idx));
+			}
+			for (int idx : this.outputSlots)
+			{
+				slots.add(container.getSlot(idx));
+			}
+			return slots;
+		}
+
+		@Override
+		public @NotNull List<Slot> getInventorySlots(@NotNull AbstractContainerMenu container, @NotNull R recipe)
+		{
+			List<Slot> slots = new ArrayList<>(this.inventoryCount);
+			for (int i = this.inventoryStart; i < this.inventoryStart + this.inventoryCount; i++)
+			{
+				slots.add(container.getSlot(i));
+			}
+			return slots;
+		}
+	}
 
 	private abstract static class CannerTransferHandler<R> implements IRecipeTransferHandler<AbstractContainerMenu, R>
 	{
@@ -760,7 +723,7 @@ public class Ic2rJeiPlugin implements IModPlugin
 		{
 			return this.recipeType;
 		}
-		
+
 		protected TileEntityCanner getCanner(AbstractContainerMenu container)
 		{
 			return (TileEntityCanner) ((me.halfcooler.ic2r.core.ContainerBase<?>) container).base;
@@ -775,7 +738,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 			}
 			List<ItemStack> possibleStacks = slotView.getItemStacks().toList();
 
-			// Find matching item in player inventory
 			for (int invIdx = 0; invIdx < 36; invIdx++)
 			{
 				ItemStack invStack = container.getSlot(invIdx).getItem();
@@ -823,14 +785,12 @@ public class Ic2rJeiPlugin implements IModPlugin
 				Ic2rFluidStack tankFluid = canner.inputTank.getFluidStack();
 				if (tankFluid != null && tankFluid.getFluid() != neededFluid.getFluid())
 				{
-					// TODO
 					return this.transferHelper.createUserErrorWithTooltip(
 						Component.translatable("ic2r.jei.transfer.error.fluid_mismatch", neededFluid.getDescriptionId())
 					);
 				}
 			}
 
-			// Slot 1: additive item → inputSlot (37)
 			if (this.transferItemToSlotIfNot(container, slotViews.get(1), 37, doTransfer))
 			{
 				return this.transferHelper.createUserErrorForMissingSlots(
@@ -859,8 +819,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 
 			List<IRecipeSlotView> slotViews = recipeSlots.getSlotViews();
 
-			// Slot 0: fluid input — handled by machine's inputTank
-			// Slot 1: empty container → canInputSlot (43)
 			if (this.transferItemToSlotIfNot(container, slotViews.get(1), 43, doTransfer))
 			{
 				return this.transferHelper.createUserErrorForMissingSlots(
@@ -889,7 +847,6 @@ public class Ic2rJeiPlugin implements IModPlugin
 
 			List<IRecipeSlotView> slotViews = recipeSlots.getSlotViews();
 
-			// Slot 0: filled container → canInputSlot (43)
 			if (this.transferItemToSlotIfNot(container, slotViews.getFirst(), 43, doTransfer))
 			{
 				return this.transferHelper.createUserErrorForMissingSlots(

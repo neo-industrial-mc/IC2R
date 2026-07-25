@@ -37,7 +37,6 @@ public final class RubberTreeFoliagePlacer extends FoliagePlacer
 
 	private static FoliagePlacerType<RubberTreeFoliagePlacer> registerFoliagePlacer()
 	{
-		// 1.21+: FoliagePlacerType takes MapCodec, not Codec
 		return IC2R.envProxy.registerFoliagePlacer(IC2R.getIdentifier("rubber_tree"), CODEC);
 	}
 

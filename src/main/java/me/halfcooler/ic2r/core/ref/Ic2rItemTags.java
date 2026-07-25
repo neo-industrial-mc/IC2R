@@ -19,7 +19,6 @@ import net.minecraft.world.item.Item;
  */
 public final class Ic2rItemTags
 {
-	// --- c: ingots ---
 	public static final TagKey<Item> BRONZE_INGOTS = common("ingots/bronze");
 	public static final TagKey<Item> LEAD_INGOTS = common("ingots/lead");
 	public static final TagKey<Item> PLUTONIUM_INGOTS = common("ingots/plutonium");
@@ -28,10 +27,8 @@ public final class Ic2rItemTags
 	public static final TagKey<Item> TIN_INGOTS = common("ingots/tin");
 	public static final TagKey<Item> URANIUM_INGOTS = common("ingots/uranium");
 
-	// --- c: nuggets ---
 	public static final TagKey<Item> IRIDIUM_NUGGETS = common("nuggets/iridium");
 
-	// --- c: dusts ---
 	public static final TagKey<Item> COAL_DUSTS = common("dusts/coal");
 	public static final TagKey<Item> COPPER_DUSTS = common("dusts/copper");
 	public static final TagKey<Item> DIAMOND_DUSTS = common("dusts/diamond");
@@ -45,7 +42,6 @@ public final class Ic2rItemTags
 	public static final TagKey<Item> SULFUR_DUSTS = common("dusts/sulfur");
 	public static final TagKey<Item> TIN_DUSTS = common("dusts/tin");
 
-	// --- c: plates ---
 	public static final TagKey<Item> IRON_PLATES = common("plates/iron");
 	public static final TagKey<Item> GOLD_PLATES = common("plates/gold");
 	public static final TagKey<Item> LEAD_PLATES = common("plates/lead");
@@ -56,19 +52,16 @@ public final class Ic2rItemTags
 	public static final TagKey<Item> OBSIDIAN_PLATES = common("plates/obsidian");
 	public static final TagKey<Item> STEEL_PLATES = common("plates/steel");
 
-	// --- c: ores ---
 	public static final TagKey<Item> ORES = common("ores");
 	public static final TagKey<Item> LEAD_ORES = common("ores/lead");
 	public static final TagKey<Item> SILVER_ORES = common("ores/silver");
 	public static final TagKey<Item> TIN_ORES = common("ores/tin");
 	public static final TagKey<Item> URANIUM_ORES = common("ores/uranium");
 
-	// --- c: raw_materials ---
 	public static final TagKey<Item> LEAD_RAW_MATERIALS = common("raw_materials/lead");
 	public static final TagKey<Item> TIN_RAW_MATERIALS = common("raw_materials/tin");
 	public static final TagKey<Item> URANIUM_RAW_MATERIALS = common("raw_materials/uranium");
 
-	// --- c: storage_blocks ---
 	public static final TagKey<Item> LEAD_BLOCKS = common("storage_blocks/lead");
 	public static final TagKey<Item> TIN_BLOCKS = common("storage_blocks/tin");
 	public static final TagKey<Item> URANIUM_BLOCKS = common("storage_blocks/uranium");
@@ -77,17 +70,21 @@ public final class Ic2rItemTags
 	public static final TagKey<Item> STEEL_BLOCKS = common("storage_blocks/steel");
 	public static final TagKey<Item> SILVER_BLOCKS = common("storage_blocks/silver");
 
-	// --- other common tags ---
 	public static final TagKey<Item> DIAMONDS = common("gems/diamond");
 	public static final TagKey<Item> WOODEN_CHESTS = common("chests/wooden");
-	/** Common rubber-wood item tag (paired with {@link Ic2rBlockTags#RUBBER_LOGS}). */
+	/**
+	 * Common rubber-wood item tag (paired with {@link Ic2rBlockTags#RUBBER_LOGS}).
+	 */
 	public static final TagKey<Item> RUBBER_LOGS = common("rubber_logs");
 
-	// --- ic2r: private tool tags ---
-	/** Blacksmith forge hammer items (not the Forge loader namespace). */
+	/**
+	 * Blacksmith forge hammer items (not the Forge loader namespace).
+	 */
 	public static final TagKey<Item> FORGE_HAMMERS = mod("forge_hammers");
 	public static final TagKey<Item> WIRE_CUTTERS = mod("wire_cutters");
-	/** Items that count as the correct tool for {@link Ic2rBlockTags#MINEABLE_WITH_WRENCH}. */
+	/**
+	 * Items that count as the correct tool for {@link Ic2rBlockTags#MINEABLE_WITH_WRENCH}.
+	 */
 	public static final TagKey<Item> WRENCHES = mod("wrenches");
 
 	public static void init()

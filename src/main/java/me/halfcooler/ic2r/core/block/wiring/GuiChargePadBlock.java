@@ -1,12 +1,11 @@
 package me.halfcooler.ic2r.core.block.wiring;
 
 import me.halfcooler.ic2r.core.Ic2rGui;
-import me.halfcooler.ic2r.core.gui.EnergyGauge;
 import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
+import me.halfcooler.ic2r.core.gui.EnergyGauge;
 import me.halfcooler.ic2r.core.gui.TextLabel;
 import me.halfcooler.ic2r.core.gui.VanillaButton;
 import me.halfcooler.ic2r.core.gui.dynamic.TextProvider;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;

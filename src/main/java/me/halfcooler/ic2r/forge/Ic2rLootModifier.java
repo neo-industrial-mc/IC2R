@@ -3,7 +3,6 @@ package me.halfcooler.ic2r.forge;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import java.util.Map;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +19,8 @@ import net.neoforged.neoforge.common.loot.LootModifier;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public class Ic2rLootModifier extends LootModifier
 {

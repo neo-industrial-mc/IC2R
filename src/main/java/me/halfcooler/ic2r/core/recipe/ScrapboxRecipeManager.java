@@ -1,29 +1,17 @@
 package me.halfcooler.ic2r.core.recipe;
 
-import me.halfcooler.ic2r.api.recipe.IRecipeInput;
-import me.halfcooler.ic2r.api.recipe.IScrapboxManager;
-import me.halfcooler.ic2r.api.recipe.MachineRecipe;
-import me.halfcooler.ic2r.api.recipe.MachineRecipeResult;
-import me.halfcooler.ic2r.api.recipe.RecipeOutput;
-import me.halfcooler.ic2r.api.recipe.Recipes;
+import me.halfcooler.ic2r.api.recipe.*;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+
+import java.util.*;
 
 public final class ScrapboxRecipeManager implements IScrapboxManager
 {

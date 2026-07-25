@@ -1,5 +1,7 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import me.halfcooler.ic2r.api.network.INetworkClientTileEntityEventListener;
 import me.halfcooler.ic2r.api.upgrade.IUpgradableBlock;
 import me.halfcooler.ic2r.api.upgrade.UpgradableProperty;
@@ -12,19 +14,13 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlot;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotDischarge;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerChunkLoader;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.init.IC2RConfig;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.util.LogCategory;
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
-
-import java.util.EnumSet;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -39,6 +35,9 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 @NotClassic
 public class TileEntityChunkLoader extends TileEntityInventory implements INetworkClientTileEntityEventListener, IHasGui, IUpgradableBlock, ServerTicker
@@ -73,7 +72,8 @@ public class TileEntityChunkLoader extends TileEntityInventory implements INetwo
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		ListTag list = nbt.getList("loadedChunks", 4);
 		this.loadedChunks.clear();

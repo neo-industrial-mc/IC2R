@@ -16,14 +16,10 @@ import me.halfcooler.ic2r.core.ref.Ic2rFluids;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.ParticleUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -38,6 +34,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiValueProvider
 {
@@ -61,7 +60,6 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 
 	static
 	{
-		// Coal → Coal Coke + 500mB Creosote
 		recipes.add(new CokeRecipe(
 			Items.COAL,
 			new ItemStack(Ic2rItems.COKE, 1),
@@ -69,7 +67,6 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 			1800,
 			false
 		));
-		// LogWood → Charcoal + 250mB Creosote
 		recipes.add(new CokeRecipe(
 			null,
 			new ItemStack(Items.CHARCOAL, 1),
@@ -80,7 +77,8 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.progress = nbt.getInt("progress");
 		this.operationLength = nbt.getInt("operationLength");
@@ -106,8 +104,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 				this.progress = 0;
 				this.guiProgress = 0.0F;
 				this.shutdown(false);
-			}
-			else
+			} else
 			{
 				boolean needsInventoryUpdate = false;
 				if (this.canWork())
@@ -129,8 +126,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 						this.finishWork();
 						needsInventoryUpdate = true;
 					}
-				}
-				else
+				} else
 				{
 					this.shutdown(false);
 				}
@@ -138,8 +134,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 				if (this.progress != 0 && this.operationLength != 0)
 				{
 					this.guiProgress = (float) this.progress / this.operationLength;
-				}
-				else
+				} else
 				{
 					this.guiProgress = 0.0F;
 				}
@@ -154,7 +149,6 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 
 	protected boolean canWork()
 	{
-		// Find the hatch (above, opposite of facing)
 		BlockPos hatchPos = new BlockPos(
 			this.worldPosition.getX() - this.getFacing().getStepX(),
 			this.worldPosition.getY() + 1,
@@ -172,7 +166,6 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 			return false;
 		}
 
-		// Validate or find recipe
 		if (this.currentRecipe != null)
 		{
 			if (!this.currentRecipe.matches(input))
@@ -183,13 +176,11 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 
 		if (this.currentRecipe != null)
 		{
-			// Check solid output
 			if (this.currentRecipe.outputItem != null && !this.outputSlot.canAdd(this.currentRecipe.outputItem.copy()))
 			{
 				return false;
 			}
 
-			// Check fluid output
 			if (this.currentRecipe.outputFluid != null)
 			{
 				BlockPos gratePos = new BlockPos(
@@ -208,8 +199,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 				return filled >= fs.getAmountMb();
 			}
 
-		}
-		else
+		} else
 		{
 			CokeRecipe found = findRecipe(input);
 			if (found == null)
@@ -274,16 +264,13 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 			InvSlot inventory = ((TileEntityCokeKilnHatch) hatch).inventory;
 			if (!inventory.get().isEmpty())
 			{
-				// Consume one input item
 				inventory.get().shrink(1);
 
-				// Produce solid output
 				if (this.currentRecipe.outputItem != null)
 				{
 					this.outputSlot.add(this.currentRecipe.outputItem.copy());
 				}
 
-				// Produce fluid output
 				if (this.currentRecipe.outputFluid != null)
 				{
 					BlockPos gratePos = new BlockPos(
@@ -349,7 +336,6 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 		int fDX = -facing.getStepX();
 		int fDZ = -facing.getStepZ();
 
-		// Bottom layer (y-1): 3x3, center = Grate, rest = RefractoryBricks
 		for (int x = -1; x <= 1; x++)
 		{
 			for (int z = -1; z <= 1; z++)
@@ -361,8 +347,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 					{
 						return false;
 					}
-				}
-				else
+				} else
 				{
 					if (world.getBlockState(cPos).getBlock() != Ic2rBlocks.REFRACTORY_BRICKS.get())
 					{
@@ -372,7 +357,6 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 			}
 		}
 
-		// Middle layer (y=0): 3x3, center = AIR, controller on outer edge
 		for (int x = -1; x <= 1; x++)
 		{
 			for (int z = -1; z <= 1; z++)
@@ -384,15 +368,13 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 					{
 						return false;
 					}
-				}
-				else if (cPos.equals(pos))
+				} else if (cPos.equals(pos))
 				{
 					if (world.getBlockEntity(cPos) != this)
 					{
 						return false;
 					}
-				}
-				else
+				} else
 				{
 					if (world.getBlockState(cPos).getBlock() != Ic2rBlocks.REFRACTORY_BRICKS.get())
 					{
@@ -402,7 +384,6 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 			}
 		}
 
-		// Top layer (y+1): 3x3, center = Hatch, rest = RefractoryBricks
 		for (int x = -1; x <= 1; x++)
 		{
 			for (int z = -1; z <= 1; z++)
@@ -414,8 +395,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 					{
 						return false;
 					}
-				}
-				else
+				} else
 				{
 					if (world.getBlockState(cPos).getBlock() != Ic2rBlocks.REFRACTORY_BRICKS.get())
 					{
@@ -469,26 +449,26 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 		Ic2rTooltip.add(tooltip, Component.literal(" Top Layer - 3x3 of Refractory Blocks with a Coke Kiln Hatch in the centre"));
 		Ic2rTooltip.add(tooltip, Component.literal(""));
 	}
-	
+
 	public record CokeRecipe(Item inputItem, ItemStack outputItem, Ic2rFluidStack outputFluid, int operationDuration,
 	                         boolean matchLogs)
-		{
+	{
 
-			public boolean matches(ItemStack stack)
+		public boolean matches(ItemStack stack)
+		{
+			if (stack.isEmpty())
 			{
-				if (stack.isEmpty())
-				{
-					return false;
-				}
-				if (this.matchLogs)
-				{
-					return stack.is(ItemTags.LOGS);
-				}
-				if (this.inputItem != null)
-				{
-					return stack.getItem() == this.inputItem;
-				}
 				return false;
 			}
+			if (this.matchLogs)
+			{
+				return stack.is(ItemTags.LOGS);
+			}
+			if (this.inputItem != null)
+			{
+				return stack.getItem() == this.inputItem;
+			}
+			return false;
 		}
+	}
 }

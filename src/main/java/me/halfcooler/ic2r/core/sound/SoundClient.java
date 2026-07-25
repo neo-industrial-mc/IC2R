@@ -1,8 +1,5 @@
 package me.halfcooler.ic2r.core.sound;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
@@ -11,9 +8,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public class SoundClient extends Sound
 {
-	/** Ticks to wait for streamed/looping sounds to become active before treating them as dead. */
+	/**
+	 * Ticks to wait for streamed/looping sounds to become active before treating them as dead.
+	 */
 	private static final int PLAY_GRACE_TICKS = 40;
 
 	private final List<SoundInstance> startedSoundList = new CopyOnWriteArrayList<>();
@@ -197,7 +199,6 @@ public class SoundClient extends Sound
 			return true;
 		}
 
-		// Treat grace-window instances as playing so callers do not spam play() and spawn orphans.
 		return this.isStarted && this.playGraceTicks > 0 && !this.startedSoundList.isEmpty();
 	}
 
@@ -229,7 +230,6 @@ public class SoundClient extends Sound
 			return;
 		}
 
-		// Streamed / looping sounds may not report active immediately after play().
 		if (this.playGraceTicks > 0)
 		{
 			return;
@@ -239,8 +239,6 @@ public class SoundClient extends Sound
 			|| instance instanceof EntityTrackingSoundInstance;
 		if (looping && this.isStarted)
 		{
-			// Engine dropped the loop while we still want it — clear tracking so play() can restart.
-			// Do not run finish listeners (those are for intentional start→loop transitions).
 			this.startedSoundList.remove(instance);
 			return;
 		}
@@ -265,7 +263,7 @@ public class SoundClient extends Sound
 		this.onFinishSound(this.entityTrackingInstance, then);
 	}
 
-		public void tick()
+	public void tick()
 	{
 		super.tick();
 		if (this.playGraceTicks > 0)

@@ -127,7 +127,6 @@ public class WindSim
 		return 108.0;
 	}
 
-	// TODO
 	private int chanceWindDirection(int amount)
 	{
 		this.windDirection += amount;

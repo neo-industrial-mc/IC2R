@@ -7,9 +7,13 @@ public class Ic2rFluidTank
 {
 	private int capacity;
 	private Ic2rFluidStack fluidStack;
-	/** Lazy forge adapter (G2.5); type is {@code Object} so core stays forge-free. */
+	/**
+	 * Lazy forge adapter (G2.5); type is {@code Object} so core stays forge-free.
+	 */
 	private Object fluidHandler;
-	/** Set by forge/ init so core never imports forge types. */
+	/**
+	 * Set by forge/ init so core never imports forge types.
+	 */
 	private static java.util.function.Function<Ic2rFluidTank, Object> handlerFactory;
 
 	public Ic2rFluidTank(int capacity)
@@ -80,7 +84,6 @@ public class Ic2rFluidTank
 		} else
 		{
 			Ic2rFluidStack loaded = Ic2rFluidStack.read(nbt);
-			// Missing/unknown fluid ids (or empty amount) must clear the tank, not leave a stale stack.
 			this.fluidStack = loaded == null || loaded.isEmpty() ? null : loaded;
 		}
 	}

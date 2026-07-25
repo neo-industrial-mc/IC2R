@@ -14,7 +14,6 @@ public class ContainerAnalyzer extends ContainerHandHeldInventory<HandHeldCropAn
 	public ContainerAnalyzer(int syncId, HandHeldCropAnalyzer analyzer)
 	{
 		super(Ic2rScreenHandlers.CROP_ANALYZER, syncId, analyzer);
-		// Input slot - only accepts crop seed bags
 		this.addSlot(new Slot(analyzer, HandHeldCropAnalyzer.SLOT_INPUT, 8, 7)
 		{
 			@Override
@@ -23,7 +22,6 @@ public class ContainerAnalyzer extends ContainerHandHeldInventory<HandHeldCropAn
 				return stack.is(Ic2rItems.CROP_SEED_BACK);
 			}
 		});
-		// Output slot - no item can be placed (output only)
 		this.addSlot(new Slot(analyzer, HandHeldCropAnalyzer.SLOT_OUTPUT, 41, 7)
 		{
 			@Override
@@ -32,7 +30,6 @@ public class ContainerAnalyzer extends ContainerHandHeldInventory<HandHeldCropAn
 				return false;
 			}
 		});
-		// Battery slot
 		this.addSlot(new SlotDischarge(analyzer, 2, HandHeldCropAnalyzer.SLOT_BATTERY, 152, 7));
 		this.addPlayerInventorySlots(analyzer.player.getInventory(), 223);
 	}

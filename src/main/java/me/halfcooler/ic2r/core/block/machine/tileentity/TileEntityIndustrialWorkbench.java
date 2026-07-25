@@ -1,5 +1,6 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
+import it.unimi.dsi.fastutil.ints.IntCollection;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.SimpleCraftingInventory;
@@ -15,10 +16,6 @@ import me.halfcooler.ic2r.core.ref.Ic2rItemTags;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Tuple;
-import it.unimi.dsi.fastutil.ints.IntCollection;
-
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.TagKey;
@@ -34,6 +31,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @NotClassic
 public class TileEntityIndustrialWorkbench extends TileEntityInventory implements IHasGui

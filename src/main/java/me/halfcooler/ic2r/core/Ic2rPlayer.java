@@ -3,13 +3,12 @@ package me.halfcooler.ic2r.core;
 import com.google.common.base.Charsets;
 import com.mojang.authlib.GameProfile;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.UUID;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+
+import java.util.UUID;
 
 public class Ic2rPlayer
 {

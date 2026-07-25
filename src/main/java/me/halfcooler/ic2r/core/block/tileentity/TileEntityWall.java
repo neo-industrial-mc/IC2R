@@ -5,11 +5,6 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.comp.Obscuration;
 import me.halfcooler.ic2r.core.block.misc.WallBlock;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +12,10 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TileEntityWall extends Ic2rTileEntity
 {
@@ -83,7 +82,8 @@ public class TileEntityWall extends Ic2rTileEntity
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.color = DyeColor.byId(nbt.getByte("color"));
 	}
@@ -165,32 +165,32 @@ public class TileEntityWall extends Ic2rTileEntity
 	}
 
 	public record WallRenderState(DyeColor color, Obscuration.ObscurationData[] obscurations)
-		{
+	{
 
-			@Override
-			public boolean equals(Object obj)
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (obj == this)
 			{
-				if (obj == this)
-				{
-					return true;
-				} else
-				{
-					return obj instanceof WallRenderState(
-						DyeColor color1, Obscuration.ObscurationData[] obscurations1
-					) && color1 == this.color && Arrays.equals(obscurations1, this.obscurations);
-				}
-			}
-	
-			@Override
-			public int hashCode()
+				return true;
+			} else
 			{
-				return this.color.hashCode() * 31 + Arrays.hashCode(this.obscurations);
-			}
-	
-			@Override
-			public @NotNull String toString()
-			{
-				return "WallState<" + this.color + ", " + Arrays.toString(this.obscurations) + ">";
+				return obj instanceof WallRenderState(
+					DyeColor color1, Obscuration.ObscurationData[] obscurations1
+				) && color1 == this.color && Arrays.equals(obscurations1, this.obscurations);
 			}
 		}
+
+		@Override
+		public int hashCode()
+		{
+			return this.color.hashCode() * 31 + Arrays.hashCode(this.obscurations);
+		}
+
+		@Override
+		public @NotNull String toString()
+		{
+			return "WallState<" + this.color + ", " + Arrays.toString(this.obscurations) + ">";
+		}
+	}
 }

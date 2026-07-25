@@ -2,7 +2,10 @@ package me.halfcooler.ic2r.core.block.kineticgenerator.gui;
 
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.block.kineticgenerator.container.ContainerSteamKineticGenerator;
-import me.halfcooler.ic2r.core.gui.*;
+import me.halfcooler.ic2r.core.gui.Image;
+import me.halfcooler.ic2r.core.gui.SlotGrid;
+import me.halfcooler.ic2r.core.gui.TankGauge;
+import me.halfcooler.ic2r.core.gui.TextLabel;
 import me.halfcooler.ic2r.core.gui.dynamic.TextProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

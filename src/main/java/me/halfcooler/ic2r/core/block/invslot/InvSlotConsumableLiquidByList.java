@@ -1,12 +1,11 @@
 package me.halfcooler.ic2r.core.block.invslot;
 
 import me.halfcooler.ic2r.core.block.IInventorySlotHolder;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import net.minecraft.world.level.material.Fluid;
 
 public class InvSlotConsumableLiquidByList extends InvSlotConsumableLiquid
 {

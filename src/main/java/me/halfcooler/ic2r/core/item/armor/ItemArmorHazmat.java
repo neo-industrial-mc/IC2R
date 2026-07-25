@@ -8,7 +8,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 
 public class ItemArmorHazmat extends ItemArmorUtility implements IHazmatLike
 {
@@ -46,7 +45,6 @@ public class ItemArmorHazmat extends ItemArmorUtility implements IHazmatLike
 
 	public static boolean hazmatAbsorbs(DamageSource source)
 	{
-		// Match by damage-type key, not instance identity — sources are created per-level.
 		return source.is(DamageTypeTags.IS_FIRE)
 			|| source.is(Ic2rDamageSource.ELECTRICITY)
 			|| source.is(Ic2rDamageSource.RADIATION);

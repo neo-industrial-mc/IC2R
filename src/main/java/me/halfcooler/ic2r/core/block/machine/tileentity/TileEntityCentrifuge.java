@@ -9,16 +9,15 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlotProcessableGeneric;
 import me.halfcooler.ic2r.core.network.GuiSynced;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
-
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
 
 @NotClassic
 public class TileEntityCentrifuge extends TileEntityStandardMachine<IRecipeInput, Collection<ItemStack>, ItemStack>
@@ -43,7 +42,8 @@ public class TileEntityCentrifuge extends TileEntityStandardMachine<IRecipeInput
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.heat = nbt.getShort("heat");
 	}

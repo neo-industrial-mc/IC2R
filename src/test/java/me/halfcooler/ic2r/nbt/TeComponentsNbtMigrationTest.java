@@ -2,16 +2,11 @@ package me.halfcooler.ic2r.nbt;
 
 import me.halfcooler.ic2r.core.block.comp.Components;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
-
 import net.minecraft.nbt.CompoundTag;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * TE component bag key migration: {@code components} → {@code ic2r_components}
@@ -22,14 +17,11 @@ class TeComponentsNbtMigrationTest
 	@BeforeAll
 	static void initComponents()
 	{
-		// Idempotent if already registered by another test class.
 		try
 		{
 			Components.init();
-		}
-		catch (IllegalStateException ignored)
+		} catch (IllegalStateException ignored)
 		{
-			// already initialized
 		}
 	}
 
@@ -77,7 +69,6 @@ class TeComponentsNbtMigrationTest
 	{
 		CompoundTag nbt = new CompoundTag();
 		CompoundTag vanilla = new CompoundTag();
-		// Namespaced keys are DataComponent types, not IC2R component ids.
 		vanilla.putString("minecraft:custom_name", "{\"text\":\"x\"}");
 		nbt.put(Ic2rTileEntity.LEGACY_NBT_TE_COMPONENTS, vanilla);
 

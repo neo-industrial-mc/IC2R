@@ -6,8 +6,6 @@ import me.halfcooler.ic2r.api.energy.profile.VoltageTier;
 import me.halfcooler.ic2r.api.energy.tile.IEnergyAcceptor;
 import me.halfcooler.ic2r.api.energy.tile.IEnergySource;
 import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
-import me.halfcooler.ic2r.core.energy.EnergyNetMode;
-import me.halfcooler.ic2r.core.energy.profile.ElectricalProfile;
 import me.halfcooler.ic2r.api.energy.tile.IMetaDelegate;
 import me.halfcooler.ic2r.api.reactor.IBaseReactorComponent;
 import me.halfcooler.ic2r.api.reactor.IReactor;
@@ -15,21 +13,16 @@ import me.halfcooler.ic2r.api.reactor.IReactorChamber;
 import me.halfcooler.ic2r.api.reactor.IReactorComponent;
 import me.halfcooler.ic2r.api.recipe.ILiquidHeatExchangerManager;
 import me.halfcooler.ic2r.api.recipe.Recipes;
-import me.halfcooler.ic2r.core.ContainerBase;
-import me.halfcooler.ic2r.core.IC2R;
-import me.halfcooler.ic2r.core.IHasGui;
-import me.halfcooler.ic2r.core.Ic2rDamageSource;
-import me.halfcooler.ic2r.core.Ic2rExplosion;
+import me.halfcooler.ic2r.core.*;
 import me.halfcooler.ic2r.core.block.comp.Fluids;
 import me.halfcooler.ic2r.core.block.comp.Redstone;
-import me.halfcooler.ic2r.core.block.invslot.InvSlot;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquid;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquidByManager;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquidByTank;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotOutput;
-import me.halfcooler.ic2r.core.block.invslot.InvSlotReactor;
+import me.halfcooler.ic2r.core.block.invslot.*;
 import me.halfcooler.ic2r.core.block.reactor.container.ContainerNuclearReactor;
+import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
+import me.halfcooler.ic2r.core.energy.EnergyNetMode;
+import me.halfcooler.ic2r.core.energy.profile.ElectricalProfile;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
 import me.halfcooler.ic2r.core.gui.dynamic.IGuiValueProvider;
@@ -41,22 +34,10 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.sound.Sound;
-import me.halfcooler.ic2r.core.util.LegacyNbt;
-import me.halfcooler.ic2r.core.util.LogCategory;
-import me.halfcooler.ic2r.core.util.StackUtil;
-import me.halfcooler.ic2r.core.util.Util;
-import me.halfcooler.ic2r.core.util.WorldUtil;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-import me.halfcooler.ic2r.core.block.tileentity.ClientTicker;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
+import me.halfcooler.ic2r.core.util.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
@@ -76,11 +57,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileEntityNuclearReactorElectric extends TileEntityInventory implements IHasGui, IReactor, IEnergySource, IMetaDelegate, IGuiValueProvider, IElectricalNode, ServerTicker, ClientTicker
 {
@@ -115,7 +98,9 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	 * Same logical name as {@link me.halfcooler.ic2r.core.block.comp.Energy#NBT_ENERGY_BUFFER}.
 	 */
 	public static final String NBT_ENERGY_BUFFER = "energy_buffer";
-	/** Legacy camelCase key; still readable via {@link LegacyNbt}. */
+	/**
+	 * Legacy camelCase key; still readable via {@link LegacyNbt}.
+	 */
 	public static final String LEGACY_NBT_ENERGY_BUFFER = "energyBuffer";
 
 	public TileEntityNuclearReactorElectric(BlockPos pos, BlockState state)
@@ -225,7 +210,8 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.heat = nbt.getInt("heat");
 		this.output = nbt.getShort("output");
@@ -241,13 +227,17 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 		writeEnergyBufferNbt(nbt, this.energyBuffer);
 	}
 
-	/** Pure NBT write (snake_case only). Unit-test entry (NS-003 / G1.5). */
+	/**
+	 * Pure NBT write (snake_case only). Unit-test entry (NS-003 / G1.5).
+	 */
 	public static void writeEnergyBufferNbt(CompoundTag nbt, double energy)
 	{
 		nbt.putDouble(NBT_ENERGY_BUFFER, energy);
 	}
 
-	/** Pure NBT read: prefer {@link #NBT_ENERGY_BUFFER}, else legacy {@link #LEGACY_NBT_ENERGY_BUFFER}. */
+	/**
+	 * Pure NBT read: prefer {@link #NBT_ENERGY_BUFFER}, else legacy {@link #LEGACY_NBT_ENERGY_BUFFER}.
+	 */
 	public static double readEnergyBufferNbt(CompoundTag nbt)
 	{
 		return LegacyNbt.getDouble(nbt, NBT_ENERGY_BUFFER, LEGACY_NBT_ENERGY_BUFFER);
@@ -283,7 +273,6 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	{
 		float productionEuPerTick = this.getCurrentOfferedOutput();
 		this.syncSourceProfile(productionEuPerTick);
-		// GT mode only emits whole amp packets (offer >= V). Buffer production like ConversionGenerator.
 		return this.isGtEnergyNet() ? this.energyBuffer : productionEuPerTick;
 	}
 
@@ -417,7 +406,6 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory implem
 	@Override
 	public double getReactorEUEnergyOutput()
 	{
-		// Always the production rate (EU/t), never the GT packet buffer fill.
 		return this.getCurrentOfferedOutput();
 	}
 

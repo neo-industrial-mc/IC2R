@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.integration.jei;
 
-import java.util.List;
-
 import me.halfcooler.ic2r.core.recipe.AdvRecipe;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.ICraftingGridHelper;
@@ -9,7 +7,11 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategoryExtension;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-/** Exposes visible IC2R shaped recipes to JEI's vanilla crafting category. */
+import java.util.List;
+
+/**
+ * Exposes visible IC2R shaped recipes to JEI's vanilla crafting category.
+ */
 final class AdvRecipeCategoryExtension implements ICraftingCategoryExtension<AdvRecipe>
 {
 	@Override

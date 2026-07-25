@@ -8,13 +8,12 @@ import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
+import net.minecraft.core.BlockPos;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
-
-import net.minecraft.core.BlockPos;
 
 public class Grid
 {

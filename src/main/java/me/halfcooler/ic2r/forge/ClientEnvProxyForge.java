@@ -3,11 +3,6 @@ package me.halfcooler.ic2r.forge;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.proxy.ClientEnvProxy;
 import me.halfcooler.ic2r.core.proxy.SideProxyClient;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
@@ -32,6 +27,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 public final class ClientEnvProxyForge implements ClientEnvProxy
 {
 	static List<ClientEnvProxyForge.BlockColorProviderRegistration> blockColorProviderRegistrations = new ArrayList<>();
@@ -41,7 +40,9 @@ public final class ClientEnvProxyForge implements ClientEnvProxy
 	static List<ClientEnvProxyForge.BlockLayerRegistration> blockLayerRegistrations = new ArrayList<>();
 	static List<ClientEnvProxyForge.EntityRendererRegistration<?>> entityRendererRegistrations = new ArrayList<>();
 	static List<ClientEnvProxyForge.BlockEntityRendererRegistration<?>> blockEntityRendererRegistrations = new ArrayList<>();
-	/** Deferred until {@link net.neoforged.neoforge.client.event.RegisterMenuScreensEvent} (MenuScreens.register is private). */
+	/**
+	 * Deferred until {@link net.neoforged.neoforge.client.event.RegisterMenuScreensEvent} (MenuScreens.register is private).
+	 */
 	static List<ClientEnvProxyForge.ScreenRegistration<?>> screenRegistrations = new ArrayList<>();
 
 	@Override
@@ -160,7 +161,8 @@ public final class ClientEnvProxyForge implements ClientEnvProxy
 	{
 	}
 
-	record ScreenRegistration<H extends AbstractContainerMenu>(MenuType<H> type, ClientEnvProxy.ScreenFactory<H> factory)
+	record ScreenRegistration<H extends AbstractContainerMenu>(MenuType<H> type,
+	                                                           ClientEnvProxy.ScreenFactory<H> factory)
 	{
 	}
 }

@@ -1,24 +1,18 @@
 package me.halfcooler.ic2r.core.ref.blocks;
 
-import me.halfcooler.ic2r.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
-import me.halfcooler.ic2r.core.block.reactor.tileentity.TileEntityRCI_LZH;
-import me.halfcooler.ic2r.core.block.reactor.tileentity.TileEntityRCI_RSH;
-import me.halfcooler.ic2r.core.block.reactor.tileentity.TileEntityReactorAccessHatch;
-import me.halfcooler.ic2r.core.block.reactor.tileentity.TileEntityReactorChamberElectric;
-import me.halfcooler.ic2r.core.block.reactor.tileentity.TileEntityReactorFluidPort;
-import me.halfcooler.ic2r.core.block.reactor.tileentity.TileEntityReactorRedstonePort;
+import me.halfcooler.ic2r.core.block.reactor.tileentity.*;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
 import me.halfcooler.ic2r.core.util.Util;
-
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-
-import net.minecraft.world.level.material.MapColor;
 import me.halfcooler.ic2r.forge.EnvProxyForge;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/** Domain block registrations: nuclear reactor and RCI blocks */
+/**
+ * Domain block registrations: nuclear reactor and RCI blocks
+ */
 public final class Ic2rBlocksReactor
 {
 	private Ic2rBlocksReactor()

@@ -1,13 +1,12 @@
 package me.halfcooler.ic2r.core.network;
 
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
+import net.minecraft.core.BlockPos;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import net.minecraft.core.BlockPos;
 
 class TeUpdateDataClient
 {

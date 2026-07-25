@@ -8,13 +8,12 @@ import me.halfcooler.ic2r.core.gui.MouseButton;
 import me.halfcooler.ic2r.core.gui.StickyVanillaButton;
 import me.halfcooler.ic2r.core.gui.TextLabel;
 import me.halfcooler.ic2r.core.gui.dynamic.TextProvider;
-
-import java.util.List;
-import java.util.Locale;
-
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import java.util.List;
+import java.util.Locale;
 
 public abstract class GuiWeightedDistributor<T extends ContainerBase<? extends IWeightedDistributor>> extends Ic2rGui<T>
 {

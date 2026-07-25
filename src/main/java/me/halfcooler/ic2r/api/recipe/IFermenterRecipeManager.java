@@ -1,10 +1,9 @@
 package me.halfcooler.ic2r.api.recipe;
 
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.Map;
-
-import net.minecraft.world.level.material.Fluid;
 
 public interface IFermenterRecipeManager extends ILiquidAcceptManager
 {
@@ -17,11 +16,11 @@ public interface IFermenterRecipeManager extends ILiquidAcceptManager
 	Map<Fluid, IFermenterRecipeManager.FermentationProperty> getRecipeMap();
 
 	record FermentationProperty(int inputAmount, int heat, Fluid output, int outputAmount)
-		{
+	{
 
-			public Ic2rFluidStack getOutput()
-			{
-				return this.output == null ? null : Ic2rFluidStack.create(this.output, this.outputAmount);
-			}
+		public Ic2rFluidStack getOutput()
+		{
+			return this.output == null ? null : Ic2rFluidStack.create(this.output, this.outputAmount);
 		}
+	}
 }

@@ -6,15 +6,6 @@ import me.halfcooler.ic2r.core.item.armor.ItemArmorHazmat;
 import me.halfcooler.ic2r.core.util.ItemComparableItemStack;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Map.Entry;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -29,11 +20,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.PathNavigationRegion;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -42,6 +29,9 @@ import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class Ic2rExplosion extends Explosion
 {
@@ -334,12 +324,9 @@ public class Ic2rExplosion extends Explosion
 							BlockEntity blockEntity = state.hasBlockEntity() ? this.worldObj.getBlockEntity(tmpPos) : null;
 							if (blockEntity instanceof TileEntityExplosive explosive)
 							{
-								// Prime ITNT/Nuke — do not destroy them as inert blocks.
 								explosive.onExploded(this);
 							} else
 							{
-								// Prefer onBlockExploded so blocks like placed dynamite / vanilla TNT
-								// can arm themselves (wasExploded alone is not always enough).
 								state.onBlockExploded(this.worldObj, tmpPos, this);
 							}
 						}

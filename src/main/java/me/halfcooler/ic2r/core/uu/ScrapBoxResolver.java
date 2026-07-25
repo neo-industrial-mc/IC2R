@@ -5,14 +5,13 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import net.minecraft.world.item.ItemStack;
 
 public class ScrapBoxResolver implements IRecipeResolver
 {

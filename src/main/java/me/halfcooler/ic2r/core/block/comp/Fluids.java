@@ -9,16 +9,6 @@ import me.halfcooler.ic2r.core.fluid.Ic2rFluidBlock;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +17,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class Fluids extends TileEntityComponent implements Ic2rFluidBlock
 {
@@ -167,7 +161,7 @@ public class Fluids extends TileEntityComponent implements Ic2rFluidBlock
 
 		throw new IllegalArgumentException("Unable to find tank: " + name);
 	}
-	
+
 	public Object getTankHandler(String name)
 	{
 		return this.getFluidTank(name).getFluidHandler();
@@ -362,7 +356,6 @@ public class Fluids extends TileEntityComponent implements Ic2rFluidBlock
 		return tanks;
 	}
 
-	// ---- Ic2rFluidBlock ----
 
 	@Override
 	public boolean isFluidBlock(BlockState state, Level world, BlockPos pos, BlockEntity be)

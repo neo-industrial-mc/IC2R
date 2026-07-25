@@ -1,13 +1,12 @@
 package me.halfcooler.ic2r.core.recipe.v2;
 
 import me.halfcooler.ic2r.api.recipe.Recipes;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.Level;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Function;
-
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.level.Level;
 
 public class RecipeManagerGetter<T> implements Recipes.IGetter<T>
 {

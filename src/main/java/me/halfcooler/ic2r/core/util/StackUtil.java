@@ -1,33 +1,13 @@
 package me.halfcooler.ic2r.core.util;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.ints.*;
 import me.halfcooler.ic2r.api.recipe.IRecipeInput;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rPlayer;
 import me.halfcooler.ic2r.core.item.EnvItemHandler;
 import me.halfcooler.ic2r.core.ref.Ic2rItemTags;
 import me.halfcooler.ic2r.platform.services.PlatformServices;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntCollection;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-import java.util.function.Predicate;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -35,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -58,7 +39,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.util.RandomSource;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.function.Predicate;
 
 public final class StackUtil
 {
@@ -72,13 +56,13 @@ public final class StackUtil
 
 	private static EnvItemHandler createEnvItemHandler()
 	{
-		// Force IC2R static init (envProxy + PlatformServices install) before SPI factory.
 		if (IC2R.envProxy == null)
 		{
 			throw new IllegalStateException("IC2R.envProxy missing before PlatformItemTransfer factory");
 		}
 		return PlatformServices.itemTransfer().createHandler();
 	}
+
 	static final Set<String> ignoredNbtKeys = new HashSet<>(Arrays.asList("damage", "charge", "energy", "advDmg"));
 	private static final List<TagKey<Item>> oreTags = List.of(
 		Ic2rItemTags.ORES,
@@ -333,8 +317,7 @@ public final class StackUtil
 		if (tag == null || tag.isEmpty())
 		{
 			stack.remove(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
-		}
-		else
+		} else
 		{
 			net.minecraft.world.item.component.CustomData.set(
 				net.minecraft.core.component.DataComponents.CUSTOM_DATA,
@@ -344,7 +327,9 @@ public final class StackUtil
 		}
 	}
 
-	/** Clear CUSTOM_DATA without risking {@code CustomData.of(null)}. */
+	/**
+	 * Clear CUSTOM_DATA without risking {@code CustomData.of(null)}.
+	 */
 	public static void removeTag(ItemStack stack)
 	{
 		if (stack != null && !stack.isEmpty())

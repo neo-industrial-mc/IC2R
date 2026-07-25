@@ -1,9 +1,5 @@
 package me.halfcooler.ic2r.core.ref.items;
 
-import net.minecraft.world.food.FoodProperties.Builder;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.Rarity;
 import me.halfcooler.ic2r.core.crop.ItemCrop;
 import me.halfcooler.ic2r.core.item.ItemCropSeed;
 import me.halfcooler.ic2r.core.item.ItemMug;
@@ -11,8 +7,14 @@ import me.halfcooler.ic2r.core.item.ItemTerraWart;
 import me.halfcooler.ic2r.core.item.tool.ItemCropAnalyzer;
 import me.halfcooler.ic2r.core.item.tool.ItemWeedingTrowel;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
+import net.minecraft.world.food.FoodProperties.Builder;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.Rarity;
 
-/** Domain item registrations: Crops, food, and farming items */
+/**
+ * Domain item registrations: Crops, food, and farming items
+ */
 public final class Ic2rItemsFarming
 {
 	private Ic2rItemsFarming()

@@ -1,39 +1,28 @@
 package me.halfcooler.ic2r.core.block.wiring;
 
 import com.mojang.datafixers.util.Pair;
-import me.halfcooler.ic2r.core.IC2R;
-import me.halfcooler.ic2r.core.util.Util;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.locks.StampedLock;
-import java.util.function.Function;
-
+import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.util.Util;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+import java.util.concurrent.locks.StampedLock;
+import java.util.function.Function;
 
 public abstract class DynamicCableModel<T, E> implements UnbakedModel, BakedModel
 {

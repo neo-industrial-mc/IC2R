@@ -51,8 +51,6 @@ public class ItemDynamite extends Item implements IBoxable
 			return InteractionResult.FAIL;
 		}
 
-		// Classic IC2R: only place into empty space. Never overwrite an existing dynamite
-		// (same cell, different face) — that would delete the old stick and still consume one.
 		BlockState existing = level.getBlockState(pos);
 		if (!existing.canBeReplaced(placeContext))
 		{
@@ -105,8 +103,7 @@ public class ItemDynamite extends Item implements IBoxable
 			if (this.sticky)
 			{
 				level.addFreshEntity(new StickyDynamiteEntity(level, player));
-			}
-			else
+			} else
 			{
 				level.addFreshEntity(new DynamiteEntity(level, player));
 			}

@@ -10,14 +10,13 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlotProcessableGeneric;
 import me.halfcooler.ic2r.core.network.GuiSynced;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
 public class TileEntityBlockCutter extends TileEntityStandardMachine<IRecipeInput, Collection<ItemStack>, ItemStack>

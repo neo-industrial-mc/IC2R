@@ -6,13 +6,10 @@ import me.halfcooler.ic2r.core.Ic2rPlayer;
 import me.halfcooler.ic2r.core.ref.Ic2rEntities;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Vector3;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,8 +21,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Explosion.BlockInteraction;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.StainedGlassBlock;
@@ -35,8 +32,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.util.RandomSource;
-import net.minecraft.network.syncher.SynchedEntityData;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class LaserBulletEntity extends ThrowableProjectile
 {

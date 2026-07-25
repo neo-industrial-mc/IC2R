@@ -3,13 +3,13 @@ package me.halfcooler.ic2r.forge.item.armor.jetpack;
 import me.halfcooler.ic2r.core.item.armor.jetpack.JetpackHandler;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 
 /**
@@ -18,15 +18,14 @@ import net.neoforged.bus.api.SubscribeEvent;
  */
 public final class JetpackHandlerForge
 {
-	private JetpackHandlerForge() {}
+	private JetpackHandlerForge()
+	{
+	}
 
 	public static void register()
 	{
 		NeoForge.EVENT_BUS.register(new JetpackHandlerForge());
 	}
-
-	// Render layer injection moved from core; simplified to avoid generics issues.
-	// TODO: restore jetpack render overlay in Track B render refactor.
 
 
 	@SubscribeEvent

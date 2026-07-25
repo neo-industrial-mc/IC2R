@@ -8,16 +8,6 @@ import me.halfcooler.ic2r.core.event.WorldData;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.ReflectionUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Map.Entry;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -25,6 +15,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 class TeUpdate
 {
@@ -295,7 +289,6 @@ class TeUpdate
 				for (TeUpdateDataClient.FieldData fieldUpdate : update.getFields())
 				{
 					Object value = DataEncoder.getValue(fieldUpdate.value, null);
-					// G1.1: registered Sync fields (incl. legacy aliases like guiProgress) use setter; else reflection.
 					boolean appliedViaSync = te instanceof Ic2rTileEntity
 						&& ((Ic2rTileEntity) te).getBlockEntitySync().trySetValue(fieldUpdate.name, value);
 					if (!appliedViaSync)
@@ -309,7 +302,6 @@ class TeUpdate
 						}
 					}
 
-					// Notify with the wire/legacy name from the packet (GUI / texture listeners depend on it).
 					if (te instanceof INetworkUpdateListener)
 					{
 						((INetworkUpdateListener) te).onNetworkUpdate(fieldUpdate.name);

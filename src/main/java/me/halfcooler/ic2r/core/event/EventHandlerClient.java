@@ -6,6 +6,7 @@ import me.halfcooler.ic2r.api.item.IEnhancedOverlayProvider;
 import me.halfcooler.ic2r.api.tile.IWrenchAble;
 import me.halfcooler.ic2r.core.GuiOverlayer;
 import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.block.tileentity.TileEntityBase;
 import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.StandardFluidItem;
@@ -15,52 +16,48 @@ import me.halfcooler.ic2r.core.item.tool.AbstractItemNanoSaber;
 import me.halfcooler.ic2r.core.item.tool.ContainerToolbox;
 import me.halfcooler.ic2r.core.item.upgrade.ItemUpgradeModule;
 import me.halfcooler.ic2r.core.network.RpcHandler;
-import me.halfcooler.ic2r.core.block.tileentity.TileEntityBase;
-import me.halfcooler.ic2r.core.event.TickHandler;
 import me.halfcooler.ic2r.core.proxy.SideProxyClient;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.sound.SoundManagerClient;
 import me.halfcooler.ic2r.core.util.EnhancedOverlayRenderer;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult.Type;
-import net.minecraft.core.registries.BuiltInRegistries;
-import org.jetbrains.annotations.Nullable;
-
 public class EventHandlerClient
 {
 	public static void onClientSetup()
 	{
-		// IC2R liquid blocks share the still-fluid path (e.g. ic2r:coolant); detect by LiquidBlock + namespace.
 		List<Block> fluidBlocks = new ArrayList<>();
 		for (Block block : BuiltInRegistries.BLOCK)
 		{
@@ -147,7 +144,9 @@ public class EventHandlerClient
 		return fluid != null ? FluidHandler.fogRgb(FluidHandler.getColor(fluid)) : null;
 	}
 
-	/** @deprecated use {@link #onRenderFogColorRgb}; kept only for binary compat within the module */
+	/**
+	 * @deprecated use {@link #onRenderFogColorRgb}; kept only for binary compat within the module
+	 */
 	@Deprecated
 	public static int onRenderFogColor(BlockState state)
 	{
@@ -243,7 +242,6 @@ public class EventHandlerClient
 	public static void onDisconnect()
 	{
 		RpcHandler.onDisconnect();
-		// Ensure looping jetpack audio cannot survive into the next multiplayer session.
 		JetpackLogic.stopJetpackSound(null);
 	}
 

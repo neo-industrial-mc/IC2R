@@ -71,7 +71,7 @@ public class ElectricBoatEntity extends AbstractBoatEntity
 		return super.getBlockSpeedFactor() * (hasPower ? 1.5f : 0.25f);
 	}
 
-		public void tick()
+	public void tick()
 	{
 		hasPower = false;
 		if (getControllingPassenger() instanceof Player player)

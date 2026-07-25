@@ -2,15 +2,6 @@ package me.halfcooler.ic2r.core.gui;
 
 import com.mojang.authlib.GameProfile;
 import me.halfcooler.ic2r.core.Ic2rGui;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.WeakHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
-
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +9,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 
 public class PlayerHead extends ItemImage
 {

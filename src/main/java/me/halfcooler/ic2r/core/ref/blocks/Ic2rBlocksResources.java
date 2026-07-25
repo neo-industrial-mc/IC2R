@@ -1,16 +1,16 @@
 package me.halfcooler.ic2r.core.ref.blocks;
 
 import me.halfcooler.ic2r.core.block.steam.BlockRefractoryBricks;
-
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-
-import net.minecraft.world.level.material.MapColor;
 import me.halfcooler.ic2r.forge.EnvProxyForge;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/** Domain block registrations: ores, metal blocks, machine casings, structural resources */
+/**
+ * Domain block registrations: ores, metal blocks, machine casings, structural resources
+ */
 public final class Ic2rBlocksResources
 {
 	private Ic2rBlocksResources()

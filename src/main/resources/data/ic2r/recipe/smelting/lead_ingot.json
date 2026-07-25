@@ -5,7 +5,9 @@
   "ingredient": {
     "item": "ic2r:lead_ore"
   },
-  "result": { "id": "ic2r:lead_ingot" },
+  "result": {
+    "id": "ic2r:lead_ingot"
+  },
   "experience": 0.5,
   "cookingtime": 200
 }

@@ -3,14 +3,10 @@ package me.halfcooler.ic2r.nbt;
 import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.generator.tileentity.TileEntityConversionGenerator;
 import me.halfcooler.ic2r.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
-
 import net.minecraft.nbt.CompoundTag;
-
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * W1.5 Energy-domain NBT pilot: snake_case write + legacy key read.
@@ -20,7 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class EnergyNbtMigrationTest
 {
-	/** @Spec NS-001: Energy component — old key {@code storage} alone loads correct value */
+	/**
+	 * @Spec NS-001: Energy component — old key {@code storage} alone loads correct value
+	 */
 	@Test
 	void energyComponent_legacyStorageKey_isReadable()
 	{
@@ -32,7 +30,9 @@ class EnergyNbtMigrationTest
 		assertTrue(legacy.contains(Energy.LEGACY_NBT_STORAGE));
 	}
 
-	/** @Spec NS-003: Energy component — write emits only {@code energy_buffer} */
+	/**
+	 * @Spec NS-003: Energy component — write emits only {@code energy_buffer}
+	 */
 	@Test
 	void energyComponent_write_usesSnakeCaseOnly()
 	{
@@ -44,7 +44,9 @@ class EnergyNbtMigrationTest
 		assertFalse(out.contains(Energy.LEGACY_NBT_STORAGE));
 	}
 
-	/** @Spec NS-003 + NS-001: Energy component new-key round-trip and legacy→read then rewrite */
+	/**
+	 * @Spec NS-003 + NS-001: Energy component new-key round-trip and legacy→read then rewrite
+	 */
 	@Test
 	void energyComponent_newKeyRoundTrip_andLegacyUpgradeRead()
 	{
@@ -52,7 +54,6 @@ class EnergyNbtMigrationTest
 		Energy.writeEnergyBuffer(written, 88.0);
 		assertEquals(88.0, Energy.readEnergyBuffer(written), 0.0);
 
-		// Simulate save after load from legacy: write path upgrades to new key only
 		CompoundTag legacy = new CompoundTag();
 		legacy.putDouble(Energy.LEGACY_NBT_STORAGE, 77.0);
 		double loaded = Energy.readEnergyBuffer(legacy);
@@ -62,7 +63,9 @@ class EnergyNbtMigrationTest
 		assertFalse(upgraded.contains(Energy.LEGACY_NBT_STORAGE));
 	}
 
-	/** @Spec NS-002: when both keys present, modern {@code energy_buffer} wins */
+	/**
+	 * @Spec NS-002: when both keys present, modern {@code energy_buffer} wins
+	 */
 	@Test
 	void energyComponent_bothKeys_prefersModern()
 	{
@@ -72,7 +75,9 @@ class EnergyNbtMigrationTest
 		assertEquals(10.0, Energy.readEnergyBuffer(both), 0.0);
 	}
 
-	/** @Spec NS-001: ConversionGenerator camelCase {@code energyBuffer} alone is readable */
+	/**
+	 * @Spec NS-001: ConversionGenerator camelCase {@code energyBuffer} alone is readable
+	 */
 	@Test
 	void conversionGenerator_legacyCamelCase_isReadable()
 	{
@@ -84,7 +89,9 @@ class EnergyNbtMigrationTest
 		assertEquals("energy_buffer", TileEntityConversionGenerator.NBT_ENERGY_BUFFER);
 	}
 
-	/** @Spec NS-003: ConversionGenerator write uses snake_case only */
+	/**
+	 * @Spec NS-003: ConversionGenerator write uses snake_case only
+	 */
 	@Test
 	void conversionGenerator_write_usesSnakeCaseOnly()
 	{
@@ -95,7 +102,9 @@ class EnergyNbtMigrationTest
 		assertFalse(out.contains(TileEntityConversionGenerator.LEGACY_NBT_ENERGY_BUFFER));
 	}
 
-	/** G1.5: NuclearReactor camelCase {@code energyBuffer} alone is readable */
+	/**
+	 * G1.5: NuclearReactor camelCase {@code energyBuffer} alone is readable
+	 */
 	@Test
 	void nuclearReactor_legacyCamelCase_isReadable()
 	{
@@ -107,7 +116,9 @@ class EnergyNbtMigrationTest
 		assertEquals("energy_buffer", TileEntityNuclearReactorElectric.NBT_ENERGY_BUFFER);
 	}
 
-	/** G1.5: NuclearReactor write uses snake_case only */
+	/**
+	 * G1.5: NuclearReactor write uses snake_case only
+	 */
 	@Test
 	void nuclearReactor_write_usesSnakeCaseOnly()
 	{
@@ -118,7 +129,9 @@ class EnergyNbtMigrationTest
 		assertFalse(out.contains(TileEntityNuclearReactorElectric.LEGACY_NBT_ENERGY_BUFFER));
 	}
 
-	/** G1.5: NuclearReactor modern key wins over legacy when both present */
+	/**
+	 * G1.5: NuclearReactor modern key wins over legacy when both present
+	 */
 	@Test
 	void nuclearReactor_bothKeys_prefersModern()
 	{
@@ -128,7 +141,9 @@ class EnergyNbtMigrationTest
 		assertEquals(11.0, TileEntityNuclearReactorElectric.readEnergyBufferNbt(both), 0.0);
 	}
 
-	/** G1.5: NuclearReactor legacy→read then rewrite upgrades key */
+	/**
+	 * G1.5: NuclearReactor legacy→read then rewrite upgrades key
+	 */
 	@Test
 	void nuclearReactor_legacyUpgradeReadWrite()
 	{

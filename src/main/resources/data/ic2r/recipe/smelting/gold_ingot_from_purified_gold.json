@@ -5,7 +5,9 @@
   "ingredient": {
     "item": "ic2r:purified_gold"
   },
-  "result": { "id": "minecraft:gold_ingot" },
+  "result": {
+    "id": "minecraft:gold_ingot"
+  },
   "experience": 0.0,
   "cookingtime": 200
 }

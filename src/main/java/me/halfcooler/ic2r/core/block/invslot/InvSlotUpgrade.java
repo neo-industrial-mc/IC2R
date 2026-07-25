@@ -1,25 +1,16 @@
 package me.halfcooler.ic2r.core.block.invslot;
 
-import me.halfcooler.ic2r.api.upgrade.IAugmentationUpgrade;
-import me.halfcooler.ic2r.api.upgrade.IEnergyStorageUpgrade;
-import me.halfcooler.ic2r.api.upgrade.IFullUpgrade;
-import me.halfcooler.ic2r.api.upgrade.IProcessingUpgrade;
-import me.halfcooler.ic2r.api.upgrade.IRedstoneSensitiveUpgrade;
-import me.halfcooler.ic2r.api.upgrade.IRemoteAccessUpgrade;
-import me.halfcooler.ic2r.api.upgrade.ITransformerUpgrade;
-import me.halfcooler.ic2r.api.upgrade.IUpgradableBlock;
-import me.halfcooler.ic2r.api.upgrade.IUpgradeItem;
+import me.halfcooler.ic2r.api.upgrade.*;
 import me.halfcooler.ic2r.core.block.IInventorySlotHolder;
 import me.halfcooler.ic2r.core.block.comp.Redstone;
 import me.halfcooler.ic2r.core.block.comp.TileEntityComponent;
 import me.halfcooler.ic2r.core.block.machine.tileentity.StandardMachineCycleMath;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import net.minecraft.world.item.ItemStack;
 
 public class InvSlotUpgrade extends InvSlot
 {

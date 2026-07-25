@@ -1,9 +1,9 @@
 package me.halfcooler.ic2r.core.slot;
 
-import java.util.List;
-
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
+
+import java.util.List;
 
 public class ArmorSlot
 {

@@ -1,14 +1,13 @@
 package me.halfcooler.ic2r.core.block.wiring;
 
 import me.halfcooler.ic2r.core.block.misc.WallBlock;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.DyeColor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.DyeColor;
-import org.jetbrains.annotations.NotNull;
 
 public enum CableFoam implements StringRepresentable
 {

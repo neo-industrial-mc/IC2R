@@ -5,10 +5,6 @@ import me.halfcooler.ic2r.core.block.kineticgenerator.gui.GuiWaterKineticGenerat
 import me.halfcooler.ic2r.core.block.kineticgenerator.gui.GuiWindKineticGenerator;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
-
-import java.util.List;
-
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +12,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @NotClassic
 public class ItemWindRotor extends Item implements IKineticRotor

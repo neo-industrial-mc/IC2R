@@ -29,7 +29,6 @@ public final class EuToFeEnergyStorage implements IEnergyStorage
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate)
 	{
-		// Hard rule: no FE → EU path.
 		return 0;
 	}
 
@@ -57,7 +56,6 @@ public final class EuToFeEnergyStorage implements IEnergyStorage
 		{
 			double euCost = EnergyBridgeMath.feToEu(feOut, this.fePerEu);
 			double used = this.energy.useEnergy(euCost, false);
-			// If buffer shrank under us, only report what was actually paid in FE terms.
 			if (used + 1.0e-9 < euCost)
 			{
 				feOut = EnergyBridgeMath.clampToIntEnergy(EnergyBridgeMath.euToFeFloor(used, this.fePerEu));

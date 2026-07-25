@@ -1,15 +1,8 @@
 package me.halfcooler.ic2r.core.ref.blocks;
 
-import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
-import me.halfcooler.ic2r.core.ref.Ic2rSignType;
-
 import me.halfcooler.ic2r.core.IC2R;
-import me.halfcooler.ic2r.core.block.inherit.Ic2rFenceBlock;
-import me.halfcooler.ic2r.core.block.inherit.Ic2rGlassBlock;
-import me.halfcooler.ic2r.core.block.inherit.Ic2rSheetBlock;
-import me.halfcooler.ic2r.core.block.inherit.Ic2rSignBlock;
-import me.halfcooler.ic2r.core.block.inherit.Ic2rWallSignBlock;
 import me.halfcooler.ic2r.core.block.BlockDynamite;
+import me.halfcooler.ic2r.core.block.inherit.*;
 import me.halfcooler.ic2r.core.block.machine.MiningPipeBlock;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityITnt;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityNuke;
@@ -19,25 +12,25 @@ import me.halfcooler.ic2r.core.block.misc.RubberWoodBlock;
 import me.halfcooler.ic2r.core.block.misc.WallBlock;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityWall;
+import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
+import me.halfcooler.ic2r.core.ref.Ic2rSignType;
 import me.halfcooler.ic2r.core.util.Util;
-
+import me.halfcooler.ic2r.forge.EnvProxyForge;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.*;
-
-import net.minecraft.world.level.block.grower.TreeGrower;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.grower.TreeGrower;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import me.halfcooler.ic2r.forge.EnvProxyForge;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/** Domain block registrations: rubber wood, sheets, walls, foam, explosives, building blocks */
+/**
+ * Domain block registrations: rubber wood, sheets, walls, foam, explosives, building blocks
+ */
 public final class Ic2rBlocksBuilding
 {
 	private Ic2rBlocksBuilding()

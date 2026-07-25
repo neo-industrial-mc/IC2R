@@ -1,12 +1,12 @@
 package me.halfcooler.ic2r.core.util;
 
-import java.io.PrintStream;
-import java.util.EnumMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.PrintStream;
+import java.util.EnumMap;
+import java.util.Map;
 
 public class Log
 {

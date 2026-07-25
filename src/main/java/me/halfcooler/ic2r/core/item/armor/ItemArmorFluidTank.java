@@ -1,24 +1,22 @@
 package me.halfcooler.ic2r.core.item.armor;
 
-import net.minecraft.core.Holder;
-
 import me.halfcooler.ic2r.api.item.IItemHudInfo;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.fluid.StandardFluidItem;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class ItemArmorFluidTank extends ItemArmorUtility implements StandardFluidItem, IItemHudInfo
 {

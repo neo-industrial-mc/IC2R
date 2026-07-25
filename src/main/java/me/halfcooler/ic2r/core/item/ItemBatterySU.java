@@ -5,10 +5,6 @@ import me.halfcooler.ic2r.api.item.IBoxable;
 import me.halfcooler.ic2r.api.item.IItemHudInfo;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -17,6 +13,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ItemBatterySU extends Item implements IBoxable, IItemHudInfo
 {

@@ -1,26 +1,22 @@
 package me.halfcooler.ic2r.core.ref.blocks;
 
-import me.halfcooler.ic2r.core.block.storage.box.TileEntityBronzeStorageBox;
-import me.halfcooler.ic2r.core.block.storage.box.TileEntityIridiumStorageBox;
-import me.halfcooler.ic2r.core.block.storage.box.TileEntityIronStorageBox;
-import me.halfcooler.ic2r.core.block.storage.box.TileEntitySteelStorageBox;
-import me.halfcooler.ic2r.core.block.storage.box.TileEntityWoodenStorageBox;
+import me.halfcooler.ic2r.core.block.storage.box.*;
 import me.halfcooler.ic2r.core.block.storage.tank.TileEntityBronzeTank;
 import me.halfcooler.ic2r.core.block.storage.tank.TileEntityIridiumTank;
 import me.halfcooler.ic2r.core.block.storage.tank.TileEntityIronTank;
 import me.halfcooler.ic2r.core.block.storage.tank.TileEntitySteelTank;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
 import me.halfcooler.ic2r.core.util.Util;
-
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-
-import net.minecraft.world.level.material.MapColor;
 import me.halfcooler.ic2r.forge.EnvProxyForge;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/** Domain block registrations: storage boxes and metal tanks */
+/**
+ * Domain block registrations: storage boxes and metal tanks
+ */
 public final class Ic2rBlocksStorage
 {
 	private Ic2rBlocksStorage()

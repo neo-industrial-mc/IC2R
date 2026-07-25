@@ -3,10 +3,6 @@ package me.halfcooler.ic2r.core.block.misc;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -30,14 +26,18 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FoamBlock extends Block
 {
-    public static final com.mojang.serialization.MapCodec<FoamBlock> CODEC = simpleCodec(FoamBlock::new);
+	public static final com.mojang.serialization.MapCodec<FoamBlock> CODEC = simpleCodec(FoamBlock::new);
 
-    @Override
-    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec() {
-        return CODEC;
-    }
+	@Override
+	protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.Block> codec()
+	{
+		return CODEC;
+	}
 
 	public static final EnumProperty<FoamBlock.FoamType> typeProperty = EnumProperty.create("type", FoamBlock.FoamType.class);
 
@@ -91,7 +91,6 @@ public class FoamBlock extends Block
 	@Override
 	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit)
 	{
-		// Sand-in-hand path: useItemOn default PASS_TO_DEFAULT then useWithoutItem (main hand only)
 		if (StackUtil.consume(player, InteractionHand.MAIN_HAND, StackUtil.sameItem(Blocks.SAND), 1))
 		{
 			world.setBlockAndUpdate(pos, state.getValue(typeProperty).getResult());

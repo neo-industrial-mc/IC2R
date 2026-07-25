@@ -1,15 +1,10 @@
 package me.halfcooler.ic2r.core.block.reactor.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.block.reactor.container.ContainerNuclearReactor;
-import me.halfcooler.ic2r.core.gui.Area;
-import me.halfcooler.ic2r.core.gui.Gauge;
-import me.halfcooler.ic2r.core.gui.IEnableHandler;
-import me.halfcooler.ic2r.core.gui.LinkedGauge;
-import me.halfcooler.ic2r.core.gui.TankGauge;
-import me.halfcooler.ic2r.core.gui.TextLabel;
+import me.halfcooler.ic2r.core.gui.*;
 import me.halfcooler.ic2r.core.gui.dynamic.TextProvider;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,8 +22,8 @@ public class GuiNuclearReactor extends Ic2rGui<ContainerNuclearReactor>
 		IEnableHandler enableHandler = GuiNuclearReactor.this.menu.base::isFluidCooled;
 		this.addElement(TankGauge.createBorderless(this, 10, 54, container.base.getInputTank(), true).withEnableHandler(enableHandler));
 		this.addElement(TankGauge.createBorderless(this, 190, 54, container.base.getOutputTank(), false).withEnableHandler(enableHandler));
-		this.addElement(new LinkedGauge(this, 7, 136, container.base, "heat", Gauge.GaugeStyle.HeatNuclearReactor).withTooltip(() -> {
-			// Minecraft translation does not reliably honor printf precision (e.g. %.2f); format for display here.
+		this.addElement(new LinkedGauge(this, 7, 136, container.base, "heat", Gauge.GaugeStyle.HeatNuclearReactor).withTooltip(() ->
+		{
 			String heatPercent = String.format(Locale.ROOT, "%.2f", GuiNuclearReactor.this.menu.base.getGuiValue("heat") * 100.0);
 			return Component.translatable("ic2r.NuclearReactor.gui.info.temp", heatPercent).getString();
 		}));

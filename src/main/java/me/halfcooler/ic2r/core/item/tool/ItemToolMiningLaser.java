@@ -5,16 +5,7 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.entity.LaserBulletEntity;
 import me.halfcooler.ic2r.core.item.PriorityUsableItem;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
-import me.halfcooler.ic2r.core.util.Ic2rTooltip;
-import me.halfcooler.ic2r.core.util.KeyboardClient;
-import me.halfcooler.ic2r.core.util.StackUtil;
-import me.halfcooler.ic2r.core.util.Util;
-import me.halfcooler.ic2r.core.util.Vector3;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-
+import me.halfcooler.ic2r.core.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,6 +28,10 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public class ItemToolMiningLaser extends ItemElectricTool implements INetworkItemEventListener, PriorityUsableItem
 {
@@ -67,7 +62,7 @@ public class ItemToolMiningLaser extends ItemElectricTool implements INetworkIte
 			case 7 -> "item.ic2r.mining_laser.tooltip.mode.3x3";
 			default -> throw new NoSuchElementException("No such mode: " + mode);
 		};
-		
+
 		return Component.translatable(translatable);
 	}
 

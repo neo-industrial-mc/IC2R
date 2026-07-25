@@ -9,13 +9,19 @@ package me.halfcooler.ic2r.core.crop;
  */
 public final class CropGrowthMath
 {
-	/** Matches {@link TileEntityCrop#applyHydration} hard cap. */
+	/**
+	 * Matches {@link TileEntityCrop#applyHydration} hard cap.
+	 */
 	public static final int WATER_STORAGE_MAX = 200;
 
-	/** Auto WeedEX fill cap ({@code applyWeedEx(..., manual=false)}). */
+	/**
+	 * Auto WeedEX fill cap ({@code applyWeedEx(..., manual=false)}).
+	 */
 	public static final int WEED_EX_AUTO_MAX = 150;
 
-	/** Manual WeedEX fill cap ({@code applyWeedEx(..., manual=true)}). */
+	/**
+	 * Manual WeedEX fill cap ({@code applyWeedEx(..., manual=true)}).
+	 */
 	public static final int WEED_EX_MANUAL_MAX = 100;
 
 	private CropGrowthMath()
@@ -50,7 +56,9 @@ public final class CropGrowthMath
 		return weightInfluencesSum * 5;
 	}
 
-	/** {@code providedQuality >= minimumQuality}. */
+	/**
+	 * {@code providedQuality >= minimumQuality}.
+	 */
 	public static boolean isQualitySufficient(int providedQuality, int minimumQuality)
 	{
 		return providedQuality >= minimumQuality;
@@ -94,13 +102,17 @@ public final class CropGrowthMath
 		return Math.max(baseGrowth * (100 - aux) / 100, 0);
 	}
 
-	/** Accumulates growth points: {@code (short) (current + totalGrowth)}. */
+	/**
+	 * Accumulates growth points: {@code (short) (current + totalGrowth)}.
+	 */
 	public static short addGrowthPoints(short growthPoints, int totalGrowth)
 	{
 		return (short) (growthPoints + totalGrowth);
 	}
 
-	/** Age advances when accumulated points reach crop growth duration. */
+	/**
+	 * Age advances when accumulated points reach crop growth duration.
+	 */
 	public static boolean readyToAgeUp(int growthPoints, int growthDuration)
 	{
 		return growthPoints >= growthDuration;
@@ -170,7 +182,9 @@ public final class CropGrowthMath
 		return amount;
 	}
 
-	/** WeedEX capacity for manual vs auto application. */
+	/**
+	 * WeedEX capacity for manual vs auto application.
+	 */
 	public static int weedExCapacity(boolean manual)
 	{
 		return manual ? WEED_EX_MANUAL_MAX : WEED_EX_AUTO_MAX;

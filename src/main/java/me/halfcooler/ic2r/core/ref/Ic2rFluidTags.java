@@ -10,7 +10,9 @@ import net.minecraft.world.level.material.Fluid;
  */
 public final class Ic2rFluidTags
 {
-	/** Common steam fluid tag shared by NeoForge / Fabric convention tags. */
+	/**
+	 * Common steam fluid tag shared by NeoForge / Fabric convention tags.
+	 */
 	public static final TagKey<Fluid> STEAM = common("steam");
 
 	public static void init()

@@ -1,12 +1,12 @@
 package me.halfcooler.ic2r.core.uu;
 
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 class RecipeUtil
 {
@@ -59,7 +59,6 @@ class RecipeUtil
 				}
 			}
 
-			// Empty after expansion means the ingredient cannot contribute a finite path.
 			if (res.isEmpty())
 			{
 				return Collections.emptyList();

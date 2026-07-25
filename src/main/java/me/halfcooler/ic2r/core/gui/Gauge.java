@@ -1,14 +1,13 @@
 package me.halfcooler.ic2r.core.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.Ic2rGui;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import net.minecraft.resources.ResourceLocation;
 
 public abstract class Gauge<T extends Gauge<T>> extends GuiElement<T>
 {

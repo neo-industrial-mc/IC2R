@@ -77,13 +77,11 @@ public final class IC2RUuMatterConfig
 			if (values.isEmpty())
 			{
 				IC2R.log.warn(LogCategory.Uu, "No UU matter values in %s.", RELATIVE_PATH);
-			}
-			else
+			} else
 			{
 				IC2R.log.debug(LogCategory.Uu, "Loaded %d UU matter values from %s.", values.size(), RELATIVE_PATH);
 			}
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			IC2R.log.warn(LogCategory.Uu, e, "Failed to load %s.", RELATIVE_PATH);
 			values = Collections.emptyMap();
@@ -106,8 +104,7 @@ public final class IC2RUuMatterConfig
 			if (v == Math.rint(v) && !Double.isInfinite(v))
 			{
 				sb.append((long) v);
-			}
-			else
+			} else
 			{
 				sb.append(v);
 			}
@@ -251,7 +248,6 @@ public final class IC2RUuMatterConfig
 		defaults.put("minecraft:obsidian", 4.330835025E7);
 		defaults.put("minecraft:crafting_table", 8.66167005E7);
 		defaults.put("minecraft:cracked_stone_bricks", 8.66167005E7);
-		// Extra seeds previously under balance.uu-values.predefined
 		defaults.put("ic2r:iridium_ore", 12000.0);
 		defaults.put("ic2r:iridium_shard", 1333.0);
 		return defaults;

@@ -1,11 +1,11 @@
 package me.halfcooler.ic2r.core.loot;
 
+import com.mojang.serialization.MapCodec;
 import me.halfcooler.ic2r.core.IC2R;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.storage.loot.providers.nbt.LootNbtProviderType;
 import net.minecraft.world.level.storage.loot.providers.nbt.NbtProvider;
-import com.mojang.serialization.MapCodec;
 
 public class Ic2rLootNbtProviderTypes
 {

@@ -4,12 +4,11 @@ import me.halfcooler.ic2r.api.recipe.Recipes;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityRecycler;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import net.minecraft.world.item.ItemStack;
 
 public class RecyclerResolver implements ILateRecipeResolver
 {

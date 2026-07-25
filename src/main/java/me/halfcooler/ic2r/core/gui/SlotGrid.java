@@ -1,15 +1,14 @@
 package me.halfcooler.ic2r.core.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.Slot;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.Slot;
 
 public class SlotGrid extends GuiElement<SlotGrid>
 {
@@ -79,45 +78,45 @@ public class SlotGrid extends GuiElement<SlotGrid>
 	}
 
 	public record SlotStyle(int u, int v, int width, int height, ResourceLocation background)
+	{
+		public static final SlotStyle Normal = new SlotStyle(103, 7, 18, 18);
+		public static final SlotStyle Large = new SlotStyle(99, 35, 26, 26);
+		public static final SlotStyle Plain = new SlotStyle(16, 16);
+		public static final int refSize = 16;
+		private static final Map<String, SlotStyle> map = getMap();
+
+		public SlotStyle(int u, int v, int width, int height)
 		{
-			public static final SlotStyle Normal = new SlotStyle(103, 7, 18, 18);
-			public static final SlotStyle Large = new SlotStyle(99, 35, 26, 26);
-			public static final SlotStyle Plain = new SlotStyle(16, 16);
-			public static final int refSize = 16;
-			private static final Map<String, SlotStyle> map = getMap();
+			this(u, v, width, height, GuiElement.commonTexture);
+		}
 
-			public SlotStyle(int u, int v, int width, int height)
-			{
-				this(u, v, width, height, GuiElement.commonTexture);
-			}
-	
-			public SlotStyle(int width, int height)
-			{
-				this(0, 0, width, height, null);
-			}
+		public SlotStyle(int width, int height)
+		{
+			this(0, 0, width, height, null);
+		}
 
-			public static void registerVarient(String name, SlotStyle newSlotStyle)
+		public static void registerVarient(String name, SlotStyle newSlotStyle)
+		{
+			assert name != null && newSlotStyle != null;
+			SlotStyle old = map.put(name.toLowerCase(Locale.ENGLISH), newSlotStyle);
+			if (old != null)
 			{
-				assert name != null && newSlotStyle != null;
-				SlotStyle old = map.put(name.toLowerCase(Locale.ENGLISH), newSlotStyle);
-				if (old != null)
-				{
-					throw new RuntimeException("Duplicate slot instance for name! " + name + " -> " + old + " and " + newSlotStyle);
-				}
-			}
-	
-			public static SlotStyle get(String name)
-			{
-				return map.get(name);
-			}
-	
-			private static Map<String, SlotStyle> getMap()
-			{
-				Map<String, SlotStyle> ret = new HashMap<>(6, 0.5F);
-				ret.put("normal", Normal);
-				ret.put("large", Large);
-				ret.put("plain", Plain);
-				return ret;
+				throw new RuntimeException("Duplicate slot instance for name! " + name + " -> " + old + " and " + newSlotStyle);
 			}
 		}
+
+		public static SlotStyle get(String name)
+		{
+			return map.get(name);
+		}
+
+		private static Map<String, SlotStyle> getMap()
+		{
+			Map<String, SlotStyle> ret = new HashMap<>(6, 0.5F);
+			ret.put("normal", Normal);
+			ret.put("large", Large);
+			ret.put("plain", Plain);
+			return ret;
+		}
+	}
 }

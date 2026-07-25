@@ -35,7 +35,6 @@ public class Ic2rPotion extends MobEffect
 	{
 		if (this == radiation)
 		{
-			// Use level-bound damage source so the datapack DamageType holder is always current.
 			entity.hurt(Ic2rDamageSource.radiation(entity.level()), (float) amplifier / 100 + 0.5F);
 		}
 		return true;

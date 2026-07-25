@@ -3,9 +3,6 @@ package me.halfcooler.ic2r.core.proxy;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
-
-import java.io.File;
-
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
@@ -28,6 +25,8 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+
+import java.io.File;
 
 public interface ClientEnvProxy
 {

@@ -1,20 +1,15 @@
 package me.halfcooler.ic2r.core.block.machine;
 
-import me.halfcooler.ic2r.api.recipe.ICannerBottleRecipeManager;
-import me.halfcooler.ic2r.api.recipe.IRecipeInput;
-import me.halfcooler.ic2r.api.recipe.MachineRecipe;
-import me.halfcooler.ic2r.api.recipe.MachineRecipeResult;
-import me.halfcooler.ic2r.api.recipe.RecipeOutput;
+import me.halfcooler.ic2r.api.recipe.*;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 public class CannerBottleRecipeManager implements ICannerBottleRecipeManager
 {

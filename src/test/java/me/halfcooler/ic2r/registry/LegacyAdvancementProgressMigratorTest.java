@@ -3,16 +3,12 @@ package me.halfcooler.ic2r.registry;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.halfcooler.ic2r.forge.LegacyAdvancementProgressMigrator;
+import net.minecraft.resources.ResourceLocation;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import net.minecraft.resources.ResourceLocation;
-
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Pure JSON / id remapping tests for {@link LegacyAdvancementProgressMigrator}.
@@ -172,7 +168,6 @@ class LegacyAdvancementProgressMigratorTest
 		JsonObject out = migrated.get();
 		assertFalse(out.has("ic2:ic2/root"));
 		assertTrue(out.has("ic2r:ic2r/root"));
-		// First-seen criteria win; either timestamp is fine as long as criterion is present.
 		assertTrue(out.getAsJsonObject("ic2r:ic2r/root").getAsJsonObject("criteria").has("ic2r:root"));
 	}
 

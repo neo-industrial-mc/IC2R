@@ -4,7 +4,9 @@
   "ingredient": {
     "item": "ic2r:coal_fuel_dust"
   },
-  "result": { "id": "ic2r:coal_dust" },
+  "result": {
+    "id": "ic2r:coal_dust"
+  },
   "experience": 0.0,
   "cookingtime": 200
 }

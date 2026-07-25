@@ -2,11 +2,10 @@ package me.halfcooler.ic2r.core.block.invslot;
 
 import me.halfcooler.ic2r.core.block.IInventorySlotHolder;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Collection;
 import java.util.Collections;
-
-import net.minecraft.world.item.ItemStack;
 
 public class InvSlotOutput extends InvSlot
 {

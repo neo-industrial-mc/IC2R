@@ -8,7 +8,9 @@
   "key": {
     "U": {
       "item": "ic2r:dual_uranium_fuel_rod",
-      "data": {"use": 0}
+      "data": {
+        "use": 0
+      }
     },
     "I": {
       "tag": "c:plates/iron"

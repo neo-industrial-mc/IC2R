@@ -33,7 +33,7 @@ class MoveableButton extends VanillaButton
 		return this.moveHandler != null && this.moveHandler.isEnabled();
 	}
 
-		public void tick()
+	public void tick()
 	{
 		super.tick();
 		if (this.isMoved())

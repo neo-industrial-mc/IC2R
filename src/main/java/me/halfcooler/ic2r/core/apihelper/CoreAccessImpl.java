@@ -10,13 +10,12 @@ import me.halfcooler.ic2r.core.Ic2rDamageSource;
 import me.halfcooler.ic2r.core.Ic2rPotion;
 import me.halfcooler.ic2r.core.util.ItemInfo;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.lang.reflect.Field;
-
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+
+import java.lang.reflect.Field;
 
 public final class CoreAccessImpl implements CoreAccess
 {

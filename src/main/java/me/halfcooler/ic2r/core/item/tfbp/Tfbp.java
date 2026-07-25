@@ -3,16 +3,14 @@ package me.halfcooler.ic2r.core.item.tfbp;
 import me.halfcooler.ic2r.api.item.ITerraformingBP;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Tfbp extends Item implements ITerraformingBP
 {

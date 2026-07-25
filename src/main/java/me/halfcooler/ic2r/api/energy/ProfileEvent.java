@@ -1,8 +1,8 @@
 package me.halfcooler.ic2r.api.energy;
 
-import java.util.Set;
-
 import net.neoforged.bus.api.Event;
+
+import java.util.Set;
 
 public abstract class ProfileEvent extends Event
 {

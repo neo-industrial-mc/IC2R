@@ -80,7 +80,6 @@ public class PointExplosion extends Explosion
 		int cy = Util.roundToNegInf(this.explosionY);
 		int cz = Util.roundToNegInf(this.explosionZ);
 
-		// Collect affected positions first (immutable) so chain reactions cannot skip cells.
 		List<BlockPos> affected = new ArrayList<>(27);
 		for (int x = cx - 1; x <= cx + 1; x++)
 		{
@@ -104,10 +103,6 @@ public class PointExplosion extends Explosion
 			}
 		}
 
-		// Destroy / detonate blocks. Match Ic2rExplosion + vanilla finalizeExplosion:
-		// - IC2R ITNT/Nuke: arm via TileEntityExplosive (never drop as an item)
-		// - TNT / placed dynamite / other wasExploded handlers: onBlockExploded primes them
-		// - Normal blocks: optional drops, then remove
 		for (BlockPos pos : affected)
 		{
 			BlockState state = this.world.getBlockState(pos);
@@ -119,15 +114,10 @@ public class PointExplosion extends Explosion
 			BlockEntity blockEntity = state.hasBlockEntity() ? this.world.getBlockEntity(pos) : null;
 			if (blockEntity instanceof TileEntityExplosive explosive)
 			{
-				// Explicit path: prime ITNT/Nuke. Do not drop resources or fall through to
-				// super.onBlockExploded which would wipe the block without arming it when the
-				// BE is missing or explode() returns early.
 				explosive.onExploded(this);
 				continue;
 			}
 
-			// Vanilla/Forge: canDropFromExplosion is false for TNT, placed dynamite, etc.
-			// Only drop when the block is meant to become loot rather than chain-detonate.
 			if (state.canDropFromExplosion(this.world, pos, this) && this.world.random.nextFloat() <= this.dropRate)
 			{
 				Block.dropResources(
@@ -140,7 +130,6 @@ public class PointExplosion extends Explosion
 				);
 			}
 
-			// Removes the block and calls wasExploded / BlockDynamite.onBlockExploded, etc.
 			state.onBlockExploded(this.world, pos, this);
 		}
 
@@ -154,7 +143,6 @@ public class PointExplosion extends Explosion
 			this.explosionZ + 2.0
 		);
 
-		// Exclude the igniter (classic behavior) and the dynamite entity if still present.
 		for (Entity target : this.world.getEntities(this.igniter, box))
 		{
 			if (target == this.entity || target.isRemoved())

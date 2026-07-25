@@ -2,23 +2,17 @@ package me.halfcooler.ic2r.core.item.tool;
 
 import me.halfcooler.ic2r.api.energy.profile.VoltageTier;
 import me.halfcooler.ic2r.api.item.ElectricItem;
-import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.api.item.IElectricItem;
 import me.halfcooler.ic2r.api.item.IItemHudInfo;
 import me.halfcooler.ic2r.api.network.INetworkItemEventListener;
 import me.halfcooler.ic2r.core.IC2R;
+import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.item.ElectricItemTooltipHandler;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockTags;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.sound.Sound;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
@@ -26,23 +20,23 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.DiggerItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class ItemElectricTool extends DiggerItem implements IElectricItem, INetworkItemEventListener, IItemHudInfo
 {

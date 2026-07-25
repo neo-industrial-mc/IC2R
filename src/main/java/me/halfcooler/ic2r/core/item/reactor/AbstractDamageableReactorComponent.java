@@ -1,14 +1,10 @@
 package me.halfcooler.ic2r.core.item.reactor;
 
-import me.halfcooler.ic2r.core.util.StackUtil;
-
 import me.halfcooler.ic2r.api.reactor.IReactor;
 import me.halfcooler.ic2r.api.reactor.IReactorComponent;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
+import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -16,6 +12,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public abstract class AbstractDamageableReactorComponent extends Item implements IReactorComponent
 {
@@ -88,13 +86,11 @@ public abstract class AbstractDamageableReactorComponent extends Item implements
 
 	public void setUse(ItemStack stack, int use)
 	{
-		// 1.21: CUSTOM_DATA is immutable via components; copyTag() alone does not persist.
 		StackUtil.editTag(stack, nbt -> nbt.putInt("use", use));
 	}
 
 	protected void incrementUse(ItemStack stack)
 	{
-		// 1.21: must write back via editTag; mutating copyTag() alone drops durability/heat.
 		int next = Math.min(this.getUse(stack) + 1, this.maxUse);
 		StackUtil.editTag(stack, nbt -> nbt.putInt("use", next));
 	}

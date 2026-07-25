@@ -1,32 +1,16 @@
 package me.halfcooler.ic2r.core;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiGraphics;
-import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import me.halfcooler.ic2r.api.upgrade.IUpgradableBlock;
 import me.halfcooler.ic2r.api.upgrade.IUpgradeItem;
 import me.halfcooler.ic2r.api.upgrade.UpgradableProperty;
 import me.halfcooler.ic2r.api.upgrade.UpgradeRegistry;
-import me.halfcooler.ic2r.core.gui.GuiElement;
-import me.halfcooler.ic2r.core.gui.IClickHandler;
-import me.halfcooler.ic2r.core.gui.IKeyboardDependent;
-import me.halfcooler.ic2r.core.gui.MouseButton;
-import me.halfcooler.ic2r.core.gui.ScrollDirection;
+import me.halfcooler.ic2r.core.gui.*;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
-
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -43,6 +27,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
+
+import java.util.*;
 
 public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> extends AbstractContainerScreen<T>
 {
@@ -120,8 +106,6 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 		{
 			if (element instanceof IKeyboardDependent)
 			{
-				// TODO: In 1.20.1, keyboardHandler.setSendRepeatsToGui was removed.
-				// this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
 				boolean fixKeyEvents = true;
 				break;
 			}
@@ -343,8 +327,6 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 
 	public boolean charTyped(char typedChar, int modifiers)
 	{
-		// 1.20+: charTyped only delivers printable characters (second arg is modifiers, not keyCode).
-		// TextBox character input is handled here; special keys go through keyPressed.
 		if (this.elementMethods.contains(GuiElement.ImplementedMethod.onKeyTyped))
 		{
 			boolean handled = false;
@@ -368,8 +350,6 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers)
 	{
-		// Special keys (backspace, delete, arrows, ctrl+a/c/v/x, …) never reach charTyped.
-		// Forward them so TextBox can delete/edit text instead of only accepting typed digits.
 		if (this.elementMethods.contains(GuiElement.ImplementedMethod.onKeyTyped))
 		{
 			boolean handled = false;
@@ -394,8 +374,6 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 	public void removed()
 	{
 		super.removed();
-		// TODO: In 1.20.1, keyboardHandler.setSendRepeatsToGui was removed.
-		// this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
 
 		if (closeHandler != null)
 		{
@@ -651,8 +629,6 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 
 	public void drawTooltip(int x, int y, List<Component> text)
 	{
-		// 清空之前的 tooltip，确保只有最后处理的（视觉最上层的）元素 tooltip 被渲染
-		// 避免 TankGauge + SlotGrid 等重叠元素的 tooltip 叠加显示
 		this.queuedTooltips.clear();
 		this.queuedTooltips.add(new Ic2rGui.Tooltip(text, x, y));
 	}
@@ -665,7 +641,6 @@ public abstract class Ic2rGui<T extends ContainerBase<? extends Container>> exte
 
 	protected void flushTooltips(GuiGraphics guiGraphics)
 	{
-		// 如果 vanilla 接下来会渲染 slot 物品 tooltip，跳过 IC2R 的 tooltip，避免与物品 tooltip 重叠
 		if (this.hoveredSlot != null && this.hoveredSlot.hasItem() && this.menu.getCarried().isEmpty())
 		{
 			this.queuedTooltips.clear();

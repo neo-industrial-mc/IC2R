@@ -1,10 +1,10 @@
 package me.halfcooler.ic2r.api.recipe;
 
-import java.util.Collection;
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Collection;
+import java.util.List;
 
 public class MachineRecipeWeighted<I> extends MachineRecipe<I, Collection<ItemStack>>
 {

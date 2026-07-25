@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.core.item.upgrade;
 
-import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
-
 import com.google.common.base.Predicate;
 import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.api.item.IElectricItem;
@@ -17,15 +15,7 @@ import me.halfcooler.ic2r.core.item.EnvItemHandler;
 import me.halfcooler.ic2r.core.item.IHandHeldSubInventory;
 import me.halfcooler.ic2r.core.item.tool.HandHeldInventory;
 import me.halfcooler.ic2r.core.item.tool.HandHeldMiningFilter;
-import me.halfcooler.ic2r.core.util.LiquidUtil;
-import me.halfcooler.ic2r.core.util.Ic2rTooltip;
-import me.halfcooler.ic2r.core.util.StackUtil;
-import me.halfcooler.ic2r.core.util.Util;
-
-import java.text.DecimalFormat;
-import java.util.*;
-
-
+import me.halfcooler.ic2r.core.util.*;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -42,6 +32,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.text.DecimalFormat;
+import java.util.*;
 
 public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSubInventory, IItemHudInfo
 {
@@ -154,7 +147,6 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 					this.initialise();
 				}
 
-				// EU Match has priority: when active, NBT Match is ignored and only electric items pass.
 				if (this.energy.active)
 				{
 					if (!(candidate.getItem() instanceof IElectricItem))
@@ -162,7 +154,6 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 						return false;
 					}
 
-					// COMPARISON / RANGE: numeric charge gate (no filter hologram required)
 					if (!this.energy.comparison.ignoreFilters()
 						&& !this.energy.doComparison((int) ElectricItem.manager.getCharge(candidate)))
 					{
@@ -173,7 +164,6 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 
 					if (this.filters.isEmpty())
 					{
-						// No whitelist: any electric item that passed the numeric gate (if any)
 						return true;
 					}
 
@@ -183,7 +173,6 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 						{
 							continue;
 						}
-						// NBT deliberately skipped while EU Match is on
 						if (requireDirectChargeMatch && !this.matchesFilterCharge(candidate, filter))
 						{
 							continue;
@@ -194,7 +183,6 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 					return false;
 				}
 
-				// --- NBT Match path (EU off): exact NBT for all items when enabled ---
 				if (this.filters.isEmpty())
 				{
 					return true;
@@ -353,15 +341,13 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 		ItemStack stack = context.getItemInHand();
 		if (this.type.directional)
 		{
-			// 1.21: getOrCreateNbtData returns a copy — must persist via editTag/setTag.
 			int dir = 1 + context.getClickedFace().ordinal();
 			StackUtil.editTag(stack, nbtData ->
 			{
 				if (nbtData.getByte("dir") == dir)
 				{
 					nbtData.putByte("dir", (byte) 0);
-				}
-				else
+				} else
 				{
 					nbtData.putByte("dir", (byte) dir);
 				}
@@ -398,7 +384,6 @@ public class ItemUpgradeModule extends Item implements IFullUpgrade, IHandHeldSu
 			{
 				if (!world.isClientSide)
 				{
-					// While EU Match is enabled, sneak+use opens advanced EU comparison directly
 					if (player.isShiftKeyDown() && HandHeldAdvancedUpgrade.isEnergyMatchEnabled(stack))
 					{
 						HandHeldAdvancedUpgrade.openEnergyConfig(player, hand, stack);

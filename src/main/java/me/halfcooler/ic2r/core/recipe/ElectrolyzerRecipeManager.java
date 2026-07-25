@@ -1,13 +1,12 @@
 package me.halfcooler.ic2r.core.recipe;
 
 import me.halfcooler.ic2r.api.recipe.IElectrolyzerRecipeManager;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import net.minecraft.world.level.material.Fluid;
 
 public class ElectrolyzerRecipeManager implements IElectrolyzerRecipeManager
 {

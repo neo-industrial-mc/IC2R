@@ -9,15 +9,15 @@ public interface ICannerEnrichRecipeManager extends IMachineRecipeManager<ICanne
 	RecipeOutput getOutputFor(Ic2rFluidStack var1, ItemStack var2, boolean var3, boolean var4);
 
 	record Input(Ic2rFluidStack fluid, IRecipeInput additive)
-		{
+	{
 
-			public boolean matches(Ic2rFluidStack fluid, ItemStack additive)
-			{
-				return this.fluid.hasExactFluid(fluid) && this.additive.matches(additive);
-			}
+		public boolean matches(Ic2rFluidStack fluid, ItemStack additive)
+		{
+			return this.fluid.hasExactFluid(fluid) && this.additive.matches(additive);
 		}
+	}
 
 	record RawInput(Ic2rFluidStack fluid, ItemStack additive)
-		{
-		}
+	{
+	}
 }

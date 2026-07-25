@@ -141,7 +141,8 @@ public class SlotHologramSlot extends Slot
 
 	private static final class DummyInventory implements Container
 	{
-		public int getContainerSize() {
+		public int getContainerSize()
+		{
 			return 1;
 		}
 

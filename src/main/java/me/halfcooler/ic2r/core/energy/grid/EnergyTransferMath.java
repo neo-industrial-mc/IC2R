@@ -8,14 +8,15 @@ package me.halfcooler.ic2r.core.energy.grid;
  */
 public final class EnergyTransferMath
 {
-	/** IC transformer insulation-strip threshold used by standard cables ({@code 9001}). */
+	/**
+	 * IC transformer insulation-strip threshold used by standard cables ({@code 9001}).
+	 */
 	public static final double IC_INSULATION_BREAKDOWN_ENERGY = 9001.0;
 
 	private EnergyTransferMath()
 	{
 	}
 
-	// --- IC Mode: inject / multi-sink / protection / transformer ---
 
 	/**
 	 * IC Mode: EU injectable at the sink after path loss.
@@ -207,14 +208,13 @@ public final class EnergyTransferMath
 		return (long) highVoltage * inputAmps == (long) lowVoltage * outputPackets;
 	}
 
-	// --- GT Mode ---
 
 	/**
 	 * GT Mode: reduce 1A packet EU by one conductor segment's loss (V/m/A).
 	 * Packet dies when remaining EU would drop to ≤ 0.
 	 *
-	 * @param packetEu            remaining EU in the 1A packet
-	 * @param lossPerMeterPerAmp  cable loss for this block
+	 * @param packetEu           remaining EU in the 1A packet
+	 * @param lossPerMeterPerAmp cable loss for this block
 	 * @return remaining packet EU, or 0 if the amp dies
 	 */
 	public static int gtReducePacketByConductor(int packetEu, int lossPerMeterPerAmp)

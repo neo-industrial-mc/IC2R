@@ -5,12 +5,6 @@ import me.halfcooler.ic2r.core.block.comp.ComparatorEmitter;
 import me.halfcooler.ic2r.core.block.invslot.InvSlot;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -21,11 +15,18 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public abstract class TileEntityInventory extends Ic2rTileEntity implements WorldlyContainer, IInventorySlotHolder<TileEntityInventory>
 {
 	protected final ComparatorEmitter comparator = this.addComponent(new ComparatorEmitter(this));
 	private final List<InvSlot> invSlots = new ArrayList<>();
-	/** Cached combined InvSlot → IItemHandler view (null side / full inventory). */
+	/**
+	 * Cached combined InvSlot → IItemHandler view (null side / full inventory).
+	 */
 	private transient List<Object> cachedHandlerList;
 
 	public TileEntityInventory(BlockEntityType<? extends TileEntityInventory> type, BlockPos pos, BlockState state)
@@ -77,7 +78,8 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		CompoundTag invSlotsTag = nbt.getCompound("InvSlots");
 
@@ -103,7 +105,8 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		nbt.put("InvSlots", invSlotsTag);
 	}
 
-	public int getContainerSize() {
+	public int getContainerSize()
+	{
 		int ret = 0;
 
 		for (InvSlot invSlot : this.invSlots)
@@ -380,7 +383,6 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	{
 		assert this.invSlots.stream().noneMatch(slot -> slot.name.equals(inventorySlot.name));
 		this.invSlots.add(inventorySlot);
-		// Slot list changed after construction is rare; drop combined-handler cache if present.
 		this.cachedHandlerList = null;
 	}
 
@@ -391,7 +393,7 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 	{
 		return Collections.unmodifiableList(this.invSlots);
 	}
-	
+
 	public List<Object> getInvSlotHandlerList()
 	{
 		if (this.cachedHandlerList == null || this.cachedHandlerList.size() != this.invSlots.size())
@@ -405,14 +407,15 @@ public abstract class TileEntityInventory extends Ic2rTileEntity implements Worl
 		}
 		return this.cachedHandlerList;
 	}
-	
-	/** NeoForge 1.21 removed invalidateCaps; clear local handler cache when inventory layout changes. */
+
+	/**
+	 * NeoForge 1.21 removed invalidateCaps; clear local handler cache when inventory layout changes.
+	 */
 	public void invalidateItemHandlerCache()
 	{
 		this.cachedHandlerList = null;
 	}
 
-	
 
 	private int locateInvSlot(int extIndex)
 	{

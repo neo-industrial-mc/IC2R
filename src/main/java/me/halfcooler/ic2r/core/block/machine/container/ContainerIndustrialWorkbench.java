@@ -1,5 +1,7 @@
 package me.halfcooler.ic2r.core.block.machine.container;
 
+import it.unimi.dsi.fastutil.ints.IntCollection;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import me.halfcooler.ic2r.api.block.container.Ic2rCraftingResultSlot;
 import me.halfcooler.ic2r.core.ContainerFullInv;
 import me.halfcooler.ic2r.core.IC2R;
@@ -9,12 +11,6 @@ import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.slot.SlotInvSlot;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Tuple;
-import it.unimi.dsi.fastutil.ints.IntCollection;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-
-import java.util.List;
-import java.util.ListIterator;
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,6 +23,9 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.ListIterator;
 
 public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityIndustrialWorkbench>
 {
@@ -63,6 +62,7 @@ public class ContainerIndustrialWorkbench extends ContainerFullInv<TileEntityInd
 	public final int indexOutputCutter;
 	protected final Container craftResult = new ResultContainer();
 	protected final Slot[] outputs = new Slot[3];
+
 	public ContainerIndustrialWorkbench(int syncId, Inventory playerInventory, TileEntityIndustrialWorkbench tileEntity)
 	{
 		super(Ic2rScreenHandlers.INDUSTRIAL_WORKBENCH, syncId, playerInventory, tileEntity, 228);

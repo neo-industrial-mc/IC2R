@@ -6,12 +6,11 @@ import me.halfcooler.ic2r.api.recipe.IRecipeInput;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.recipe.v2.RecipeHolder;
-
-import java.util.Collection;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+
+import java.util.Collection;
 
 public class Ic2rRecipeTypes
 {

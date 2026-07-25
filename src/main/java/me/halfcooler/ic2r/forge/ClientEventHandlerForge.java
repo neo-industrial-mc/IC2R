@@ -4,22 +4,15 @@ import com.mojang.blaze3d.shaders.FogShape;
 import me.halfcooler.ic2r.core.command.CommandIc2rc;
 import me.halfcooler.ic2r.core.event.EventHandlerClient;
 import me.halfcooler.ic2r.core.event.TickHandler;
-import me.halfcooler.ic2r.core.sound.DeferredSoundOps;
 import me.halfcooler.ic2r.core.proxy.SideProxyClient;
+import me.halfcooler.ic2r.core.sound.DeferredSoundOps;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
-import net.neoforged.neoforge.client.event.RenderLivingEvent;
-import net.neoforged.neoforge.client.event.ScreenEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -60,7 +53,6 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent
 	public void onSetupFogDensity(ViewportEvent.RenderFog event)
 	{
-		// Far-plane distance (blocks), not legacy GL density — see EventHandlerClient.
 		float fogEnd = EventHandlerClient.onSetupFogDensity(event.getCamera().getBlockAtCamera());
 		if (fogEnd >= 0.0F)
 		{
@@ -74,7 +66,6 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent
 	public void onRenderFogColor(ViewportEvent.ComputeFogColor event)
 	{
-		// ARGB tints are often negative as signed ints; never use color >= 0 as a presence check.
 		float[] rgb = EventHandlerClient.onRenderFogColorRgb(event.getCamera().getBlockAtCamera());
 		if (rgb != null)
 		{
@@ -111,7 +102,6 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent
 	public void onGuiCreate(ScreenEvent.Init.Post event)
 	{
-		// ScreenEvent.Init is abstract in NeoForge 1.21+; subscribe to Pre/Post concrete types.
 		EventHandlerClient.onGuiCreate(event.getScreen(), event.getListenersList(), event::addListener);
 	}
 
@@ -144,7 +134,6 @@ public final class ClientEventHandlerForge
 	@SubscribeEvent
 	public void onClientLoggingOut(ClientPlayerNetworkEvent.LoggingOut event)
 	{
-		// More reliable than PlayerLoggedOutEvent when leaving a dedicated server.
 		EventHandlerClient.onDisconnect();
 	}
 

@@ -2,12 +2,9 @@ package me.halfcooler.ic2r.machine;
 
 import me.halfcooler.ic2r.core.block.machine.tileentity.StandardMachineCycleMath;
 import me.halfcooler.ic2r.core.block.machine.tileentity.StandardMachineCycleMath.CycleTickResult;
-
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Pure-logic standard-machine cycle (G1.4 / SM-*).
@@ -15,9 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class StandardMachineCycleMathTest
 {
-	// --- SM-001: progress advances when recipe + energy + (implicit) output space ---
 
-	/** @Spec SM-001 满足条件时每 tick 进度 +1，直至 operationLength 完成并归零 */
+	/**
+	 * @Spec SM-001 满足条件时每 tick 进度 +1，直至 operationLength 完成并归零
+	 */
 	@Test
 	void tick_withRecipeAndEnergy_advancesProgressUntilComplete()
 	{
@@ -44,9 +42,10 @@ class StandardMachineCycleMathTest
 		assertEquals(energy - consume, done.energyStored(), 1e-9);
 	}
 
-	// --- SM-002: energy drain matches energyConsume when progress moves ---
 
-	/** @Spec SM-002 推进进度时恰好扣除 energyConsume EU */
+	/**
+	 * @Spec SM-002 推进进度时恰好扣除 energyConsume EU
+	 */
 	@Test
 	void tick_whenAdvancing_consumesExactlyEnergyConsume()
 	{
@@ -56,9 +55,10 @@ class StandardMachineCycleMathTest
 		assertEquals(1, r.progress());
 	}
 
-	// --- SM-003: energy interrupt keeps progress ---
 
-	/** @Spec SM-003 缓冲 EU 不足时不推进进度，且配方仍就绪时进度保留 */
+	/**
+	 * @Spec SM-003 缓冲 EU 不足时不推进进度，且配方仍就绪时进度保留
+	 */
 	@Test
 	void tick_energyInsufficient_blocksProgressButKeepsIt()
 	{
@@ -70,7 +70,9 @@ class StandardMachineCycleMathTest
 		assertEquals(9.0, r.energyStored(), 1e-9);
 	}
 
-	/** @Spec SM-003 恢复供电后从保留进度继续（不强制归零） */
+	/**
+	 * @Spec SM-003 恢复供电后从保留进度继续（不强制归零）
+	 */
 	@Test
 	void tick_afterEnergyRestore_resumesFromRetainedProgress()
 	{
@@ -85,13 +87,13 @@ class StandardMachineCycleMathTest
 		assertEquals(15.0, resumed.energyStored(), 1e-9);
 	}
 
-	// --- SM-004: output full → recipeReady false → no progress / no EU ---
 
-	/** @Spec SM-004 输出满（recipeReady=false）不耗电、进度清零，不得当作可运行 */
+	/**
+	 * @Spec SM-004 输出满（recipeReady=false）不耗电、进度清零，不得当作可运行
+	 */
 	@Test
 	void tick_outputFull_noEnergyNoProgress()
 	{
-		// recipeReady=false models getRecipeResult null when outputSlot.canAdd fails
 		CycleTickResult r = StandardMachineCycleMath.tick((short) 8, 30, 4, 100.0, false);
 		assertFalse(r.energyConsumed());
 		assertFalse(r.operationCompleted());
@@ -100,9 +102,10 @@ class StandardMachineCycleMathTest
 		assertEquals(100.0, r.energyStored(), 1e-9);
 	}
 
-	// --- SM-005 spirit: input insufficient same as recipe not ready ---
 
-	/** @Spec SM-005 输入不足时 recipeReady=false：停止处理、清进度、不耗电 */
+	/**
+	 * @Spec SM-005 输入不足时 recipeReady=false：停止处理、清进度、不耗电
+	 */
 	@Test
 	void tick_inputMissing_clearsProgressWithoutConsume()
 	{
@@ -112,9 +115,10 @@ class StandardMachineCycleMathTest
 		assertEquals(40.0, r.energyStored(), 1e-9);
 	}
 
-	// --- guiProgress ---
 
-	/** @Spec SM-001 GUI：guiProgress = progress / operationLength */
+	/**
+	 * @Spec SM-001 GUI：guiProgress = progress / operationLength
+	 */
 	@Test
 	void guiProgress_isProgressOverLength()
 	{
@@ -124,7 +128,6 @@ class StandardMachineCycleMathTest
 		assertEquals(0.0F, StandardMachineCycleMath.guiProgress(5, 0), 1e-6F);
 	}
 
-	// --- SM-006: overclock length / ops / energy relation (IC2R multipliers) ---
 
 	/**
 	 * @Spec SM-006 超频：processTimeMultiplier=0.7、energyDemandMultiplier=1.6（单枚超频）
@@ -140,30 +143,31 @@ class StandardMachineCycleMathTest
 		assertEquals(defaultLen, StandardMachineCycleMath.operationLength(defaultLen, 0, 1.0));
 		assertEquals(defaultEu, StandardMachineCycleMath.energyDemand(defaultEu, 0, 1.0));
 
-		// One overclocker: ×0.7 time, ×1.6 power (ItemUpgradeModule)
 		int ocLen = StandardMachineCycleMath.operationLength(defaultLen, 0, 0.7);
 		int ocEu = StandardMachineCycleMath.energyDemand(defaultEu, 0, 1.6);
 		int ocOps = StandardMachineCycleMath.operationsPerTick(defaultLen, 0, 0.7);
 
 		assertTrue(ocLen < defaultLen, "overclock shortens cycle length");
-		assertEquals(70, ocLen); // round(100*64*0.7 / 64) with ops=1
-		assertEquals(3, ocEu); // round(2 * 1.6)
+		assertEquals(70, ocLen);
+		assertEquals(3, ocEu);
 		assertEquals(1, ocOps);
 	}
 
-	/** @Spec SM-006 超频后进度按比例重标定，避免长度变化丢进度 */
+	/**
+	 * @Spec SM-006 超频后进度按比例重标定，避免长度变化丢进度
+	 */
 	@Test
 	void rescaleProgress_preservesRatioOnLengthChange()
 	{
-		// half-done at length 100 → ~half at length 70
 		short scaled = StandardMachineCycleMath.rescaleProgress((short) 50, 100, 70);
 		assertEquals(35, scaled);
 
-		// floor(0.5 * 70 + 0.1) = floor(35.1) = 35
 		assertEquals(0, StandardMachineCycleMath.rescaleProgress((short) 0, 100, 70));
 	}
 
-	/** canOperate gate used by TE before useEnergy */
+	/**
+	 * canOperate gate used by TE before useEnergy
+	 */
 	@Test
 	void canOperate_requiresRecipeAndEnergy()
 	{
@@ -173,7 +177,6 @@ class StandardMachineCycleMathTest
 		assertFalse(StandardMachineCycleMath.canOperate(false, 100.0, 1));
 	}
 
-	// --- G3.3 boundary: zero-length defaults, rescale invalid, multi-OC ---
 
 	/**
 	 * defaultOperationLength == 0 → historical IC2 batch: 64 ops/tick, length 1.
@@ -184,7 +187,6 @@ class StandardMachineCycleMathTest
 	{
 		assertEquals(64, StandardMachineCycleMath.operationsPerTick(0, 0, 1.0));
 		assertEquals(1, StandardMachineCycleMath.operationLength(0, 0, 1.0));
-		// still 64/1 when overclock multipliers present (early-return on length 0)
 		assertEquals(64, StandardMachineCycleMath.operationsPerTick(0, 10, 0.7));
 		assertEquals(1, StandardMachineCycleMath.operationLength(0, 10, 0.7));
 
@@ -200,22 +202,18 @@ class StandardMachineCycleMathTest
 	@Test
 	void multiOverclock_extremeTimeMultiplier_andEnergyClamp()
 	{
-		// very small processTimeMultiplier → huge ops/tick (batch machines)
 		int ops = StandardMachineCycleMath.operationsPerTick(100, 0, 1e-9);
 		assertTrue(ops > 1);
 		assertTrue(ops <= Integer.MAX_VALUE);
 
-		// applyModifier saturation path: huge base*mult → Integer.MAX_VALUE
 		assertEquals(Integer.MAX_VALUE, StandardMachineCycleMath.applyModifier(
 			Integer.MAX_VALUE, 0, 2.0));
 
-		// two overclockers spirit: 0.7^2 time, 1.6^2 energy on 2 EU base
 		int len = StandardMachineCycleMath.operationLength(100, 0, 0.49);
 		int eu = StandardMachineCycleMath.energyDemand(2, 0, 2.56);
 		assertTrue(len < 70, "two OC shorter than one OC (70)");
-		assertEquals(5, eu); // round(2 * 2.56) = 5
+		assertEquals(5, eu);
 
-		// tick with length 0 input is clamped to 1 internally
 		CycleTickResult r = StandardMachineCycleMath.tick((short) 0, 0, 1, 10.0, true);
 		assertTrue(r.operationCompleted());
 		assertEquals(0, r.progress());

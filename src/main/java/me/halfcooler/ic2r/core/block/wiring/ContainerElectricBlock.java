@@ -6,10 +6,9 @@ import me.halfcooler.ic2r.core.ref.Ic2rScreenHandlers;
 import me.halfcooler.ic2r.core.slot.ArmorSlot;
 import me.halfcooler.ic2r.core.slot.SlotArmor;
 import me.halfcooler.ic2r.core.slot.SlotInvSlot;
+import net.minecraft.world.entity.player.Inventory;
 
 import java.util.List;
-
-import net.minecraft.world.entity.player.Inventory;
 
 public class ContainerElectricBlock extends ContainerFullInv<TileEntityElectricBlock>
 {

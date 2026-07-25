@@ -4,9 +4,6 @@ import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.misc.RubberLogBlock;
 import me.halfcooler.ic2r.core.proxy.EnvProxy;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
-
-import java.util.concurrent.CompletableFuture;
-
 import net.minecraft.core.Holder;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
@@ -19,6 +16,8 @@ import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSi
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
+
+import java.util.concurrent.CompletableFuture;
 
 public class Ic2rWorldGen
 {

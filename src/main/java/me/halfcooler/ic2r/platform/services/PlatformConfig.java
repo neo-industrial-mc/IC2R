@@ -7,6 +7,8 @@ import java.nio.file.Path;
  */
 public interface PlatformConfig
 {
-	/** Game / mod config directory provided by the loader. */
+	/**
+	 * Game / mod config directory provided by the loader.
+	 */
 	Path getConfigDirectory();
 }

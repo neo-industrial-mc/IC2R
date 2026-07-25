@@ -4,8 +4,8 @@ import me.halfcooler.ic2r.core.block.wiring.AbstractCableBlock;
 import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +15,7 @@ import java.util.List;
 public class ItemCable extends BlockItem
 {
 	private final AbstractCableBlock cableBlock;
+
 	public ItemCable(Block block, Properties p)
 	{
 		super(block, p);

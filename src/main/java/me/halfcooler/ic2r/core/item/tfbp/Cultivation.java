@@ -3,23 +3,18 @@ package me.halfcooler.ic2r.core.item.tfbp;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityTerra;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.DirectionalBlock;
-import net.minecraft.world.level.block.DoublePlantBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Cultivation extends TerraformerBase
 {

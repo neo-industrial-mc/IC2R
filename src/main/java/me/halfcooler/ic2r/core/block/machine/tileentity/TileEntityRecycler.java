@@ -1,11 +1,6 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
-import me.halfcooler.ic2r.api.recipe.IBasicMachineRecipeManager;
-import me.halfcooler.ic2r.api.recipe.IRecipeInput;
-import me.halfcooler.ic2r.api.recipe.MachineRecipe;
-import me.halfcooler.ic2r.api.recipe.MachineRecipeResult;
-import me.halfcooler.ic2r.api.recipe.RecipeOutput;
-import me.halfcooler.ic2r.api.recipe.Recipes;
+import me.halfcooler.ic2r.api.recipe.*;
 import me.halfcooler.ic2r.api.upgrade.UpgradableProperty;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotProcessableGeneric;
@@ -17,19 +12,14 @@ import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.util.ConfigUtil;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.text.ParseException;
+import java.util.*;
 
 public class TileEntityRecycler extends TileEntityStandardMachine<IRecipeInput, Collection<ItemStack>, ItemStack>
 {
@@ -72,7 +62,6 @@ public class TileEntityRecycler extends TileEntityStandardMachine<IRecipeInput, 
 
 	public static boolean getIsItemBlacklisted(ItemStack aStack)
 	{
-		// Pure gate RC-004/RC-005; list membership still via IListRecipeManager.contains(ItemStack).
 		return MachineRecipeMatchMath.isRecyclerRejected(
 			Recipes.recyclerWhitelist.isEmpty(),
 			Recipes.recyclerBlacklist.contains(aStack),
@@ -157,7 +146,7 @@ public class TileEntityRecycler extends TileEntityStandardMachine<IRecipeInput, 
 			return StackUtil.isEmpty(input)
 				? null
 				: new MachineRecipe<>(Recipes.inputFactory.forStack(input, 1), getOutput(input))
-				  .getResult(StackUtil.copyWithSize(input, StackUtil.getSize(input) - 1));
+				.getResult(StackUtil.copyWithSize(input, StackUtil.getSize(input) - 1));
 		}
 
 		@Override

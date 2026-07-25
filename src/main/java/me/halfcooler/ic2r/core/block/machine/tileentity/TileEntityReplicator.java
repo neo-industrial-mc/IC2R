@@ -1,7 +1,5 @@
 package me.halfcooler.ic2r.core.block.machine.tileentity;
 
-import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
-
 import me.halfcooler.ic2r.api.network.INetworkClientTileEntityEventListener;
 import me.halfcooler.ic2r.api.recipe.IPatternStorage;
 import me.halfcooler.ic2r.api.upgrade.IUpgradableBlock;
@@ -23,14 +21,10 @@ import me.halfcooler.ic2r.core.network.GuiSynced;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
 import me.halfcooler.ic2r.core.ref.Ic2rFluids;
+import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 import me.halfcooler.ic2r.core.uu.UuIndex;
-
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -41,6 +35,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 @NotClassic
 public class TileEntityReplicator extends TileEntityElectricMachine implements IHasGui, IUpgradableBlock, INetworkClientTileEntityEventListener
@@ -272,7 +270,8 @@ public class TileEntityReplicator extends TileEntityElectricMachine implements I
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		this.extraUuStored = nbt.getDouble("extraUuStored");
 		this.uuProcessed = nbt.getDouble("uuProcessed");

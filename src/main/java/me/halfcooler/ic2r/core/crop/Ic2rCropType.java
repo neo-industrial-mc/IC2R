@@ -7,8 +7,8 @@ import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.util.Util;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import org.jetbrains.annotations.NotNull;
 
 public enum Ic2rCropType implements StringRepresentable, ICropType
 {

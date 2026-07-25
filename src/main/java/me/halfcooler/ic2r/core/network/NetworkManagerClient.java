@@ -1,6 +1,7 @@
 package me.halfcooler.ic2r.core.network;
 
 import com.mojang.authlib.GameProfile;
+import io.netty.buffer.ByteBuf;
 import me.halfcooler.ic2r.api.network.INetworkItemEventListener;
 import me.halfcooler.ic2r.api.network.INetworkTileEntityEventListener;
 import me.halfcooler.ic2r.core.IC2R;
@@ -15,23 +16,11 @@ import me.halfcooler.ic2r.core.ref.Ic2rSoundEvents;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-import io.netty.buffer.ByteBuf;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.zip.InflaterOutputStream;
-
-
+import me.halfcooler.ic2r.forge.Ic2rRawPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import me.halfcooler.ic2r.forge.Ic2rRawPayload;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -40,6 +29,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+import java.io.*;
+import java.util.zip.InflaterOutputStream;
 
 public class NetworkManagerClient extends NetworkManager
 {
@@ -248,7 +241,7 @@ public class NetworkManagerClient extends NetworkManager
 						break;
 					case TileEntityEvent:
 					{
-final Object teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
+						final Object teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
 						final int event = is.readInt();
 						IC2R.sideProxy.requestTick(false, () ->
 						{

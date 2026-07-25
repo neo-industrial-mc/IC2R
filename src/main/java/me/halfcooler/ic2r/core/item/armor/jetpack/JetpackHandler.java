@@ -6,17 +6,16 @@ import me.halfcooler.ic2r.api.item.IElectricItem;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.Map;
-import java.util.WeakHashMap;
-
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.component.DataComponents;
+
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class JetpackHandler implements IBackupElectricItemManager
 {
@@ -31,6 +30,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 		}
 		return jetpackCache;
 	}
+
 	public static JetpackHandler instance;
 	private boolean internalHandlesCheck = false;
 
@@ -55,7 +55,6 @@ public class JetpackHandler implements IBackupElectricItemManager
 			JetpackLogic.onArmorTick(player.level(), player, stack, getJetpack(stack));
 		} else
 		{
-			// Only the local client player owns the jetpack loop sound.
 			JetpackLogic.stopJetpackSound(player);
 		}
 	}
@@ -75,8 +74,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 			}
 
 			StackUtil.editTag(stack, nbt -> nbt.remove("hasIC2RJetpack"));
-		}
-		else if (stack.getEquipmentSlot() == EquipmentSlot.CHEST)
+		} else if (stack.getEquipmentSlot() == EquipmentSlot.CHEST)
 		{
 			StackUtil.editTag(stack, nbt -> nbt.putBoolean("hasIC2RJetpack", true));
 		}
@@ -126,8 +124,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 				if (newCharge > 0.0)
 				{
 					nbt.putDouble("charge", newCharge);
-				}
-				else
+				} else
 				{
 					nbt.remove("charge");
 				}
@@ -157,8 +154,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 					if (newCharge > 0.0)
 					{
 						nbt.putDouble("charge", newCharge);
-					}
-					else
+					} else
 					{
 						nbt.remove("charge");
 					}
@@ -166,8 +162,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 			}
 
 			return amount;
-		}
-		else
+		} else
 		{
 			return 0.0;
 		}
@@ -234,7 +229,9 @@ public class JetpackHandler implements IBackupElectricItemManager
 		return handle;
 	}
 
-	/** Called by JetpackHandlerForge on player tick START. */
+	/**
+	 * Called by JetpackHandlerForge on player tick START.
+	 */
 	public static void restoreArmorIfBuffered(Player player)
 	{
 		if (playerArmorBuffer.containsKey(player))
@@ -252,7 +249,9 @@ public class JetpackHandler implements IBackupElectricItemManager
 		}
 	}
 
-	/** Called by JetpackHandlerForge for jetpack tooltip injection. */
+	/**
+	 * Called by JetpackHandlerForge for jetpack tooltip injection.
+	 */
 	public static void addJetpackTooltip(ItemStack stack, java.util.List<Component> tip)
 	{
 		if (hasJetpackAttached(stack))
@@ -266,7 +265,9 @@ public class JetpackHandler implements IBackupElectricItemManager
 		}
 	}
 
-	/** Called by JetpackHandlerForge on equipment slot change. */
+	/**
+	 * Called by JetpackHandlerForge on equipment slot change.
+	 */
 	public static void onEquipmentChanged(LivingEntity entity)
 	{
 		if (!(entity instanceof Player player))
@@ -276,7 +277,9 @@ public class JetpackHandler implements IBackupElectricItemManager
 		JetpackLogic.stopJetpackSound(player);
 	}
 
-	/** Called by JetpackHandlerForge before damage; buffers chest armor for potential restore. */
+	/**
+	 * Called by JetpackHandlerForge before damage; buffers chest armor for potential restore.
+	 */
 	public static void bufferChestArmor(Player player)
 	{
 		ItemStack currentArmor = player.getItemBySlot(EquipmentSlot.CHEST);

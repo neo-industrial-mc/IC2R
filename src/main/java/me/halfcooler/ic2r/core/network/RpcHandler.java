@@ -2,12 +2,11 @@ package me.halfcooler.ic2r.core.network;
 
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.util.LogCategory;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import net.minecraft.server.level.ServerPlayer;
 
 public class RpcHandler
 {

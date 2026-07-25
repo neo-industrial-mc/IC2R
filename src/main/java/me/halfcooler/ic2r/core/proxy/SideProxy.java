@@ -3,9 +3,6 @@ package me.halfcooler.ic2r.core.proxy;
 import me.halfcooler.ic2r.api.tile.IRotorProvider;
 import me.halfcooler.ic2r.core.sound.SoundManager;
 import me.halfcooler.ic2r.core.util.Keyboard;
-
-import java.io.File;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -17,6 +14,8 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+
+import java.io.File;
 
 public interface SideProxy
 {

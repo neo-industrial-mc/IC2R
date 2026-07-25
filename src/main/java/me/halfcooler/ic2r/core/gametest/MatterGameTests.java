@@ -5,15 +5,14 @@ import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityMatter;
 import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityScanner;
 import me.halfcooler.ic2r.core.ref.Ic2rBlocks;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
-
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+
+import java.util.List;
 
 @GameTestHolder("ic2r")
 @PrefixGameTestTemplate(false)
@@ -33,7 +32,6 @@ public final class MatterGameTests
 		TileEntityMatter matter = helper.getBlockEntity(MACHINE_POS);
 		matter.getComponent(Energy.class).addEnergy(1000.0);
 
-		// After the charge is applied once, with no further EU intake the fabricator is idle.
 		helper.runAtTickTime(20, () ->
 		{
 			helper.assertTrue(!matter.getActive(), "fabricator holding charge without intake should be inactive");

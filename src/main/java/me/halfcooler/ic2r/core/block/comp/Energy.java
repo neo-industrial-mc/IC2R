@@ -3,13 +3,7 @@ package me.halfcooler.ic2r.core.block.comp;
 import me.halfcooler.ic2r.api.energy.EnergyNet;
 import me.halfcooler.ic2r.api.energy.profile.IElectricalNode;
 import me.halfcooler.ic2r.api.energy.profile.VoltageTier;
-import me.halfcooler.ic2r.api.energy.tile.IChargingSlot;
-import me.halfcooler.ic2r.api.energy.tile.IDischargingSlot;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyAcceptor;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyEmitter;
-import me.halfcooler.ic2r.api.energy.tile.IEnergySink;
-import me.halfcooler.ic2r.api.energy.tile.IEnergyTile;
-import me.halfcooler.ic2r.api.energy.tile.IMultiEnergySource;
+import me.halfcooler.ic2r.api.energy.tile.*;
 import me.halfcooler.ic2r.api.info.ILocatable;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.invslot.InvSlot;
@@ -24,6 +18,11 @@ import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.util.LegacyNbt;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 
 import java.io.DataInput;
 import java.io.IOException;
@@ -32,12 +31,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
-
 public class Energy extends TileEntityComponent implements IElectricalNode
 {
 	/**
@@ -45,7 +38,9 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 	 * Semantic rename from legacy {@link #LEGACY_NBT_STORAGE} ({@code storage}).
 	 */
 	public static final String NBT_ENERGY_BUFFER = "energy_buffer";
-	/** Legacy NBT key written by pre-W1.5 builds; still readable via {@link LegacyNbt}. */
+	/**
+	 * Legacy NBT key written by pre-W1.5 builds; still readable via {@link LegacyNbt}.
+	 */
 	public static final String LEGACY_NBT_STORAGE = "storage";
 
 	private static final boolean debugLoad = System.getProperty("ic2r.comp.energy.debugload") != null;
@@ -416,7 +411,7 @@ public class Energy extends TileEntityComponent implements IElectricalNode
 		this.profile.setRecipePower(0);
 		this.profile.setMaxSinkAmperageOverride(2);
 	}
-	
+
 	public void configureEnergyBuffer(int maxAmperage)
 	{
 		VoltageTier tier = VoltageTier.fromIcTier(this.sinkTier);

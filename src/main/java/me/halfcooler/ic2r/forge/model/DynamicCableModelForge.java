@@ -4,12 +4,6 @@ import me.halfcooler.ic2r.core.block.wiring.AbstractCableBlock;
 import me.halfcooler.ic2r.core.block.wiring.CableFoam;
 import me.halfcooler.ic2r.core.block.wiring.CableType;
 import me.halfcooler.ic2r.core.block.wiring.DynamicCableModel;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -30,6 +24,11 @@ import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
 
 final class DynamicCableModelForge extends DynamicCableModel<List<BakedQuad>[], List<BakedQuad>[]> implements Ic2rModel
 {

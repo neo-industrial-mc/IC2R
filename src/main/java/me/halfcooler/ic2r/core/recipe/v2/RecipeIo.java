@@ -13,11 +13,7 @@ import me.halfcooler.ic2r.core.recipe.input.RecipeInputFluidContainer;
 import me.halfcooler.ic2r.core.recipe.input.RecipeInputIngredient;
 import me.halfcooler.ic2r.core.recipe.input.RecipeInputItemStack;
 import me.halfcooler.ic2r.core.recipe.input.RecipeInputMultiple;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -28,11 +24,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.CustomData;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class RecipeIo
 {
@@ -88,7 +87,6 @@ public class RecipeIo
 				}
 				default ->
 				{
-					// INGREDIENT (and defensive fall-through)
 				}
 			}
 		}

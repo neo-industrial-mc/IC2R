@@ -66,7 +66,6 @@ record Ic2rFluidStackImpl(FluidStack parent) implements Ic2rFluidStack
 	@Override
 	public void toNbt(CompoundTag nbt)
 	{
-		// FluidStack is component-based; store a simplified representation for IC2R internal NBT.
 		nbt.putString("FluidName", BuiltInRegistries.FLUID.getKey(this.parent.getFluid()).toString());
 		nbt.putInt("Amount", this.parent.getAmount());
 	}

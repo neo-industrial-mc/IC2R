@@ -2,12 +2,11 @@ package me.halfcooler.ic2r.core.init;
 
 import me.halfcooler.ic2r.core.util.ItemComparableItemStack;
 import me.halfcooler.ic2r.core.util.StackUtil;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.minecraft.world.item.ItemStack;
 
 public class OreValues
 {

@@ -7,18 +7,16 @@ import me.halfcooler.ic2r.api.crops.ICropType;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.crop.Ic2rCropCard;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.resources.ResourceLocation;
-
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class GenericCropCard extends Ic2rCropCard
 {

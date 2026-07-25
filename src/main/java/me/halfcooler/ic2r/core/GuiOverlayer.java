@@ -1,25 +1,21 @@
 package me.halfcooler.ic2r.core;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.halfcooler.ic2r.api.item.ElectricItem;
-import me.halfcooler.ic2r.api.item.HudMode;
-import me.halfcooler.ic2r.api.item.IElectricItem;
-import me.halfcooler.ic2r.api.item.IItemHudInfo;
-import me.halfcooler.ic2r.api.item.IItemHudProvider;
-import me.halfcooler.ic2r.core.item.armor.jetpack.IJetpack;
+import me.halfcooler.ic2r.api.item.*;
 import me.halfcooler.ic2r.core.item.armor.ItemArmorQuantumSuit;
+import me.halfcooler.ic2r.core.item.armor.jetpack.IJetpack;
 import me.halfcooler.ic2r.core.ref.Ic2rItems;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.nbt.CompoundTag;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -134,8 +130,7 @@ public class GuiOverlayer
 							}
 
 							nextLine += (info.size() + 1) * 14;
-						}
-						else
+						} else
 						{
 							List<Component> tooltip = rightItem.getTooltipLines(
 								net.minecraft.world.item.Item.TooltipContext.of(this.mc.level),
@@ -170,8 +165,7 @@ public class GuiOverlayer
 									guiGraphics.drawString(this.mc.font, info.get(l), 8, nextLine + (l + 1) * 14, 0xFFFFFF);
 								}
 							}
-						}
-						else
+						} else
 						{
 							List<Component> tooltip = leftItem.getTooltipLines(
 								net.minecraft.world.item.Item.TooltipContext.of(this.mc.level),
@@ -197,12 +191,10 @@ public class GuiOverlayer
 		if (item instanceof IItemHudProvider.IItemHudBarProvider)
 		{
 			return ((IItemHudProvider.IItemHudBarProvider) item).getBarPercent(stack);
-		}
-		else if (item instanceof IElectricItem)
+		} else if (item instanceof IElectricItem)
 		{
 			return mapCharge(stack);
-		}
-		else
+		} else
 		{
 			return stack.isDamageableItem() ? (int) Util.map(1.0 - (double) stack.getDamageValue() / stack.getMaxDamage(), 1.0, 100.0) : -1;
 		}

@@ -3,11 +3,10 @@ package me.halfcooler.ic2r.integration.jei.recipe.machine;
 import me.halfcooler.ic2r.api.recipe.ICannerEnrichRecipeManager;
 import me.halfcooler.ic2r.api.recipe.MachineRecipe;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
-
-import java.util.List;
-
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+
+import java.util.List;
 
 public class CannerEnrichRecipeWrapper
 {

@@ -1,14 +1,11 @@
 package me.halfcooler.ic2r.core.crop;
 
-import me.halfcooler.ic2r.api.crops.BaseSeed;
-import me.halfcooler.ic2r.api.crops.CropCard;
-import me.halfcooler.ic2r.api.crops.CropSoilType;
-import me.halfcooler.ic2r.api.crops.Crops;
-import me.halfcooler.ic2r.api.crops.ICropTile;
+import me.halfcooler.ic2r.api.crops.*;
 import me.halfcooler.ic2r.api.network.NetworkHelper;
 import me.halfcooler.ic2r.core.IC2R;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.fluid.FluidHandler;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidStack;
 import me.halfcooler.ic2r.core.item.ItemCropSeed;
@@ -21,21 +18,12 @@ import me.halfcooler.ic2r.core.util.BiomeUtil;
 import me.halfcooler.ic2r.core.util.LogCategory;
 import me.halfcooler.ic2r.core.util.StackUtil;
 import me.halfcooler.ic2r.core.util.Util;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -49,10 +37,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.core.registries.BuiltInRegistries;
 import org.apache.commons.lang3.mutable.MutableObject;
-import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerTicker
 {
@@ -90,7 +84,8 @@ public class TileEntityCrop extends Ic2rTileEntity implements ICropTile, ServerT
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		if (nbt.contains("statGrowth"))
 		{

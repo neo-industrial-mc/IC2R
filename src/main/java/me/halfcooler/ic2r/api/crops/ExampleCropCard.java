@@ -1,12 +1,12 @@
 package me.halfcooler.ic2r.api.crops;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExampleCropCard extends CropCard
 {

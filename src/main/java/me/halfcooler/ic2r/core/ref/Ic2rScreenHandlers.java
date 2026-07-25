@@ -7,38 +7,8 @@ import me.halfcooler.ic2r.core.block.generator.container.ContainerSolarGenerator
 import me.halfcooler.ic2r.core.block.heatgenerator.container.ContainerElectricHeatGenerator;
 import me.halfcooler.ic2r.core.block.heatgenerator.container.ContainerFluidHeatGenerator;
 import me.halfcooler.ic2r.core.block.heatgenerator.container.ContainerRTHeatGenerator;
-import me.halfcooler.ic2r.core.block.kineticgenerator.container.ContainerElectricKineticGenerator;
-import me.halfcooler.ic2r.core.block.kineticgenerator.container.ContainerSteamKineticGenerator;
-import me.halfcooler.ic2r.core.block.kineticgenerator.container.ContainerStirlingKineticGenerator;
-import me.halfcooler.ic2r.core.block.kineticgenerator.container.ContainerWaterKineticGenerator;
-import me.halfcooler.ic2r.core.block.kineticgenerator.container.ContainerWindKineticGenerator;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerAdvMiner;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerBatchCrafter;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerCanner;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerChunkLoader;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerCondenser;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerCropHarvester;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerCropmatron;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerElectrolyzer;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerFermenter;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerFluidBottler;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerFluidDistributor;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerFluidRegulator;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerIndustrialWorkbench;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerItemBuffer;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerLiquidHeatExchanger;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerMagnetizer;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerMatter;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerMetalFormer;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerMiner;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerPatternStorage;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerReplicator;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerScanner;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerSolarDistiller;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerSortingMachine;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerSteamGenerator;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerWeightedFluidDistributor;
-import me.halfcooler.ic2r.core.block.machine.container.ContainerWeightedItemDistributor;
+import me.halfcooler.ic2r.core.block.kineticgenerator.container.*;
+import me.halfcooler.ic2r.core.block.machine.container.*;
 import me.halfcooler.ic2r.core.block.personal.ContainerEnergyOMatClosed;
 import me.halfcooler.ic2r.core.block.personal.ContainerEnergyOMatOpen;
 import me.halfcooler.ic2r.core.block.personal.ContainerTradeOMatClosed;
@@ -53,13 +23,7 @@ import me.halfcooler.ic2r.core.gui.code.CodeGuiSampleMenu;
 import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
 import me.halfcooler.ic2r.core.item.IHandHeldInventory;
 import me.halfcooler.ic2r.core.item.IHandHeldSubInventory;
-import me.halfcooler.ic2r.core.item.tool.ContainerContainmentbox;
-import me.halfcooler.ic2r.core.item.tool.ContainerMeter;
-import me.halfcooler.ic2r.core.item.tool.ContainerMiningFilter;
-import me.halfcooler.ic2r.core.item.tool.ContainerToolScanner;
-import me.halfcooler.ic2r.core.item.tool.ContainerToolbox;
-import me.halfcooler.ic2r.core.item.tool.ContainerAnalyzer;
-import me.halfcooler.ic2r.core.item.tool.HandHeldInventory;
+import me.halfcooler.ic2r.core.item.tool.*;
 import me.halfcooler.ic2r.core.item.upgrade.HandHeldAdvancedUpgrade;
 import me.halfcooler.ic2r.core.item.upgrade.HandHeldOre;
 import me.halfcooler.ic2r.core.item.upgrade.HandHeldValueConfig;
@@ -67,10 +31,6 @@ import me.halfcooler.ic2r.core.network.DataEncoder;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.proxy.EnvProxy;
 import me.halfcooler.ic2r.core.util.Util;
-
-import java.io.IOException;
-import java.util.function.BiFunction;
-
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -79,6 +39,9 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import java.io.IOException;
+import java.util.function.BiFunction;
 
 public final class Ic2rScreenHandlers
 {
@@ -128,7 +91,9 @@ public final class Ic2rScreenHandlers
 	public static final MenuType<ContainerWeightedItemDistributor> WEIGHTED_ITEM_DISTRIBUTOR = registerManagedBe("weighted_item_distributor");
 	public static final MenuType<ContainerIndustrialWorkbench> INDUSTRIAL_WORKBENCH = registerManagedBe("industrial_workbench");
 	public static final MenuType<ContainerBatchCrafter> BATCH_CRAFTER = registerManagedBe("batch_crafter");
-	/** G2.3: all storage box tiers (wood/iron/bronze/steel/iridium) share one pure-code Menu. */
+	/**
+	 * G2.3: all storage box tiers (wood/iron/bronze/steel/iridium) share one pure-code Menu.
+	 */
 	public static final MenuType<ContainerStorageBox> STORAGE_BOX = registerManagedBe("storage_box");
 	private static final EnvProxy.ExtendedClientScreenHandlerFactory<ContainerBase<?>> MANAGED_CLIENT_ITEM_HANDLER = createManagedItemClientHandler();
 	public static final MenuType<DynamicContainer<HandHeldInventory>> DYNAMIC_ITEM = registerManagedItem("dynamic_item");

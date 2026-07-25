@@ -9,17 +9,12 @@ import me.halfcooler.ic2r.core.block.machine.tileentity.TileEntityStandardMachin
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
 import me.halfcooler.ic2r.core.gui.CustomGauge;
 import me.halfcooler.ic2r.core.gui.dynamic.IGuiValueProvider;
-
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.Accessor;
-import snownee.jade.api.view.ClientViewGroup;
-import snownee.jade.api.view.IClientExtensionProvider;
-import snownee.jade.api.view.IServerExtensionProvider;
-import snownee.jade.api.view.ProgressView;
-import snownee.jade.api.view.ViewGroup;
+import snownee.jade.api.view.*;
+
+import java.util.List;
 
 /**
  * Unified processing progress for recipe-style machines.
@@ -45,7 +40,9 @@ public enum Ic2rProgressProvider implements IServerExtensionProvider<CompoundTag
 
 	private static final String KEY_CURRENT = "ic2Cur";
 	private static final String KEY_MAX = "ic2Max";
-	/** When true, current/max are game ticks and labels use seconds. */
+	/**
+	 * When true, current/max are game ticks and labels use seconds.
+	 */
 	private static final String KEY_TIME_BASED = "ic2Time";
 
 	@Override
@@ -109,7 +106,6 @@ public enum Ic2rProgressProvider implements IServerExtensionProvider<CompoundTag
 			float ratio = (float) process.getProgressRatio();
 			if (ratio > MIN_VISIBLE)
 			{
-				// operationDuration / progress are ticks (recipe time).
 				return ProgressSnapshot.time(ratio, process.getProgress(), process.operationDuration);
 			}
 		}
@@ -125,7 +121,6 @@ public enum Ic2rProgressProvider implements IServerExtensionProvider<CompoundTag
 			}
 		}
 
-		// Custom TE (not Process / StandardMachine): has tick progress + recipe duration.
 		if (target instanceof TileEntityBlastFurnace blast && blast.getProgress() > 0)
 		{
 			int max = blast.getProgressNeeded();
@@ -144,7 +139,6 @@ public enum Ic2rProgressProvider implements IServerExtensionProvider<CompoundTag
 				}
 			} catch (IllegalArgumentException | UnsupportedOperationException ignored)
 			{
-				// Provider does not expose "progress".
 			}
 		}
 
@@ -168,7 +162,6 @@ public enum Ic2rProgressProvider implements IServerExtensionProvider<CompoundTag
 
 		if (target instanceof TileEntityReplicator replicator && replicator.patternUu > 0.0 && replicator.uuProcessed > 0.0)
 		{
-			// UU buckets (not time). Scale to milli-units for integer transport.
 			long current = Math.round(replicator.uuProcessed * 1000.0);
 			long max = Math.round(replicator.patternUu * 1000.0);
 			return ProgressSnapshot.amount(

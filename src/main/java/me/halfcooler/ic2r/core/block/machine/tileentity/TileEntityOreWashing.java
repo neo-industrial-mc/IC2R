@@ -4,28 +4,22 @@ import me.halfcooler.ic2r.api.recipe.IRecipeInput;
 import me.halfcooler.ic2r.api.recipe.MachineRecipeResult;
 import me.halfcooler.ic2r.api.recipe.Recipes;
 import me.halfcooler.ic2r.api.upgrade.UpgradableProperty;
-import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.block.comp.Fluids;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquid;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotConsumableLiquidByList;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotOutput;
 import me.halfcooler.ic2r.core.block.invslot.InvSlotProcessableGeneric;
 import me.halfcooler.ic2r.core.fluid.Ic2rFluidTank;
-import me.halfcooler.ic2r.core.gui.dynamic.DynamicContainer;
-import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.network.GuiSynced;
 import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 
 @NotClassic
 public class TileEntityOreWashing extends TileEntityStandardMachine<IRecipeInput, Collection<ItemStack>, ItemStack>

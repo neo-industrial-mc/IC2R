@@ -1,20 +1,19 @@
 package me.halfcooler.ic2r.core.item;
 
 import me.halfcooler.ic2r.core.profile.NotClassic;
+import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.LegacyItemStackNbt;
 import me.halfcooler.ic2r.core.util.StackUtil;
-import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.Util;
 import me.halfcooler.ic2r.core.uu.UuIndex;
-
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @NotClassic
 public class ItemCrystalMemory extends Item

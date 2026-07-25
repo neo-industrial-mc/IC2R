@@ -7,28 +7,14 @@ import me.halfcooler.ic2r.core.block.comp.Energy;
 import me.halfcooler.ic2r.core.block.comp.Fluids;
 import me.halfcooler.ic2r.core.block.invslot.InvSlot;
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntity;
-import me.halfcooler.ic2r.core.gui.Button;
-import me.halfcooler.ic2r.core.gui.CustomButton;
-import me.halfcooler.ic2r.core.gui.EnergyGauge;
-import me.halfcooler.ic2r.core.gui.GuiDefaultBackground;
-import me.halfcooler.ic2r.core.gui.GuiElement;
-import me.halfcooler.ic2r.core.gui.IClickHandler;
-import me.halfcooler.ic2r.core.gui.Image;
-import me.halfcooler.ic2r.core.gui.LinkedGauge;
-import me.halfcooler.ic2r.core.gui.RecipeButton;
-import me.halfcooler.ic2r.core.gui.SlotGrid;
-import me.halfcooler.ic2r.core.gui.TankFluidSlot;
-import me.halfcooler.ic2r.core.gui.TankGauge;
-import me.halfcooler.ic2r.core.gui.TextLabel;
-import me.halfcooler.ic2r.core.gui.VanillaButton;
+import me.halfcooler.ic2r.core.gui.*;
 import me.halfcooler.ic2r.core.item.tool.HandHeldInventory;
 import me.halfcooler.ic2r.core.util.LogCategory;
-
-import java.util.Collections;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
+
+import java.util.Collections;
 
 public class DynamicGui<T extends Container> extends GuiDefaultBackground<DynamicContainer<T>>
 {

@@ -3,14 +3,10 @@ package me.halfcooler.ic2r.core.item;
 import me.halfcooler.ic2r.api.item.ElectricItem;
 import me.halfcooler.ic2r.api.item.IBoxable;
 import me.halfcooler.ic2r.core.IC2R;
-import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.item.tool.GuiToolbox;
+import me.halfcooler.ic2r.core.profile.NotClassic;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
 import me.halfcooler.ic2r.core.util.StackUtil;
-
-import java.util.List;
-import java.util.Locale;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -20,11 +16,14 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Locale;
 
 @NotClassic
 public class ItemBatteryChargeHotbar extends ItemBattery implements IBoxable

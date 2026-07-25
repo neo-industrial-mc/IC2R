@@ -4,22 +4,16 @@ import me.halfcooler.ic2r.api.energy.EnergyNet;
 import me.halfcooler.ic2r.api.energy.profile.VoltageTier;
 import me.halfcooler.ic2r.api.network.INetworkClientTileEntityEventListener;
 import me.halfcooler.ic2r.api.network.NetworkHelper;
-import me.halfcooler.ic2r.core.energy.EnergyNetMode;
-import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.ContainerBase;
 import me.halfcooler.ic2r.core.IHasGui;
 import me.halfcooler.ic2r.core.block.comp.Energy;
+import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
 import me.halfcooler.ic2r.core.block.tileentity.TileEntityInventory;
 import me.halfcooler.ic2r.core.block.wiring.ContainerTransformer;
+import me.halfcooler.ic2r.core.energy.EnergyNetMode;
+import me.halfcooler.ic2r.core.energy.profile.ElectricalDisplay;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
-
-import me.halfcooler.ic2r.core.block.tileentity.ServerTicker;
-
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,6 +26,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
 
 public abstract class TileEntityTransformer extends TileEntityInventory implements IHasGui, INetworkClientTileEntityEventListener, ServerTicker
 {
@@ -51,7 +49,8 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 	}
 
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries) {
+	protected void loadAdditional(@NotNull CompoundTag nbt, net.minecraft.core.HolderLookup.@NotNull Provider registries)
+	{
 		super.loadAdditional(nbt, registries);
 		int mode = nbt.getInt("mode");
 		if (mode >= 0 && mode < TileEntityTransformer.Mode.VALUES.length)
@@ -170,8 +169,7 @@ public abstract class TileEntityTransformer extends TileEntityInventory implemen
 		{
 			Ic2rTooltip.add(tooltip, Component.translatable("ic2r.Transformer.tooltip.high", this.formatRatedPower(true)));
 			Ic2rTooltip.add(tooltip, Component.translatable("ic2r.Transformer.tooltip.low", this.formatRatedPower(false)));
-		}
-		else
+		} else
 		{
 			Ic2rTooltip.add(tooltip, Component.translatable(
 				"item.ic2r.transformer.tooltip",

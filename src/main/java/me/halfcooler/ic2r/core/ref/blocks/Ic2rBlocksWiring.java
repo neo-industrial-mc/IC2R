@@ -1,38 +1,19 @@
 package me.halfcooler.ic2r.core.ref.blocks;
 
 import me.halfcooler.ic2r.core.block.tileentity.Ic2rTileEntityBlock;
-import me.halfcooler.ic2r.core.block.wiring.CableBlock;
-import me.halfcooler.ic2r.core.block.wiring.CableType;
-import me.halfcooler.ic2r.core.block.wiring.DetectorCableBlock;
-import me.halfcooler.ic2r.core.block.wiring.DetectorFoamCableBlock;
-import me.halfcooler.ic2r.core.block.wiring.FoamCableBlock;
-import me.halfcooler.ic2r.core.block.wiring.SplitterCableBlock;
-import me.halfcooler.ic2r.core.block.wiring.SplitterFoamCableBlock;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityChargePadBatBox;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityLuminator;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityChargePadCESU;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityChargePadMFE;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityChargePadMFSU;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityElectricBatBox;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityElectricCESU;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityElectricMFE;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityElectricMFSU;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityFeConverter;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityTransformerEV;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityTransformerHV;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityTransformerLV;
-import me.halfcooler.ic2r.core.block.wiring.tileentity.TileEntityTransformerMV;
+import me.halfcooler.ic2r.core.block.wiring.*;
+import me.halfcooler.ic2r.core.block.wiring.tileentity.*;
 import me.halfcooler.ic2r.core.util.Util;
-
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
-
-import net.minecraft.world.level.material.MapColor;
 import me.halfcooler.ic2r.forge.EnvProxyForge;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/** Domain block registrations: cables, transformers, energy storage, chargepads, luminator */
+/**
+ * Domain block registrations: cables, transformers, energy storage, chargepads, luminator
+ */
 public final class Ic2rBlocksWiring
 {
 	private Ic2rBlocksWiring()
@@ -54,7 +35,9 @@ public final class Ic2rBlocksWiring
 	public static final DeferredHolder<Block, Block> MV_TRANSFORMER = EnvProxyForge.BLOCKS.register("mv_transformer", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityTransformerMV.class, true, Ic2rTileEntityBlock.DefaultDrop.Machine, Util.allFacings, true));
 	public static final DeferredHolder<Block, Block> HV_TRANSFORMER = EnvProxyForge.BLOCKS.register("hv_transformer", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityTransformerHV.class, true, Ic2rTileEntityBlock.DefaultDrop.Machine, Util.allFacings, true));
 	public static final DeferredHolder<Block, Block> EV_TRANSFORMER = EnvProxyForge.BLOCKS.register("ev_transformer", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityTransformerEV.class, true, Ic2rTileEntityBlock.DefaultDrop.Machine, Util.allFacings, true));
-	/** One-way EU → FE converter: EnergyNet sink + extract-only FE capability. */
+	/**
+	 * One-way EU → FE converter: EnergyNet sink + extract-only FE capability.
+	 */
 	public static final DeferredHolder<Block, Block> FE_CONVERTER = EnvProxyForge.BLOCKS.register("fe_converter", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityFeConverter.class, true, Ic2rTileEntityBlock.DefaultDrop.Machine, Util.allFacings, true));
 	private static final Properties cableSettings = Properties.of().strength(0.5F, 5.0F).sound(SoundType.METAL);
 	public static final DeferredHolder<Block, FoamCableBlock> COPPER_FOAM_CABLE = EnvProxyForge.BLOCKS.register("copper_foam_cable", () -> FoamCableBlock.create(cableSettings, CableType.copper, 0));

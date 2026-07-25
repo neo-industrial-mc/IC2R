@@ -5,13 +5,6 @@ import me.halfcooler.ic2r.core.sound.SoundManager;
 import me.halfcooler.ic2r.core.util.Keyboard;
 import me.halfcooler.ic2r.core.util.Util;
 import me.halfcooler.ic2r.platform.services.PlatformServices;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayDeque;
-import java.util.Queue;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -24,6 +17,12 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public final class SideProxyServer implements SideProxy
 {

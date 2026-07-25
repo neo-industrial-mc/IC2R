@@ -3,16 +3,15 @@ package me.halfcooler.ic2r.core.item.tool;
 import me.halfcooler.ic2r.api.item.IBoxable;
 import me.halfcooler.ic2r.api.item.IItemHudInfo;
 import me.halfcooler.ic2r.core.util.Ic2rTooltip;
-
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ItemToolCrafting extends Item implements IBoxable, IItemHudInfo
 {

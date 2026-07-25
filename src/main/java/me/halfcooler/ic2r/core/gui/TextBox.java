@@ -6,12 +6,12 @@ import com.mojang.blaze3d.platform.GlStateManager.LogicOp;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import net.minecraft.client.gui.GuiGraphics;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import me.halfcooler.ic2r.core.Ic2rGui;
 import me.halfcooler.ic2r.core.proxy.SideProxyClient;
 import me.halfcooler.ic2r.core.util.Util;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 
@@ -137,7 +137,7 @@ public class TextBox extends GuiElement<TextBox>
 		}
 	}
 
-		public void tick()
+	public void tick()
 	{
 		super.tick();
 		this.cursorTick++;
@@ -329,15 +329,11 @@ public class TextBox extends GuiElement<TextBox>
 						break;
 					}
 
-					// Escape must bubble so the screen can close.
 					if (keyCode == 256)
 					{
 						return super.onKeyTyped(typedChar, keyCode);
 					}
 
-					// keyPressed path (typedChar == 0): consume while focused so inventory
-					// hotkeys (1-9 hotbar swap, inventory-close E) don't fight text editing.
-					// charTyped path with a disallowed character: ignore without consuming.
 					return typedChar == 0;
 				case 261:
 					if (Screen.hasControlDown())

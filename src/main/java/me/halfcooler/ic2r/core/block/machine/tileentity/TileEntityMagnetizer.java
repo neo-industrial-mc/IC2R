@@ -9,15 +9,14 @@ import me.halfcooler.ic2r.core.block.invslot.InvSlotUpgrade;
 import me.halfcooler.ic2r.core.block.machine.container.ContainerMagnetizer;
 import me.halfcooler.ic2r.core.network.GrowingBuffer;
 import me.halfcooler.ic2r.core.ref.Ic2rBlockEntities;
-
-import java.util.EnumSet;
-import java.util.Set;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 public class TileEntityMagnetizer extends TileEntityElectricMachine implements IHasGui, IUpgradableBlock
 {
