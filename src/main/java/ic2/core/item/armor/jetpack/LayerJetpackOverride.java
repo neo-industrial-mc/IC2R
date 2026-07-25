@@ -3,6 +3,7 @@ package ic2.core.item.armor.jetpack;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -41,7 +42,8 @@ public class LayerJetpackOverride extends RenderLayer<LivingEntity, HumanoidMode
    */
   public static void register(EntityRenderersEvent.AddLayers event) {
     for (PlayerSkin.Model skin : event.getSkins()) {
-      if (event.getSkin(skin) instanceof LivingEntityRenderer<?, ?> renderer) {
+      if (event.getSkin(skin) instanceof LivingEntityRenderer<?, ?> renderer
+          && renderer.getModel() instanceof HumanoidModel) {
         addTo(renderer);
       }
     }
@@ -74,38 +76,57 @@ public class LayerJetpackOverride extends RenderLayer<LivingEntity, HumanoidMode
     if (JetpackHandler.hasJetpackAttached(chestStack)) {
       HumanoidModel<LivingEntity> model = this.getParentModel();
       boolean[] saved = saveVisibility(model);
-      model.setAllVisible(false);
-      model.body.visible = true;
-      model.rightArm.visible = true;
-      model.leftArm.visible = true;
-      model.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+      try {
+        model.setAllVisible(false);
+        model.body.visible = true;
+        model.rightArm.visible = true;
+        model.leftArm.visible = true;
+        model.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
-      VertexConsumer consumer =
-          ItemRenderer.getArmorFoilBuffer(
-              bufferSource, RenderType.armorCutoutNoCull(TEXTURE), chestStack.hasFoil());
-      model.renderToBuffer(
-          poseStack,
-          consumer,
-          packedLight,
-          OverlayTexture.NO_OVERLAY,
-          FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F));
-      restoreVisibility(model, saved);
+        VertexConsumer consumer =
+            ItemRenderer.getArmorFoilBuffer(
+                bufferSource, RenderType.armorCutoutNoCull(TEXTURE), chestStack.hasFoil());
+        model.renderToBuffer(
+            poseStack,
+            consumer,
+            packedLight,
+            OverlayTexture.NO_OVERLAY,
+            FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F));
+      } finally {
+        restoreVisibility(model, saved);
+      }
     }
   }
 
   private boolean[] saveVisibility(HumanoidModel<LivingEntity> model) {
-    return new boolean[] {
+    boolean[] saved = {
       model.head.visible,
       model.hat.visible,
       model.body.visible,
       model.rightArm.visible,
       model.leftArm.visible,
       model.rightLeg.visible,
-      model.leftLeg.visible
+      model.leftLeg.visible,
+      true,
+      true,
+      true,
+      true,
+      true
     };
+    if (model instanceof PlayerModel<?> playerModel) {
+      saved[7] = playerModel.jacket.visible;
+      saved[8] = playerModel.rightSleeve.visible;
+      saved[9] = playerModel.leftSleeve.visible;
+      saved[10] = playerModel.rightPants.visible;
+      saved[11] = playerModel.leftPants.visible;
+    }
+    return saved;
   }
 
   private void restoreVisibility(HumanoidModel<LivingEntity> model, boolean[] saved) {
+    // Covers parts hidden by setAllVisible(false) that are not reachable below, e.g.
+    // PlayerModel's private cloak and ear.
+    model.setAllVisible(true);
     model.head.visible = saved[0];
     model.hat.visible = saved[1];
     model.body.visible = saved[2];
@@ -113,5 +134,12 @@ public class LayerJetpackOverride extends RenderLayer<LivingEntity, HumanoidMode
     model.leftArm.visible = saved[4];
     model.rightLeg.visible = saved[5];
     model.leftLeg.visible = saved[6];
+    if (model instanceof PlayerModel<?> playerModel) {
+      playerModel.jacket.visible = saved[7];
+      playerModel.rightSleeve.visible = saved[8];
+      playerModel.leftSleeve.visible = saved[9];
+      playerModel.rightPants.visible = saved[10];
+      playerModel.leftPants.visible = saved[11];
+    }
   }
 }
