@@ -1,6 +1,7 @@
 package ic2.forge;
 
 import ic2.core.event.EventHandlerClient;
+import ic2.core.item.armor.jetpack.LayerJetpackOverride;
 import ic2.forge.model.BeModelLoader;
 import ic2.forge.model.CableModelLoader;
 import ic2.forge.model.MaskOverlayItemLoader;
@@ -81,6 +82,11 @@ public final class ClientModEventHandlerForge {
         ClientEnvProxyForge.blockEntityRendererRegistrations) {
       registerBlockEntityRenderer(reg, event);
     }
+  }
+
+  @SubscribeEvent
+  public void onAddLayers(EntityRenderersEvent.AddLayers event) {
+    LayerJetpackOverride.register(event);
   }
 
   @SubscribeEvent

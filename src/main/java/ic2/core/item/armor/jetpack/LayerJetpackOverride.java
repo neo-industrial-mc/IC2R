@@ -6,16 +6,20 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
@@ -27,6 +31,32 @@ public class LayerJetpackOverride extends RenderLayer<LivingEntity, HumanoidMode
   public LayerJetpackOverride(
       RenderLayerParent<LivingEntity, HumanoidModel<LivingEntity>> renderer) {
     super(renderer);
+  }
+
+  /**
+   * Attaches one layer instance to every renderer backed by a {@link HumanoidModel}. Each layer
+   * must be constructed with the renderer it is added to: the layer animates {@code
+   * getParentModel()}, and a model borrowed from another renderer may cast the entity (e.g. {@code
+   * ArmorStandModel} casts to {@code ArmorStand}).
+   */
+  public static void register(EntityRenderersEvent.AddLayers event) {
+    for (PlayerSkin.Model skin : event.getSkins()) {
+      if (event.getSkin(skin) instanceof LivingEntityRenderer<?, ?> renderer) {
+        addTo(renderer);
+      }
+    }
+
+    for (EntityType<?> type : event.getEntityTypes()) {
+      if (event.getRenderer(type) instanceof LivingEntityRenderer<?, ?> renderer
+          && renderer.getModel() instanceof HumanoidModel) {
+        addTo(renderer);
+      }
+    }
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private static void addTo(LivingEntityRenderer renderer) {
+    renderer.addLayer(new LayerJetpackOverride(renderer));
   }
 
   public void render(

@@ -5,16 +5,10 @@ import ic2.api.item.IBackupElectricItemManager;
 import ic2.api.item.IElectricItem;
 import ic2.core.ref.Ic2Items;
 import ic2.core.util.Ic2Tooltip;
-import ic2.core.util.ReflectionUtil;
 import ic2.core.util.StackUtil;
-import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -28,7 +22,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -39,12 +32,6 @@ public class JetpackHandler implements IBackupElectricItemManager {
   static final ItemStack jetpack = new ItemStack(Ic2Items.JETPACK_ELECTRIC);
   private static final Map<Player, ItemStack> playerArmorBuffer = new WeakHashMap<>();
   public static JetpackHandler instance;
-
-  @OnlyIn(Dist.CLIENT)
-  private static LayerJetpackOverride render;
-
-  @OnlyIn(Dist.CLIENT)
-  private static Field renderLayers;
 
   private boolean internalHandlesCheck = false;
 
@@ -269,31 +256,6 @@ public class JetpackHandler implements IBackupElectricItemManager {
       if (hasJetpackAttached(currentArmor)) {
         playerArmorBuffer.put(player, currentArmor);
       }
-    }
-  }
-
-  @SubscribeEvent
-  @OnlyIn(Dist.CLIENT)
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  public void render(RenderLivingEvent.Pre<LivingEntity, ?> event) {
-    LivingEntity entity = event.getEntity();
-    if (hasJetpackAttached(entity.getItemBySlot(EquipmentSlot.CHEST))) {
-      if (render == null) {
-        render = new LayerJetpackOverride((RenderLayerParent) event.getRenderer());
-        renderLayers = ReflectionUtil.getField(LivingEntityRenderer.class, "layers", "f_115291_");
-      }
-
-      event.getRenderer().addLayer((RenderLayer) render);
-    }
-  }
-
-  @SubscribeEvent
-  @OnlyIn(Dist.CLIENT)
-  @SuppressWarnings("unchecked")
-  public void renderPost(RenderLivingEvent.Post<LivingEntity, ?> event) {
-    if (render != null) {
-      ((List<RenderLayer<?, ?>>) ReflectionUtil.getFieldValue(renderLayers, event.getRenderer()))
-          .remove(render);
     }
   }
 }
