@@ -23,6 +23,7 @@ public class JetpackHandler implements IBackupElectricItemManager
 	public static JetpackHandler instance;
 	private static ItemStack jetpackCache;
 	private boolean internalHandlesCheck = false;
+
 	private JetpackHandler()
 	{
 		ElectricItem.registerBackupManager(this);

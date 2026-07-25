@@ -37,6 +37,7 @@ public class Ic2rFenceBlock extends FenceBlock
 	public static final Map<Direction, BooleanProperty> connectProperties = getConnectProperties();
 	private static final Map<Player, Long> lastBoostTick = new WeakHashMap<>();
 	public final boolean canBoost;
+
 	public Ic2rFenceBlock(Properties settings, boolean canBoost)
 	{
 		super(settings);

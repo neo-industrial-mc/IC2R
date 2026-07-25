@@ -28,11 +28,16 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/**
- * Domain block registrations: rubber wood, sheets, walls, foam, explosives, building blocks
- */
 public final class Ic2rBlocksBuilding
 {
+	private static final TreeGrower RUBBER_TREE_GROWER = new TreeGrower(
+		"ic2r_rubber",
+		java.util.Optional.empty(),
+		java.util.Optional.of(ResourceKey.create(Registries.CONFIGURED_FEATURE, IC2R.getIdentifier("rubber_tree"))),
+		java.util.Optional.empty()
+	);
+	private static final Properties wallSettings = Properties.of().strength(3.0F, 30.0F).requiresCorrectToolForDrops().sound(SoundType.STONE);
+
 	public static final DeferredHolder<Block, LeavesBlock> RUBBER_LEAVES = EnvProxyForge.BLOCKS.register("rubber_leaves", () -> new LeavesBlock(Properties.of().strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion().isValidSpawn(Ic2rBlocks::canSpawnOnLeaves).isSuffocating(Ic2rBlocks::never).isViewBlocking(Ic2rBlocks::never)));
 	public static final DeferredHolder<Block, RubberLogBlock> RUBBER_LOG = EnvProxyForge.BLOCKS.register("rubber_log", () -> new RubberLogBlock(Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN).randomTicks().strength(2.0F, 3.0f).sound(SoundType.WOOD)));
 	public static final DeferredHolder<Block, RotatedPillarBlock> STRIPPED_RUBBER_LOG = EnvProxyForge.BLOCKS.register("stripped_rubber_log", () -> new RotatedPillarBlock(Properties.of().mapColor(state -> state.getValue(RotatedPillarBlock.AXIS) == Axis.Y ? MapColor.PODZOL : MapColor.COLOR_BROWN).strength(2.0F, 3.0f).sound(SoundType.WOOD)));
@@ -79,13 +84,7 @@ public final class Ic2rBlocksBuilding
 	public static final DeferredHolder<Block, Block> RED_WALL = EnvProxyForge.BLOCKS.register("red_wall", () -> new WallBlock(wallSettings, DyeColor.RED));
 	public static final DeferredHolder<Block, Block> BLACK_WALL = EnvProxyForge.BLOCKS.register("black_wall", () -> new WallBlock(wallSettings, DyeColor.BLACK));
 	public static final DeferredHolder<Block, Block> OBSCURED_WALL = EnvProxyForge.BLOCKS.register("obscured_wall", () -> Ic2rTileEntityBlock.create(wallSettings, TileEntityWall.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false));
-	private static final TreeGrower RUBBER_TREE_GROWER = new TreeGrower(
-		"ic2r_rubber",
-		java.util.Optional.empty(),
-		java.util.Optional.of(ResourceKey.create(Registries.CONFIGURED_FEATURE, IC2R.getIdentifier("rubber_tree"))),
-		java.util.Optional.empty()
-	);
-	private static final Properties wallSettings = Properties.of().strength(3.0F, 30.0F).requiresCorrectToolForDrops().sound(SoundType.STONE);
+
 	private Ic2rBlocksBuilding()
 	{
 	}

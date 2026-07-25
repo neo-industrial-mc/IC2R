@@ -44,6 +44,7 @@ public final class Ic2rItemsArmor
 	public static final Item NIGHT_VISION_GOGGLES = Ic2rItems.register("night_vision_goggles", new ItemArmorNightVisionGoggles(new Properties().durability(27)));
 	public static final Item SOLAR_HELMET = Ic2rItems.register("solar_helmet", new ItemArmorSolarHelmet(new Properties()));
 	public static final Item STATIC_BOOTS = Ic2rItems.register("static_boots", new ItemArmorStaticBoots(new Properties()));
+
 	private Ic2rItemsArmor()
 	{
 	}

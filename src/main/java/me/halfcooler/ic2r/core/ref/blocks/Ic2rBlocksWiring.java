@@ -11,11 +11,11 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/**
- * Domain block registrations: cables, transformers, energy storage, chargepads, luminator
- */
 public final class Ic2rBlocksWiring
 {
+	private static final Properties cableSettings = Properties.of().strength(0.5F, 5.0F).sound(SoundType.METAL);
+	private static final Properties insulatedCableSettings = Properties.of().strength(0.5F, 5.0F).sound(SoundType.WOOL);
+
 	public static final DeferredHolder<Block, Block> LUMINATOR_FLAT = EnvProxyForge.BLOCKS.register("luminator", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(5.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL).noOcclusion().noCollission().lightLevel(state -> state.getValue(Ic2rTileEntityBlock.ACTIVE) ? 15 : 0), TileEntityLuminator.class, true, Ic2rTileEntityBlock.DefaultDrop.Self, Util.allFacings, false));
 	public static final DeferredHolder<Block, FoamCableBlock> GLASS_FIBRE_FOAM_CABLE = EnvProxyForge.BLOCKS.register("glass_fibre_foam_cable", () -> FoamCableBlock.create(Properties.of().strength(0.5F, 5.0F).sound(SoundType.GLASS), CableType.glass, 0));
 	public static final DeferredHolder<Block, Block> GLASS_FIBRE_CABLE = EnvProxyForge.BLOCKS.register("glass_fibre_cable", () -> CableBlock.create(Properties.of().strength(0.5F, 5.0F).sound(SoundType.GLASS), CableType.glass, 0, GLASS_FIBRE_FOAM_CABLE.get()));
@@ -61,8 +61,6 @@ public final class Ic2rBlocksWiring
 	public static final DeferredHolder<Block, Block> TRIPLE_INSULATED_IRON_CABLE = EnvProxyForge.BLOCKS.register("triple_insulated_iron_cable", () -> CableBlock.create(insulatedCableSettings, CableType.iron, 3, TRIPLE_INSULATED_IRON_FOAM_CABLE.get()));
 	public static final DeferredHolder<Block, FoamCableBlock> INSULATED_TIN_FOAM_CABLE = EnvProxyForge.BLOCKS.register("insulated_tin_foam_cable", () -> FoamCableBlock.create(insulatedCableSettings, CableType.tin, 1));
 	public static final DeferredHolder<Block, Block> INSULATED_TIN_CABLE = EnvProxyForge.BLOCKS.register("insulated_tin_cable", () -> CableBlock.create(insulatedCableSettings, CableType.tin, 1, INSULATED_TIN_FOAM_CABLE.get()));
-	private static final Properties cableSettings = Properties.of().strength(0.5F, 5.0F).sound(SoundType.METAL);
-	private static final Properties insulatedCableSettings = Properties.of().strength(0.5F, 5.0F).sound(SoundType.WOOL);
 	private Ic2rBlocksWiring()
 	{
 	}

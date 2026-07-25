@@ -77,11 +77,7 @@ public final class LegacyItemStackNbt
 		{
 			return true;
 		}
-		if (tag.contains(LEGACY_DAMAGE, Tag.TAG_ANY_NUMERIC) && !hasDamageComponent(tag))
-		{
-			return true;
-		}
-		return false;
+		return tag.contains(LEGACY_DAMAGE, Tag.TAG_ANY_NUMERIC) && !hasDamageComponent(tag);
 	}
 
 	/**

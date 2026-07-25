@@ -63,13 +63,7 @@ public abstract class TileEntityAbstractRCI extends TileEntityElectricMachine im
 	{
 		super.updateEntityServer();
 		boolean needsInvUpdate = false;
-		if (!this.inputSlot.isEmpty() && this.energy.getEnergy() >= 1000.0 && this.reactor != null)
-		{
-			this.setActive(true);
-		} else
-		{
-			this.setActive(false);
-		}
+		this.setActive(!this.inputSlot.isEmpty() && this.energy.getEnergy() >= 1000.0 && this.reactor != null);
 
 		if (this.getActive())
 		{

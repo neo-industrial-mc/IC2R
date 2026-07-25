@@ -530,14 +530,14 @@ public class TextBox extends GuiElement<TextBox>
 					position = end;
 				} else
 				{
-					while (true && position < end && this.text.charAt(position) == ' ')
+					while (position < end && this.text.charAt(position) == ' ')
 					{
 						position++;
 					}
 				}
 			} else
 			{
-				while (true && position > 0 && this.text.charAt(position - 1) == ' ')
+				while (position > 0 && this.text.charAt(position - 1) == ' ')
 				{
 					position--;
 				}

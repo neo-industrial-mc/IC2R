@@ -349,7 +349,7 @@ public class IcEnergySolver implements IEnergyCalculator
 
 		if (packetCount == 1)
 		{
-			totalOffer = deliverAlongPaths(totalOffer, paths, shufflePaths ? null : null, data, calcId);
+			totalOffer = deliverAlongPaths(totalOffer, paths, null, data, calcId);
 		} else
 		{
 			double power = ElectricalNodes.getPacketPower(source, 0);

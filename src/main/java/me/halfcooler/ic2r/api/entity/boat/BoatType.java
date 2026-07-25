@@ -10,7 +10,7 @@ public record BoatType(String name, Item baseItem)
 {
 	private static final Set<BoatType> VALUES = new ObjectArraySet<>();
 
-	protected BoatType(Item baseItem, String name)
+	private BoatType(Item baseItem, String name)
 	{
 		this(name, baseItem);
 	}

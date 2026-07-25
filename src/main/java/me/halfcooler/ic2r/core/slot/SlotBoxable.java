@@ -15,6 +15,6 @@ public class SlotBoxable extends Slot
 
 	public boolean mayPlace(@NotNull ItemStack itemstack)
 	{
-		return itemstack == null ? false : ItemWrapper.canBeStoredInToolbox(itemstack);
+		return itemstack != null && ItemWrapper.canBeStoredInToolbox(itemstack);
 	}
 }

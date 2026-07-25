@@ -29,9 +29,7 @@ public class SlotDischarge extends Slot
 			return false;
 		} else
 		{
-			return Info.getItemInfo().getEnergyValue(stack) > 0.0
-				? true
-				: ElectricItem.manager.discharge(stack, Double.POSITIVE_INFINITY, this.tier, true, true, true) > 0.0;
+			return Info.getItemInfo().getEnergyValue(stack) > 0.0 || ElectricItem.manager.discharge(stack, Double.POSITIVE_INFINITY, this.tier, true, true, true) > 0.0;
 		}
 	}
 }

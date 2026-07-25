@@ -29,7 +29,7 @@ public class InvSlotConsumableKineticRotor extends InvSlotConsumableClass
 	@Override
 	public boolean accepts(ItemStack stack)
 	{
-		return super.accepts(stack) ? ((IKineticRotor) stack.getItem()).isAcceptedType(stack, this.type) : false;
+		return super.accepts(stack) && ((IKineticRotor) stack.getItem()).isAcceptedType(stack, this.type);
 	}
 
 	@Override

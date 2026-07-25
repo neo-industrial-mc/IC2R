@@ -72,6 +72,7 @@ public final class Ic2rBlocksMachines
 	public static final DeferredHolder<Block, Block> COKE_KILN = EnvProxyForge.BLOCKS.register("coke_kiln", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.STONE), TileEntityCokeKiln.class, true, Ic2rTileEntityBlock.DefaultDrop.Self, Util.horizontalFacings, true));
 	public static final DeferredHolder<Block, Block> COKE_KILN_HATCH = EnvProxyForge.BLOCKS.register("coke_kiln_hatch", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.STONE), TileEntityCokeKilnHatch.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.allFacings, true));
 	public static final DeferredHolder<Block, Block> COKE_KILN_GRATE = EnvProxyForge.BLOCKS.register("coke_kiln_grate", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.STONE), TileEntityCokeKilnGrate.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.allFacings, true));
+
 	private Ic2rBlocksMachines()
 	{
 	}

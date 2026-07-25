@@ -116,7 +116,7 @@ public class Cultivation extends TerraformerBase
 			return true;
 		} else
 		{
-			return block == Blocks.SHORT_GRASS ? growPlantsOn(world, pos) : false;
+			return block == Blocks.SHORT_GRASS && growPlantsOn(world, pos);
 		}
 	}
 }

@@ -43,6 +43,7 @@ public final class Ic2rItemsReactor
 	public static final Item LITHIUM_FUEL_ROD = Ic2rItems.register("lithium_fuel_rod", new ItemReactorLithiumCell(new Properties()));
 	public static final Item TRITIUM_FUEL_ROD = Ic2rItems.register("tritium_fuel_rod", new Item(new Properties()));
 	public static final Item DEPLETED_ISOTOPE_FUEL_ROD = Ic2rItems.register("depleted_isotope_fuel_rod", new ItemReactorDepletedUranium(new Properties()));
+
 	private Ic2rItemsReactor()
 	{
 	}

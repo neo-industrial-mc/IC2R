@@ -37,7 +37,7 @@ public class TileEntityReactorAccessHatch extends TileEntityReactorVessel implem
 	public boolean isEmpty()
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
-		return reactor != null ? reactor.isEmpty() : true;
+		return reactor == null || reactor.isEmpty();
 	}
 
 	public @NotNull ItemStack getItem(int index)
@@ -76,7 +76,7 @@ public class TileEntityReactorAccessHatch extends TileEntityReactorVessel implem
 	public boolean stillValid(@NotNull Player player)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
-		return reactor != null ? reactor.stillValid(player) : false;
+		return reactor != null && reactor.stillValid(player);
 	}
 
 	public void startOpen(@NotNull Player player)
@@ -100,7 +100,7 @@ public class TileEntityReactorAccessHatch extends TileEntityReactorVessel implem
 	public boolean canPlaceItem(int index, @NotNull ItemStack stack)
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactorInstance();
-		return reactor != null ? reactor.canPlaceItem(index, stack) : false;
+		return reactor != null && reactor.canPlaceItem(index, stack);
 	}
 
 	public void clearContent()

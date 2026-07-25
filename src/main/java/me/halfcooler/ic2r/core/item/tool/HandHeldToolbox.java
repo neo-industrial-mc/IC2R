@@ -19,7 +19,7 @@ public class HandHeldToolbox extends HandHeldInventory
 	@Override
 	public boolean canPlaceItem(int slot, ItemStack stack1)
 	{
-		return StackUtil.isEmpty(stack1) ? false : ItemWrapper.canBeStoredInToolbox(stack1);
+		return !StackUtil.isEmpty(stack1) && ItemWrapper.canBeStoredInToolbox(stack1);
 	}
 
 	@Override

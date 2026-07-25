@@ -316,7 +316,7 @@ public class GenericCropCard extends Ic2rCropCard
 		{
 			if (!StackUtil.isEmpty(element))
 			{
-				optimizedArray[tracker++] = true ? element.copy() : element;
+				optimizedArray[tracker++] = element.copy();
 			}
 		}
 

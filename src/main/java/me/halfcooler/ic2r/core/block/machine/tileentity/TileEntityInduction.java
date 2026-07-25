@@ -200,7 +200,7 @@ public class TileEntityInduction extends TileEntityElectricMachine implements IH
 		}
 
 		MachineRecipeResult<? extends ItemStack, ? extends ItemStack, ? extends ItemStack> result = inputSlot.process();
-		return result == null ? false : outputSlot.canAdd(result.getOutput());
+		return result != null && outputSlot.canAdd(result.getOutput());
 	}
 
 	@Override

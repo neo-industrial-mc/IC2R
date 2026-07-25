@@ -40,6 +40,7 @@ public final class Ic2rBlocksGenerators
 	public static final DeferredHolder<Block, Block> WATER_KINETIC_GENERATOR = EnvProxyForge.BLOCKS.register("water_kinetic_generator", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityWaterKineticGenerator.class, true, Ic2rTileEntityBlock.DefaultDrop.Self, Util.horizontalFacings, true));
 	public static final DeferredHolder<Block, Block> WIND_KINETIC_GENERATOR = EnvProxyForge.BLOCKS.register("wind_kinetic_generator", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityWindKineticGenerator.class, true, Ic2rTileEntityBlock.DefaultDrop.Self, Util.horizontalFacings, true));
 	public static final DeferredHolder<Block, Block> CREATIVE_GENERATOR = EnvProxyForge.BLOCKS.register("creative_generator", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(-1.0F, Float.POSITIVE_INFINITY).sound(SoundType.METAL), TileEntityCreativeGenerator.class, true, Ic2rTileEntityBlock.DefaultDrop.None, Util.noFacings, false));
+
 	private Ic2rBlocksGenerators()
 	{
 	}

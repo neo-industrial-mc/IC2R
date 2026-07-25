@@ -210,7 +210,7 @@ public class TileEntityEnergyOMat
 	@Override
 	protected boolean canSetFacingWrench(Direction facing, Player player)
 	{
-		return player != null && this.permitsAccess(player.getGameProfile()) ? super.canSetFacingWrench(facing, player) : false;
+		return player != null && this.permitsAccess(player.getGameProfile()) && super.canSetFacingWrench(facing, player);
 	}
 
 	@Override

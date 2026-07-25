@@ -18,7 +18,7 @@ public class InvSlotConsumableLinked extends InvSlotConsumable
 	public boolean accepts(ItemStack stack)
 	{
 		ItemStack required = this.linkedSlot.get();
-		return StackUtil.isEmpty(required) ? false : StackUtil.checkItemEqualityStrict(required, stack);
+		return !StackUtil.isEmpty(required) && StackUtil.checkItemEqualityStrict(required, stack);
 	}
 
 	public ItemStack consumeLinked(boolean simulate)

@@ -74,6 +74,6 @@ public class VanillaButton extends Button<VanillaButton>
 	@Override
 	protected boolean onMouseClick(int mouseX, int mouseY, MouseButton button)
 	{
-		return this.isDisabled() ? false : super.onMouseClick(mouseX, mouseY, button);
+		return !this.isDisabled() && super.onMouseClick(mouseX, mouseY, button);
 	}
 }

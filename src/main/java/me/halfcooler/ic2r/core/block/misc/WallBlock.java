@@ -24,6 +24,7 @@ public class WallBlock extends Block implements StainableBlock, RetexturableBloc
 	public static final DyeColor DEFAULT_COLOR = DyeColor.LIGHT_GRAY;
 	private static final Map<DyeColor, WallBlock> types = new EnumMap<>(DyeColor.class);
 	final DyeColor color;
+
 	public WallBlock(Properties settings, DyeColor color)
 	{
 		super(settings);

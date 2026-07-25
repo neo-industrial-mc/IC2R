@@ -22,6 +22,7 @@ public final class Ic2rBlocksReactor
 	public static final DeferredHolder<Block, Block> REACTOR_REDSTONE_PORT = EnvProxyForge.BLOCKS.register("reactor_redstone_port", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(40.0F, 90.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityReactorRedstonePort.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.onlyNorth, false));
 	public static final DeferredHolder<Block, Block> RCI_RSH = EnvProxyForge.BLOCKS.register("rci_rsh", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityRCI_RSH.class, true, Ic2rTileEntityBlock.DefaultDrop.AdvMachine, Util.allFacings, true));
 	public static final DeferredHolder<Block, Block> RCI_LZH = EnvProxyForge.BLOCKS.register("rci_lzh", () -> Ic2rTileEntityBlock.create(Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F, 10.0F).requiresCorrectToolForDrops().sound(SoundType.METAL), TileEntityRCI_LZH.class, true, Ic2rTileEntityBlock.DefaultDrop.AdvMachine, Util.allFacings, true));
+
 	private Ic2rBlocksReactor()
 	{
 	}

@@ -174,7 +174,7 @@ public class TileEntityIronFurnace extends TileEntityBase implements IHasGui, IG
 	private boolean canOperate()
 	{
 		MachineRecipeResult<ItemStack, ItemStack, ItemStack> result = this.inputSlot.process();
-		return result == null ? false : this.outputSlot.canAdd(result.getOutput());
+		return result != null && this.outputSlot.canAdd(result.getOutput());
 	}
 
 	public double getProgress()

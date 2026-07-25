@@ -38,10 +38,8 @@ public class InvSlotDischarge extends InvSlot implements IDischargingSlot
 			return false;
 		} else
 		{
-			return stack.getItem() == Items.REDSTONE && !this.allowRedstoneDust
-				? false
-				: Info.getItemInfo().getEnergyValue(stack) > 0.0
-				|| ElectricItem.manager.discharge(stack, Double.POSITIVE_INFINITY, this.tier, true, true, true) > 0.0;
+			return (stack.getItem() != Items.REDSTONE || this.allowRedstoneDust) && (Info.getItemInfo().getEnergyValue(stack) > 0.0
+				|| ElectricItem.manager.discharge(stack, Double.POSITIVE_INFINITY, this.tier, true, true, true) > 0.0);
 		}
 	}
 

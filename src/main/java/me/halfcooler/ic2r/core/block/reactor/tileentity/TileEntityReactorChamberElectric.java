@@ -112,7 +112,7 @@ public class TileEntityReactorChamberElectric extends Ic2rTileEntity implements 
 	public boolean isEmpty()
 	{
 		TileEntityNuclearReactorElectric reactor = this.getReactor();
-		return reactor != null ? reactor.isEmpty() : true;
+		return reactor == null || reactor.isEmpty();
 	}
 
 	public @NotNull ItemStack getItem(int index)

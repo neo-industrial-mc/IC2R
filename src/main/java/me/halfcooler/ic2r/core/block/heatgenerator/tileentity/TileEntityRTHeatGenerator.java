@@ -35,13 +35,7 @@ public class TileEntityRTHeatGenerator extends TileEntityHeatSourceInventory imp
 	protected void updateEntityServer()
 	{
 		super.updateEntityServer();
-		if (this.HeatBuffer > 0)
-		{
-			this.newActive = true;
-		} else
-		{
-			this.newActive = false;
-		}
+		this.newActive = this.HeatBuffer > 0;
 
 		if (this.getActive() != this.newActive)
 		{

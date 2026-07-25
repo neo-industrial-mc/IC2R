@@ -26,7 +26,7 @@ public class TileEntityCokeKilnHatch extends TileEntityInventory implements IHas
 	@Override
 	public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack stack, Direction side)
 	{
-		return side != this.getFacing() ? false : super.canPlaceItemThroughFace(index, stack, side);
+		return side == this.getFacing() && super.canPlaceItemThroughFace(index, stack, side);
 	}
 
 	@Override

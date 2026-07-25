@@ -85,6 +85,7 @@ public final class Ic2rItemsTools
 	public static final Item IRON_ROTOR = Ic2rItems.register("iron_rotor", new ItemWindRotor(new Properties().durability(86400), 7, true, 0.5F, 14, 75, ResourceLocation.fromNamespaceAndPath("ic2r", "textures/item/rotor/iron_rotor_model.png")));
 	public static final Item STEEL_ROTOR = Ic2rItems.register("steel_rotor", new ItemWindRotor(new Properties().durability(172800), 9, true, 0.75F, 17, 90, ResourceLocation.fromNamespaceAndPath("ic2r", "textures/item/rotor/steel_rotor_model.png")));
 	public static final Item CARBON_ROTOR = Ic2rItems.register("carbon_rotor", new ItemWindRotor(new Properties().durability(604800), 11, true, 1.0F, 20, 110, ResourceLocation.fromNamespaceAndPath("ic2r", "textures/item/rotor/carbon_rotor_model.png")));
+
 	private Ic2rItemsTools()
 	{
 	}

@@ -10,11 +10,10 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-/**
- * Domain block registrations: crop sticks and crop blocks
- */
 public final class Ic2rBlocksCrops
 {
+	private static final Properties cropSettings = Properties.of().strength(0.8F, 0.2F).sound(SoundType.CROP).noCollission();
+
 	public static final DeferredHolder<Block, Block> CROP_STICK = EnvProxyForge.BLOCKS.register("crop_stick", () -> Ic2rTileEntityBlock.create(cropSettings, TileEntityCrop.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false, Ic2rCropType.none));
 	public static final DeferredHolder<Block, Block> WEED_CROP = EnvProxyForge.BLOCKS.register("weed_crop", () -> Ic2rTileEntityBlock.create(cropSettings, TileEntityCrop.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false, Ic2rCropType.weed));
 	public static final DeferredHolder<Block, Block> WHEAT_CROP = EnvProxyForge.BLOCKS.register("wheat_crop", () -> Ic2rTileEntityBlock.create(cropSettings, TileEntityCrop.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false, Ic2rCropType.wheat));
@@ -69,7 +68,6 @@ public final class Ic2rBlocksCrops
 	public static final DeferredHolder<Block, Block> SPIDERNIP_CROP = EnvProxyForge.BLOCKS.register("spidernip_crop", () -> Ic2rTileEntityBlock.create(cropSettings, TileEntityCrop.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false, Ic2rCropType.spidernip));
 	public static final DeferredHolder<Block, Block> TEARSTALKS_CROP = EnvProxyForge.BLOCKS.register("tearstalks_crop", () -> Ic2rTileEntityBlock.create(cropSettings, TileEntityCrop.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false, Ic2rCropType.tearstalks));
 	public static final DeferredHolder<Block, Block> WITHEREED_CROP = EnvProxyForge.BLOCKS.register("withereed_crop", () -> Ic2rTileEntityBlock.create(cropSettings, TileEntityCrop.class, false, Ic2rTileEntityBlock.DefaultDrop.Self, Util.noFacings, false, Ic2rCropType.withereed));
-	private static final Properties cropSettings = Properties.of().strength(0.8F, 0.2F).sound(SoundType.CROP).noCollission();
 	private Ic2rBlocksCrops()
 	{
 	}

@@ -32,7 +32,7 @@ public class BasicListRecipeManager extends MachineRecipeHelper<IRecipeInput, Ob
 	@Override
 	public boolean contains(ItemStack stack)
 	{
-		return StackUtil.isEmpty(stack) ? false : this.getRecipe(stack) != null;
+		return !StackUtil.isEmpty(stack) && this.getRecipe(stack) != null;
 	}
 
 	@Override

@@ -230,10 +230,7 @@ public class TileEntityCokeKiln extends TileEntityBase implements IHasGui, IGuiV
 
 				Ic2rFluidStack fs = found.outputFluid.copy();
 				int filled = ((TileEntityCokeKilnGrate) grate).fluidTank.fillMb(fs, true);
-				if (filled < fs.getAmountMb())
-				{
-					return false;
-				}
+				return filled >= fs.getAmountMb();
 			}
 
 		}

@@ -81,7 +81,7 @@ public class GatewayElectricItemManager implements IElectricItemManager
 		}
 
 		IElectricItemManager manager = this.getManager(stack);
-		return manager == null ? false : manager.canUse(stack, amount);
+		return manager != null && manager.canUse(stack, amount);
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class GatewayElectricItemManager implements IElectricItemManager
 		}
 
 		IElectricItemManager manager = this.getManager(stack);
-		return manager == null ? false : manager.use(stack, amount, entity);
+		return manager != null && manager.use(stack, amount, entity);
 	}
 
 	@Override

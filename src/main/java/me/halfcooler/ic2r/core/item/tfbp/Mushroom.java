@@ -140,6 +140,6 @@ public class Mushroom extends TerraformerBase
 	boolean terraform(Level world, BlockPos pos)
 	{
 		pos = TileEntityTerra.getFirstSolidBlockFrom(world, pos, 20);
-		return pos == null ? false : growBlockWithDependancy(world, pos, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.BROWN_MUSHROOM);
+		return pos != null && growBlockWithDependancy(world, pos, Blocks.BROWN_MUSHROOM_BLOCK, Blocks.BROWN_MUSHROOM);
 	}
 }

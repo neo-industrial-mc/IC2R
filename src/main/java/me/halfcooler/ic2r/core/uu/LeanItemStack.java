@@ -98,9 +98,7 @@ public class LeanItemStack
 	@Override
 	public boolean equals(Object obj)
 	{
-		return !(obj instanceof LeanItemStack o)
-			? false
-			: this.item == o.item && (this.nbt == null && o.nbt == null || this.nbt != null && o.nbt != null && this.nbt.equals(o.nbt));
+		return obj instanceof LeanItemStack o && this.item == o.item && (this.nbt == null && o.nbt == null || this.nbt != null && o.nbt != null && this.nbt.equals(o.nbt));
 	}
 
 	@Override

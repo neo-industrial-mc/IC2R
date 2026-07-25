@@ -36,10 +36,12 @@ public class BlockDynamite extends Block
 	private static final VoxelShape SOUTH = Block.box(5.0, 3.0, 0.0, 11.0, 13.0, 5.0);
 	private static final VoxelShape WEST = Block.box(11.0, 3.0, 5.0, 16.0, 13.0, 11.0);
 	private static final VoxelShape EAST = Block.box(0.0, 3.0, 5.0, 5.0, 13.0, 11.0);
+
 	public BlockDynamite(net.minecraft.world.level.block.state.BlockBehaviour.Properties properties)
 	{
 		super(properties);
 	}
+
 	public BlockDynamite()
 	{
 		super(Properties.of()

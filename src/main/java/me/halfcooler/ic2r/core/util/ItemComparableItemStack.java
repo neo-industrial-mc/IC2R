@@ -68,9 +68,7 @@ public class ItemComparableItemStack
 			return false;
 		} else
 		{
-			return cmp == this
-				? true
-				: cmp.item == this.item && (cmp.nbt == null && this.nbt == null || cmp.nbt != null && this.nbt != null && cmp.nbt.equals(this.nbt));
+			return cmp == this || cmp.item == this.item && (cmp.nbt == null && this.nbt == null || cmp.nbt != null && this.nbt != null && cmp.nbt.equals(this.nbt));
 		}
 	}
 

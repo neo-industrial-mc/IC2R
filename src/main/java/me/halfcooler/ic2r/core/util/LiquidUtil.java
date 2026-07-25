@@ -810,7 +810,7 @@ public class LiquidUtil
 			return drained.getAmountMb() >= 1000;
 		} else
 		{
-			return state.getValues().containsKey(LiquidBlock.LEVEL) ? state.getValue(LiquidBlock.LEVEL) == 0 : false;
+			return state.getValues().containsKey(LiquidBlock.LEVEL) && state.getValue(LiquidBlock.LEVEL) == 0;
 		}
 	}
 
@@ -833,7 +833,7 @@ public class LiquidUtil
 
 	public static boolean storeOutputContainer(MutableObject<ItemStack> output, Player player)
 	{
-		return output.getValue() == null ? true : StackUtil.storeInventoryItem(output.getValue(), player, false);
+		return output.getValue() == null || StackUtil.storeInventoryItem(output.getValue(), player, false);
 	}
 
 	public static class AdjacentFluidHandler

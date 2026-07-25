@@ -144,7 +144,7 @@ public class TileEntityElectrolyzer extends TileEntityElectricMachine implements
 	protected boolean canFillTank(Direction facing, Ic2rFluidStack fluid)
 	{
 		BlockEntity te = this.getLevel().getBlockEntity(this.worldPosition.relative(facing));
-		return te instanceof TileEntityTank ? LiquidUtil.fillTile(te, facing, fluid, true) == fluid.getAmountMb() : false;
+		return te instanceof TileEntityTank && LiquidUtil.fillTile(te, facing, fluid, true) == fluid.getAmountMb();
 	}
 
 	protected void fillTank(Direction facing, Ic2rFluidStack fluid)

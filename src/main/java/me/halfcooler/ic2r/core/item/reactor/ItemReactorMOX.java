@@ -35,8 +35,8 @@ public class ItemReactorMOX extends ItemReactorUranium
 		{
 			case 1 -> Ic2rItems.DEPLETED_MOX_FUEL_ROD;
 			case 2 -> Ic2rItems.DEPLETED_DUAL_MOX_FUEL_ROD;
-			default -> throw new RuntimeException("invalid cell count: " + this.numberOfCells);
 			case 4 -> Ic2rItems.DEPLETED_QUAD_MOX_FUEL_ROD;
+			default -> throw new RuntimeException("invalid cell count: " + this.numberOfCells);
 		});
 	}
 

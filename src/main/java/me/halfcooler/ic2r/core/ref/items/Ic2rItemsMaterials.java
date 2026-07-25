@@ -181,6 +181,7 @@ public final class Ic2rItemsMaterials
 	public static final Item COIN = Ic2rItems.register("coin", new Item(new Properties()));
 	public static final Item BRONZE_ROTOR_BLADE = Ic2rItems.register("bronze_rotor_blade", new Item(new Properties()));
 	public static final Item BRONZE_SHAFT = Ic2rItems.register("bronze_shaft", new Item(new Properties()));
+
 	private Ic2rItemsMaterials()
 	{
 	}

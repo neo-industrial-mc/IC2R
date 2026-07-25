@@ -409,7 +409,7 @@ public final class StackUtil
 	{
 		CompoundTag nbtA = getTag(a);
 		CompoundTag nbtB = getTag(b);
-		return nbtA == nbtB ? true : nbtA != null && nbtB != null && nbtA.equals(nbtB);
+		return nbtA == nbtB || nbtA != null && nbtA.equals(nbtB);
 	}
 
 	public static Predicate<ItemStack> sameStack(ItemStack stack)
@@ -719,14 +719,14 @@ public final class StackUtil
 				clear(player, hand);
 			} else
 			{
-				ret = false ? copy(stack) : stack;
+				ret = stack;
 				set(player, hand, stack);
 			}
 
 			return ret;
 		} else
 		{
-			return false ? copy(stack) : stack;
+			return stack;
 		}
 	}
 

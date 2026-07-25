@@ -272,6 +272,7 @@ public final class Ic2rBlocks
 	public static final DeferredHolder<Block, Block> SPIDERNIP_CROP = Ic2rBlocksCrops.SPIDERNIP_CROP;
 	public static final DeferredHolder<Block, Block> TEARSTALKS_CROP = Ic2rBlocksCrops.TEARSTALKS_CROP;
 	public static final DeferredHolder<Block, Block> WITHEREED_CROP = Ic2rBlocksCrops.WITHEREED_CROP;
+
 	private Ic2rBlocks()
 	{
 	}
