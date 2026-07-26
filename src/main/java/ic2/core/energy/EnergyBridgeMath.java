@@ -3,8 +3,10 @@ package ic2.core.energy;
 /**
  * Pure conversion formulas for bridging EU to FE-shaped energy systems (Forge Energy, AE2).
  *
- * <p>All methods are defensive: non-finite or non-positive inputs yield the identity ("nothing
- * transferred") result instead of propagating NaN or negative energy into a grid.
+ * <p>Defensive by default: non-positive amounts and invalid ratios yield the identity ("nothing
+ * transferred") result, and non-finite conversion products are rejected instead of wrapping to
+ * negative energy. A NaN amount itself is not filtered (same as upstream) — callers pass real
+ * energy values.
  */
 public final class EnergyBridgeMath {
 
