@@ -44,6 +44,10 @@ public class Ic2DamageSource {
     hydrogenExplosion = new DamageSource(registry.getHolderOrThrow(HYDROGEN_EXPLOSION));
   }
 
+  public static DamageSource radiation(Level level) {
+    return level.damageSources().source(RADIATION);
+  }
+
   public static DamageSource hydrogenExplosion(Level level) {
     return new DamageSource(
         level

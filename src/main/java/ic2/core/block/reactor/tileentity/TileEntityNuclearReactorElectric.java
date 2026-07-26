@@ -461,7 +461,7 @@ public class TileEntityNuclearReactorElectric extends TileEntityInventory
                     this.worldPosition.getY() + 4,
                     this.worldPosition.getZ() + 4),
                 EntitySelector.NO_CREATIVE_OR_SPECTATOR)) {
-          entity.hurt(Ic2DamageSource.radiation, (int) (rng.nextInt(4) * this.hem));
+          entity.hurt(Ic2DamageSource.radiation(world), (int) (rng.nextInt(4) * this.hem));
         }
       }
 

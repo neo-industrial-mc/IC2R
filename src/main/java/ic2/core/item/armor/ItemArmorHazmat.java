@@ -38,8 +38,8 @@ public class ItemArmorHazmat extends ItemArmorUtility implements IHazmatLike {
 
   public static boolean hazmatAbsorbs(DamageSource source) {
     return source.is(DamageTypeTags.IS_FIRE)
-        || source == Ic2DamageSource.electricity
-        || source == Ic2DamageSource.radiation;
+        || source.is(Ic2DamageSource.ELECTRICITY)
+        || source.is(Ic2DamageSource.RADIATION);
   }
 
   @Override

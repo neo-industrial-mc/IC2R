@@ -1,5 +1,6 @@
 package ic2.core.gametest;
 
+import ic2.core.Ic2DamageSource;
 import ic2.core.block.comp.Energy;
 import ic2.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
 import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
@@ -11,6 +12,7 @@ import ic2.core.block.tileentity.Ic2TileEntityBlock;
 import ic2.core.block.wiring.tileentity.TileEntityElectricCESU;
 import ic2.core.block.wiring.tileentity.TileEntityElectricMFSU;
 import ic2.core.fluid.Ic2FluidStack;
+import ic2.core.item.armor.ItemArmorHazmat;
 import ic2.core.item.reactor.AbstractDamageableReactorComponent;
 import ic2.core.item.reactor.ItemReactorCondensator;
 import ic2.core.item.reactor.ItemReactorHeatStorage;
@@ -21,6 +23,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -1187,6 +1191,30 @@ public class ReactorGameTests {
     reactor.setHeat(100000);
 
     helper.succeedWhen(() -> helper.assertBlockPresent(Blocks.AIR, REACTOR_POS));
+  }
+
+  // a critically hot reactor irradiates nearby entities; regression test for the server crash
+  // where the reactor was the first ic2 damage dealer after startup and hurt entities with the
+  // still-null Ic2DamageSource.radiation static
+  @GameTest(template = EMPTY_LARGE, timeoutTicks = 300)
+  public static void hotReactorIrradiatesNearbyEntities(GameTestHelper helper) {
+    TileEntityNuclearReactorElectric reactor = placeReactor(helper, VESSEL_CENTER);
+    // 75% of hull capacity: above the 70% radiation threshold, below the 85% fire threshold
+    reactor.setHeat(7500);
+    // simulate a freshly started server where no lazy init path has populated the statics yet
+    Ic2DamageSource.radiation = null;
+    Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, VESSEL_CENTER.above());
+
+    helper.assertTrue(
+        ItemArmorHazmat.hazmatAbsorbs(Ic2DamageSource.radiation(helper.getLevel())),
+        "hazmat should absorb level-created radiation damage");
+
+    // the radiation roll is 0-3 damage per work tick (one every 20 ticks), so wait for a hit
+    helper.succeedWhen(
+        () ->
+            helper.assertTrue(
+                pig.getHealth() < pig.getMaxHealth(),
+                "a reactor at 75% heat should radiation-damage the pig next to it"));
   }
 
   private static TileEntityNuclearReactorElectric placeReactor(GameTestHelper helper) {
