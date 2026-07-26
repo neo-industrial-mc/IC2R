@@ -7,6 +7,7 @@ import ic2.core.IHasGui;
 import ic2.core.Ic2Explosion;
 import ic2.core.block.comp.Fluids;
 import ic2.core.block.machine.container.ContainerSteamGenerator;
+import ic2.core.block.tileentity.Ic2TileEntityBlock;
 import ic2.core.block.tileentity.TileEntityInventory;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.fluid.Ic2FluidTank;
@@ -16,14 +17,21 @@ import ic2.core.profile.NotClassic;
 import ic2.core.ref.Ic2BlockEntities;
 import ic2.core.ref.Ic2Fluids;
 import ic2.core.util.BiomeUtil;
+import ic2.core.util.Ic2Tooltip;
 import ic2.core.util.LiquidUtil;
+import ic2.core.util.StackUtil;
 import ic2.core.util.Util;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -79,6 +87,41 @@ public class TileEntitySteamGenerator extends TileEntityInventory
     nbt.putInt("pressurevalve", this.pressure);
     nbt.putFloat("systemheat", this.systemHeat);
     nbt.putInt("calcification", this.calcification);
+  }
+
+  @Override
+  public void onPlaced(ItemStack stack, LivingEntity placer, Direction facing) {
+    super.onPlaced(stack, placer, facing);
+    if (!this.getLevel().isClientSide) {
+      CompoundTag nbt = StackUtil.getTag(stack);
+      if (nbt != null) {
+        this.calcification = Math.min(Math.max(nbt.getInt("calcification"), 0), maxCalcification);
+      }
+    }
+  }
+
+  @Override
+  public ItemStack adjustDrop(ItemStack drop, boolean wrench) {
+    drop = super.adjustDrop(drop, wrench);
+    if (drop != null
+        && (wrench || this.teBlock.getDefaultDrop() == Ic2TileEntityBlock.DefaultDrop.Self)
+        && this.calcification > 0) {
+      StackUtil.getOrCreateNbtData(drop).putInt("calcification", this.calcification);
+    }
+
+    return drop;
+  }
+
+  @Override
+  public void appendItemTooltip(ItemStack stack, List<Component> tooltip, TooltipFlag advanced) {
+    super.appendItemTooltip(stack, tooltip, advanced);
+    CompoundTag nbt = StackUtil.getTag(stack);
+    if (nbt != null && nbt.getInt("calcification") > 0) {
+      float percent =
+          Math.round(nbt.getInt("calcification") / 100000.0F * 100.0F * 100.0F) / 100.0F;
+      Ic2Tooltip.add(
+          tooltip, Component.translatable("ic2.steam_generator.gui.calcification", percent));
+    }
   }
 
   @Override

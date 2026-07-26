@@ -11,6 +11,21 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_custom_data",
+              "ops": [
+                {
+                  "op": "replace",
+                  "source": "calcification",
+                  "target": "calcification"
+                }
+              ],
+              "source": {
+                "type": "ic2:block_nbt"
+              }
+            }
+          ],
           "name": "ic2:steam_generator"
         }
       ],
