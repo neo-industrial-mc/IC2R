@@ -51,6 +51,9 @@ jobs:
       - name: Download Minecraft assets
         run: ./gradlew --no-daemon --stacktrace downloadAssets
 
+      - name: Run unit tests
+        run: ./gradlew --no-daemon --stacktrace test
+
       - name: Run game tests
         run: ./gradlew --no-daemon --stacktrace runGameTestServer
 

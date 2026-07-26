@@ -86,6 +86,11 @@ neoForge {
             sourceSet(sourceSets.main)
         }
     }
+
+    unitTest {
+        enable()
+        testedMod = mods."${mod_id}"
+    }
 }
 
 configurations {
@@ -97,6 +102,13 @@ dependencies {
     runtimeOnly "mezz.jei:jei-1.21.1-neoforge:${jei_version}"
 
     compileOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}:api"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
