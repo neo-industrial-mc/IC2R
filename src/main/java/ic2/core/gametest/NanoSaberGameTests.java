@@ -9,6 +9,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -25,6 +26,7 @@ public class NanoSaberGameTests {
 
   private static final double MAX_CHARGE = 160000.0;
   private static final double HIT_COST = 400.0;
+  private static final double NANO_ARMOR_HIT_COST = 48000.0;
 
   @GameTest(template = EMPTY)
   public static void nanosaberActivatesWhenCharged(GameTestHelper helper) {
@@ -73,6 +75,56 @@ public class NanoSaberGameTests {
         ElectricItem.manager.getCharge(saber), MAX_CHARGE - HIT_COST, "charge after one hit");
     helper.assertTrue(
         AbstractItemNanoSaber.isActive(saber), "saber should stay active while charged");
+
+    helper.succeed();
+  }
+
+  @GameTest(template = EMPTY)
+  public static void activeNanosaberRevealsNanoArmorBreakChargeBoundary(GameTestHelper helper) {
+    Player attacker = helper.makeMockPlayer(GameType.SURVIVAL);
+    ItemStack saber = ElectricItemManager.getCharged(Ic2Items.NANO_SABER, Double.POSITIVE_INFINITY);
+    attacker.setItemInHand(InteractionHand.MAIN_HAND, saber);
+    saber.getItem().use(helper.getLevel(), attacker, InteractionHand.MAIN_HAND);
+
+    LivingEntity target = helper.spawn(EntityType.ZOMBIE, new BlockPos(1, 1, 1));
+    target.setItemSlot(EquipmentSlot.FEET, new ItemStack(Ic2Items.NANO_BOOTS));
+    target.setItemSlot(
+        EquipmentSlot.LEGS,
+        ElectricItemManager.getCharged(Ic2Items.NANO_LEGGINGS, NANO_ARMOR_HIT_COST - 1.0));
+    target.setItemSlot(
+        EquipmentSlot.CHEST,
+        ElectricItemManager.getCharged(Ic2Items.NANO_CHESTPLATE, NANO_ARMOR_HIT_COST));
+    target.setItemSlot(
+        EquipmentSlot.HEAD,
+        ElectricItemManager.getCharged(Ic2Items.NANO_HELMET, NANO_ARMOR_HIT_COST + 1.0));
+
+    saber.getItem().hurtEnemy(saber, target, attacker);
+
+    ItemStack boots = target.getItemBySlot(EquipmentSlot.FEET);
+    ItemStack leggings = target.getItemBySlot(EquipmentSlot.LEGS);
+    ItemStack chestplate = target.getItemBySlot(EquipmentSlot.CHEST);
+    ItemStack helmet = target.getItemBySlot(EquipmentSlot.HEAD);
+    helper.assertTrue(
+        boots.isEmpty(), "an already discharged NanoSuit piece is removed by an active Nano Saber");
+    helper.assertTrue(
+        !leggings.isEmpty() && leggings.is(Ic2Items.NANO_LEGGINGS),
+        "a NanoSuit piece just below the 48000 EU drain cost unexpectedly survives");
+    Ic2GameTestAssertions.assertNear(
+        helper,
+        ElectricItem.manager.getCharge(leggings),
+        NANO_ARMOR_HIT_COST - 1.0,
+        "charge below the Nano Saber drain threshold");
+    helper.assertTrue(
+        chestplate.isEmpty(),
+        "a NanoSuit piece with exactly 48000 EU is drained to zero and removed");
+    helper.assertTrue(
+        !helmet.isEmpty() && helmet.is(Ic2Items.NANO_HELMET),
+        "a NanoSuit piece with 48001 EU should survive");
+    Ic2GameTestAssertions.assertNear(
+        helper,
+        ElectricItem.manager.getCharge(helmet),
+        1.0,
+        "charge above the Nano Saber threshold");
 
     helper.succeed();
   }

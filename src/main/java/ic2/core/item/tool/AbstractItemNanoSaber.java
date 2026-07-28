@@ -144,7 +144,7 @@ public abstract class AbstractItemNanoSaber extends ItemElectricTool implements 
           if (amount > 0.0) {
             this.consumeEnergy(armor, amount, null);
             if (!ElectricItem.manager.canUse(armor, 1.0)) {
-              target.setItemSlot(slot, null);
+              target.setItemSlot(slot, ItemStack.EMPTY);
             }
 
             this.consumeEnergy(stack, 2000.0, source);
