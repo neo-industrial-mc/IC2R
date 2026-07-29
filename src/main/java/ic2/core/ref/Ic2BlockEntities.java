@@ -377,6 +377,10 @@ public final class Ic2BlockEntities {
       register("centrifuge", TileEntityCentrifuge::new, Ic2Blocks.CENTRIFUGE);
   public static final BlockEntityType<TileEntityCrop> WITHEREED_CROP =
       register("withereed_crop", TileEntityCrop::new, Ic2Blocks.WITHEREED_CROP);
+  public static final BlockEntityType<TileEntityCrop> TORCHFLOWER_CROP =
+      register("torchflower_crop", TileEntityCrop::new, Ic2Blocks.TORCHFLOWER_CROP);
+  public static final BlockEntityType<TileEntityCrop> PITCHER_PLANT_CROP =
+      register("pitcher_plant_crop", TileEntityCrop::new, Ic2Blocks.PITCHER_PLANT_CROP);
   public static final BlockEntityType<TileEntityFermenter> FERMENTER =
       register("fermenter", TileEntityFermenter::new, Ic2Blocks.FERMENTER);
 

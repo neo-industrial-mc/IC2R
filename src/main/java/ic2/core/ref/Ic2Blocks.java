@@ -2652,6 +2652,28 @@ public final class Ic2Blocks {
               Util.noFacings,
               false,
               Ic2CropType.withereed));
+  public static final Block TORCHFLOWER_CROP =
+      register(
+          "torchflower_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.torchflower));
+  public static final Block PITCHER_PLANT_CROP =
+      register(
+          "pitcher_plant_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.pitcherPlant));
 
   static {
     IC2.envProxy.registerFlammableBlock(RUBBER_LEAVES, 20, 30);

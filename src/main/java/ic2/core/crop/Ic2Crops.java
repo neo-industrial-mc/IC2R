@@ -371,6 +371,24 @@ public class Ic2Crops extends Crops {
           .setDrops(new ItemStack(Ic2Items.COAL_DUST))
           .setSpecialDrops(new ItemStack[] {new ItemStack(Items.COAL), new ItemStack(Items.COAL)})
           .setAfterHarvestSize(1);
+  public static CropCard cropTorchflower =
+      GenericCropCard.create(Ic2CropType.torchflower, Ic2Blocks.TORCHFLOWER_CROP)
+          .setDiscoveredBy("Sniffer")
+          .setProperties(new CropProperties(3, 1, 1, 0, 5, 1))
+          .setAttributes(new String[] {"Orange", "Flower", "Fire"})
+          .setMaxSize(3)
+          .setDrops(new ItemStack(Items.TORCHFLOWER))
+          .setOptimalHarvestSize(2)
+          .setAfterHarvestSize(1);
+  public static CropCard cropPitcherPlant =
+      GenericCropCard.create(Ic2CropType.pitcherPlant, Ic2Blocks.PITCHER_PLANT_CROP)
+          .setDiscoveredBy("Sniffer")
+          .setProperties(new CropProperties(3, 1, 1, 0, 5, 1))
+          .setAttributes(new String[] {"Cyan", "Flower", "Vine"})
+          .setMaxSize(5)
+          .setDrops(new ItemStack(Items.PITCHER_PLANT))
+          .setOptimalHarvestSize(4)
+          .setAfterHarvestSize(1);
   private final Map<EnvProxy.BiomeType, Integer> humidityBiomeTypeBonus = new IdentityHashMap<>();
   private final Map<EnvProxy.BiomeType, Integer> nutrientBiomeTypeBonus = new IdentityHashMap<>();
   private final Map<ItemStack, BaseSeed> baseSeeds = new HashMap<>();
@@ -453,6 +471,8 @@ public class Ic2Crops extends Crops {
     Crops.instance.registerCrop(cropSpidernip);
     Crops.instance.registerCrop(cropTearstalks);
     Crops.instance.registerCrop(cropWithereed);
+    Crops.instance.registerCrop(cropTorchflower);
+    Crops.instance.registerCrop(cropPitcherPlant);
   }
 
   public static void registerBaseSeeds() {
@@ -489,6 +509,9 @@ public class Ic2Crops extends Crops {
     Crops.instance.registerBaseSeed(
         new ItemStack(Blocks.CHERRY_SAPLING), cropCherrySapling, 0, 1, 1, 1);
     Crops.instance.registerBaseSeed(new ItemStack(Ic2Items.MILK_WART), cropMilkWart, 0, 1, 1, 1);
+    Crops.instance.registerBaseSeed(
+        new ItemStack(Items.TORCHFLOWER_SEEDS), cropTorchflower, 0, 1, 1, 1);
+    Crops.instance.registerBaseSeed(new ItemStack(Items.PITCHER_POD), cropPitcherPlant, 0, 1, 1, 1);
   }
 
   @Override

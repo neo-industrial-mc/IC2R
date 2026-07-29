@@ -63,7 +63,9 @@ public enum Ic2CropType implements StringRepresentable, ICropType {
   slime_plant("slime_plant", Ic2Blocks.SLIME_PLANT_CROP, 3),
   spidernip("spidernip", Ic2Blocks.SPIDERNIP_CROP, 3),
   tearstalks("tearstalks", Ic2Blocks.TEARSTALKS_CROP, 3),
-  withereed("withereed", Ic2Blocks.WITHEREED_CROP, 3);
+  withereed("withereed", Ic2Blocks.WITHEREED_CROP, 3),
+  torchflower("torchflower", Ic2Blocks.TORCHFLOWER_CROP, 2),
+  pitcherPlant("pitcher_plant", Ic2Blocks.PITCHER_PLANT_CROP, 4);
 
   private static final Ic2CropType[] values = values();
   private final String owner;
