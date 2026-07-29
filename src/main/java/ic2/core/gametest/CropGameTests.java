@@ -1172,7 +1172,10 @@ public class CropGameTests {
     te.dischargeSlot.put(
         0, ElectricItemManager.getCharged(Ic2Items.RE_BATTERY, Double.POSITIVE_INFINITY));
 
-    plant(helper, cropPos, Ic2Crops.cropTorchflower, 1, 0, 31, 0);
+    // resistance 31 keeps the crop alive on bare farmland for the whole observation window (a
+    // high gain stat would raise its needs enough to let it die mid-test, see the hostile
+    // condition tests); gain does not matter for a test that must harvest nothing
+    plant(helper, cropPos, Ic2Crops.cropTorchflower, 1, 0, 0, 31);
 
     helper.onEachTick(
         () -> {
