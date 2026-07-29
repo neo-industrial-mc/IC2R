@@ -1247,6 +1247,137 @@ public class CropGameTests {
         });
   }
 
+  // every small vanilla dye flower is a base seed for its own color crop; like poppy/dandelion
+  // they plant already mature (size 3) and consume one flower
+  @GameTest(template = EMPTY)
+  public static void dyeFlowerItemsPlantMatureColorCrops(GameTestHelper helper) {
+    Object[][] flowers = {
+      {Items.CORNFLOWER, Ic2Crops.cropCornflower},
+      {Items.LILY_OF_THE_VALLEY, Ic2Crops.cropLilyOfTheValley},
+      {Items.WITHER_ROSE, Ic2Crops.cropWitherRose},
+      {Items.BLUE_ORCHID, Ic2Crops.cropBlueOrchid},
+      {Items.ALLIUM, Ic2Crops.cropAllium},
+      {Items.AZURE_BLUET, Ic2Crops.cropAzureBluet},
+      {Items.OXEYE_DAISY, Ic2Crops.cropOxeyeDaisy},
+      {Items.RED_TULIP, Ic2Crops.cropRedTulip},
+      {Items.ORANGE_TULIP, Ic2Crops.cropOrangeTulip},
+      {Items.WHITE_TULIP, Ic2Crops.cropWhiteTulip},
+      {Items.PINK_TULIP, Ic2Crops.cropPinkTulip},
+    };
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+    for (Object[] entry : flowers) {
+      Item flower = (Item) entry[0];
+      CropCard card = (CropCard) entry[1];
+      String name = BuiltInRegistries.ITEM.getKey(flower).getPath();
+
+      TileEntityCrop stick = placeCropStick(helper, CROP_POS);
+      player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(flower, 2));
+
+      helper.assertTrue(
+          stick.rightClick(player, InteractionHand.MAIN_HAND),
+          "planting " + name + " should succeed");
+
+      TileEntityCrop planted = cropAt(helper, CROP_POS);
+      helper.assertTrue(
+          planted.getCrop() == card,
+          name + " should plant its color crop, got " + planted.getCrop());
+      helper.assertBlockPresent(card.getCropBlock(), CROP_POS);
+      helper.assertValueEqual(
+          planted.getCurrentAge(), 3, "freshly planted " + name + " crop age (planted mature)");
+      helper.assertValueEqual(
+          player.getItemInHand(InteractionHand.MAIN_HAND).getCount(),
+          1,
+          name + " left after planting");
+    }
+
+    helper.succeed();
+  }
+
+  // an immature dye flower crop (below max age) must not be harvestable
+  @GameTest(template = EMPTY)
+  public static void immatureDyeFlowerCannotBeHarvested(GameTestHelper helper) {
+    TileEntityCrop crop = plant(helper, CROP_POS, Ic2Crops.cropWitherRose, 2, 0, 31, 0);
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+    helper.assertFalse(
+        Ic2Crops.cropWitherRose.canBeHarvested(crop),
+        "an age-2 wither rose crop must not be harvestable");
+    helper.assertFalse(
+        crop.rightClick(player, InteractionHand.MAIN_HAND),
+        "right-clicking an immature wither rose crop must not harvest");
+    helper.assertItemEntityNotPresent(Items.BLACK_DYE, CROP_POS, 2.0);
+    helper.assertValueEqual(
+        cropAt(helper, CROP_POS).getCurrentAge(), 2, "wither rose age after the rejected harvest");
+
+    helper.succeed();
+  }
+
+  // harvesting a mature dye flower crop drops its vanilla recipe dye and resets the crop to
+  // age 2, below the harvest threshold, so an immediate second harvest must fail
+  @GameTest(template = EMPTY)
+  public static void matureDyeFlowerHarvestDropsItsDye(GameTestHelper helper) {
+    TileEntityCrop crop = plant(helper, CROP_POS, Ic2Crops.cropCornflower, 3, 0, 31, 0);
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+    helper.assertTrue(
+        Ic2Crops.cropCornflower.canBeHarvested(crop),
+        "a cornflower crop at max age should be harvestable");
+
+    // a single harvest may roll zero drops, so re-mature and retry until one drops
+    boolean harvested = false;
+    for (int i = 0; i < RNG_ATTEMPTS && !harvested; i++) {
+      cropAt(helper, CROP_POS).setCurrentAge(3);
+      harvested = cropAt(helper, CROP_POS).rightClick(player, InteractionHand.MAIN_HAND);
+    }
+
+    helper.assertTrue(harvested, "right-clicking a mature cornflower crop should drop dye");
+    helper.assertItemEntityPresent(Items.BLUE_DYE, CROP_POS, 2.0);
+
+    TileEntityCrop remainder = cropAt(helper, CROP_POS);
+    helper.assertTrue(
+        remainder.getCrop() == Ic2Crops.cropCornflower,
+        "harvesting must not destroy the cornflower crop");
+    helper.assertValueEqual(remainder.getCurrentAge(), 2, "cornflower crop age after harvest");
+    helper.assertFalse(
+        remainder.rightClick(player, InteractionHand.MAIN_HAND),
+        "an immediate second harvest must not succeed");
+
+    helper.succeed();
+  }
+
+  // the crop harvester collects the dye gains of a mature dye flower crop
+  @GameTest(template = EMPTY, timeoutTicks = 400)
+  public static void cropHarvesterCollectsDyeFlowerGains(GameTestHelper helper) {
+    BlockPos machinePos = new BlockPos(1, 1, 1);
+    BlockPos cropPos = new BlockPos(0, 1, 1);
+    helper.setBlock(machinePos, Ic2Blocks.CROP_HARVESTER);
+    TileEntityCropHarvester te = (TileEntityCropHarvester) helper.getBlockEntity(machinePos);
+    te.dischargeSlot.put(
+        0, ElectricItemManager.getCharged(Ic2Items.RE_BATTERY, Double.POSITIVE_INFINITY));
+
+    plant(helper, cropPos, Ic2Crops.cropCornflower, 3, 0, 31, 31);
+
+    helper.onEachTick(
+        () -> {
+          // keep the scan aimed one step before the crop's (-1, 0, 0) offset and the flower mature
+          te.scanX = -2;
+          te.scanY = 0;
+          te.scanZ = 0;
+          TileEntityCrop crop = cropAt(helper, cropPos);
+          if (crop.getCrop() != null) {
+            crop.setCurrentAge(3);
+          }
+        });
+
+    helper.succeedWhen(
+        () -> {
+          if (!slotContains(te.contentSlot, Items.BLUE_DYE)) {
+            helper.assertItemEntityPresent(Items.BLUE_DYE, cropPos, 3.0);
+          }
+        });
+  }
+
   // eating a terra wart cures negative effects (leaving positive ones alone) and shortens
   // radiation by 600 ticks, removing it entirely when it is short enough
   @GameTest(template = EMPTY)
