@@ -22,11 +22,8 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -68,11 +65,7 @@ public class TileEntityTradeOMat extends TileEntityInventory
       CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
     super.loadAdditional(nbt, registries);
     if (nbt.contains("ownerGameProfile")) {
-      this.owner =
-          ExtraCodecs.GAME_PROFILE
-              .parse(NbtOps.INSTANCE, nbt.get("ownerGameProfile"))
-              .result()
-              .orElse(null);
+      this.owner = PersonalOwnerNbt.read(nbt);
     }
 
     this.totalTradeCount = nbt.getInt("totalTradeCount");
@@ -84,10 +77,7 @@ public class TileEntityTradeOMat extends TileEntityInventory
   @Override
   public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
     super.saveAdditional(nbt, registries);
-    if (this.owner != null) {
-      Tag ownerNbt = ExtraCodecs.GAME_PROFILE.encodeStart(NbtOps.INSTANCE, this.owner).getOrThrow();
-      nbt.put("ownerGameProfile", ownerNbt);
-    }
+    PersonalOwnerNbt.write(nbt, this.owner);
 
     nbt.putInt("totalTradeCount", this.totalTradeCount);
     if (this.infinite) {
