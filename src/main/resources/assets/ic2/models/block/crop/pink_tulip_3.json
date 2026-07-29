@@ -1,4 +1,6 @@
 {
-  "parent": "minecraft:block/pink_tulip",
-  "render_type": "cutout_mipped"
+  "parent": "ic2:block/crop/cross_on_sticks",
+  "textures": {
+    "flower": "minecraft:block/pink_tulip"
+  }
 }

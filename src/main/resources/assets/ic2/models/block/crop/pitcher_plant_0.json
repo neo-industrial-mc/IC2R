@@ -1,4 +1,214 @@
 {
-  "parent": "minecraft:block/pitcher_crop_bottom_stage_0",
-  "render_type": "cutout_mipped"
+  "ambientocclusion": false,
+  "render_type": "cutout_mipped",
+  "textures": {
+    "particle": "minecraft:block/pitcher_crop_top",
+    "pitcher_top": "minecraft:block/pitcher_crop_top",
+    "pitcher_side": "minecraft:block/pitcher_crop_side",
+    "pitcher_bottom": "minecraft:block/pitcher_crop_bottom",
+    "sticks": "ic2:block/crop/stick"
+  },
+  "elements": [
+    {
+      "from": [
+        4,
+        -1,
+        0
+      ],
+      "to": [
+        4,
+        15,
+        16
+      ],
+      "shade": false,
+      "faces": {
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#sticks"
+        },
+        "east": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
+          "texture": "#sticks"
+        }
+      }
+    },
+    {
+      "from": [
+        12,
+        -1,
+        0
+      ],
+      "to": [
+        12,
+        15,
+        16
+      ],
+      "shade": false,
+      "faces": {
+        "west": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
+          "texture": "#sticks"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#sticks"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        -1,
+        4
+      ],
+      "to": [
+        16,
+        15,
+        4
+      ],
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#sticks"
+        },
+        "south": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
+          "texture": "#sticks"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        -1,
+        12
+      ],
+      "to": [
+        16,
+        15,
+        12
+      ],
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
+          "texture": "#sticks"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#sticks"
+        }
+      }
+    },
+    {
+      "name": "pitcher_crop_bottom_stage_0",
+      "from": [
+        5,
+        -1,
+        5
+      ],
+      "to": [
+        11,
+        3,
+        11
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            10,
+            9,
+            14
+          ],
+          "texture": "#pitcher_side"
+        },
+        "east": {
+          "uv": [
+            3,
+            10,
+            9,
+            14
+          ],
+          "texture": "#pitcher_side"
+        },
+        "south": {
+          "uv": [
+            3,
+            10,
+            9,
+            14
+          ],
+          "texture": "#pitcher_side"
+        },
+        "west": {
+          "uv": [
+            3,
+            10,
+            9,
+            14
+          ],
+          "texture": "#pitcher_side"
+        },
+        "up": {
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ],
+          "texture": "#pitcher_top"
+        },
+        "down": {
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ],
+          "texture": "#pitcher_bottom"
+        }
+      }
+    }
+  ]
 }
