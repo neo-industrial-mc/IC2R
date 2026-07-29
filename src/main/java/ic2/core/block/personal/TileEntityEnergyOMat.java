@@ -27,9 +27,6 @@ import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -67,11 +64,7 @@ public class TileEntityEnergyOMat extends TileEntityInventory
       CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
     super.loadAdditional(nbt, registries);
     if (nbt.contains("ownerGameProfile")) {
-      this.owner =
-          ExtraCodecs.GAME_PROFILE
-              .parse(NbtOps.INSTANCE, nbt.get("ownerGameProfile"))
-              .result()
-              .orElse(null);
+      this.owner = PersonalOwnerNbt.read(nbt);
     }
 
     this.euOffer = nbt.getInt("euOffer");
@@ -87,10 +80,7 @@ public class TileEntityEnergyOMat extends TileEntityInventory
   @Override
   public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
     super.saveAdditional(nbt, registries);
-    if (this.owner != null) {
-      Tag ownerNbt = ExtraCodecs.GAME_PROFILE.encodeStart(NbtOps.INSTANCE, this.owner).getOrThrow();
-      nbt.put("ownerGameProfile", ownerNbt);
-    }
+    PersonalOwnerNbt.write(nbt, this.owner);
 
     nbt.putInt("euOffer", this.euOffer);
     nbt.putInt("paidFor", this.paidFor);

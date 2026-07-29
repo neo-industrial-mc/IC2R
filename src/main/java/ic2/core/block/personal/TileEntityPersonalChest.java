@@ -64,6 +64,8 @@ public class TileEntityPersonalChest extends TileEntityInventory
     if (!te.getLevel().isClientSide) {
       if (teOwner == null) {
         te.setOwner(profile);
+        // without marking dirty, a claim followed by a chunk unload silently loses the owner
+        te.setChanged();
         IC2.network.get(true).updateTileEntityField(te, "owner");
         return true;
       }
@@ -85,24 +87,14 @@ public class TileEntityPersonalChest extends TileEntityInventory
       CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
     super.loadAdditional(nbt, registries);
     if (nbt.contains("ownerGameProfile")) {
-      this.owner =
-          net.minecraft.util.ExtraCodecs.GAME_PROFILE
-              .parse(net.minecraft.nbt.NbtOps.INSTANCE, nbt.get("ownerGameProfile"))
-              .result()
-              .orElse(null);
+      this.owner = PersonalOwnerNbt.read(nbt);
     }
   }
 
   @Override
   public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
     super.saveAdditional(nbt, registries);
-    if (this.owner != null) {
-      nbt.put(
-          "ownerGameProfile",
-          net.minecraft.util.ExtraCodecs.GAME_PROFILE
-              .encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, this.owner)
-              .getOrThrow());
-    }
+    PersonalOwnerNbt.write(nbt, this.owner);
   }
 
   @OnlyIn(Dist.CLIENT)
