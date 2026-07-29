@@ -2674,6 +2674,127 @@ public final class Ic2Blocks {
               Util.noFacings,
               false,
               Ic2CropType.pitcherPlant));
+  public static final Block CORNFLOWER_CROP =
+      register(
+          "cornflower_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.cornflower));
+  public static final Block LILY_OF_THE_VALLEY_CROP =
+      register(
+          "lily_of_the_valley_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.lilyOfTheValley));
+  public static final Block WITHER_ROSE_CROP =
+      register(
+          "wither_rose_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.witherRose));
+  public static final Block BLUE_ORCHID_CROP =
+      register(
+          "blue_orchid_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.blueOrchid));
+  public static final Block ALLIUM_CROP =
+      register(
+          "allium_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.allium));
+  public static final Block AZURE_BLUET_CROP =
+      register(
+          "azure_bluet_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.azureBluet));
+  public static final Block OXEYE_DAISY_CROP =
+      register(
+          "oxeye_daisy_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.oxeyeDaisy));
+  public static final Block RED_TULIP_CROP =
+      register(
+          "red_tulip_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.redTulip));
+  public static final Block ORANGE_TULIP_CROP =
+      register(
+          "orange_tulip_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.orangeTulip));
+  public static final Block WHITE_TULIP_CROP =
+      register(
+          "white_tulip_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.whiteTulip));
+  public static final Block PINK_TULIP_CROP =
+      register(
+          "pink_tulip_crop",
+          Ic2TileEntityBlock.create(
+              cropSettings,
+              TileEntityCrop.class,
+              false,
+              Ic2TileEntityBlock.DefaultDrop.Self,
+              Util.noFacings,
+              false,
+              Ic2CropType.pinkTulip));
 
   static {
     IC2.envProxy.registerFlammableBlock(RUBBER_LEAVES, 20, 30);

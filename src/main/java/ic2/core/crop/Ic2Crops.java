@@ -389,6 +389,72 @@ public class Ic2Crops extends Crops {
           .setDrops(new ItemStack(Items.PITCHER_PLANT))
           .setOptimalHarvestSize(4)
           .setAfterHarvestSize(1);
+  public static CropCard cropCornflower =
+      new CropColorFlower(
+          Ic2CropType.cornflower,
+          Ic2Blocks.CORNFLOWER_CROP,
+          new String[] {"Blue", "Flower"},
+          DyeColor.BLUE);
+  public static CropCard cropLilyOfTheValley =
+      new CropColorFlower(
+          Ic2CropType.lilyOfTheValley,
+          Ic2Blocks.LILY_OF_THE_VALLEY_CROP,
+          new String[] {"White", "Flower", "Toxic"},
+          DyeColor.WHITE);
+  public static CropCard cropWitherRose =
+      new CropColorFlower(
+          Ic2CropType.witherRose,
+          Ic2Blocks.WITHER_ROSE_CROP,
+          new String[] {"Black", "Flower", "Wither", "Undead"},
+          DyeColor.BLACK);
+  public static CropCard cropBlueOrchid =
+      new CropColorFlower(
+          Ic2CropType.blueOrchid,
+          Ic2Blocks.BLUE_ORCHID_CROP,
+          new String[] {"Blue", "Flower"},
+          DyeColor.LIGHT_BLUE);
+  public static CropCard cropAllium =
+      new CropColorFlower(
+          Ic2CropType.allium,
+          Ic2Blocks.ALLIUM_CROP,
+          new String[] {"Purple", "Flower"},
+          DyeColor.MAGENTA);
+  public static CropCard cropAzureBluet =
+      new CropColorFlower(
+          Ic2CropType.azureBluet,
+          Ic2Blocks.AZURE_BLUET_CROP,
+          new String[] {"White", "Flower"},
+          DyeColor.LIGHT_GRAY);
+  public static CropCard cropOxeyeDaisy =
+      new CropColorFlower(
+          Ic2CropType.oxeyeDaisy,
+          Ic2Blocks.OXEYE_DAISY_CROP,
+          new String[] {"White", "Flower"},
+          DyeColor.LIGHT_GRAY);
+  public static CropCard cropRedTulip =
+      new CropColorFlower(
+          Ic2CropType.redTulip,
+          Ic2Blocks.RED_TULIP_CROP,
+          new String[] {"Red", "Flower", "Tulip"},
+          DyeColor.RED);
+  public static CropCard cropOrangeTulip =
+      new CropColorFlower(
+          Ic2CropType.orangeTulip,
+          Ic2Blocks.ORANGE_TULIP_CROP,
+          new String[] {"Orange", "Flower", "Tulip"},
+          DyeColor.ORANGE);
+  public static CropCard cropWhiteTulip =
+      new CropColorFlower(
+          Ic2CropType.whiteTulip,
+          Ic2Blocks.WHITE_TULIP_CROP,
+          new String[] {"White", "Flower", "Tulip"},
+          DyeColor.LIGHT_GRAY);
+  public static CropCard cropPinkTulip =
+      new CropColorFlower(
+          Ic2CropType.pinkTulip,
+          Ic2Blocks.PINK_TULIP_CROP,
+          new String[] {"Pink", "Flower", "Tulip"},
+          DyeColor.PINK);
   private final Map<EnvProxy.BiomeType, Integer> humidityBiomeTypeBonus = new IdentityHashMap<>();
   private final Map<EnvProxy.BiomeType, Integer> nutrientBiomeTypeBonus = new IdentityHashMap<>();
   private final Map<ItemStack, BaseSeed> baseSeeds = new HashMap<>();
@@ -473,6 +539,17 @@ public class Ic2Crops extends Crops {
     Crops.instance.registerCrop(cropWithereed);
     Crops.instance.registerCrop(cropTorchflower);
     Crops.instance.registerCrop(cropPitcherPlant);
+    Crops.instance.registerCrop(cropCornflower);
+    Crops.instance.registerCrop(cropLilyOfTheValley);
+    Crops.instance.registerCrop(cropWitherRose);
+    Crops.instance.registerCrop(cropBlueOrchid);
+    Crops.instance.registerCrop(cropAllium);
+    Crops.instance.registerCrop(cropAzureBluet);
+    Crops.instance.registerCrop(cropOxeyeDaisy);
+    Crops.instance.registerCrop(cropRedTulip);
+    Crops.instance.registerCrop(cropOrangeTulip);
+    Crops.instance.registerCrop(cropWhiteTulip);
+    Crops.instance.registerCrop(cropPinkTulip);
   }
 
   public static void registerBaseSeeds() {
@@ -512,6 +589,24 @@ public class Ic2Crops extends Crops {
     Crops.instance.registerBaseSeed(
         new ItemStack(Items.TORCHFLOWER_SEEDS), cropTorchflower, 0, 1, 1, 1);
     Crops.instance.registerBaseSeed(new ItemStack(Items.PITCHER_POD), cropPitcherPlant, 0, 1, 1, 1);
+    Crops.instance.registerBaseSeed(new ItemStack(Items.CORNFLOWER, 4), cropCornflower, 3, 1, 1, 1);
+    Crops.instance.registerBaseSeed(
+        new ItemStack(Items.LILY_OF_THE_VALLEY, 4), cropLilyOfTheValley, 3, 1, 1, 1);
+    Crops.instance.registerBaseSeed(
+        new ItemStack(Items.WITHER_ROSE, 4), cropWitherRose, 3, 1, 1, 1);
+    Crops.instance.registerBaseSeed(
+        new ItemStack(Items.BLUE_ORCHID, 4), cropBlueOrchid, 3, 1, 1, 1);
+    Crops.instance.registerBaseSeed(new ItemStack(Items.ALLIUM, 4), cropAllium, 3, 1, 1, 1);
+    Crops.instance.registerBaseSeed(
+        new ItemStack(Items.AZURE_BLUET, 4), cropAzureBluet, 3, 1, 1, 1);
+    Crops.instance.registerBaseSeed(
+        new ItemStack(Items.OXEYE_DAISY, 4), cropOxeyeDaisy, 3, 1, 1, 1);
+    Crops.instance.registerBaseSeed(new ItemStack(Items.RED_TULIP, 4), cropRedTulip, 3, 1, 1, 1);
+    Crops.instance.registerBaseSeed(
+        new ItemStack(Items.ORANGE_TULIP, 4), cropOrangeTulip, 3, 1, 1, 1);
+    Crops.instance.registerBaseSeed(
+        new ItemStack(Items.WHITE_TULIP, 4), cropWhiteTulip, 3, 1, 1, 1);
+    Crops.instance.registerBaseSeed(new ItemStack(Items.PINK_TULIP, 4), cropPinkTulip, 3, 1, 1, 1);
   }
 
   @Override

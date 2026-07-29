@@ -381,6 +381,28 @@ public final class Ic2BlockEntities {
       register("torchflower_crop", TileEntityCrop::new, Ic2Blocks.TORCHFLOWER_CROP);
   public static final BlockEntityType<TileEntityCrop> PITCHER_PLANT_CROP =
       register("pitcher_plant_crop", TileEntityCrop::new, Ic2Blocks.PITCHER_PLANT_CROP);
+  public static final BlockEntityType<TileEntityCrop> CORNFLOWER_CROP =
+      register("cornflower_crop", TileEntityCrop::new, Ic2Blocks.CORNFLOWER_CROP);
+  public static final BlockEntityType<TileEntityCrop> LILY_OF_THE_VALLEY_CROP =
+      register("lily_of_the_valley_crop", TileEntityCrop::new, Ic2Blocks.LILY_OF_THE_VALLEY_CROP);
+  public static final BlockEntityType<TileEntityCrop> WITHER_ROSE_CROP =
+      register("wither_rose_crop", TileEntityCrop::new, Ic2Blocks.WITHER_ROSE_CROP);
+  public static final BlockEntityType<TileEntityCrop> BLUE_ORCHID_CROP =
+      register("blue_orchid_crop", TileEntityCrop::new, Ic2Blocks.BLUE_ORCHID_CROP);
+  public static final BlockEntityType<TileEntityCrop> ALLIUM_CROP =
+      register("allium_crop", TileEntityCrop::new, Ic2Blocks.ALLIUM_CROP);
+  public static final BlockEntityType<TileEntityCrop> AZURE_BLUET_CROP =
+      register("azure_bluet_crop", TileEntityCrop::new, Ic2Blocks.AZURE_BLUET_CROP);
+  public static final BlockEntityType<TileEntityCrop> OXEYE_DAISY_CROP =
+      register("oxeye_daisy_crop", TileEntityCrop::new, Ic2Blocks.OXEYE_DAISY_CROP);
+  public static final BlockEntityType<TileEntityCrop> RED_TULIP_CROP =
+      register("red_tulip_crop", TileEntityCrop::new, Ic2Blocks.RED_TULIP_CROP);
+  public static final BlockEntityType<TileEntityCrop> ORANGE_TULIP_CROP =
+      register("orange_tulip_crop", TileEntityCrop::new, Ic2Blocks.ORANGE_TULIP_CROP);
+  public static final BlockEntityType<TileEntityCrop> WHITE_TULIP_CROP =
+      register("white_tulip_crop", TileEntityCrop::new, Ic2Blocks.WHITE_TULIP_CROP);
+  public static final BlockEntityType<TileEntityCrop> PINK_TULIP_CROP =
+      register("pink_tulip_crop", TileEntityCrop::new, Ic2Blocks.PINK_TULIP_CROP);
   public static final BlockEntityType<TileEntityFermenter> FERMENTER =
       register("fermenter", TileEntityFermenter::new, Ic2Blocks.FERMENTER);
 
