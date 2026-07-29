@@ -580,8 +580,7 @@ public class EnergyNetGameTests {
           helper.setBlock(new BlockPos(1, 4, 1), Ic2Blocks.BATBOX);
         });
 
-    helper.runAtTickTime(
-        20, () -> helper.setBlock(new BlockPos(2, 2, 1), Blocks.REDSTONE_BLOCK));
+    helper.runAtTickTime(20, () -> helper.setBlock(new BlockPos(2, 2, 1), Blocks.REDSTONE_BLOCK));
 
     helper.runAtTickTime(
         30,
@@ -612,8 +611,7 @@ public class EnergyNetGameTests {
               farMacerator.getEnergy(),
               0.0,
               "macerator behind the powered splitter must not receive energy");
-          Ic2GameTestAssertions.assertNear(
-              helper, batbox.energy.getEnergy(), 0.0, "batbox buffer");
+          Ic2GameTestAssertions.assertNear(helper, batbox.energy.getEnergy(), 0.0, "batbox buffer");
           helper.succeed();
         });
   }
