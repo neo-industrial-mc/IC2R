@@ -48,6 +48,9 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 public abstract class Ic2TileEntity extends BlockEntity
     implements INetworkDataProvider, INetworkUpdateListener, IGuiConditionProvider {
+  // "components" is reserved by vanilla for the block entity DataComponentMap since 1.21.
+  private static final String COMPONENTS_NBT_KEY = "ic2_components";
+  private static final String LEGACY_COMPONENTS_NBT_KEY = "components";
   private static final List<AABB> defaultAabbs = List.of(new AABB(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
   private static final List<TileEntityComponent> emptyComponents = Collections.emptyList();
   private static final Map<Class<?>, Ic2TileEntity.TickSubscription> tickSubscriptions =
@@ -228,8 +231,23 @@ public abstract class Ic2TileEntity extends BlockEntity
   protected void loadAdditional(
       CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
     this.active = nbt.getBoolean("active");
-    if (this.components != null && nbt.contains("components", 10)) {
-      CompoundTag componentsNbt = nbt.getCompound("components");
+    CompoundTag componentsNbt = null;
+    if (nbt.contains(COMPONENTS_NBT_KEY, 10)) {
+      componentsNbt = nbt.getCompound(COMPONENTS_NBT_KEY);
+    } else if (nbt.contains(LEGACY_COMPONENTS_NBT_KEY, 10)) {
+      CompoundTag legacyComponentsNbt = nbt.getCompound(LEGACY_COMPONENTS_NBT_KEY);
+      boolean containsIc2Component =
+          legacyComponentsNbt.getAllKeys().stream()
+              .anyMatch(name -> Components.getClass(name) != null);
+      if (containsIc2Component) {
+        componentsNbt = legacyComponentsNbt;
+        // loadWithComponents invokes this method before vanilla decodes its reserved key. Removing
+        // IC2's legacy value here prevents it from being mistaken for a DataComponentMap.
+        nbt.remove(LEGACY_COMPONENTS_NBT_KEY);
+      }
+    }
+
+    if (this.components != null && componentsNbt != null) {
 
       for (String name : componentsNbt.getAllKeys()) {
         Class<? extends TileEntityComponent> cls = Components.getClass(name);
@@ -254,7 +272,7 @@ public abstract class Ic2TileEntity extends BlockEntity
         if (componentNbt != null) {
           if (componentsNbt == null) {
             componentsNbt = new CompoundTag();
-            nbt.put("components", componentsNbt);
+            nbt.put(COMPONENTS_NBT_KEY, componentsNbt);
           }
 
           String id = Components.getId(component.getClass());
