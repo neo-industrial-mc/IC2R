@@ -330,10 +330,10 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric
     } else if (equipSlot == EquipmentSlot.LEGS) {
       boolean speedEnabled =
           !nbtData.contains("speed_enabled") || nbtData.getBoolean("speed_enabled");
-      if (IC2.keyboard.isAltKeyDown(player)
-          && IC2.keyboard.isSneakKeyDown(player)
-          && toggleTimer == 0) {
-        toggleTimer = 10;
+      boolean speedTogglePressed =
+          IC2.keyboard.isAltKeyDown(player) && IC2.keyboard.isSneakKeyDown(player);
+      boolean speedToggleWasPressed = nbtData.getBoolean("speed_toggle_pressed");
+      if (speedTogglePressed && !speedToggleWasPressed) {
         speedEnabled = !speedEnabled;
         if (IC2.sideProxy.isSimulating()) {
           nbtData.putBoolean("speed_enabled", speedEnabled);
@@ -345,9 +345,7 @@ public class ItemArmorQuantumSuit extends ItemArmorElectric
         }
       }
 
-      if (IC2.sideProxy.isSimulating() && toggleTimer > 0) {
-        nbtData.putByte("toggle_timer", --toggleTimer);
-      }
+      nbtData.putBoolean("speed_toggle_pressed", speedTogglePressed);
 
       if (speedEnabled) {
         boolean enableQuantumSpeedOnSprint;

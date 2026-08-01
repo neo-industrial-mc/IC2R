@@ -1,10 +1,14 @@
 package ic2.core.gametest;
 
 import ic2.api.item.ElectricItem;
+import ic2.core.IC2;
 import ic2.core.Ic2Potion;
 import ic2.core.item.ElectricItemManager;
 import ic2.core.item.armor.ItemArmorQuantumSuit;
 import ic2.core.ref.Ic2Items;
+import ic2.core.util.Keyboard;
+import ic2.core.util.StackUtil;
+import java.util.EnumSet;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,6 +18,7 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -131,6 +136,48 @@ public class QuantumSuitGameTests {
         10000.0,
         "failed absorption must not drain charge");
 
+    helper.succeed();
+  }
+
+  @GameTest(template = EMPTY)
+  public static void disabledQuantumLeggingsDoNotAcceleratePlayer(GameTestHelper helper) {
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+    ItemStack leggings =
+        ElectricItemManager.getCharged(Ic2Items.QUANTUM_LEGGINGS, Double.POSITIVE_INFINITY);
+    player.setItemSlot(EquipmentSlot.LEGS, leggings);
+    player.setOnGround(true);
+    player.setSprinting(true);
+    player.setDeltaMovement(Vec3.ZERO);
+    StackUtil.getOrCreateNbtData(leggings).putBoolean("speed_enabled", false);
+    IC2.keyboard.processKeyUpdate(player, Keyboard.Key.toInt(EnumSet.of(Keyboard.Key.forward)));
+
+    leggings.getItem().inventoryTick(leggings, helper.getLevel(), player, 0, false);
+    IC2.keyboard.removePlayerReferences(player);
+
+    Ic2GameTestAssertions.assertNear(
+        helper, player.getDeltaMovement().horizontalDistanceSqr(), 0.0, "horizontal movement");
+    Ic2GameTestAssertions.assertNear(
+        helper, ElectricItem.manager.getCharge(leggings), MAX_CHARGE, "leggings charge");
+    helper.succeed();
+  }
+
+  @GameTest(template = EMPTY)
+  public static void holdingQuantumLeggingsToggleDoesNotReenableSpeed(GameTestHelper helper) {
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+    ItemStack leggings =
+        ElectricItemManager.getCharged(Ic2Items.QUANTUM_LEGGINGS, Double.POSITIVE_INFINITY);
+    player.setItemSlot(EquipmentSlot.LEGS, leggings);
+    player.setShiftKeyDown(true);
+    IC2.keyboard.processKeyUpdate(player, Keyboard.Key.toInt(EnumSet.of(Keyboard.Key.alt)));
+
+    for (int tick = 0; tick < 20; tick++) {
+      leggings.getItem().inventoryTick(leggings, helper.getLevel(), player, 0, false);
+    }
+    IC2.keyboard.removePlayerReferences(player);
+
+    helper.assertFalse(
+        StackUtil.getOrCreateNbtData(leggings).getBoolean("speed_enabled"),
+        "holding the toggle keys must not turn speed boost back on");
     helper.succeed();
   }
 
