@@ -949,6 +949,435 @@ public class CropGameTests {
         });
   }
 
+  // torchflower seeds (1.20 sniffer flower) are a registered base seed: right-clicking an empty
+  // crop stick plants the torchflower crop at age 0 with base stats and consumes one item
+  @GameTest(template = EMPTY)
+  public static void torchflowerSeedsPlantTorchflowerCrop(GameTestHelper helper) {
+    TileEntityCrop stick = placeCropStick(helper, CROP_POS);
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.TORCHFLOWER_SEEDS, 2));
+
+    helper.assertTrue(
+        stick.rightClick(player, InteractionHand.MAIN_HAND),
+        "planting torchflower seeds should succeed");
+
+    TileEntityCrop planted = cropAt(helper, CROP_POS);
+    helper.assertTrue(
+        planted.getCrop() == Ic2Crops.cropTorchflower,
+        "torchflower seeds should plant the torchflower crop, got " + planted.getCrop());
+    helper.assertBlockPresent(Ic2Blocks.TORCHFLOWER_CROP, CROP_POS);
+    helper.assertValueEqual(planted.getCurrentAge(), 0, "freshly planted torchflower age");
+    helper.assertValueEqual(planted.getStatGrowth(), 1, "planted growth stat");
+    helper.assertValueEqual(planted.getStatGain(), 1, "planted gain stat");
+    helper.assertValueEqual(planted.getStatResistance(), 1, "planted resistance stat");
+    helper.assertValueEqual(
+        player.getItemInHand(InteractionHand.MAIN_HAND).getCount(), 1, "seeds left after planting");
+
+    helper.succeed();
+  }
+
+  // a pitcher pod (1.20 sniffer flower) plants the pitcher plant crop the same way
+  @GameTest(template = EMPTY)
+  public static void pitcherPodPlantsPitcherPlantCrop(GameTestHelper helper) {
+    TileEntityCrop stick = placeCropStick(helper, CROP_POS);
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.PITCHER_POD, 2));
+
+    helper.assertTrue(
+        stick.rightClick(player, InteractionHand.MAIN_HAND),
+        "planting a pitcher pod should succeed");
+
+    TileEntityCrop planted = cropAt(helper, CROP_POS);
+    helper.assertTrue(
+        planted.getCrop() == Ic2Crops.cropPitcherPlant,
+        "a pitcher pod should plant the pitcher plant crop, got " + planted.getCrop());
+    helper.assertBlockPresent(Ic2Blocks.PITCHER_PLANT_CROP, CROP_POS);
+    helper.assertValueEqual(planted.getCurrentAge(), 0, "freshly planted pitcher plant age");
+    helper.assertValueEqual(
+        player.getItemInHand(InteractionHand.MAIN_HAND).getCount(), 1, "pods left after planting");
+
+    helper.succeed();
+  }
+
+  // a crossing base must reject the sniffer flower seeds like any other base seed
+  @GameTest(template = EMPTY)
+  public static void crossingBaseRejectsSnifferFlowerSeeds(GameTestHelper helper) {
+    placeCropStick(helper, CROP_POS);
+    helper.setBlock(
+        CROP_POS,
+        Ic2Blocks.CROP_STICK.defaultBlockState().setValue(Ic2TileEntityBlock.CROSSING_BASE, true));
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.TORCHFLOWER_SEEDS));
+    helper.assertFalse(
+        cropAt(helper, CROP_POS).rightClick(player, InteractionHand.MAIN_HAND),
+        "a crossing base must not accept torchflower seeds");
+
+    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.PITCHER_POD));
+    helper.assertFalse(
+        cropAt(helper, CROP_POS).rightClick(player, InteractionHand.MAIN_HAND),
+        "a crossing base must not accept pitcher pods");
+
+    helper.assertTrue(
+        cropAt(helper, CROP_POS).getCrop() == null, "crossing base should still be empty");
+
+    helper.succeed();
+  }
+
+  // an immature torchflower (below its age-2 harvest threshold) must not be harvestable
+  @GameTest(template = EMPTY)
+  public static void immatureTorchflowerCannotBeHarvested(GameTestHelper helper) {
+    TileEntityCrop crop = plant(helper, CROP_POS, Ic2Crops.cropTorchflower, 1, 0, 31, 0);
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+    helper.assertFalse(
+        Ic2Crops.cropTorchflower.canBeHarvested(crop),
+        "an age-1 torchflower must not be harvestable");
+    helper.assertFalse(
+        crop.rightClick(player, InteractionHand.MAIN_HAND),
+        "right-clicking an immature torchflower must not harvest");
+    helper.assertItemEntityNotPresent(Items.TORCHFLOWER, CROP_POS, 2.0);
+    helper.assertValueEqual(
+        cropAt(helper, CROP_POS).getCurrentAge(), 1, "torchflower age after the rejected harvest");
+
+    helper.succeed();
+  }
+
+  // an immature pitcher plant (below its age-4 harvest threshold) must not be harvestable
+  @GameTest(template = EMPTY)
+  public static void immaturePitcherPlantCannotBeHarvested(GameTestHelper helper) {
+    TileEntityCrop crop = plant(helper, CROP_POS, Ic2Crops.cropPitcherPlant, 3, 0, 31, 0);
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+    helper.assertFalse(
+        Ic2Crops.cropPitcherPlant.canBeHarvested(crop),
+        "an age-3 pitcher plant must not be harvestable");
+    helper.assertFalse(
+        crop.rightClick(player, InteractionHand.MAIN_HAND),
+        "right-clicking an immature pitcher plant must not harvest");
+    helper.assertItemEntityNotPresent(Items.PITCHER_PLANT, CROP_POS, 2.0);
+    helper.assertValueEqual(
+        cropAt(helper, CROP_POS).getCurrentAge(),
+        3,
+        "pitcher plant age after the rejected harvest");
+
+    helper.succeed();
+  }
+
+  // right-click harvesting a mature torchflower drops torchflowers and resets the crop to age 1,
+  // below the harvest threshold, so an immediate second harvest must fail
+  @GameTest(template = EMPTY)
+  public static void matureTorchflowerHarvestDropsTorchflower(GameTestHelper helper) {
+    TileEntityCrop crop = plant(helper, CROP_POS, Ic2Crops.cropTorchflower, 2, 0, 31, 0);
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+    helper.assertTrue(
+        Ic2Crops.cropTorchflower.canBeHarvested(crop),
+        "a torchflower at max age should be harvestable");
+
+    // a single harvest may roll zero drops, so re-mature and retry until one drops
+    boolean harvested = false;
+    for (int i = 0; i < RNG_ATTEMPTS && !harvested; i++) {
+      cropAt(helper, CROP_POS).setCurrentAge(2);
+      harvested = cropAt(helper, CROP_POS).rightClick(player, InteractionHand.MAIN_HAND);
+    }
+
+    helper.assertTrue(harvested, "right-clicking a mature torchflower should drop torchflowers");
+    helper.assertItemEntityPresent(Items.TORCHFLOWER, CROP_POS, 2.0);
+
+    TileEntityCrop remainder = cropAt(helper, CROP_POS);
+    helper.assertTrue(
+        remainder.getCrop() == Ic2Crops.cropTorchflower,
+        "harvesting must not destroy the torchflower crop");
+    helper.assertValueEqual(remainder.getCurrentAge(), 1, "torchflower age after harvest");
+    helper.assertFalse(
+        remainder.rightClick(player, InteractionHand.MAIN_HAND),
+        "an immediate second harvest must not succeed");
+
+    helper.succeed();
+  }
+
+  // right-click harvesting a mature pitcher plant drops pitcher plants and resets the crop to
+  // age 1
+  @GameTest(template = EMPTY)
+  public static void maturePitcherPlantHarvestDropsPitcherPlant(GameTestHelper helper) {
+    TileEntityCrop crop = plant(helper, CROP_POS, Ic2Crops.cropPitcherPlant, 4, 0, 31, 0);
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+    helper.assertTrue(
+        Ic2Crops.cropPitcherPlant.canBeHarvested(crop),
+        "a pitcher plant at max age should be harvestable");
+
+    boolean harvested = false;
+    for (int i = 0; i < RNG_ATTEMPTS && !harvested; i++) {
+      cropAt(helper, CROP_POS).setCurrentAge(4);
+      harvested = cropAt(helper, CROP_POS).rightClick(player, InteractionHand.MAIN_HAND);
+    }
+
+    helper.assertTrue(
+        harvested, "right-clicking a mature pitcher plant should drop pitcher plants");
+    helper.assertItemEntityPresent(Items.PITCHER_PLANT, CROP_POS, 2.0);
+
+    TileEntityCrop remainder = cropAt(helper, CROP_POS);
+    helper.assertTrue(
+        remainder.getCrop() == Ic2Crops.cropPitcherPlant,
+        "harvesting must not destroy the pitcher plant crop");
+    helper.assertValueEqual(remainder.getCurrentAge(), 1, "pitcher plant age after harvest");
+    helper.assertFalse(
+        remainder.rightClick(player, InteractionHand.MAIN_HAND),
+        "an immediate second harvest must not succeed");
+
+    helper.succeed();
+  }
+
+  // the crop harvester picks up a torchflower at its optimal harvest age (2) like any other crop
+  @GameTest(template = EMPTY, timeoutTicks = 400)
+  public static void cropHarvesterCollectsMatureTorchflowers(GameTestHelper helper) {
+    BlockPos machinePos = new BlockPos(1, 1, 1);
+    BlockPos cropPos = new BlockPos(0, 1, 1);
+    helper.setBlock(machinePos, Ic2Blocks.CROP_HARVESTER);
+    TileEntityCropHarvester te = (TileEntityCropHarvester) helper.getBlockEntity(machinePos);
+    te.dischargeSlot.put(
+        0, ElectricItemManager.getCharged(Ic2Items.RE_BATTERY, Double.POSITIVE_INFINITY));
+
+    plant(helper, cropPos, Ic2Crops.cropTorchflower, 2, 0, 31, 0);
+
+    helper.onEachTick(
+        () -> {
+          // keep the scan aimed one step before the crop's (-1, 0, 0) offset and the flower mature
+          te.scanX = -2;
+          te.scanY = 0;
+          te.scanZ = 0;
+          TileEntityCrop crop = cropAt(helper, cropPos);
+          if (crop.getCrop() != null) {
+            crop.setCurrentAge(2);
+          }
+        });
+
+    helper.succeedWhen(
+        () -> {
+          if (!slotContains(te.contentSlot, Items.TORCHFLOWER)) {
+            helper.assertItemEntityPresent(Items.TORCHFLOWER, cropPos, 3.0);
+          }
+        });
+  }
+
+  // the crop harvester must leave an immature torchflower alone
+  @GameTest(template = EMPTY, timeoutTicks = 250)
+  public static void cropHarvesterIgnoresImmatureTorchflower(GameTestHelper helper) {
+    BlockPos machinePos = new BlockPos(1, 1, 1);
+    BlockPos cropPos = new BlockPos(0, 1, 1);
+    helper.setBlock(machinePos, Ic2Blocks.CROP_HARVESTER);
+    TileEntityCropHarvester te = (TileEntityCropHarvester) helper.getBlockEntity(machinePos);
+    te.dischargeSlot.put(
+        0, ElectricItemManager.getCharged(Ic2Items.RE_BATTERY, Double.POSITIVE_INFINITY));
+
+    // resistance 31 keeps the crop alive on bare farmland for the whole observation window (a
+    // high gain stat would raise its needs enough to let it die mid-test, see the hostile
+    // condition tests); gain does not matter for a test that must harvest nothing
+    plant(helper, cropPos, Ic2Crops.cropTorchflower, 1, 0, 0, 31);
+
+    helper.onEachTick(
+        () -> {
+          // keep the scan aimed at the crop and the flower pinned below the harvest threshold
+          te.scanX = -2;
+          te.scanY = 0;
+          te.scanZ = 0;
+          TileEntityCrop crop = cropAt(helper, cropPos);
+          if (crop.getCrop() != null) {
+            crop.setCurrentAge(1);
+          }
+        });
+
+    helper.runAtTickTime(
+        200,
+        () -> {
+          helper.assertFalse(
+              slotContains(te.contentSlot, Items.TORCHFLOWER),
+              "the harvester must not collect an immature torchflower");
+          helper.assertItemEntityNotPresent(Items.TORCHFLOWER, cropPos, 3.0);
+          helper.assertTrue(
+              cropAt(helper, cropPos).getCrop() == Ic2Crops.cropTorchflower,
+              "the immature torchflower must survive the harvester");
+          helper.succeed();
+        });
+  }
+
+  // the cropmatron tends a pitcher plant crop: fertilizer, water and Weed-EX all arrive
+  @GameTest(template = EMPTY, timeoutTicks = 200)
+  public static void cropmatronTendsPitcherPlantCrop(GameTestHelper helper) {
+    BlockPos machinePos = new BlockPos(1, 1, 1);
+    BlockPos cropPos = new BlockPos(0, 1, 1);
+    helper.setBlock(machinePos, Ic2Blocks.CROPMATRON);
+    TileEntityCropmatron te = (TileEntityCropmatron) helper.getBlockEntity(machinePos);
+    te.dischargeSlot.put(
+        0, ElectricItemManager.getCharged(Ic2Items.RE_BATTERY, Double.POSITIVE_INFINITY));
+    te.fertilizerSlot.put(0, new ItemStack(Ic2Items.FERTILIZER));
+    helper.assertValueEqual(
+        te.getWaterTank()
+            .fillMb(
+                Ic2FluidStack.create(net.minecraft.world.level.material.Fluids.WATER, 1000), false),
+        1000,
+        "water accepted by the cropmatron");
+    helper.assertValueEqual(
+        te.getExTank().fillMb(Ic2FluidStack.create(Ic2Fluids.WEED_EX.still(), 1000), false),
+        1000,
+        "Weed-EX accepted by the cropmatron");
+
+    plant(helper, cropPos, Ic2Crops.cropPitcherPlant, 1, 0, 0, 0);
+
+    // aim the scan one step before the crop's (-1, 0, 0) offset
+    te.scanX = -2;
+    te.scanY = 0;
+    te.scanZ = 0;
+
+    helper.succeedWhen(
+        () -> {
+          TileEntityCrop crop = cropAt(helper, cropPos);
+          // the crop's own tick may already have consumed a point or two of what was applied
+          helper.assertTrue(
+              crop.getStorageNutrients() >= 85,
+              "cropmatron should fertilize the pitcher plant, has " + crop.getStorageNutrients());
+          helper.assertTrue(
+              crop.getStorageWater() >= 195,
+              "cropmatron should hydrate the pitcher plant, has " + crop.getStorageWater());
+          helper.assertTrue(
+              crop.getStorageWeedEX() >= 140,
+              "cropmatron should apply Weed-EX, has " + crop.getStorageWeedEX());
+        });
+  }
+
+  // every small vanilla dye flower is a base seed for its own color crop; like poppy/dandelion
+  // they plant already mature (size 3) and consume one flower
+  @GameTest(template = EMPTY)
+  public static void dyeFlowerItemsPlantMatureColorCrops(GameTestHelper helper) {
+    Object[][] flowers = {
+      {Items.CORNFLOWER, Ic2Crops.cropCornflower},
+      {Items.LILY_OF_THE_VALLEY, Ic2Crops.cropLilyOfTheValley},
+      {Items.WITHER_ROSE, Ic2Crops.cropWitherRose},
+      {Items.BLUE_ORCHID, Ic2Crops.cropBlueOrchid},
+      {Items.ALLIUM, Ic2Crops.cropAllium},
+      {Items.AZURE_BLUET, Ic2Crops.cropAzureBluet},
+      {Items.OXEYE_DAISY, Ic2Crops.cropOxeyeDaisy},
+      {Items.RED_TULIP, Ic2Crops.cropRedTulip},
+      {Items.ORANGE_TULIP, Ic2Crops.cropOrangeTulip},
+      {Items.WHITE_TULIP, Ic2Crops.cropWhiteTulip},
+      {Items.PINK_TULIP, Ic2Crops.cropPinkTulip},
+    };
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+    for (Object[] entry : flowers) {
+      Item flower = (Item) entry[0];
+      CropCard card = (CropCard) entry[1];
+      String name = BuiltInRegistries.ITEM.getKey(flower).getPath();
+
+      TileEntityCrop stick = placeCropStick(helper, CROP_POS);
+      player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(flower, 2));
+
+      helper.assertTrue(
+          stick.rightClick(player, InteractionHand.MAIN_HAND),
+          "planting " + name + " should succeed");
+
+      TileEntityCrop planted = cropAt(helper, CROP_POS);
+      helper.assertTrue(
+          planted.getCrop() == card,
+          name + " should plant its color crop, got " + planted.getCrop());
+      helper.assertBlockPresent(card.getCropBlock(), CROP_POS);
+      helper.assertValueEqual(
+          planted.getCurrentAge(), 3, "freshly planted " + name + " crop age (planted mature)");
+      helper.assertValueEqual(
+          player.getItemInHand(InteractionHand.MAIN_HAND).getCount(),
+          1,
+          name + " left after planting");
+    }
+
+    helper.succeed();
+  }
+
+  // an immature dye flower crop (below max age) must not be harvestable
+  @GameTest(template = EMPTY)
+  public static void immatureDyeFlowerCannotBeHarvested(GameTestHelper helper) {
+    TileEntityCrop crop = plant(helper, CROP_POS, Ic2Crops.cropWitherRose, 2, 0, 31, 0);
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+    helper.assertFalse(
+        Ic2Crops.cropWitherRose.canBeHarvested(crop),
+        "an age-2 wither rose crop must not be harvestable");
+    helper.assertFalse(
+        crop.rightClick(player, InteractionHand.MAIN_HAND),
+        "right-clicking an immature wither rose crop must not harvest");
+    helper.assertItemEntityNotPresent(Items.BLACK_DYE, CROP_POS, 2.0);
+    helper.assertValueEqual(
+        cropAt(helper, CROP_POS).getCurrentAge(), 2, "wither rose age after the rejected harvest");
+
+    helper.succeed();
+  }
+
+  // harvesting a mature dye flower crop drops its vanilla recipe dye and resets the crop to
+  // age 2, below the harvest threshold, so an immediate second harvest must fail
+  @GameTest(template = EMPTY)
+  public static void matureDyeFlowerHarvestDropsItsDye(GameTestHelper helper) {
+    TileEntityCrop crop = plant(helper, CROP_POS, Ic2Crops.cropCornflower, 3, 0, 31, 0);
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+
+    helper.assertTrue(
+        Ic2Crops.cropCornflower.canBeHarvested(crop),
+        "a cornflower crop at max age should be harvestable");
+
+    // a single harvest may roll zero drops, so re-mature and retry until one drops
+    boolean harvested = false;
+    for (int i = 0; i < RNG_ATTEMPTS && !harvested; i++) {
+      cropAt(helper, CROP_POS).setCurrentAge(3);
+      harvested = cropAt(helper, CROP_POS).rightClick(player, InteractionHand.MAIN_HAND);
+    }
+
+    helper.assertTrue(harvested, "right-clicking a mature cornflower crop should drop dye");
+    helper.assertItemEntityPresent(Items.BLUE_DYE, CROP_POS, 2.0);
+
+    TileEntityCrop remainder = cropAt(helper, CROP_POS);
+    helper.assertTrue(
+        remainder.getCrop() == Ic2Crops.cropCornflower,
+        "harvesting must not destroy the cornflower crop");
+    helper.assertValueEqual(remainder.getCurrentAge(), 2, "cornflower crop age after harvest");
+    helper.assertFalse(
+        remainder.rightClick(player, InteractionHand.MAIN_HAND),
+        "an immediate second harvest must not succeed");
+
+    helper.succeed();
+  }
+
+  // the crop harvester collects the dye gains of a mature dye flower crop
+  @GameTest(template = EMPTY, timeoutTicks = 400)
+  public static void cropHarvesterCollectsDyeFlowerGains(GameTestHelper helper) {
+    BlockPos machinePos = new BlockPos(1, 1, 1);
+    BlockPos cropPos = new BlockPos(0, 1, 1);
+    helper.setBlock(machinePos, Ic2Blocks.CROP_HARVESTER);
+    TileEntityCropHarvester te = (TileEntityCropHarvester) helper.getBlockEntity(machinePos);
+    te.dischargeSlot.put(
+        0, ElectricItemManager.getCharged(Ic2Items.RE_BATTERY, Double.POSITIVE_INFINITY));
+
+    plant(helper, cropPos, Ic2Crops.cropCornflower, 3, 0, 31, 31);
+
+    helper.onEachTick(
+        () -> {
+          // keep the scan aimed one step before the crop's (-1, 0, 0) offset and the flower mature
+          te.scanX = -2;
+          te.scanY = 0;
+          te.scanZ = 0;
+          TileEntityCrop crop = cropAt(helper, cropPos);
+          if (crop.getCrop() != null) {
+            crop.setCurrentAge(3);
+          }
+        });
+
+    helper.succeedWhen(
+        () -> {
+          if (!slotContains(te.contentSlot, Items.BLUE_DYE)) {
+            helper.assertItemEntityPresent(Items.BLUE_DYE, cropPos, 3.0);
+          }
+        });
+  }
+
   // eating a terra wart cures negative effects (leaving positive ones alone) and shortens
   // radiation by 600 ticks, removing it entirely when it is short enough
   @GameTest(template = EMPTY)

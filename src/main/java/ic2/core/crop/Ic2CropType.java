@@ -63,7 +63,20 @@ public enum Ic2CropType implements StringRepresentable, ICropType {
   slime_plant("slime_plant", Ic2Blocks.SLIME_PLANT_CROP, 3),
   spidernip("spidernip", Ic2Blocks.SPIDERNIP_CROP, 3),
   tearstalks("tearstalks", Ic2Blocks.TEARSTALKS_CROP, 3),
-  withereed("withereed", Ic2Blocks.WITHEREED_CROP, 3);
+  withereed("withereed", Ic2Blocks.WITHEREED_CROP, 3),
+  torchflower("torchflower", Ic2Blocks.TORCHFLOWER_CROP, 2),
+  pitcherPlant("pitcher_plant", Ic2Blocks.PITCHER_PLANT_CROP, 4),
+  cornflower("cornflower", Ic2Blocks.CORNFLOWER_CROP, 3),
+  lilyOfTheValley("lily_of_the_valley", Ic2Blocks.LILY_OF_THE_VALLEY_CROP, 3),
+  witherRose("wither_rose", Ic2Blocks.WITHER_ROSE_CROP, 3),
+  blueOrchid("blue_orchid", Ic2Blocks.BLUE_ORCHID_CROP, 3),
+  allium("allium", Ic2Blocks.ALLIUM_CROP, 3),
+  azureBluet("azure_bluet", Ic2Blocks.AZURE_BLUET_CROP, 3),
+  oxeyeDaisy("oxeye_daisy", Ic2Blocks.OXEYE_DAISY_CROP, 3),
+  redTulip("red_tulip", Ic2Blocks.RED_TULIP_CROP, 3),
+  orangeTulip("orange_tulip", Ic2Blocks.ORANGE_TULIP_CROP, 3),
+  whiteTulip("white_tulip", Ic2Blocks.WHITE_TULIP_CROP, 3),
+  pinkTulip("pink_tulip", Ic2Blocks.PINK_TULIP_CROP, 3);
 
   private static final Ic2CropType[] values = values();
   private final String owner;

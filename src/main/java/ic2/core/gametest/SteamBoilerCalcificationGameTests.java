@@ -258,9 +258,7 @@ public class SteamBoilerCalcificationGameTests {
 
   // the calcification counter is not exposed as a raw value, read it off the save data
   private static int rawCalcification(GameTestHelper helper, TileEntitySteamGenerator boiler) {
-    return boiler
-        .saveWithFullMetadata(helper.getLevel().registryAccess())
-        .getInt("calcification");
+    return boiler.saveWithFullMetadata(helper.getLevel().registryAccess()).getInt("calcification");
   }
 
   // preset the operating point through the save data: the GUI dials by their NBT names, the
