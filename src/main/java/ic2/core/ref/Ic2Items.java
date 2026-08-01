@@ -50,6 +50,7 @@ import ic2.core.item.tool.ItemDebug;
 import ic2.core.item.tool.ItemDrill;
 import ic2.core.item.tool.ItemDrillIridium;
 import ic2.core.item.tool.ItemElectricToolChainsaw;
+import ic2.core.item.tool.ItemElectricToolHoe;
 import ic2.core.item.tool.ItemFrequencyTransmitter;
 import ic2.core.item.tool.ItemNanoSaber;
 import ic2.core.item.tool.ItemObscurator;
@@ -949,6 +950,8 @@ public final class Ic2Items {
       register(
           "drill",
           new ItemDrill(new Properties().stacksTo(1), 50, Tiers.IRON, 30000, 100, 1, 8.0F));
+  public static final Item ELECTRIC_HOE =
+      register("electric_hoe", new ItemElectricToolHoe(new Properties().stacksTo(1)));
   public static final Item MINING_LASER =
       register("mining_laser", new ItemToolMiningLaser(new Properties().stacksTo(1)));
   public static final Item ELECTRIC_TREETAP =
@@ -1801,6 +1804,7 @@ public final class Ic2Items {
     addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> DRILL);
     addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> EJECTOR_UPGRADE);
     addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ELECTRIC_BOAT);
+    addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ELECTRIC_HOE);
     addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ELECTRIC_TREETAP);
     addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ELECTRIC_WRENCH);
     addToCreativeTab(Ic2ItemGroupType.TOOLS_AND_UTILITIES, () -> ELECTROLYZED_WATER_CELL);
