@@ -6,10 +6,6 @@
 <img src="https://img.shields.io/badge/Version-21.1.0-blue" alt="Version 21.1.0">
 <img src="https://img.shields.io/badge/License-AGPL--3.0-blue" alt="License AGPL-3.0">
 
-> [!WARNING]
-> This repository is an **experimental fork** used for porting and testing changes.
-> For general use, prefer the upstream project: **[HalfCooler/IC2R](https://github.com/HalfCooler/IC2R)**.
-
 This project's code was obtained by decompiling the official build `2.9.40-ex119`, with missing and broken functionality migrated over from `2.8.222-ex112`.
 
 ## Foreword
