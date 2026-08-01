@@ -11,6 +11,7 @@ import ic2.core.block.tileentity.Ic2TileEntityBlock;
 import ic2.core.crop.Ic2CropType;
 import ic2.core.crop.Ic2Crops;
 import ic2.core.crop.TileEntityCrop;
+import ic2.core.crop.cropcard.CropWheat;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.item.ElectricItemManager;
 import ic2.core.item.ItemCropSeed;
@@ -110,6 +111,29 @@ public class CropGameTests {
     }
 
     return false;
+  }
+
+  // Add-on crops may use the generic crop-stick block and store their age in the tile entity.
+  // Advancing such a crop used to try to create an invalid age property with the range 0..0.
+  @GameTest(template = EMPTY)
+  public static void cropStickBackedCropCanAdvanceAge(GameTestHelper helper) {
+    CropCard cropStickBackedCrop =
+        new CropWheat(Ic2CropType.wheat) {
+          @Override
+          public net.minecraft.world.level.block.Block getCropBlock() {
+            return Ic2Blocks.CROP_STICK;
+          }
+        };
+    TileEntityCrop crop =
+        placeCropStick(helper, CROP_POS).transformCropBlock(cropStickBackedCrop, 0);
+
+    crop.setCurrentAge(1);
+
+    helper.assertValueEqual(crop.getCurrentAge(), 1, "tile-backed crop age");
+    helper.assertTrue(
+        crop.getBlockState().is(Ic2Blocks.CROP_STICK),
+        "tile-backed crop should remain on the crop-stick block");
+    helper.succeed();
   }
 
   // every Ic2CropType must resolve to a registered crop card that agrees with the type about
