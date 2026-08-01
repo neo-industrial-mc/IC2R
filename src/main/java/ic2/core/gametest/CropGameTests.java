@@ -26,6 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -826,6 +827,54 @@ public class CropGameTests {
     helper.assertTrue(
         cropAt(helper, CROP_POS.west()).getCrop() == Ic2Crops.cropWheat,
         "crop must survive the trowel");
+
+    helper.succeed();
+  }
+
+  // weed takeover must not consume the second crop stick: after the weed is removed, the empty
+  // sticks are still a crossing base and left-clicking refunds that second stick
+  @GameTest(template = EMPTY)
+  public static void weedDoesNotConsumeSecondCropStick(GameTestHelper helper) {
+    TileEntityCrop crossingBase = placeCropStick(helper, CROP_POS);
+    crossingBase.setCrossingBase(true);
+    TileEntityCrop weed = crossingBase.transformCropBlock(Crops.weed, 0);
+
+    // Simulate a save/load while the block is weed, whose blockstate cannot carry crossing_base.
+    CompoundTag saved = weed.saveWithoutMetadata(helper.getLevel().registryAccess());
+    helper.setBlock(CROP_POS, Blocks.AIR);
+    helper.setBlock(CROP_POS, Ic2Blocks.WEED_CROP.defaultBlockState());
+    cropAt(helper, CROP_POS).loadWithComponents(saved, helper.getLevel().registryAccess());
+
+    Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+    ItemStack trowel = new ItemStack(Ic2Items.WEEDING_TROWEL);
+    player.setItemInHand(InteractionHand.MAIN_HAND, trowel);
+    InteractionResult result =
+        ((ItemWeedingTrowel) Ic2Items.WEEDING_TROWEL)
+            .onItemUseFirst(trowel, useContextOn(helper, player, CROP_POS));
+
+    helper.assertTrue(
+        result == InteractionResult.SUCCESS, "trowel should clear weed, got " + result);
+    helper.assertTrue(
+        cropAt(helper, CROP_POS).isCrossingBase(), "removing weed must restore the crossing base");
+    helper.assertTrue(
+        helper.getBlockState(CROP_POS).getValue(Ic2TileEntityBlock.CROSSING_BASE),
+        "restored crop-stick block state should remain a crossing base");
+
+    Ic2TileEntityBlock cropStickBlock = (Ic2TileEntityBlock) Ic2Blocks.CROP_STICK;
+    result =
+        cropStickBlock.startBreak(
+            player,
+            helper.getLevel(),
+            InteractionHand.MAIN_HAND,
+            helper.absolutePos(CROP_POS),
+            helper.getBlockState(CROP_POS),
+            Direction.UP);
+    helper.assertTrue(
+        result == InteractionResult.SUCCESS, "left-clicking the crossing base should succeed");
+    helper.assertFalse(
+        cropAt(helper, CROP_POS).isCrossingBase(),
+        "left-clicking should remove only the second crop stick");
+    helper.assertItemEntityPresent(Ic2Items.CROP_STICK, CROP_POS, 2.0);
 
     helper.succeed();
   }

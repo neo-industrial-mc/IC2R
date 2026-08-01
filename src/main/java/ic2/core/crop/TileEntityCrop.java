@@ -77,10 +77,14 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
   private short growthPoints = 0;
   private byte scanLevel;
   private CompoundTag customData = new CompoundTag();
+  private boolean crossingBase;
 
   public TileEntityCrop(BlockPos pos, BlockState state) {
     super(Ic2BlockEntities.get(BuiltInRegistries.BLOCK.getKey(state.getBlock())), pos, state);
     this.crop = Crops.instance.getCropCard(this.getBlockType());
+    this.crossingBase =
+        state.hasProperty(Ic2TileEntityBlock.CROSSING_BASE)
+            && state.getValue(Ic2TileEntityBlock.CROSSING_BASE);
     if (debug) {
       IC2.log.info(LogCategory.Block, "Debug mode is running");
     }
@@ -90,6 +94,9 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
   protected void loadAdditional(
       CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
     super.loadAdditional(nbt, registries);
+    if (nbt.contains("crossingBase")) {
+      this.crossingBase = nbt.getBoolean("crossingBase");
+    }
     if (nbt.contains("statGrowth") && nbt.contains("statGain")) {
       this.statGrowth = nbt.getByte("statGrowth");
       this.statGain = nbt.getByte("statGain");
@@ -110,6 +117,7 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
   @Override
   public void saveAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
     super.saveAdditional(nbt, registries);
+    nbt.putBoolean("crossingBase", this.getStoredCrossingBase());
     if (this.crop != null) {
       nbt.putByte("statGrowth", this.statGrowth);
       nbt.putByte("statGain", this.statGain);
@@ -776,6 +784,7 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
   @Override
   public void setCrossingBase(boolean crossingBase) {
     if (this.crop == null) {
+      this.crossingBase = crossingBase;
       if (this.level != null) {
         this.level.setBlockAndUpdate(
             this.worldPosition,
@@ -931,14 +940,16 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
 
   @Override
   public void reset() {
+    boolean crossingBase = this.getStoredCrossingBase();
     this.crop = null;
     this.resetData();
+    this.crossingBase = crossingBase;
     if (this.level != null) {
       this.level.setBlockAndUpdate(
           this.worldPosition,
           Ic2Blocks.CROP_STICK
               .defaultBlockState()
-              .setValue(Ic2TileEntityBlock.CROSSING_BASE, false));
+              .setValue(Ic2TileEntityBlock.CROSSING_BASE, crossingBase));
     }
   }
 
@@ -1020,6 +1031,7 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
     }
 
     if (crop.getCropBlock() instanceof Ic2TileEntityBlock cropBlock) {
+      boolean crossingBase = this.getStoredCrossingBase();
       BlockState newState = cropBlock.defaultBlockState();
       if (!newState.is(Ic2Blocks.CROP_STICK)) {
         if (age > cropBlock.getCropMaxAge()) age = cropBlock.getCropMaxAge();
@@ -1031,6 +1043,8 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
           (TileEntityCrop) this.level.getBlockEntity(this.worldPosition);
       if (tileEntityCrop != null) {
         tileEntityCrop.crop = crop;
+        tileEntityCrop.crossingBase = crossingBase;
+        tileEntityCrop.setChanged();
       }
       return tileEntityCrop;
     } else {
@@ -1044,16 +1058,34 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
     }
 
     if (cropBlock instanceof Ic2TileEntityBlock ic2CropBlock) {
+      boolean crossingBase = this.getStoredCrossingBase();
       BlockState newState = cropBlock.defaultBlockState();
       if (!newState.is(Ic2Blocks.CROP_STICK)) {
         newState = newState.setValue(ic2CropBlock.getAgeProperty(), (int) this.currentAge);
       }
 
       this.level.setBlockAndUpdate(this.worldPosition, newState);
-      return (TileEntityCrop) this.level.getBlockEntity(this.worldPosition);
+      TileEntityCrop tileEntityCrop =
+          (TileEntityCrop) this.level.getBlockEntity(this.worldPosition);
+      if (tileEntityCrop != null) {
+        tileEntityCrop.crossingBase = crossingBase;
+        tileEntityCrop.setChanged();
+      }
+      return tileEntityCrop;
     } else {
       return null;
     }
+  }
+
+  private boolean getStoredCrossingBase() {
+    if (this.level != null) {
+      BlockState state = this.level.getBlockState(this.worldPosition);
+      if (state.hasProperty(Ic2TileEntityBlock.CROSSING_BASE)) {
+        return state.getValue(Ic2TileEntityBlock.CROSSING_BASE);
+      }
+    }
+
+    return this.crossingBase;
   }
 
   public boolean resetCropBlock(Block cropBlock) {
