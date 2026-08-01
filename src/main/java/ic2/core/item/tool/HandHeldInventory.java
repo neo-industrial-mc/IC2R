@@ -139,7 +139,7 @@ public abstract class HandHeldInventory implements IHasGui {
     if (!player.getCommandSenderWorld().isClientSide) {
       if (PLAYERS_IN_GUI.contains(player)) {
         PLAYERS_IN_GUI.remove(player);
-      } else {
+      } else if (!this.cleared && !StackUtil.isEmpty(this.containerStack)) {
         StackUtil.getOrCreateNbtData(this.containerStack).remove("uid");
       }
     }
@@ -272,8 +272,9 @@ public abstract class HandHeldInventory implements IHasGui {
       }
     }
 
-    StackUtil.getOrCreateNbtData(stack).put("Items", contentList);
-    assert StackUtil.getOrCreateNbtData(stack).getInt("uid") == 0;
+    CompoundTag nbt = StackUtil.getOrCreateNbtData(stack);
+    nbt.put("Items", contentList);
+    nbt.remove("uid");
     this.clearContent();
   }
 

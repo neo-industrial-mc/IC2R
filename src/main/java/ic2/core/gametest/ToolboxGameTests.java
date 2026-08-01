@@ -8,11 +8,15 @@ import ic2.core.ref.Ic2Items;
 import ic2.core.util.StackUtil;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -93,6 +97,44 @@ public class ToolboxGameTests {
         new HandHeldToolbox(player, InteractionHand.MAIN_HAND, savedStack, 9);
     helper.assertValueEqual(
         reopened.getItem(3).getItem(), Ic2Items.TREETAP, "stored item after reopening");
+    helper.succeed();
+  }
+
+  // Throwing the open toolbox used to mutate its captured stack to empty before IC2 saved it,
+  // causing CUSTOM_DATA creation to return null and crash both the click and close paths.
+  @GameTest(template = EMPTY)
+  public static void throwingOpenToolboxDoesNotCrash(GameTestHelper helper) {
+    ServerPlayer player = makePlayer(helper);
+    ItemStack stack = new ItemStack(Ic2Items.TOOL_BOX);
+    player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+
+    HandHeldToolbox toolbox = new HandHeldToolbox(player, InteractionHand.MAIN_HAND, stack, 9);
+    toolbox.setItem(3, new ItemStack(Ic2Items.TREETAP));
+    ContainerToolbox menu = new ContainerToolbox(1, toolbox);
+    player.containerMenu = menu;
+
+    // Toolbox slots occupy 0-8, the main inventory 9-35, and hotbar slot 0 is menu slot 36.
+    menu.clicked(36, 0, ClickType.THROW, player);
+
+    ItemEntity droppedToolbox =
+        helper
+            .getLevel()
+            .getEntitiesOfClass(
+                ItemEntity.class,
+                new AABB(player.blockPosition()).inflate(3.0),
+                entity -> entity.getItem().is(Ic2Items.TOOL_BOX))
+            .stream()
+            .findFirst()
+            .orElse(null);
+    helper.assertTrue(droppedToolbox != null, "throwing the open toolbox should drop it");
+
+    CompoundTag droppedData = StackUtil.getTag(droppedToolbox.getItem());
+    helper.assertTrue(droppedData != null, "the dropped toolbox should retain custom data");
+    helper.assertFalse(
+        droppedData.contains("uid"), "the dropped toolbox must not retain its GUI uid");
+    helper.assertFalse(
+        droppedData.getList("Items", 10).isEmpty(),
+        "the dropped toolbox should retain its contents");
     helper.succeed();
   }
 }
