@@ -1,7 +1,9 @@
 package ic2.core.gametest;
 
 import ic2.core.block.comp.Energy;
+import ic2.core.block.machine.tileentity.TileEntityCanner;
 import ic2.core.block.machine.tileentity.TileEntityItemBuffer;
+import ic2.core.block.machine.tileentity.TileEntitySolidCanner;
 import ic2.core.block.machine.tileentity.TileEntitySortingMachine;
 import ic2.core.block.machine.tileentity.TileEntityWeightedItemDistributor;
 import ic2.core.block.tileentity.Ic2TileEntityBlock;
@@ -18,8 +20,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 @GameTestHolder("ic2")
 @PrefixGameTestTemplate(false)
@@ -30,6 +35,32 @@ public class ItemRoutingGameTests {
   private static final BlockPos EAST_POS = new BlockPos(2, 1, 1);
   private static final BlockPos WEST_POS = new BlockPos(0, 1, 1);
   private static final BlockPos DOWN_POS = new BlockPos(1, 0, 1);
+
+  // AE2 export buses insert through the sided NeoForge item-handler capability. Verify that both
+  // canners expose that path and route tin cans into their dedicated can-input slots from every
+  // possible attachment face.
+  @GameTest(template = EMPTY)
+  public static void cannersAcceptTinCansThroughSidedItemHandlers(GameTestHelper helper) {
+    helper.setBlock(MACHINE_POS, Ic2Blocks.SOLID_CANNER);
+    helper.setBlock(EAST_POS, Ic2Blocks.CANNER);
+    TileEntitySolidCanner solidCanner = getTe(helper, MACHINE_POS, TileEntitySolidCanner.class);
+    TileEntityCanner canner = getTe(helper, EAST_POS, TileEntityCanner.class);
+
+    helper.assertValueEqual(
+        canner.getMode(), TileEntityCanner.Mode.BottleSolid, "fluid/solid canner mode");
+    assertAcceptsTinCanFromEverySide(helper, MACHINE_POS, "solid canner");
+    assertAcceptsTinCanFromEverySide(helper, EAST_POS, "fluid/solid canner");
+
+    helper.assertValueEqual(
+        solidCanner.canInputSlot.get().getCount(),
+        Direction.values().length,
+        "tin cans in the solid canner can-input slot");
+    helper.assertValueEqual(
+        canner.canInputSlot.get().getCount(),
+        Direction.values().length,
+        "tin cans in the fluid/solid canner can-input slot");
+    helper.succeed();
+  }
 
   // sorting machine: items matching a side filter are sent to that side in filter-sized batches for
   // 20 EU per item
@@ -167,6 +198,20 @@ public class ItemRoutingGameTests {
     }
 
     return total;
+  }
+
+  private static void assertAcceptsTinCanFromEverySide(
+      GameTestHelper helper, BlockPos pos, String machineName) {
+    BlockPos absolutePos = helper.absolutePos(pos);
+    for (Direction side : Direction.values()) {
+      IItemHandler handler =
+          helper.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, absolutePos, side);
+      helper.assertTrue(handler != null, machineName + " item handler missing on " + side);
+
+      ItemStack remainder =
+          ItemHandlerHelper.insertItem(handler, new ItemStack(Ic2Items.TIN_CAN), false);
+      helper.assertTrue(remainder.isEmpty(), machineName + " rejected a tin can from " + side);
+    }
   }
 
   private static <T extends BlockEntity> T getTe(
