@@ -314,6 +314,34 @@ public class ProcessingMachineGameTests {
         });
   }
 
+  // solid canner: slot acceptance checks whether the item belongs in a recipe, not whether the
+  // incoming stack already contains the recipe's full amount. A baked potato needs 5 cans, so a
+  // single can must be insertable while processing remains blocked until all 5 are present.
+  @GameTest(template = EMPTY)
+  public static void solidCannerAcceptsIncompleteTinCanStack(GameTestHelper helper) {
+    helper.setBlock(MACHINE_POS, Ic2Blocks.SOLID_CANNER);
+    TileEntitySolidCanner te = getMachine(helper, TileEntitySolidCanner.class);
+    te.inputSlot.put(0, new ItemStack(Items.BAKED_POTATO));
+
+    helper.assertTrue(
+        te.canInputSlot.accepts(new ItemStack(Ic2Items.TIN_CAN)),
+        "solid canner should accept one tin can for a five-can baked potato recipe");
+    helper.assertTrue(
+        !te.canInputSlot.accepts(new ItemStack(Items.IRON_INGOT)),
+        "solid canner should reject an item that is not a recipe container");
+
+    te.canInputSlot.put(0, new ItemStack(Ic2Items.TIN_CAN));
+    helper.assertTrue(
+        te.inputSlot.process() == null,
+        "solid canner must not process with only one of five cans");
+
+    te.canInputSlot.put(0, new ItemStack(Ic2Items.TIN_CAN, 5));
+    helper.assertTrue(
+        te.inputSlot.process() != null,
+        "solid canner should process once all five cans are present");
+    helper.succeed();
+  }
+
   // iron furnace: no EU, burns furnace fuel to run vanilla smelting recipes over 160 ticks
   @GameTest(template = EMPTY, timeoutTicks = 300)
   public static void ironFurnaceSmeltsRawIronWithCoal(GameTestHelper helper) {
@@ -353,6 +381,32 @@ public class ProcessingMachineGameTests {
           helper.assertTrue(te.inputSlot.get(0).isEmpty(), "canner uranium should be consumed");
           helper.assertTrue(te.canInputSlot.get(0).isEmpty(), "canner fuel rod should be consumed");
         });
+  }
+
+  // fluid/solid canner, bottle solid mode: as with the dedicated solid canner, partial container
+  // stacks may be inserted but cannot run until the recipe's full container count is present.
+  @GameTest(template = EMPTY)
+  public static void cannerAcceptsIncompleteTinCanStack(GameTestHelper helper) {
+    helper.setBlock(MACHINE_POS, Ic2Blocks.CANNER);
+    TileEntityCanner te = getMachine(helper, TileEntityCanner.class);
+    te.setMode(TileEntityCanner.Mode.BottleSolid);
+    te.inputSlot.put(0, new ItemStack(Items.BAKED_POTATO));
+
+    helper.assertTrue(
+        te.canInputSlot.accepts(new ItemStack(Ic2Items.TIN_CAN)),
+        "canner should accept one tin can for a five-can baked potato recipe");
+    helper.assertTrue(
+        !te.canInputSlot.accepts(new ItemStack(Items.IRON_INGOT)),
+        "canner should reject an item that is not a recipe container");
+
+    te.canInputSlot.put(0, new ItemStack(Ic2Items.TIN_CAN));
+    helper.assertTrue(
+        te.inputSlot.process() == null, "canner must not process with only one of five cans");
+
+    te.canInputSlot.put(0, new ItemStack(Ic2Items.TIN_CAN, 5));
+    helper.assertTrue(
+        te.inputSlot.process() != null, "canner should process once all five cans are present");
+    helper.succeed();
   }
 
   // canner, bottle liquid mode: an empty cell is filled with 1000 mB water from the input tank

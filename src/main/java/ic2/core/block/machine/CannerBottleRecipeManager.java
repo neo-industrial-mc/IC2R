@@ -136,11 +136,14 @@ public class CannerBottleRecipeManager implements ICannerBottleRecipeManager {
       for (MachineRecipe<ICannerBottleRecipeManager.Input, ItemStack> recipe : this.recipes) {
         if ((emptyContainer
                 || recipe.getInput().container().matches(input.container())
-                    && recipe.getInput().container().getAmount()
-                        <= StackUtil.getSize(input.container()))
+                    && (acceptTest
+                        || recipe.getInput().container().getAmount()
+                            <= StackUtil.getSize(input.container())))
             && (emptyFill
                 || recipe.getInput().fill().matches(input.fill())
-                    && recipe.getInput().fill().getAmount() <= StackUtil.getSize(input.fill()))) {
+                    && (acceptTest
+                        || recipe.getInput().fill().getAmount()
+                            <= StackUtil.getSize(input.fill())))) {
           return recipe.getResult(
               new ICannerBottleRecipeManager.RawInput(
                   emptyContainer
