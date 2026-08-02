@@ -23,8 +23,17 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 public class ItemCropSeed extends Item implements ICropSeed {
+  private static final int FULLY_ANALYZED_SCAN_LEVEL = 4;
+
   public ItemCropSeed(Properties settings) {
     super(settings);
+  }
+
+  @Override
+  public int getMaxStackSize(ItemStack stack) {
+    return this.getScannedFromStack(stack) >= FULLY_ANALYZED_SCAN_LEVEL
+        ? 64
+        : super.getMaxStackSize(stack);
   }
 
   public static ItemStack generateItemStackFromValues(

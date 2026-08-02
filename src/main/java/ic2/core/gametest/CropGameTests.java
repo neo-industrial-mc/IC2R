@@ -45,6 +45,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 @GameTestHolder("ic2")
 @PrefixGameTestTemplate(false)
@@ -824,6 +825,42 @@ public class CropGameTests {
         900.0,
         "fully scanned seeds must not use energy");
 
+    helper.succeed();
+  }
+
+  // Fully analyzed seed bags expose all identity and stat data, so identical bags may share an
+  // inventory stack. Unanalyzed bags and analyzed bags with different stats must stay separate.
+  @GameTest(template = EMPTY)
+  public static void fullyAnalyzedSeedBagsWithMatchingStatsStack(GameTestHelper helper) {
+    ItemStack first = ItemCropSeed.generateItemStackFromValues(Ic2Crops.cropWheat, 2, 3, 4, 4);
+    ItemStack matching = ItemCropSeed.generateItemStackFromValues(Ic2Crops.cropWheat, 2, 3, 4, 4);
+    ItemStack differentStats =
+        ItemCropSeed.generateItemStackFromValues(Ic2Crops.cropWheat, 5, 3, 4, 4);
+    ItemStack unanalyzed = ItemCropSeed.generateItemStackFromValues(Ic2Crops.cropWheat, 2, 3, 4, 3);
+
+    helper.assertValueEqual(first.getMaxStackSize(), 64, "fully analyzed seed stack limit");
+    helper.assertValueEqual(unanalyzed.getMaxStackSize(), 1, "unanalyzed seed stack limit");
+
+    ItemStackHandler analyzedSlot = new ItemStackHandler(1);
+    helper.assertTrue(
+        analyzedSlot.insertItem(0, first, false).isEmpty(),
+        "first fully analyzed seed should enter an empty slot");
+    helper.assertTrue(
+        analyzedSlot.insertItem(0, matching, false).isEmpty(),
+        "fully analyzed seed with matching stats should merge");
+    helper.assertValueEqual(
+        analyzedSlot.getStackInSlot(0).getCount(), 2, "stacked fully analyzed seeds");
+    helper.assertFalse(
+        analyzedSlot.insertItem(0, differentStats, false).isEmpty(),
+        "fully analyzed seeds with different stats must not merge");
+
+    ItemStackHandler unanalyzedSlot = new ItemStackHandler(1);
+    unanalyzedSlot.insertItem(0, unanalyzed, false);
+    ItemStack secondUnanalyzed =
+        ItemCropSeed.generateItemStackFromValues(Ic2Crops.cropWheat, 2, 3, 4, 3);
+    helper.assertFalse(
+        unanalyzedSlot.insertItem(0, secondUnanalyzed, false).isEmpty(),
+        "unanalyzed seeds must remain unstackable");
     helper.succeed();
   }
 
