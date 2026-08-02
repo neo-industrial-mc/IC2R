@@ -47,6 +47,7 @@ import ic2.core.block.renderer.KineticGeneratorRenderer;
 import ic2.core.block.wiring.GuiChargepadBlock;
 import ic2.core.block.wiring.GuiElectricBlock;
 import ic2.core.block.wiring.GuiTransformer;
+import ic2.core.crop.CropStickRenderer;
 import ic2.core.entity.render.BoatEntityRenderer;
 import ic2.core.entity.render.ExplosiveBlockRenderer;
 import ic2.core.entity.render.LaserBulletEntityRenderer;
@@ -252,6 +253,7 @@ public final class SideProxyClient implements SideProxy {
     envProxy.registerEntityRenderer(
         Ic2Entities.CARBON_BOAT, context -> new BoatEntityRenderer(context, false, "ic2"));
     envProxy.registerBlockEntityRenderer(Ic2BlockEntities.SIGN, SignRenderer::new);
+    envProxy.registerBlockEntityRenderer(Ic2BlockEntities.CROP_STICK, CropStickRenderer::new);
   }
 
   @Override

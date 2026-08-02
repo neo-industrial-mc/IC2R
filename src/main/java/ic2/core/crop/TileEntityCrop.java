@@ -94,6 +94,9 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
   protected void loadAdditional(
       CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries) {
     super.loadAdditional(nbt, registries);
+    if (nbt.contains("cropOwner") && nbt.contains("cropId")) {
+      this.crop = Crops.instance.getCropCard(nbt.getString("cropOwner"), nbt.getString("cropId"));
+    }
     if (nbt.contains("crossingBase")) {
       this.crossingBase = nbt.getBoolean("crossingBase");
     }
@@ -119,6 +122,8 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
     super.saveAdditional(nbt, registries);
     nbt.putBoolean("crossingBase", this.getStoredCrossingBase());
     if (this.crop != null) {
+      nbt.putString("cropOwner", this.crop.getOwner());
+      nbt.putString("cropId", this.crop.getId());
       nbt.putByte("statGrowth", this.statGrowth);
       nbt.putByte("statGain", this.statGain);
       nbt.putByte("statResistance", this.statResistance);
@@ -1050,6 +1055,7 @@ public class TileEntityCrop extends Ic2TileEntity implements ICropTile {
       if (tileEntityCrop != null) {
         tileEntityCrop.crop = crop;
         tileEntityCrop.crossingBase = crossingBase;
+        tileEntityCrop.dirty = true;
         tileEntityCrop.setChanged();
       }
       return tileEntityCrop;
