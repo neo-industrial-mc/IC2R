@@ -412,6 +412,7 @@
   "container.ic2.pattern_storage": "模式存储机",
   "container.ic2.personal_chest": "保险箱",
   "container.ic2.pump": "泵",
+  "container.ic2.rci_lzh": "反应堆冷却液注入器(LZH)",
   "container.ic2.reactor_fluid_port": "反应堆流体接口",
   "container.ic2.recycler": "回收机",
   "container.ic2.replicator": "复制机",
