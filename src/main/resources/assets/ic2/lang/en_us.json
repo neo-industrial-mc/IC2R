@@ -677,6 +677,7 @@
   "ic2.crop.red_wheat": "Red Wheat",
   "ic2.crop.reed": "Reed",
   "ic2.crop.seedling": "Sapling Bag",
+  "ic2.crop.seed_bag.plant": "Plant: %s",
   "ic2.crop.seeds": "Seed Bag",
   "ic2.crop.unknown": "Unknown Seeds",
   "ic2.crop.shining": "Silver Ore Berry",

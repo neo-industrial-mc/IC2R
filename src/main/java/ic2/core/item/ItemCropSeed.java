@@ -75,7 +75,15 @@ public class ItemCropSeed extends Item implements ICropSeed {
   @OnlyIn(Dist.CLIENT)
   public void appendHoverText(
       ItemStack stack, Item.TooltipContext world, List<Component> info, TooltipFlag debugTooltips) {
-    if (this.getScannedFromStack(stack) >= 4) {
+    int scanLevel = this.getScannedFromStack(stack);
+    CropCard crop = Crops.instance.getCropCard(stack);
+    if (scanLevel >= 1 && crop != null) {
+      Ic2Tooltip.add(
+          info,
+          Component.translatable(
+              "ic2.crop.seed_bag.plant", Component.translatable(crop.getUnlocalizedName())));
+    }
+    if (scanLevel >= FULLY_ANALYZED_SCAN_LEVEL) {
       Ic2Tooltip.add(info, Component.literal("§2Gr§7 " + this.getGrowthFromStack(stack)));
       Ic2Tooltip.add(info, Component.literal("§6Ga§7 " + this.getGainFromStack(stack)));
       Ic2Tooltip.add(info, Component.literal("§3Re§7 " + this.getResistanceFromStack(stack)));
