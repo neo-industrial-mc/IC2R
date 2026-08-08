@@ -79,7 +79,10 @@ public class ItemUpgradeModule extends Item
 
       private void initialise() {
         assert !this.hasInitialised;
-        CompoundTag tag = StackUtil.getOrCreateNbtData(stack);
+        CompoundTag tag = StackUtil.getTag(stack);
+        if (tag == null) {
+          tag = new CompoundTag();
+        }
         this.filters = this.getFilterStacks(tag);
         this.nbt =
             NbtSettings.getFromNBT(HandHeldAdvancedUpgrade.getTag(tag, "nbt").getByte("type"));
@@ -192,7 +195,18 @@ public class ItemUpgradeModule extends Item
   }
 
   @Nullable public static Direction getDirection(ItemStack stack) {
-    int rawDir = StackUtil.getOrCreateNbtData(stack).getByte("dir");
+    CompoundTag nbt = StackUtil.getTag(stack);
+    if (nbt == null) {
+      return null;
+    }
+
+    int rawDir = nbt.getByte("dir");
+    // Older builds created an empty tag while reading an unset direction, and encoded "any side"
+    // as dir=0. Remove those non-values so already affected upgrades can stack again too.
+    if (nbt.isEmpty() || rawDir == 0 && nbt.contains("dir")) {
+      nbt.remove("dir");
+      StackUtil.setTag(stack, nbt);
+    }
     return rawDir >= 1 && rawDir <= 6 ? Util.ALL_DIRS[rawDir - 1] : null;
   }
 
@@ -300,7 +314,8 @@ public class ItemUpgradeModule extends Item
       int dir = 1 + context.getClickedFace().ordinal();
       CompoundTag nbtData = StackUtil.getOrCreateNbtData(stack);
       if (nbtData.getByte("dir") == dir) {
-        nbtData.putByte("dir", (byte) 0);
+        nbtData.remove("dir");
+        StackUtil.setTag(stack, nbtData);
       } else {
         nbtData.putByte("dir", (byte) dir);
       }

@@ -9,6 +9,7 @@ import ic2.core.block.machine.tileentity.TileEntityTank;
 import ic2.core.fluid.Ic2FluidStack;
 import ic2.core.fluid.Ic2FluidTank;
 import ic2.core.item.ElectricItemManager;
+import ic2.core.item.upgrade.ItemUpgradeModule;
 import ic2.core.ref.Ic2Blocks;
 import ic2.core.ref.Ic2Items;
 import ic2.core.util.StackUtil;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 @GameTestHolder("ic2")
 @PrefixGameTestTemplate(false)
@@ -293,6 +295,60 @@ public class UpgradeGameTests {
           helper.assertTrue(
               sourceTank.isEmpty(), "source tank should be drained by the fluid pulling upgrade");
         });
+  }
+
+  // Merely reading the optional direction used to attach an empty CUSTOM_DATA component. Vanilla
+  // includes components in stack identity, so an upgrade that had ticked in a machine would no
+  // longer merge with a fresh upgrade.
+  @GameTest(template = EMPTY)
+  public static void unconfiguredDirectionalUpgradesRemainStackableAfterDirectionRead(
+      GameTestHelper helper) {
+    Item[] upgrades = {
+      Ic2Items.EJECTOR_UPGRADE,
+      Ic2Items.ADVANCED_EJECTOR_UPGRADE,
+      Ic2Items.PULLING_UPGRADE,
+      Ic2Items.ADVANCED_PULLING_UPGRADE,
+      Ic2Items.FLUID_EJECTOR_UPGRADE,
+      Ic2Items.FLUID_PULLING_UPGRADE
+    };
+
+    for (Item upgrade : upgrades) {
+      ItemStack used = new ItemStack(upgrade);
+      // Reproduce the empty component left by older builds after the upgrade ticked in a machine.
+      StackUtil.getOrCreateNbtData(used);
+      helper.assertTrue(
+          ItemUpgradeModule.getDirection(used) == null,
+          "unconfigured " + upgrade + " should target any side");
+      assertMergesWithFreshUpgrade(helper, used, upgrade);
+    }
+
+    helper.succeed();
+  }
+
+  // Advanced ejectors also inspect their unset filter configuration while trying to transfer an
+  // item. That read must not make the upgrade differ from a newly crafted one either.
+  @GameTest(template = EMPTY)
+  public static void usedAdvancedEjectorRemainsStackable(GameTestHelper helper) {
+    helper.setBlock(MACHINE_POS, Ic2Blocks.COMPRESSOR);
+    helper.setBlock(EAST_POS, Blocks.CHEST);
+    TileEntityCompressor te = getMachine(helper, MACHINE_POS, TileEntityCompressor.class);
+    ItemStack used = new ItemStack(Ic2Items.ADVANCED_EJECTOR_UPGRADE);
+    te.outputSlot.put(0, new ItemStack(Items.CLAY));
+
+    ((ItemUpgradeModule) used.getItem()).onTick(used, te);
+
+    assertMergesWithFreshUpgrade(helper, used, Ic2Items.ADVANCED_EJECTOR_UPGRADE);
+    helper.succeed();
+  }
+
+  private static void assertMergesWithFreshUpgrade(
+      GameTestHelper helper, ItemStack used, Item upgrade) {
+    ItemStackHandler slot = new ItemStackHandler(1);
+    helper.assertTrue(slot.insertItem(0, used, false).isEmpty(), "used upgrade should enter slot");
+    helper.assertTrue(
+        slot.insertItem(0, new ItemStack(upgrade), false).isEmpty(),
+        "used " + upgrade + " should merge with a fresh upgrade");
+    helper.assertValueEqual(slot.getStackInSlot(0).getCount(), 2, "merged upgrade count");
   }
 
   private static void assertTankHasWater(GameTestHelper helper, Ic2FluidTank tank, String what) {
